@@ -607,6 +607,45 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 	</div>
 
 
+	<!-- ── SEND TEST EMAIL MODAL ────────────────────────────────── -->
+	<div id="bcg-test-email-modal" class="bcg-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="bcg-modal-title-test-email">
+		<div class="bcg-modal-overlay"></div>
+		<div class="bcg-modal-content bcg-modal-small">
+			<div class="bcg-modal-header bcg-flex bcg-items-center bcg-justify-between">
+				<h3 id="bcg-modal-title-test-email" class="bcg-mt-0 bcg-mb-0"><?php esc_html_e( 'Send Test Email', 'brevo-campaign-generator' ); ?></h3>
+				<button type="button" class="bcg-modal-close" aria-label="<?php esc_attr_e( 'Close', 'brevo-campaign-generator' ); ?>">
+					<span class="dashicons dashicons-no-alt"></span>
+				</button>
+			</div>
+			<div class="bcg-modal-body">
+				<div class="bcg-field-group bcg-mb-16">
+					<label class="bcg-field-label" for="bcg-test-email-address">
+						<?php esc_html_e( 'Email Address', 'brevo-campaign-generator' ); ?>
+					</label>
+					<input type="email"
+						id="bcg-test-email-address"
+						class="large-text"
+						value="<?php echo esc_attr( wp_get_current_user()->user_email ); ?>"
+						placeholder="<?php esc_attr_e( 'Enter email address...', 'brevo-campaign-generator' ); ?>"
+					/>
+					<p class="description">
+						<?php esc_html_e( 'The test email will be sent to this address.', 'brevo-campaign-generator' ); ?>
+					</p>
+				</div>
+			</div>
+			<div class="bcg-modal-footer bcg-flex bcg-justify-between">
+				<button type="button" class="button bcg-modal-close">
+					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button" class="button button-primary" id="bcg-confirm-send-test">
+					<span class="dashicons dashicons-email" style="vertical-align:middle;margin-top:-2px;"></span>
+					<?php esc_html_e( 'Send Test Email', 'brevo-campaign-generator' ); ?>
+				</button>
+			</div>
+		</div>
+	</div>
+
+
 	<!-- ── PREVIEW EMAIL MODAL ──────────────────────────────────── -->
 	<div id="bcg-preview-modal" class="bcg-modal bcg-modal-fullscreen" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="bcg-modal-title-preview">
 		<div class="bcg-modal-overlay"></div>

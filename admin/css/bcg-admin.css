@@ -3753,6 +3753,117 @@ body.bcg-modal-open {
 	line-height: 1.2;
 }
 
+/* ==========================================================================
+   jQuery UI Datepicker Overrides
+   ========================================================================== */
+
+/* Ensure datepicker appears above modals */
+#ui-datepicker-div {
+	z-index: 100100 !important;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	padding: 8px;
+	font-size: 13px;
+	width: 280px;
+}
+
+#ui-datepicker-div .ui-datepicker-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 4px;
+	margin-bottom: 4px;
+	background: #f0f0f1;
+	border-radius: 3px;
+}
+
+#ui-datepicker-div .ui-datepicker-title {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	font-weight: 600;
+}
+
+#ui-datepicker-div .ui-datepicker-title select {
+	font-size: 12px;
+	padding: 2px 4px;
+}
+
+#ui-datepicker-div .ui-datepicker-prev,
+#ui-datepicker-div .ui-datepicker-next {
+	cursor: pointer;
+	padding: 4px 8px;
+	border-radius: 3px;
+	font-size: 0;
+	line-height: 1;
+}
+
+#ui-datepicker-div .ui-datepicker-prev:hover,
+#ui-datepicker-div .ui-datepicker-next:hover {
+	background: #ddd;
+}
+
+#ui-datepicker-div .ui-datepicker-prev::after {
+	content: "\2039";
+	font-size: 18px;
+}
+
+#ui-datepicker-div .ui-datepicker-next::after {
+	content: "\203A";
+	font-size: 18px;
+}
+
+#ui-datepicker-div .ui-datepicker-prev span,
+#ui-datepicker-div .ui-datepicker-next span {
+	display: none;
+}
+
+#ui-datepicker-div table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#ui-datepicker-div th {
+	padding: 4px;
+	text-align: center;
+	font-weight: 600;
+	font-size: 11px;
+	color: #50575e;
+}
+
+#ui-datepicker-div td {
+	padding: 1px;
+	text-align: center;
+}
+
+#ui-datepicker-div td a,
+#ui-datepicker-div td span {
+	display: block;
+	padding: 4px;
+	text-decoration: none;
+	color: #1d2327;
+	border-radius: 3px;
+}
+
+#ui-datepicker-div td a:hover {
+	background: #f0f0f1;
+}
+
+#ui-datepicker-div td .ui-state-active {
+	background: #2271b1;
+	color: #fff;
+}
+
+#ui-datepicker-div td .ui-state-highlight {
+	background: #dcdcde;
+}
+
+#ui-datepicker-div td.ui-datepicker-unselectable span {
+	color: #c3c4c7;
+}
+
 /* Responsive: template chooser */
 @media only screen and (max-width: 782px) {
 	.bcg-template-chooser {

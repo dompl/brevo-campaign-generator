@@ -1795,6 +1795,19 @@ class BCG_Admin {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Full email HTML with <style> tags needed for preview. Capability-gated to manage_woocommerce admins only.
 		$template_html = isset( $_POST['template_html'] ) ? wp_unslash( $_POST['template_html'] ) : '';
 		$settings_raw  = isset( $_POST['template_settings'] ) ? sanitize_text_field( wp_unslash( $_POST['template_settings'] ) ) : '{}';
+		$campaign_id   = isset( $_POST['campaign_id'] ) ? absint( $_POST['campaign_id'] ) : 0;
+
+		// If campaign_id is provided and no raw template_html, render the saved campaign.
+		if ( empty( $template_html ) && $campaign_id > 0 ) {
+			$template_engine = new BCG_Template();
+			$rendered_html   = $template_engine->render( $campaign_id );
+
+			if ( is_wp_error( $rendered_html ) ) {
+				wp_send_json_error( array( 'message' => $rendered_html->get_error_message() ) );
+			}
+
+			wp_send_json_success( array( 'html' => $rendered_html ) );
+		}
 
 		if ( empty( $template_html ) ) {
 			wp_send_json_error( array( 'message' => __( 'No template HTML provided.', 'brevo-campaign-generator' ) ) );
@@ -2006,6 +2019,24 @@ class BCG_Admin {
 			return new \WP_Error(
 				'bcg_invalid_list',
 				__( 'Invalid mailing list ID.', 'brevo-campaign-generator' )
+			);
+		}
+
+		// Validate sender email is configured.
+		$sender_email = (string) get_option( 'bcg_brevo_sender_email', '' );
+		$sender_name  = (string) get_option( 'bcg_brevo_sender_name', '' );
+
+		if ( empty( $sender_email ) || ! is_email( $sender_email ) ) {
+			return new \WP_Error(
+				'bcg_missing_sender',
+				__( 'Sender email is not configured. Go to Brevo Campaigns > Settings > Brevo tab and set a sender email that is verified in your Brevo account.', 'brevo-campaign-generator' )
+			);
+		}
+
+		if ( empty( $sender_name ) ) {
+			return new \WP_Error(
+				'bcg_missing_sender_name',
+				__( 'Sender name is not configured. Go to Brevo Campaigns > Settings > Brevo tab and set a sender name.', 'brevo-campaign-generator' )
 			);
 		}
 

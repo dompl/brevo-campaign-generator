@@ -262,7 +262,7 @@ class BCG_Settings {
 		register_setting( $page, 'bcg_gemini_model', array(
 			'type'              => 'string',
 			'sanitize_callback' => array( $this, 'sanitize_gemini_model' ),
-			'default'           => 'gemini-1.5-flash',
+			'default'           => 'gemini-2.0-flash',
 		) );
 
 		add_settings_field(
@@ -340,7 +340,7 @@ class BCG_Settings {
 
 		add_settings_field(
 			'bcg_credit_cost_gemini_pro',
-			__( 'Gemini 1.5 Pro (per image)', 'brevo-campaign-generator' ),
+			__( 'Gemini Pro (per image)', 'brevo-campaign-generator' ),
 			array( $this, 'render_number_field' ),
 			$page,
 			$credits_section,
@@ -350,7 +350,7 @@ class BCG_Settings {
 				'min'         => 1,
 				'max'         => 100,
 				'suffix'      => __( 'credits', 'brevo-campaign-generator' ),
-				'description' => __( 'Credits deducted per Gemini 1.5 Pro image generation.', 'brevo-campaign-generator' ),
+				'description' => __( 'Credits deducted per Gemini Pro image generation.', 'brevo-campaign-generator' ),
 			)
 		);
 
@@ -363,7 +363,7 @@ class BCG_Settings {
 
 		add_settings_field(
 			'bcg_credit_cost_gemini_flash',
-			__( 'Gemini 1.5 Flash (per image)', 'brevo-campaign-generator' ),
+			__( 'Gemini Flash (per image)', 'brevo-campaign-generator' ),
 			array( $this, 'render_number_field' ),
 			$page,
 			$credits_section,
@@ -373,7 +373,7 @@ class BCG_Settings {
 				'min'         => 1,
 				'max'         => 100,
 				'suffix'      => __( 'credits', 'brevo-campaign-generator' ),
-				'description' => __( 'Credits deducted per Gemini 1.5 Flash image generation.', 'brevo-campaign-generator' ),
+				'description' => __( 'Credits deducted per Gemini Flash image generation.', 'brevo-campaign-generator' ),
 			)
 		);
 
@@ -852,7 +852,7 @@ class BCG_Settings {
 	 * @return void
 	 */
 	public function render_gemini_model_field( array $args ): void {
-		$value  = get_option( 'bcg_gemini_model', 'gemini-1.5-flash' );
+		$value  = get_option( 'bcg_gemini_model', 'gemini-2.0-flash' );
 		$models = $this->get_gemini_models();
 
 		?>
@@ -1180,7 +1180,7 @@ class BCG_Settings {
 	public function sanitize_gemini_model( string $value ): string {
 		$valid = array_keys( $this->get_gemini_models() );
 
-		return in_array( $value, $valid, true ) ? $value : 'gemini-1.5-flash';
+		return in_array( $value, $valid, true ) ? $value : 'gemini-2.0-flash';
 	}
 
 	/**
@@ -1739,9 +1739,9 @@ class BCG_Settings {
 	 */
 	public function get_gemini_models(): array {
 		return array(
-			'gemini-1.5-pro'       => __( 'Gemini 1.5 Pro (best quality, higher cost)', 'brevo-campaign-generator' ),
-			'gemini-1.5-flash'     => __( 'Gemini 1.5 Flash (fast, cost-efficient)', 'brevo-campaign-generator' ),
-			'gemini-2.0-flash-exp' => __( 'Gemini 2.0 Flash (experimental)', 'brevo-campaign-generator' ),
+			'gemini-2.0-flash'     => __( 'Gemini 2.0 Flash (recommended, fast, cost-efficient)', 'brevo-campaign-generator' ),
+			'gemini-2.5-flash-preview-05-20' => __( 'Gemini 2.5 Flash (preview, best quality)', 'brevo-campaign-generator' ),
+			'gemini-2.5-pro-preview-05-06'   => __( 'Gemini 2.5 Pro (preview, highest quality)', 'brevo-campaign-generator' ),
 		);
 	}
 
@@ -1810,13 +1810,13 @@ class BCG_Settings {
 			),
 			array(
 				'service' => 'Gemini',
-				'model'   => '1.5 Pro',
+				'model'   => '2.5 Pro',
 				'task'    => __( 'Per image generation', 'brevo-campaign-generator' ),
 				'cost'    => '~$0.01-$0.04',
 			),
 			array(
 				'service' => 'Gemini',
-				'model'   => '1.5 Flash',
+				'model'   => '2.0 Flash',
 				'task'    => __( 'Per image generation', 'brevo-campaign-generator' ),
 				'cost'    => '~$0.001-$0.01',
 			),

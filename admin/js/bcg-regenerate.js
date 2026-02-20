@@ -474,8 +474,13 @@
 		// Preview Email (fullscreen modal).
 		$( '#bcg-preview-email' ).on( 'click', handlePreviewEmail );
 
-		// Send Test Email.
-		$( '#bcg-send-test' ).on( 'click', handleSendTest );
+		// Send Test Email (opens modal).
+		$( '#bcg-send-test' ).on( 'click', function() {
+			openModal( '#bcg-test-email-modal' );
+		});
+
+		// Confirm Send Test Email.
+		$( '#bcg-confirm-send-test' ).on( 'click', handleSendTest );
 
 		// Create in Brevo.
 		$( '#bcg-create-brevo' ).on( 'click', handleCreateBrevo );
@@ -576,29 +581,26 @@
 	function handlePreviewEmail( e ) {
 		e.preventDefault();
 
-		// First save the current state, then open the preview.
-		var data = gatherCampaignData();
-		data.action = 'bcg_preview_template';
-		data.campaign_id = editor.campaign_id;
-
-		$.post( editor.ajax_url, data ).done( function( response ) {
-			if ( response.success && response.data && response.data.html ) {
-				var $iframe = $( '#bcg-fullscreen-preview-iframe' );
-				var iframeDoc = $iframe[0].contentWindow || $iframe[0].contentDocument;
-				if ( iframeDoc.document ) {
-					iframeDoc = iframeDoc.document;
-				}
-				iframeDoc.open();
-				iframeDoc.write( response.data.html );
-				iframeDoc.close();
-			}
-		});
-
 		openModal( '#bcg-preview-modal' );
+
+		// Save the current state first, then request the rendered preview.
+		var saveData = gatherCampaignData();
+
+		$.post( editor.ajax_url, saveData ).done( function() {
+			$.post( editor.ajax_url, {
+				action:      'bcg_preview_template',
+				_ajax_nonce: editor.nonce,
+				campaign_id: editor.campaign_id
+			}).done( function( response ) {
+				if ( response.success && response.data && response.data.html ) {
+					writeToIframe( '#bcg-fullscreen-preview-iframe', response.data.html );
+				}
+			});
+		});
 	}
 
 	/**
-	 * Handle Send Test Email.
+	 * Handle Send Test Email (from modal confirmation).
 	 *
 	 * @param {Event} e Click event.
 	 * @return {void}
@@ -606,8 +608,14 @@
 	function handleSendTest( e ) {
 		e.preventDefault();
 
-		var $btn = $( '#bcg-send-test' );
+		var $btn = $( '#bcg-confirm-send-test' );
 		if ( $btn.hasClass( 'is-loading' ) ) {
+			return;
+		}
+
+		var testEmail = $( '#bcg-test-email-address' ).val().trim();
+		if ( ! testEmail ) {
+			showNotice( 'error', 'Please enter an email address.' );
 			return;
 		}
 
@@ -620,10 +628,12 @@
 			$.post( editor.ajax_url, {
 				action:      'bcg_send_test',
 				_ajax_nonce: editor.nonce,
-				campaign_id: editor.campaign_id
+				campaign_id: editor.campaign_id,
+				email:       testEmail
 			}).done( function( response ) {
 				if ( response.success ) {
-					showNotice( 'success', editor.i18n.test_sent );
+					showNotice( 'success', ( response.data && response.data.message ) || editor.i18n.test_sent );
+					closeAllModals();
 				} else {
 					showNotice( 'error', ( response.data && response.data.message ) || editor.i18n.save_error );
 				}
@@ -787,9 +797,8 @@
 	}
 
 	/**
-	 * Refresh the live preview iframe by posting the current campaign data
-	 * to the bcg_preview_template AJAX endpoint and writing the HTML
-	 * response into the iframe document.
+	 * Refresh the live preview iframe by saving the current campaign data
+	 * first, then requesting a rendered preview from the server.
 	 *
 	 * @return {void}
 	 */
@@ -797,14 +806,23 @@
 		var $loading = $( '#bcg-preview-loading' );
 		$loading.show();
 
-		var data = gatherCampaignData();
-		data.action = 'bcg_preview_template';
+		// Save the current state first so the preview reflects edits.
+		var saveData = gatherCampaignData();
 
-		$.post( editor.ajax_url, data ).done( function( response ) {
-			if ( response.success && response.data && response.data.html ) {
-				writeToIframe( '#bcg-preview-iframe', response.data.html );
-			}
-		}).always( function() {
+		$.post( editor.ajax_url, saveData ).done( function() {
+			// Now request the rendered preview using the saved campaign.
+			$.post( editor.ajax_url, {
+				action:      'bcg_preview_template',
+				_ajax_nonce: editor.nonce,
+				campaign_id: editor.campaign_id
+			}).done( function( response ) {
+				if ( response.success && response.data && response.data.html ) {
+					writeToIframe( '#bcg-preview-iframe', response.data.html );
+				}
+			}).always( function() {
+				$loading.hide();
+			});
+		}).fail( function() {
 			$loading.hide();
 		});
 	}
