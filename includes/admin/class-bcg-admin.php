@@ -1314,8 +1314,9 @@ class BCG_Admin {
 		}
 
 		// Template settings (JSON string).
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON decoded then re-encoded; individual values are escaped in apply_settings().
 		if ( isset( $_POST['template_settings'] ) && ! isset( $update_data['template_settings'] ) ) {
-			$settings_raw = sanitize_text_field( wp_unslash( $_POST['template_settings'] ) );
+			$settings_raw = wp_unslash( $_POST['template_settings'] );
 			$decoded      = json_decode( $settings_raw, true );
 			if ( is_array( $decoded ) ) {
 				$update_data['template_settings'] = wp_json_encode( $decoded );
@@ -1770,7 +1771,8 @@ class BCG_Admin {
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Full email HTML with <style> tags. Capability-gated to manage_woocommerce admins only.
 		$template_html = isset( $_POST['template_html'] ) ? wp_unslash( $_POST['template_html'] ) : '';
-		$settings_raw  = isset( $_POST['template_settings'] ) ? sanitize_text_field( wp_unslash( $_POST['template_settings'] ) ) : '{}';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON settings; sanitize_text_field() corrupts JSON. Values are escaped in apply_settings().
+		$settings_raw  = isset( $_POST['template_settings'] ) ? wp_unslash( $_POST['template_settings'] ) : '{}';
 		$target        = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : 'default';
 		$campaign_id   = isset( $_POST['campaign_id'] ) ? absint( $_POST['campaign_id'] ) : 0;
 
@@ -1838,7 +1840,8 @@ class BCG_Admin {
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Full email HTML with <style> tags needed for preview. Capability-gated to manage_woocommerce admins only.
 		$template_html = isset( $_POST['template_html'] ) ? wp_unslash( $_POST['template_html'] ) : '';
-		$settings_raw  = isset( $_POST['template_settings'] ) ? sanitize_text_field( wp_unslash( $_POST['template_settings'] ) ) : '{}';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON settings string; sanitize_text_field() must NOT be used here as it strips tags/collapses whitespace and corrupts JSON. Individual values are escaped downstream (esc_attr, esc_url, etc.) in apply_settings().
+		$settings_raw  = isset( $_POST['template_settings'] ) ? wp_unslash( $_POST['template_settings'] ) : '{}';
 		$campaign_id   = isset( $_POST['campaign_id'] ) ? absint( $_POST['campaign_id'] ) : 0;
 
 		// If campaign_id is provided and no raw template_html, render the saved campaign.

@@ -600,6 +600,10 @@
 				return;
 			}
 
+			// Temporarily collapse to 1px so that body { height: 100% } in email
+			// templates does not inflate scrollHeight beyond actual content height.
+			iframe.style.height = '1px';
+
 			var contentHeight = Math.max(
 				iframeDoc.body.scrollHeight,
 				iframeDoc.documentElement ? iframeDoc.documentElement.scrollHeight : 0
@@ -656,10 +660,13 @@
 				sectionIds.push(el.getAttribute('data-bcg-section'));
 			});
 
-			// If section_order is not set, initialize it from the DOM order.
-			if (!this.templateSettings.section_order) {
-				this.templateSettings.section_order = sectionIds.slice();
-			}
+			// Store DOM section order locally for overlay positioning and as the
+			// source of truth when the user first explicitly reorders a section.
+			// Do NOT write into templateSettings.section_order here — that property
+			// should only be set when the user deliberately moves/duplicates/deletes
+			// a section, so that reorder_sections() is never called on a plain
+			// font/colour change where no reordering was requested.
+			this.sectionOrder = sectionIds.slice();
 
 			var sectionNames = (bcg_template_editor && bcg_template_editor.section_names) || {};
 
@@ -722,9 +729,14 @@
 		 * @param {string} direction Either 'up' or 'down'.
 		 */
 		handleSectionMove: function (sectionId, direction) {
+			// On the first explicit reorder, bootstrap section_order from the
+			// current DOM order captured by buildSectionOverlays().
 			var order = this.templateSettings.section_order;
 			if (!order || !Array.isArray(order)) {
-				return;
+				if (!this.sectionOrder || !this.sectionOrder.length) {
+					return;
+				}
+				order = this.sectionOrder.slice();
 			}
 
 			var index = order.indexOf(sectionId);
@@ -755,7 +767,10 @@
 		handleSectionDuplicate: function (sectionId) {
 			var order = this.templateSettings.section_order;
 			if (!order || !Array.isArray(order)) {
-				return;
+				if (!this.sectionOrder || !this.sectionOrder.length) {
+					return;
+				}
+				order = this.sectionOrder.slice();
 			}
 
 			var index = order.indexOf(sectionId);
@@ -788,7 +803,10 @@
 		handleSectionDelete: function (sectionId) {
 			var order = this.templateSettings.section_order;
 			if (!order || !Array.isArray(order)) {
-				return;
+				if (!this.sectionOrder || !this.sectionOrder.length) {
+					return;
+				}
+				order = this.sectionOrder.slice();
 			}
 
 			if (!confirm(bcg_template_editor.i18n.confirm_delete_section || 'Delete this section?')) {
