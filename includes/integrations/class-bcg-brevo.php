@@ -757,13 +757,14 @@ class BCG_Brevo {
 			$prefixed_name = trim( $prefix ) . ' ' . $name;
 		}
 
-		// Build sender array — include id if stored (most reliable), else name+email.
-		$sender_payload = array(
-			'name'  => sanitize_text_field( $sender_name ),
-			'email' => sanitize_email( $sender_email ),
-		);
+		// Build sender array — Brevo requires EITHER id alone OR email+name, never both.
 		if ( $sender_id > 0 ) {
-			$sender_payload['id'] = $sender_id;
+			$sender_payload = array( 'id' => $sender_id );
+		} else {
+			$sender_payload = array(
+				'name'  => sanitize_text_field( $sender_name ),
+				'email' => sanitize_email( $sender_email ),
+			);
 		}
 
 		$payload = array(

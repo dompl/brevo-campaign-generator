@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.8] — 2026-02-20
+
+### Fixed
+- **"Only one of Sender ID or Sender Email can be passed"** — v1.3.7 was passing both `id` and `name`+`email` in the sender payload. The Brevo API requires exactly one: either `{id}` alone or `{name, email}` alone. When a sender ID is resolved, the payload now contains only `{id}`; otherwise `{name, email}`.
+
+---
+
 ## [1.3.7] — 2026-02-20
 
 ### Fixed
@@ -126,7 +133,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.7...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.8...HEAD
+[1.3.8]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.7...v1.3.8
 [1.3.7]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.6...v1.3.7
 [1.3.6]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.5...v1.3.6
 [1.3.5]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.4...v1.3.5
