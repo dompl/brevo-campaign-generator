@@ -663,14 +663,15 @@
 				type: 'POST',
 				data: data,
 				success: function( response ) {
-					if ( response.success && response.data.value ) {
+					var value = response.data && ( response.data.content || response.data.value );
+					if ( response.success && value ) {
 						var targetMap = {
 							'subject_line': '#bcg-subject-line',
 							'preview_text': '#bcg-preview-text'
 						};
 
 						if ( targetMap[ field ] ) {
-							$( targetMap[ field ] ).val( response.data.value ).trigger( 'change' );
+							$( targetMap[ field ] ).val( value ).trigger( 'change' );
 						}
 					} else {
 						var msg = ( response.data && response.data.message )

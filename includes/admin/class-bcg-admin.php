@@ -533,13 +533,22 @@ class BCG_Admin {
 
 		// ── 1. Validate and sanitise inputs ─────────────────────────────
 
-		$title = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+		// Accept both 'title' and 'campaign_title' (Step 1 sends campaign_title).
+		$title = isset( $_POST['campaign_title'] ) ? sanitize_text_field( wp_unslash( $_POST['campaign_title'] ) ) : '';
+		if ( empty( $title ) && isset( $_POST['title'] ) ) {
+			$title = sanitize_text_field( wp_unslash( $_POST['title'] ) );
+		}
 
 		if ( empty( $title ) ) {
 			wp_send_json_error( array( 'message' => __( 'Campaign title is required.', 'brevo-campaign-generator' ) ) );
 		}
 
-		$subject         = isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '';
+		// Accept both 'subject' and 'subject_line'.
+		$subject = isset( $_POST['subject_line'] ) ? sanitize_text_field( wp_unslash( $_POST['subject_line'] ) ) : '';
+		if ( empty( $subject ) && isset( $_POST['subject'] ) ) {
+			$subject = sanitize_text_field( wp_unslash( $_POST['subject'] ) );
+		}
+
 		$preview_text    = isset( $_POST['preview_text'] ) ? sanitize_text_field( wp_unslash( $_POST['preview_text'] ) ) : '';
 		$mailing_list_id = isset( $_POST['mailing_list_id'] ) ? sanitize_text_field( wp_unslash( $_POST['mailing_list_id'] ) ) : '';
 
@@ -547,14 +556,46 @@ class BCG_Admin {
 		$product_source  = isset( $_POST['product_source'] ) ? sanitize_text_field( wp_unslash( $_POST['product_source'] ) ) : 'bestsellers';
 		$product_count   = isset( $_POST['product_count'] ) ? absint( $_POST['product_count'] ) : (int) get_option( 'bcg_default_products_per_campaign', 3 );
 		$category_ids    = isset( $_POST['category_ids'] ) && is_array( $_POST['category_ids'] ) ? array_map( 'absint', $_POST['category_ids'] ) : array();
-		$manual_ids      = isset( $_POST['manual_ids'] ) && is_array( $_POST['manual_ids'] ) ? array_map( 'absint', $_POST['manual_ids'] ) : array();
 
-		// Coupon config.
+		// Accept both 'manual_ids' and 'manual_product_ids'.
+		$manual_ids = array();
+		if ( isset( $_POST['manual_product_ids'] ) && is_array( $_POST['manual_product_ids'] ) ) {
+			$manual_ids = array_map( 'absint', $_POST['manual_product_ids'] );
+		} elseif ( isset( $_POST['manual_ids'] ) && is_array( $_POST['manual_ids'] ) ) {
+			$manual_ids = array_map( 'absint', $_POST['manual_ids'] );
+		}
+
+		// Coupon config — accept both 'generate_coupon' and 'coupon_*' / 'discount_*' names.
 		$generate_coupon  = ! empty( $_POST['generate_coupon'] );
-		$discount_type    = isset( $_POST['discount_type'] ) ? sanitize_text_field( wp_unslash( $_POST['discount_type'] ) ) : 'percent';
-		$discount_value   = isset( $_POST['discount_value'] ) ? (float) $_POST['discount_value'] : (float) get_option( 'bcg_default_coupon_discount', 10 );
-		$expiry_days      = isset( $_POST['expiry_days'] ) ? absint( $_POST['expiry_days'] ) : (int) get_option( 'bcg_default_coupon_expiry_days', 7 );
-		$coupon_prefix    = isset( $_POST['coupon_prefix'] ) ? sanitize_text_field( wp_unslash( $_POST['coupon_prefix'] ) ) : '';
+		$discount_type    = isset( $_POST['coupon_type'] ) ? sanitize_text_field( wp_unslash( $_POST['coupon_type'] ) ) : '';
+		if ( empty( $discount_type ) && isset( $_POST['discount_type'] ) ) {
+			$discount_type = sanitize_text_field( wp_unslash( $_POST['discount_type'] ) );
+		}
+		if ( empty( $discount_type ) ) {
+			$discount_type = 'percent';
+		}
+
+		$discount_value = 0;
+		if ( isset( $_POST['coupon_discount'] ) ) {
+			$discount_value = (float) $_POST['coupon_discount'];
+		} elseif ( isset( $_POST['discount_value'] ) ) {
+			$discount_value = (float) $_POST['discount_value'];
+		}
+		if ( $discount_value <= 0 ) {
+			$discount_value = (float) get_option( 'bcg_default_coupon_discount', 10 );
+		}
+
+		$expiry_days = 0;
+		if ( isset( $_POST['coupon_expiry_days'] ) ) {
+			$expiry_days = absint( $_POST['coupon_expiry_days'] );
+		} elseif ( isset( $_POST['expiry_days'] ) ) {
+			$expiry_days = absint( $_POST['expiry_days'] );
+		}
+		if ( $expiry_days <= 0 ) {
+			$expiry_days = (int) get_option( 'bcg_default_coupon_expiry_days', 7 );
+		}
+
+		$coupon_prefix = isset( $_POST['coupon_prefix'] ) ? sanitize_text_field( wp_unslash( $_POST['coupon_prefix'] ) ) : '';
 
 		// AI config.
 		$tone             = isset( $_POST['tone'] ) ? sanitize_text_field( wp_unslash( $_POST['tone'] ) ) : 'Professional';
@@ -744,47 +785,8 @@ class BCG_Admin {
 		$campaign_id = isset( $_POST['campaign_id'] ) ? absint( $_POST['campaign_id'] ) : 0;
 		$field       = isset( $_POST['field'] ) ? sanitize_text_field( wp_unslash( $_POST['field'] ) ) : '';
 
-		if ( ! $campaign_id ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid campaign ID.', 'brevo-campaign-generator' ) ) );
-		}
-
 		if ( empty( $field ) ) {
 			wp_send_json_error( array( 'message' => __( 'No field specified for regeneration.', 'brevo-campaign-generator' ) ) );
-		}
-
-		// Load the campaign to build context.
-		$campaign_handler = new BCG_Campaign();
-		$campaign         = $campaign_handler->get( $campaign_id );
-
-		if ( is_wp_error( $campaign ) ) {
-			wp_send_json_error( array( 'message' => $campaign->get_error_message() ) );
-		}
-
-		// Build product data for AI context.
-		$product_selector = new BCG_Product_Selector();
-		$products_data    = array();
-
-		foreach ( $campaign->products as $product_row ) {
-			$wc_product = wc_get_product( (int) $product_row->product_id );
-			if ( $wc_product instanceof \WC_Product ) {
-				$products_data[] = $product_selector->format_product_preview( $wc_product );
-			}
-		}
-
-		// Build single product data if this is a product-level field.
-		$single_product = array();
-		$product_row_id = isset( $_POST['product_row_id'] ) ? absint( $_POST['product_row_id'] ) : 0;
-
-		if ( $product_row_id > 0 ) {
-			foreach ( $campaign->products as $product_row ) {
-				if ( (int) $product_row->id === $product_row_id ) {
-					$wc_product = wc_get_product( (int) $product_row->product_id );
-					if ( $wc_product instanceof \WC_Product ) {
-						$single_product = $product_selector->format_product_preview( $wc_product );
-					}
-					break;
-				}
-			}
 		}
 
 		// Retrieve tone/theme/language from POST or fall back to defaults.
@@ -792,6 +794,52 @@ class BCG_Admin {
 		$theme    = isset( $_POST['theme'] ) ? sanitize_text_field( wp_unslash( $_POST['theme'] ) ) : '';
 		$language = isset( $_POST['language'] ) ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : 'English';
 		$style    = isset( $_POST['image_style'] ) ? sanitize_text_field( wp_unslash( $_POST['image_style'] ) ) : 'Photorealistic';
+		$subject  = isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '';
+		$title    = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+
+		$product_selector = new BCG_Product_Selector();
+		$products_data    = array();
+		$single_product   = array();
+		$product_row_id   = isset( $_POST['product_row_id'] ) ? absint( $_POST['product_row_id'] ) : 0;
+		$campaign_handler = new BCG_Campaign();
+
+		if ( $campaign_id ) {
+			// Load the campaign to build context.
+			$campaign = $campaign_handler->get( $campaign_id );
+
+			if ( is_wp_error( $campaign ) ) {
+				wp_send_json_error( array( 'message' => $campaign->get_error_message() ) );
+			}
+
+			// Build product data for AI context.
+			foreach ( $campaign->products as $product_row ) {
+				$wc_product = wc_get_product( (int) $product_row->product_id );
+				if ( $wc_product instanceof \WC_Product ) {
+					$products_data[] = $product_selector->format_product_preview( $wc_product );
+				}
+			}
+
+			// Build single product data if this is a product-level field.
+			if ( $product_row_id > 0 ) {
+				foreach ( $campaign->products as $product_row ) {
+					if ( (int) $product_row->id === $product_row_id ) {
+						$wc_product = wc_get_product( (int) $product_row->product_id );
+						if ( $wc_product instanceof \WC_Product ) {
+							$single_product = $product_selector->format_product_preview( $wc_product );
+						}
+						break;
+					}
+				}
+			}
+
+			// Use campaign data for context fallbacks.
+			if ( empty( $subject ) ) {
+				$subject = $campaign->subject ?? '';
+			}
+			if ( empty( $title ) ) {
+				$title = $campaign->title ?? '';
+			}
+		}
 
 		$context = array(
 			'products' => $products_data,
@@ -799,7 +847,8 @@ class BCG_Admin {
 			'theme'    => $theme,
 			'tone'     => $tone,
 			'language' => $language,
-			'subject'  => $campaign->subject ?? '',
+			'subject'  => $subject,
+			'title'    => $title,
 			'style'    => $style,
 		);
 
@@ -810,30 +859,31 @@ class BCG_Admin {
 			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
 		}
 
-		// Map field name to campaign/product DB column for auto-saving.
-		$campaign_field_map = array(
-			'subject_line'     => 'subject',
-			'preview_text'     => 'preview_text',
-			'main_headline'    => 'main_headline',
-			'main_description' => 'main_description',
-			'main_image'       => 'main_image_url',
-		);
+		// Auto-save the regenerated content to the DB (only if campaign exists).
+		if ( $campaign_id ) {
+			$campaign_field_map = array(
+				'subject_line'     => 'subject',
+				'preview_text'     => 'preview_text',
+				'main_headline'    => 'main_headline',
+				'main_description' => 'main_description',
+				'main_image'       => 'main_image_url',
+			);
 
-		$product_field_map = array(
-			'product_headline'   => 'ai_headline',
-			'product_short_desc' => 'ai_short_desc',
-			'product_image'      => 'generated_image_url',
-		);
+			$product_field_map = array(
+				'product_headline'   => 'ai_headline',
+				'product_short_desc' => 'ai_short_desc',
+				'product_image'      => 'generated_image_url',
+			);
 
-		// Auto-save the regenerated content to the DB.
-		if ( isset( $campaign_field_map[ $field ] ) ) {
-			$campaign_handler->update( $campaign_id, array(
-				$campaign_field_map[ $field ] => $result['content'],
-			) );
-		} elseif ( isset( $product_field_map[ $field ] ) && $product_row_id > 0 ) {
-			$campaign_handler->update_product( $product_row_id, array(
-				$product_field_map[ $field ] => $result['content'],
-			) );
+			if ( isset( $campaign_field_map[ $field ] ) ) {
+				$campaign_handler->update( $campaign_id, array(
+					$campaign_field_map[ $field ] => $result['content'],
+				) );
+			} elseif ( isset( $product_field_map[ $field ] ) && $product_row_id > 0 ) {
+				$campaign_handler->update_product( $product_row_id, array(
+					$product_field_map[ $field ] => $result['content'],
+				) );
+			}
 		}
 
 		wp_send_json_success( array(

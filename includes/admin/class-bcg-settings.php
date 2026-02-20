@@ -1362,14 +1362,33 @@ class BCG_Settings {
 			wp_send_json_error( array( 'message' => $error_msg ) );
 		}
 
-		$lists = array();
+		$lists   = array();
+		$api_key = get_option( 'bcg_brevo_api_key', '' );
 
 		if ( isset( $body['lists'] ) && is_array( $body['lists'] ) ) {
 			foreach ( $body['lists'] as $list ) {
+				// Brevo deprecated totalSubscribers (always returns 0).
+				// Fetch actual count per list via the contacts endpoint.
+				$count     = 0;
+				$count_url = 'https://api.brevo.com/v3/contacts/lists/' . absint( $list['id'] ) . '/contacts?limit=1&offset=0';
+				$count_res = wp_remote_get( $count_url, array(
+					'headers' => array(
+						'api-key'      => $api_key,
+						'Content-Type' => 'application/json',
+						'Accept'       => 'application/json',
+					),
+					'timeout' => 10,
+				) );
+
+				if ( ! is_wp_error( $count_res ) && 200 === wp_remote_retrieve_response_code( $count_res ) ) {
+					$count_body = json_decode( wp_remote_retrieve_body( $count_res ), true );
+					$count      = isset( $count_body['count'] ) ? (int) $count_body['count'] : 0;
+				}
+
 				$lists[] = array(
 					'id'               => $list['id'],
 					'name'             => $list['name'],
-					'totalSubscribers' => $list['totalSubscribers'] ?? 0,
+					'totalSubscribers' => $count,
 				);
 			}
 		}
