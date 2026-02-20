@@ -17,6 +17,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.4] — 2026-02-20
+
+### Added
+- **Heading font control** — Typography tab now has separate "Heading Font" and "Body Font" selectors; heading font applies to the main campaign headline independently of the body text
+- **Per-template heading fonts** — each template ships with its own distinct default heading font (e.g. DM Serif Display for Classic, Bebas Neue for Feature, Cinzel for Luxury Centered)
+- `{{setting_heading_font_family}}` token added to all 10 email templates, replacing hardcoded headline font-family values
+
+### Fixed
+- **Cards template** — conditional Handlebars expression `{{#if ...}}` inside an inline CSS `style` attribute (padding-bottom) was rendered as literal code; replaced with a static value
+- **Text-only template** — `{{campaign_image}}` was output as raw text content instead of an `<img>` src attribute
+- **Text-only template** — unconditional `{{store_name}}` paragraph always rendered regardless of logo visibility; removed
+
+---
+
 ## [1.3.3] — 2026-02-20
 
 ### Changed

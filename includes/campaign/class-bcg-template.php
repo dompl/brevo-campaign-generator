@@ -1366,21 +1366,25 @@ class BCG_Template {
 	 */
 	public function apply_settings( string $html, array $settings ): string {
 		// CSS variable replacements.
+		// heading_font_family falls back to font_family if not set.
+		$heading_font = $settings['heading_font_family'] ?? $settings['font_family'] ?? 'Georgia, serif';
+
 		$css_vars = array(
-			'{{setting_primary_color}}'        => esc_attr( $settings['primary_color'] ?? '#e84040' ),
-			'{{setting_background_color}}'      => esc_attr( $settings['background_color'] ?? '#f5f5f5' ),
-			'{{setting_content_background}}'    => esc_attr( $settings['content_background'] ?? '#ffffff' ),
-			'{{setting_text_color}}'            => esc_attr( $settings['text_color'] ?? '#333333' ),
-			'{{setting_link_color}}'            => esc_attr( $settings['link_color'] ?? '#e84040' ),
-			'{{setting_button_color}}'          => esc_attr( $settings['button_color'] ?? '#e84040' ),
-			'{{setting_button_text_color}}'     => esc_attr( $settings['button_text_color'] ?? '#ffffff' ),
-			'{{setting_button_border_radius}}'  => absint( $settings['button_border_radius'] ?? 4 ) . 'px',
-			'{{setting_font_family}}'           => esc_attr( $settings['font_family'] ?? 'Arial, sans-serif' ),
-			'{{setting_max_width}}'             => absint( $settings['max_width'] ?? 600 ) . 'px',
-			'{{setting_logo_url}}'              => esc_url( $settings['logo_url'] ?? '' ),
-			'{{setting_logo_width}}'            => absint( $settings['logo_width'] ?? 180 ) . 'px',
-			'{{setting_header_text}}'           => esc_html( $settings['header_text'] ?? '' ),
-			'{{setting_footer_text}}'           => wp_kses_post( $settings['footer_text'] ?? '' ),
+			'{{setting_primary_color}}'         => esc_attr( $settings['primary_color'] ?? '#e84040' ),
+			'{{setting_background_color}}'       => esc_attr( $settings['background_color'] ?? '#f5f5f5' ),
+			'{{setting_content_background}}'     => esc_attr( $settings['content_background'] ?? '#ffffff' ),
+			'{{setting_text_color}}'             => esc_attr( $settings['text_color'] ?? '#333333' ),
+			'{{setting_link_color}}'             => esc_attr( $settings['link_color'] ?? '#e84040' ),
+			'{{setting_button_color}}'           => esc_attr( $settings['button_color'] ?? '#e84040' ),
+			'{{setting_button_text_color}}'      => esc_attr( $settings['button_text_color'] ?? '#ffffff' ),
+			'{{setting_button_border_radius}}'   => absint( $settings['button_border_radius'] ?? 4 ) . 'px',
+			'{{setting_font_family}}'            => esc_attr( $settings['font_family'] ?? 'Arial, sans-serif' ),
+			'{{setting_heading_font_family}}'    => esc_attr( $heading_font ),
+			'{{setting_max_width}}'              => absint( $settings['max_width'] ?? 600 ) . 'px',
+			'{{setting_logo_url}}'               => esc_url( $settings['logo_url'] ?? '' ),
+			'{{setting_logo_width}}'             => absint( $settings['logo_width'] ?? 180 ) . 'px',
+			'{{setting_header_text}}'            => esc_html( $settings['header_text'] ?? '' ),
+			'{{setting_footer_text}}'            => wp_kses_post( $settings['footer_text'] ?? '' ),
 		);
 
 		$html = str_replace( array_keys( $css_vars ), array_values( $css_vars ), $html );

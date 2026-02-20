@@ -151,23 +151,24 @@ class BCG_Template_Registry {
 		// Shared base settings — all templates use the same default colours.
 		// Users customise colours via the settings panel.
 		$base_settings = array(
-			'logo_url'             => '',
-			'logo_width'           => 180,
-			'nav_links'            => array(
+			'logo_url'               => '',
+			'logo_width'             => 180,
+			'nav_links'              => array(
 				array( 'label' => 'Shop', 'url' => '' ),
 				array( 'label' => 'About', 'url' => '' ),
 			),
-			'show_nav'             => true,
-			'primary_color'        => '#e84040',
-			'background_color'     => '#f5f5f5',
-			'content_background'   => '#ffffff',
-			'text_color'           => '#333333',
-			'link_color'           => '#e84040',
-			'button_color'         => '#e84040',
-			'button_text_color'    => '#ffffff',
-			'button_border_radius' => 4,
-			'font_family'          => 'Arial, sans-serif',
-			'header_text'          => '',
+			'show_nav'               => true,
+			'primary_color'          => '#e84040',
+			'background_color'       => '#f5f5f5',
+			'content_background'     => '#ffffff',
+			'text_color'             => '#333333',
+			'link_color'             => '#e84040',
+			'button_color'           => '#e84040',
+			'button_text_color'      => '#ffffff',
+			'button_border_radius'   => 4,
+			'font_family'            => 'Arial, sans-serif',
+			'heading_font_family'    => "Georgia, 'Times New Roman', serif",
+			'header_text'            => '',
 			'footer_text'          => __( 'You received this email because you subscribed to our newsletter.', 'brevo-campaign-generator' ),
 			'footer_links'         => array(
 				array( 'label' => 'Privacy Policy', 'url' => '' ),
@@ -191,7 +192,9 @@ class BCG_Template_Registry {
 			'description' => __( 'Standard card layout with contained hero and side-by-side products.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'default-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'side-by-side',
+				'product_layout'      => 'side-by-side',
+				'heading_font_family' => "'DM Serif Display', Georgia, 'Times New Roman', serif",
+				'font_family'         => "Georgia, 'Times New Roman', serif",
 			) ),
 		);
 
@@ -202,29 +205,38 @@ class BCG_Template_Registry {
 			'description' => __( 'Full-bleed hero with edge-to-edge sections and stacked products.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'full-width-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'stacked',
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "Oswald, Impact, 'Arial Black', sans-serif",
+				'font_family'         => 'Arial, sans-serif',
 			) ),
 		);
 
-		// 3. Reversed — Standard card, images on the right.
+		// 3. Reversed — Midnight Luxury dark theme, images on the right.
 		$templates['reversed'] = array(
 			'slug'        => 'reversed',
-			'name'        => __( 'Reversed', 'brevo-campaign-generator' ),
-			'description' => __( 'Products with text on the left and images on the right.', 'brevo-campaign-generator' ),
+			'name'        => __( 'Midnight', 'brevo-campaign-generator' ),
+			'description' => __( 'Dark luxury theme with deep charcoal tones and warm ivory text.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'reversed-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'reversed',
+				'product_layout'      => 'reversed',
+				'heading_font_family' => "'Cormorant Garamond', Georgia, serif",
+				'font_family'         => "Georgia, serif",
+				'background_color'    => '#0A0A14',
+				'content_background'  => '#141422',
+				'text_color'          => '#E8E4DC',
 			) ),
 		);
 
-		// 4. Alternating — Zigzag layout, no hero, headline-first design.
+		// 4. Alternating — Editorial Magazine, zigzag layout.
 		$templates['alternating'] = array(
 			'slug'        => 'alternating',
-			'name'        => __( 'Alternating', 'brevo-campaign-generator' ),
-			'description' => __( 'Zigzag product layout alternating image left and right.', 'brevo-campaign-generator' ),
+			'name'        => __( 'Editorial', 'brevo-campaign-generator' ),
+			'description' => __( 'Editorial magazine feel with alternating image-left and image-right products.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'alternating-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'alternating',
+				'product_layout'      => 'alternating',
+				'heading_font_family' => "'Libre Baskerville', Georgia, serif",
+				'font_family'         => "Georgia, sans-serif",
 			) ),
 		);
 
@@ -235,64 +247,79 @@ class BCG_Template_Registry {
 			'description' => __( 'Two-column product grid, ideal for showcasing multiple items.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'grid-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout'   => 'grid',
-				'products_per_row' => 2,
+				'product_layout'      => 'grid',
+				'products_per_row'    => 2,
+				'heading_font_family' => "Nunito, 'Helvetica Neue', Arial, sans-serif",
+				'font_family'         => "'Helvetica Neue', Arial, sans-serif",
+				'background_color'    => '#F2F4F7',
 			) ),
 		);
 
-		// 6. Compact — Narrow 480px, small thumbnails, minimal header.
+		// 6. Compact — Smart Newsletter, narrow 480px, minimal header.
 		$templates['compact'] = array(
 			'slug'        => 'compact',
-			'name'        => __( 'Compact', 'brevo-campaign-generator' ),
-			'description' => __( 'Narrow layout with small thumbnails and tight spacing.', 'brevo-campaign-generator' ),
+			'name'        => __( 'Newsletter', 'brevo-campaign-generator' ),
+			'description' => __( 'Compact newsletter format with left-aligned headlines and tight spacing.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'compact-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'compact',
-				'max_width'      => 480,
+				'product_layout'      => 'compact',
+				'max_width'           => 480,
+				'heading_font_family' => "Merriweather, Georgia, serif",
+				'font_family'         => "Georgia, serif",
 			) ),
 		);
 
-		// 7. Cards — Each product in a bordered card with image on top.
+		// 7. Cards — Elevated floating cards, each section in its own white card.
 		$templates['cards'] = array(
 			'slug'        => 'cards',
 			'name'        => __( 'Cards', 'brevo-campaign-generator' ),
-			'description' => __( 'Each product in its own bordered card with rounded corners.', 'brevo-campaign-generator' ),
+			'description' => __( 'Each section in a floating white card on a grey background.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'cards-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'full-card',
+				'product_layout'      => 'full-card',
+				'heading_font_family' => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+				'font_family'         => "'Helvetica Neue', Arial, sans-serif",
+				'background_color'    => '#E8E8EE',
 			) ),
 		);
 
-		// 8. Feature — First product large, rest compact.
+		// 8. Feature — Hero Spotlight, first product large, rest compact.
 		$templates['feature'] = array(
 			'slug'        => 'feature',
 			'name'        => __( 'Feature', 'brevo-campaign-generator' ),
-			'description' => __( 'First product displayed large, remaining products shown compact.', 'brevo-campaign-generator' ),
+			'description' => __( 'Dramatic full-bleed hero with a large headline band.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'feature-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'feature-first',
+				'product_layout'      => 'feature-first',
+				'heading_font_family' => "'Bebas Neue', Impact, 'Arial Black', sans-serif",
+				'font_family'         => "Arial, sans-serif",
 			) ),
 		);
 
-		// 9. Text Only — No images, just text with thin dividers.
+		// 9. Text Only — Literary Elegance, no images, pure typography.
 		$templates['text-only'] = array(
 			'slug'        => 'text-only',
-			'name'        => __( 'Text Only', 'brevo-campaign-generator' ),
-			'description' => __( 'Ultra-minimal text-only layout with no product images.', 'brevo-campaign-generator' ),
+			'name'        => __( 'Literary', 'brevo-campaign-generator' ),
+			'description' => __( 'Pure typography on a parchment background — no images.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'text-only-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'text-only',
+				'product_layout'      => 'text-only',
+				'heading_font_family' => "'Cormorant Garamond', Georgia, serif",
+				'font_family'         => "'Cormorant Garamond', Georgia, serif",
+				'background_color'    => '#FAF8F4',
 			) ),
 		);
 
-		// 10. Centered — All content center-aligned with rounded elements.
+		// 10. Centered — Luxury Centered, all content center-aligned.
 		$templates['centered'] = array(
 			'slug'        => 'centered',
-			'name'        => __( 'Centered', 'brevo-campaign-generator' ),
-			'description' => __( 'Center-aligned throughout with generous rounded corners.', 'brevo-campaign-generator' ),
+			'name'        => __( 'Luxury', 'brevo-campaign-generator' ),
+			'description' => __( 'Luxury centered layout with a rectangular frame and generous whitespace.', 'brevo-campaign-generator' ),
 			'html_file'   => $templates_dir . 'centered-email-template.html',
 			'settings'    => array_merge( $base_settings, array(
-				'product_layout' => 'centered',
+				'product_layout'      => 'centered',
+				'heading_font_family' => "Cinzel, Georgia, 'Times New Roman', serif",
+				'font_family'         => "Georgia, serif",
 			) ),
 		);
 

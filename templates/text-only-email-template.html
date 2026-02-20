@@ -93,10 +93,6 @@
                                 <a href="{{store_url}}" target="_blank" style="text-decoration:none;color:{{setting_text_color}};">{{setting_header_text}}</a>
                             </p>
                             {{/if}}
-                            <!-- If neither logo nor header_text, show store name -->
-                            <p style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;font-style:italic;color:{{setting_text_color}};letter-spacing:0.04em;line-height:1;">
-                                <a href="{{store_url}}" target="_blank" style="text-decoration:none;color:{{setting_text_color}};">{{store_name}}</a>
-                            </p>
                         </td>
                     </tr>
                     <tr>
@@ -128,8 +124,8 @@
                     <!-- ============================================================ -->
                     {{#if campaign_image}}
                     <tr>
-                        <td style="padding:32px 0 0;">
-                            {{campaign_image}}
+                        <td style="padding:0;line-height:0;font-size:0;">
+                            <img src="{{campaign_image}}" alt="{{campaign_headline}}" width="600" style="display:block;width:100%;max-width:100%;height:auto;" />
                         </td>
                     </tr>
                     {{/if}}
@@ -140,7 +136,7 @@
                     <!-- ============================================================ -->
                     <tr>
                         <td class="bcg-content-pad" style="padding:48px 40px 12px;text-align:center;">
-                            <h1 class="bcg-headline" style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:42px;font-weight:700;color:{{setting_text_color}};line-height:1.15;letter-spacing:0.03em;font-style:normal;">
+                            <h1 class="bcg-headline" style="margin:0;font-family:{{setting_heading_font_family}};font-size:42px;font-weight:700;color:{{setting_text_color}};line-height:1.15;letter-spacing:0.03em;font-style:normal;">
                                 {{campaign_headline}}
                             </h1>
                         </td>

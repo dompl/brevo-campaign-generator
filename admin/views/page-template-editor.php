@@ -71,18 +71,42 @@ if ( ! is_array( $footer_links ) || empty( $footer_links ) ) {
 	$footer_links = array( array( 'label' => '', 'url' => '' ) );
 }
 
-// Font family options.
+// Heading font options — includes Google Fonts used by bundled templates.
+$heading_fonts = array(
+	// ── Google Fonts (loaded by template HTML) ──────────────────────
+	"'DM Serif Display', Georgia, 'Times New Roman', serif"  => '✦ DM Serif Display',
+	"'Cormorant Garamond', Georgia, serif"                   => '✦ Cormorant Garamond',
+	"'Libre Baskerville', Georgia, serif"                    => '✦ Libre Baskerville',
+	"Merriweather, Georgia, serif"                           => '✦ Merriweather',
+	"Cinzel, Georgia, 'Times New Roman', serif"              => '✦ Cinzel',
+	"Oswald, Impact, 'Arial Black', sans-serif"              => '✦ Oswald',
+	"'Bebas Neue', Impact, 'Arial Black', sans-serif"        => '✦ Bebas Neue',
+	"Nunito, 'Helvetica Neue', Arial, sans-serif"            => '✦ Nunito',
+	"'DM Sans', 'Helvetica Neue', Arial, sans-serif"         => '✦ DM Sans',
+	// ── Web-safe fallbacks ──────────────────────────────────────────
+	"Georgia, 'Times New Roman', serif"                      => 'Georgia',
+	"'Times New Roman', Times, serif"                        => 'Times New Roman',
+	'Arial, sans-serif'                                      => 'Arial',
+	"'Helvetica Neue', Helvetica, sans-serif"                => 'Helvetica Neue',
+	'Verdana, Geneva, sans-serif'                            => 'Verdana',
+	"'Trebuchet MS', sans-serif"                             => 'Trebuchet MS',
+);
+
+// Body font options — web-safe fonts for maximum email client compatibility.
 $font_families = array(
-	'Arial, sans-serif'                             => 'Arial',
-	"'Helvetica Neue', Helvetica, sans-serif"       => 'Helvetica Neue',
-	'Georgia, serif'                                => 'Georgia',
-	"'Times New Roman', Times, serif"               => 'Times New Roman',
-	'Verdana, Geneva, sans-serif'                   => 'Verdana',
-	'Tahoma, Geneva, sans-serif'                    => 'Tahoma',
-	"'Trebuchet MS', sans-serif"                    => 'Trebuchet MS',
-	"'Courier New', Courier, monospace"             => 'Courier New',
+	'Arial, sans-serif'                               => 'Arial',
+	"'Helvetica Neue', Helvetica, sans-serif"         => 'Helvetica Neue',
+	'Georgia, serif'                                  => 'Georgia',
+	"'Times New Roman', Times, serif"                 => 'Times New Roman',
+	'Verdana, Geneva, sans-serif'                     => 'Verdana',
+	'Tahoma, Geneva, sans-serif'                      => 'Tahoma',
+	"'Trebuchet MS', sans-serif"                      => 'Trebuchet MS',
+	"'Courier New', Courier, monospace"               => 'Courier New',
 	"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" => 'Segoe UI',
-	"Roboto, 'Helvetica Neue', Arial, sans-serif"  => 'Roboto',
+	"'DM Sans', 'Helvetica Neue', Arial, sans-serif"  => '✦ DM Sans',
+	"Nunito, 'Helvetica Neue', Arial, sans-serif"     => '✦ Nunito',
+	"Merriweather, Georgia, serif"                    => '✦ Merriweather',
+	"'Cormorant Garamond', Georgia, serif"            => '✦ Cormorant Garamond',
 );
 
 $nonce = wp_create_nonce( 'bcg_nonce' );
@@ -480,7 +504,21 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<h3><?php esc_html_e( 'Typography', 'brevo-campaign-generator' ); ?></h3>
 
 					<div class="bcg-field-group">
-						<label for="bcg-setting-font_family"><?php esc_html_e( 'Font Family', 'brevo-campaign-generator' ); ?></label>
+						<label for="bcg-setting-heading_font_family"><?php esc_html_e( 'Heading Font', 'brevo-campaign-generator' ); ?></label>
+						<select id="bcg-setting-heading_font_family" class="bcg-template-setting widefat" data-setting="heading_font_family">
+							<?php foreach ( $heading_fonts as $font_value => $font_label ) : ?>
+								<option value="<?php echo esc_attr( $font_value ); ?>" <?php selected( $current_settings['heading_font_family'] ?? "Georgia, 'Times New Roman', serif", $font_value ); ?>>
+									<?php echo esc_html( $font_label ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description bcg-mt-4">
+							<?php esc_html_e( 'Used for the main campaign headline. ✦ marks fonts loaded by the template.', 'brevo-campaign-generator' ); ?>
+						</p>
+					</div>
+
+					<div class="bcg-field-group">
+						<label for="bcg-setting-font_family"><?php esc_html_e( 'Body Font', 'brevo-campaign-generator' ); ?></label>
 						<select id="bcg-setting-font_family" class="bcg-template-setting widefat" data-setting="font_family">
 							<?php foreach ( $font_families as $font_value => $font_label ) : ?>
 								<option value="<?php echo esc_attr( $font_value ); ?>" <?php selected( $current_settings['font_family'] ?? 'Arial, sans-serif', $font_value ); ?>>
@@ -488,11 +526,10 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								</option>
 							<?php endforeach; ?>
 						</select>
+						<p class="description bcg-mt-4">
+							<?php esc_html_e( 'Used for descriptions, nav links, and body text.', 'brevo-campaign-generator' ); ?>
+						</p>
 					</div>
-
-					<p class="description bcg-mt-8">
-						<?php esc_html_e( 'Only web-safe fonts are supported for maximum email client compatibility.', 'brevo-campaign-generator' ); ?>
-					</p>
 				</div>
 
 				<!-- Navigation Tab -->
