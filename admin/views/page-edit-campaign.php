@@ -97,7 +97,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			</span>
 		</div>
 		<a href="<?php echo esc_url( $dashboard_url ); ?>" class="button">
-			<span class="dashicons dashicons-arrow-left-alt" style="vertical-align:middle;margin-top:-2px;"></span>
 			<?php esc_html_e( 'Back to Dashboard', 'brevo-campaign-generator' ); ?>
 		</a>
 	</div>
@@ -137,7 +136,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								class="button bcg-regen-field bcg-regen-btn"
 								data-field="subject_line"
 								title="<?php esc_attr_e( 'Regenerate subject line', 'brevo-campaign-generator' ); ?>">
-								<span class="dashicons dashicons-update"></span>
 								<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
@@ -160,7 +158,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								class="button bcg-regen-field bcg-regen-btn"
 								data-field="preview_text"
 								title="<?php esc_attr_e( 'Regenerate preview text', 'brevo-campaign-generator' ); ?>">
-								<span class="dashicons dashicons-update"></span>
 								<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
@@ -183,7 +180,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								class="button bcg-regen-field bcg-regen-btn"
 								data-field="main_headline"
 								title="<?php esc_attr_e( 'Regenerate headline', 'brevo-campaign-generator' ); ?>">
-								<span class="dashicons dashicons-update"></span>
 								<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
@@ -213,14 +209,12 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 									class="button bcg-regen-field bcg-regen-btn"
 									data-field="main_image"
 									title="<?php esc_attr_e( 'Regenerate main image with AI', 'brevo-campaign-generator' ); ?>">
-									<span class="dashicons dashicons-update"></span>
 									<?php esc_html_e( 'Regenerate Image', 'brevo-campaign-generator' ); ?>
 								</button>
 								<button type="button"
 									class="button bcg-upload-custom-image"
 									id="bcg-upload-main-image"
 									title="<?php esc_attr_e( 'Use a custom image from the media library', 'brevo-campaign-generator' ); ?>">
-									<span class="dashicons dashicons-format-image"></span>
 									<?php esc_html_e( 'Use Custom Image', 'brevo-campaign-generator' ); ?>
 								</button>
 							</div>
@@ -250,7 +244,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								class="button bcg-regen-field bcg-regen-btn"
 								data-field="main_description"
 								title="<?php esc_attr_e( 'Regenerate description', 'brevo-campaign-generator' ); ?>">
-								<span class="dashicons dashicons-update"></span>
 								<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
@@ -284,7 +277,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 							<button type="button"
 								class="button bcg-regenerate-coupon-code bcg-regen-btn"
 								title="<?php esc_attr_e( 'Generate a new coupon code', 'brevo-campaign-generator' ); ?>">
-								<span class="dashicons dashicons-update"></span>
 								<?php esc_html_e( 'Regenerate Code', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
@@ -306,7 +298,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								class="button bcg-regen-field bcg-regen-btn"
 								data-field="coupon_suggestion"
 								title="<?php esc_attr_e( 'Regenerate coupon text', 'brevo-campaign-generator' ); ?>">
-								<span class="dashicons dashicons-update"></span>
 								<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
@@ -393,7 +384,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<!-- Add product button -->
 					<div class="bcg-mt-16 bcg-text-center">
 						<button type="button" class="button button-secondary" id="bcg-add-product-btn">
-							<span class="dashicons dashicons-plus-alt2" style="vertical-align:middle;margin-top:-2px;"></span>
 							<?php esc_html_e( 'Add Another Product', 'brevo-campaign-generator' ); ?>
 						</button>
 					</div>
@@ -408,6 +398,58 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			 RIGHT COLUMN — Live Preview
 			 ============================================================ -->
 		<div class="bcg-editor-preview">
+
+			<!-- Template Picker Strip -->
+			<?php
+			$template_registry = BCG_Template_Registry::get_instance();
+			$all_templates     = $template_registry->get_templates();
+			$current_slug      = $campaign->template_slug ?? 'classic';
+
+			$layout_diagrams = array(
+				'side-by-side'  => '<rect x="2" y="2" width="16" height="16" rx="1" fill="#ccc"/><rect x="20" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="20" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="20" y="13" width="14" height="5" rx="1" fill="%s"/>',
+				'stacked'       => '<rect x="4" y="1" width="38" height="10" rx="1" fill="#ccc"/><rect x="4" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="4" y="18" width="20" height="5" rx="1" fill="%s"/>',
+				'reversed'      => '<rect x="2" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="2" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="2" y="13" width="14" height="5" rx="1" fill="%s"/><rect x="28" y="2" width="16" height="16" rx="1" fill="#ccc"/>',
+				'alternating'   => '<rect x="2" y="1" width="12" height="8" rx="1" fill="#ccc"/><rect x="16" y="1" width="28" height="3" rx="1" fill="#999"/><rect x="16" y="5" width="22" height="2" rx="1" fill="#bbb"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="22" height="2" rx="1" fill="#bbb"/><rect x="32" y="11" width="12" height="8" rx="1" fill="#ccc"/>',
+				'grid'          => '<rect x="2" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="24" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="2" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="24" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="2" y="19" width="12" height="3" rx="1" fill="%s"/><rect x="24" y="19" width="12" height="3" rx="1" fill="%s"/>',
+				'compact'       => '<rect x="2" y="2" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="2" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="6" width="20" height="2" rx="1" fill="#bbb"/><rect x="2" y="13" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="13" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="20" height="2" rx="1" fill="#bbb"/>',
+				'full-card'     => '<rect x="4" y="1" width="38" height="1" rx="0" fill="#ddd"/><rect x="4" y="2" width="38" height="8" rx="0" fill="#ccc"/><rect x="4" y="10" width="38" height="1" rx="0" fill="#ddd"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="20" height="2" rx="1" fill="#bbb"/><rect x="4" y="20" width="38" height="1" rx="0" fill="#ddd"/>',
+				'text-only'     => '<rect x="4" y="2" width="30" height="4" rx="1" fill="#999"/><rect x="4" y="8" width="38" height="2" rx="1" fill="#bbb"/><line x1="4" y1="12" x2="42" y2="12" stroke="#ddd" stroke-width="1"/><rect x="4" y="14" width="28" height="4" rx="1" fill="#999"/><rect x="4" y="20" width="38" height="2" rx="1" fill="#bbb"/>',
+				'centered'      => '<rect x="10" y="2" width="26" height="8" rx="2" fill="#ccc"/><rect x="8" y="12" width="30" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="22" height="5" rx="2" fill="%s"/>',
+				'feature-first' => '<rect x="2" y="1" width="42" height="10" rx="1" fill="#ccc"/><rect x="2" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="2" y="18" width="6" height="6" rx="1" fill="#ccc"/><rect x="10" y="18" width="20" height="3" rx="1" fill="#bbb"/>',
+			);
+			?>
+			<div class="bcg-editor-template-strip" id="bcg-editor-template-strip">
+				<div class="bcg-template-strip-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-8">
+					<span class="bcg-template-strip-label"><?php esc_html_e( 'Template:', 'brevo-campaign-generator' ); ?></span>
+				</div>
+				<div class="bcg-template-strip-cards">
+					<?php foreach ( $all_templates as $tpl_slug => $tpl ) :
+						$is_active       = ( $tpl_slug === $current_slug );
+						$tpl_settings    = $tpl['settings'] ?? array();
+						$primary         = esc_attr( $tpl_settings['primary_color'] ?? '#e84040' );
+						$product_layout  = $tpl_settings['product_layout'] ?? 'stacked';
+						$diagram_svg     = $layout_diagrams[ $product_layout ] ?? $layout_diagrams['stacked'];
+						$diagram_svg     = sprintf( $diagram_svg, $primary, $primary );
+					?>
+						<button
+							type="button"
+							class="bcg-template-mini-card<?php echo $is_active ? ' bcg-template-card-active' : ''; ?>"
+							data-slug="<?php echo esc_attr( $tpl_slug ); ?>"
+							title="<?php echo esc_attr( $tpl['name'] . ( ! empty( $tpl['description'] ) ? ' — ' . $tpl['description'] : '' ) ); ?>"
+						>
+							<div class="bcg-template-mini-swatch" style="background-color:#f5f5f5;">
+								<div class="bcg-template-mini-swatch-inner" style="background-color:#ffffff;border-top:2px solid <?php echo $primary; ?>;">
+									<svg viewBox="0 0 46 24" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+										<?php echo $diagram_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+									</svg>
+								</div>
+							</div>
+							<span class="bcg-template-mini-name"><?php echo esc_html( $tpl['name'] ); ?></span>
+						</button>
+					<?php endforeach; ?>
+				</div>
+			</div>
+
 			<div class="bcg-preview-panel">
 				<div class="bcg-preview-header bcg-flex bcg-items-center bcg-justify-between">
 					<h3 class="bcg-mt-0 bcg-mb-0"><?php esc_html_e( 'Live Preview', 'brevo-campaign-generator' ); ?></h3>
@@ -451,39 +493,32 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			<div class="bcg-actions-left bcg-flex bcg-gap-8">
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-new-campaign&campaign_id=' . absint( $campaign_id ) ) ); ?>"
 					class="button">
-					<span class="dashicons dashicons-arrow-left-alt" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Back to Configuration', 'brevo-campaign-generator' ); ?>
 				</a>
 
 				<button type="button" class="button button-primary" id="bcg-save-draft">
-					<span class="dashicons dashicons-saved" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Save Draft', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
 
 			<div class="bcg-actions-right bcg-flex bcg-gap-8">
 				<button type="button" class="button" id="bcg-preview-email" title="<?php esc_attr_e( 'Open full email preview in a new window', 'brevo-campaign-generator' ); ?>">
-					<span class="dashicons dashicons-visibility" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Preview Email', 'brevo-campaign-generator' ); ?>
 				</button>
 
 				<button type="button" class="button" id="bcg-send-test" title="<?php esc_attr_e( 'Send a test email to the admin email address', 'brevo-campaign-generator' ); ?>">
-					<span class="dashicons dashicons-email" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Send Test Email', 'brevo-campaign-generator' ); ?>
 				</button>
 
 				<button type="button" class="button" id="bcg-create-brevo">
-					<span class="dashicons dashicons-cloud-upload" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Create in Brevo', 'brevo-campaign-generator' ); ?>
 				</button>
 
 				<button type="button" class="button" id="bcg-schedule-campaign">
-					<span class="dashicons dashicons-calendar-alt" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Schedule', 'brevo-campaign-generator' ); ?>
 				</button>
 
 				<button type="button" class="button bcg-btn-primary" id="bcg-send-now">
-					<span class="dashicons dashicons-megaphone" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Send Now', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
@@ -562,7 +597,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
 				</button>
 				<button type="button" class="button button-primary" id="bcg-confirm-schedule">
-					<span class="dashicons dashicons-calendar-alt" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Schedule Campaign', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
@@ -599,7 +633,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
 				</button>
 				<button type="button" class="button bcg-btn-primary" id="bcg-confirm-send">
-					<span class="dashicons dashicons-megaphone" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Send Now', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
@@ -638,7 +671,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
 				</button>
 				<button type="button" class="button button-primary" id="bcg-confirm-send-test">
-					<span class="dashicons dashicons-email" style="vertical-align:middle;margin-top:-2px;"></span>
 					<?php esc_html_e( 'Send Test Email', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>

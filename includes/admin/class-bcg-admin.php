@@ -105,6 +105,9 @@ class BCG_Admin {
 
 		// Coupon.
 		add_action( 'wp_ajax_bcg_generate_coupon', array( $this, 'handle_generate_coupon' ) );
+
+		// Brevo senders.
+		add_action( 'wp_ajax_bcg_get_brevo_senders', array( $this, 'handle_get_brevo_senders' ) );
 	}
 
 	/**
@@ -609,18 +612,34 @@ class BCG_Admin {
 			wp_send_json_error( array( 'message' => __( 'Please select at least one product for manual selection.', 'brevo-campaign-generator' ) ) );
 		}
 
+		// Template selection.
+		$template_slug = isset( $_POST['template_slug'] ) ? sanitize_text_field( wp_unslash( $_POST['template_slug'] ) ) : 'classic';
+
 		// ── 2. Create draft campaign ────────────────────────────────────
 
-		$campaign_handler = new BCG_Campaign();
-		$template_engine  = new BCG_Template();
+		$campaign_handler  = new BCG_Campaign();
+		$template_engine   = new BCG_Template();
+		$template_registry = BCG_Template_Registry::get_instance();
+
+		// Use the selected template's HTML and settings, falling back to default.
+		$tpl_html     = $template_registry->get_template_html( $template_slug );
+		$tpl_settings = $template_registry->get_template_settings( $template_slug );
+
+		if ( empty( $tpl_html ) ) {
+			$tpl_html = $template_engine->get_default_template();
+		}
+		if ( empty( $tpl_settings ) ) {
+			$tpl_settings = $template_engine->get_default_settings();
+		}
 
 		$draft_data = array(
 			'title'             => $title,
 			'subject'           => $subject,
 			'preview_text'      => $preview_text,
 			'mailing_list_id'   => $mailing_list_id,
-			'template_html'     => $template_engine->get_default_template(),
-			'template_settings' => wp_json_encode( $template_engine->get_default_settings() ),
+			'template_slug'     => $template_slug,
+			'template_html'     => $tpl_html,
+			'template_settings' => wp_json_encode( $tpl_settings ),
 		);
 
 		$campaign_id = $campaign_handler->create_draft( $draft_data );
@@ -1264,14 +1283,38 @@ class BCG_Admin {
 			}
 		}
 
+		// Template slug — when changed, load the new template's HTML and settings.
+		if ( isset( $_POST['template_slug'] ) ) {
+			$new_slug = sanitize_text_field( wp_unslash( $_POST['template_slug'] ) );
+			$registry = BCG_Template_Registry::get_instance();
+
+			if ( $registry->get_template( $new_slug ) ) {
+				$update_data['template_slug'] = $new_slug;
+
+				// Only apply new template HTML/settings if the slug actually changed.
+				$current_slug = $campaign->template_slug ?? 'classic';
+				if ( $new_slug !== $current_slug ) {
+					$new_html     = $registry->get_template_html( $new_slug );
+					$new_settings = $registry->get_template_settings( $new_slug );
+
+					if ( ! empty( $new_html ) ) {
+						$update_data['template_html'] = $new_html;
+					}
+					if ( ! empty( $new_settings ) ) {
+						$update_data['template_settings'] = wp_json_encode( $new_settings );
+					}
+				}
+			}
+		}
+
 		// Template HTML — allow full HTML including <style> tags for email templates.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Full email HTML stored for campaign. Capability-gated to manage_woocommerce admins only.
-		if ( isset( $_POST['template_html'] ) ) {
+		if ( isset( $_POST['template_html'] ) && ! isset( $update_data['template_html'] ) ) {
 			$update_data['template_html'] = wp_unslash( $_POST['template_html'] );
 		}
 
 		// Template settings (JSON string).
-		if ( isset( $_POST['template_settings'] ) ) {
+		if ( isset( $_POST['template_settings'] ) && ! isset( $update_data['template_settings'] ) ) {
 			$settings_raw = sanitize_text_field( wp_unslash( $_POST['template_settings'] ) );
 			$decoded      = json_decode( $settings_raw, true );
 			if ( is_array( $decoded ) ) {
@@ -1566,6 +1609,7 @@ class BCG_Admin {
 		wp_send_json_success( array(
 			'message'           => __( 'Campaign created in Brevo successfully.', 'brevo-campaign-generator' ),
 			'brevo_campaign_id' => $brevo_campaign_id,
+			'brevo_url'         => 'https://app.brevo.com/campaign/classic/' . $brevo_campaign_id,
 		) );
 	}
 
@@ -1969,6 +2013,42 @@ class BCG_Admin {
 		) );
 	}
 
+	/**
+	 * Handle fetching Brevo verified senders via AJAX.
+	 *
+	 * Returns a list of verified senders from the Brevo account for use
+	 * in the sender dropdown on the Settings page.
+	 *
+	 * @since  1.1.0
+	 * @return void
+	 */
+	public function handle_get_brevo_senders(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$brevo   = new BCG_Brevo();
+		$senders = $brevo->get_senders();
+
+		if ( is_wp_error( $senders ) ) {
+			wp_send_json_error( array( 'message' => $senders->get_error_message() ) );
+		}
+
+		// Simplify the response to just id, name, email.
+		$formatted = array();
+		foreach ( $senders as $sender ) {
+			$formatted[] = array(
+				'id'    => isset( $sender['id'] ) ? (int) $sender['id'] : 0,
+				'name'  => isset( $sender['name'] ) ? $sender['name'] : '',
+				'email' => isset( $sender['email'] ) ? $sender['email'] : '',
+			);
+		}
+
+		wp_send_json_success( array( 'senders' => $formatted ) );
+	}
+
 	// ─── Private Brevo Helpers ─────────────────────────────────────────
 
 	/**
@@ -2022,21 +2102,27 @@ class BCG_Admin {
 			);
 		}
 
-		// Validate sender email is configured.
-		$sender_email = (string) get_option( 'bcg_brevo_sender_email', '' );
-		$sender_name  = (string) get_option( 'bcg_brevo_sender_name', '' );
+		// Validate sender is configured — read from new JSON option, fall back to legacy.
+		$sender_json  = get_option( 'bcg_brevo_sender', '' );
+		$sender_data  = is_string( $sender_json ) ? json_decode( $sender_json, true ) : null;
+		$sender_email = ( is_array( $sender_data ) && ! empty( $sender_data['email'] ) )
+			? (string) $sender_data['email']
+			: (string) get_option( 'bcg_brevo_sender_email', '' );
+		$sender_name  = ( is_array( $sender_data ) && ! empty( $sender_data['name'] ) )
+			? (string) $sender_data['name']
+			: (string) get_option( 'bcg_brevo_sender_name', '' );
 
 		if ( empty( $sender_email ) || ! is_email( $sender_email ) ) {
 			return new \WP_Error(
 				'bcg_missing_sender',
-				__( 'Sender email is not configured. Go to Brevo Campaigns > Settings > Brevo tab and set a sender email that is verified in your Brevo account.', 'brevo-campaign-generator' )
+				__( 'Sender email is not configured. Go to Brevo Campaigns > Settings > Brevo tab and select a verified sender.', 'brevo-campaign-generator' )
 			);
 		}
 
 		if ( empty( $sender_name ) ) {
 			return new \WP_Error(
 				'bcg_missing_sender_name',
-				__( 'Sender name is not configured. Go to Brevo Campaigns > Settings > Brevo tab and set a sender name.', 'brevo-campaign-generator' )
+				__( 'Sender name is not configured. Go to Brevo Campaigns > Settings > Brevo tab and select a verified sender.', 'brevo-campaign-generator' )
 			);
 		}
 

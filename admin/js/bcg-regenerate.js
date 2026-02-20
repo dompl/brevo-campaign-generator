@@ -1191,10 +1191,12 @@
 	function setButtonLoading( $btn, loading ) {
 		if ( loading ) {
 			$btn.addClass( 'is-loading' ).prop( 'disabled', true );
-			$btn.find( '.dashicons' ).addClass( 'bcg-spin-icon' );
+			if ( ! $btn.find( '.bcg-btn-spinner' ).length ) {
+				$btn.prepend( '<span class="bcg-btn-spinner"></span>' );
+			}
 		} else {
 			$btn.removeClass( 'is-loading' ).prop( 'disabled', false );
-			$btn.find( '.dashicons' ).removeClass( 'bcg-spin-icon' );
+			$btn.find( '.bcg-btn-spinner' ).remove();
 		}
 	}
 
@@ -1234,6 +1236,39 @@
 	 * @param {string} str The raw string.
 	 * @return {string} The escaped string.
 	 */
+	/**
+	 * Handle template strip card click on the editor page.
+	 *
+	 * Saves the new template_slug and refreshes the preview.
+	 */
+	$( '#bcg-editor-template-strip' ).on( 'click', '.bcg-template-mini-card', function() {
+		var $card   = $( this );
+		var newSlug = $card.data( 'slug' );
+
+		if ( $card.hasClass( 'bcg-template-card-active' ) ) {
+			return;
+		}
+
+		// Update active state.
+		$( '#bcg-editor-template-strip .bcg-template-mini-card' ).removeClass( 'bcg-template-card-active' );
+		$card.addClass( 'bcg-template-card-active' );
+
+		// Save with new template_slug (triggers template HTML/settings update on server).
+		var data = gatherCampaignData();
+		data.template_slug = newSlug;
+
+		$.post( editor.ajax_url, data ).done( function( response ) {
+			if ( response.success ) {
+				refreshPreview();
+				showNotice( 'success', editor.i18n.saved );
+			} else {
+				showNotice( 'error', response.data || editor.i18n.save_error );
+			}
+		}).fail( function() {
+			showNotice( 'error', editor.i18n.save_error );
+		});
+	} );
+
 	function escHtml( str ) {
 		if ( typeof str !== 'string' ) {
 			return '';

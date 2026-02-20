@@ -17,6 +17,34 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.2] — 2026-02-20
+
+### Added
+- Brevo verified senders dropdown — replaces free-text sender name/email fields with a dropdown populated from Brevo's verified senders API
+- Template picker on New Campaign wizard (Step 1) — visual grid of all available templates
+- Template picker strip on Edit Campaign page (Step 2) — compact template chooser above preview, applies template on click
+- `brevo_url` returned in Create in Brevo response — "View in Brevo" link now works
+- Store currency (from WooCommerce) added to all AI system prompts — AI-generated copy now uses correct currency symbol instead of defaulting to $
+- Currency symbol prepended to product prices in AI prompt data
+- Inline spinner (`.bcg-btn-spinner`) for AJAX button loading states
+
+### Changed
+- Sender settings stored as single JSON option `bcg_brevo_sender` (backward-compatible with legacy `bcg_brevo_sender_name`/`bcg_brevo_sender_email`)
+- Campaign generation now uses selected template's HTML and settings from the template registry
+- Save campaign handler applies new template HTML/settings when `template_slug` changes
+- `setButtonLoading()` now prepends a CSS spinner instead of spinning dashicons
+
+### Removed
+- Dashicons from all action buttons (Generate, Regenerate, Save, Preview, Send, Schedule, etc.)
+- `.bcg-spin-icon` CSS class (replaced by `.bcg-btn-spinner`)
+
+### Fixed
+- "Sender is invalid / inactive" error when sending test emails or creating Brevo campaigns
+- "Nothing happens" when clicking Create in Brevo (sender validation was blocking)
+- AI-generated email copy using wrong currency ($) instead of store currency
+
+---
+
 ## [1.0.0] — Unreleased
 
 ### Added
@@ -42,5 +70,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/red-frog-studio/brevo-campaign-generator/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/red-frog-studio/brevo-campaign-generator/releases/tag/v1.0.0
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.1...v1.3.2
+[1.0.0]: https://github.com/dompl/brevo-campaign-generator/releases/tag/v1.0.0

@@ -91,6 +91,30 @@ class BCG_Brevo {
 	}
 
 	// -------------------------------------------------------------------------
+	// Public API Methods — Senders
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Retrieve all verified senders from Brevo.
+	 *
+	 * Returns the list of senders that have been verified in the Brevo account.
+	 * Only verified senders can be used to send campaigns.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array|WP_Error Array of sender objects on success, WP_Error on failure.
+	 */
+	public function get_senders() {
+		$result = $this->request( 'GET', 'senders' );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return isset( $result['senders'] ) ? $result['senders'] : array();
+	}
+
+	// -------------------------------------------------------------------------
 	// Public API Methods — Lists
 	// -------------------------------------------------------------------------
 
@@ -712,9 +736,17 @@ class BCG_Brevo {
 		array $list_ids,
 		array $extra = array()
 	): array {
-		$prefix       = (string) get_option( 'bcg_brevo_campaign_prefix', '[WC]' );
-		$sender_name  = (string) get_option( 'bcg_brevo_sender_name', get_bloginfo( 'name' ) );
-		$sender_email = (string) get_option( 'bcg_brevo_sender_email', get_bloginfo( 'admin_email' ) );
+		$prefix = (string) get_option( 'bcg_brevo_campaign_prefix', '[WC]' );
+
+		// Read sender from the new unified JSON option, fall back to legacy separate options.
+		$sender_json  = get_option( 'bcg_brevo_sender', '' );
+		$sender_data  = is_string( $sender_json ) ? json_decode( $sender_json, true ) : null;
+		$sender_name  = ( is_array( $sender_data ) && ! empty( $sender_data['name'] ) )
+			? (string) $sender_data['name']
+			: (string) get_option( 'bcg_brevo_sender_name', get_bloginfo( 'name' ) );
+		$sender_email = ( is_array( $sender_data ) && ! empty( $sender_data['email'] ) )
+			? (string) $sender_data['email']
+			: (string) get_option( 'bcg_brevo_sender_email', get_bloginfo( 'admin_email' ) );
 
 		// Prepend the campaign prefix to the name if not already present.
 		$prefixed_name = $name;

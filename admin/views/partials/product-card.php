@@ -128,7 +128,6 @@ if ( empty( $display_image ) ) {
 					data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
 					data-field="product_image"
 					style="<?php echo $use_product_image ? 'display:none;' : ''; ?>">
-					<span class="dashicons dashicons-update"></span>
 					<?php esc_html_e( 'Regenerate Image', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
@@ -155,7 +154,6 @@ if ( empty( $display_image ) ) {
 						data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
 						data-field="product_headline"
 						title="<?php esc_attr_e( 'Regenerate headline', 'brevo-campaign-generator' ); ?>">
-						<span class="dashicons dashicons-update"></span>
 						<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 					</button>
 				</div>
@@ -179,7 +177,6 @@ if ( empty( $display_image ) ) {
 						data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
 						data-field="product_short_desc"
 						title="<?php esc_attr_e( 'Regenerate description', 'brevo-campaign-generator' ); ?>">
-						<span class="dashicons dashicons-update"></span>
 						<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
 					</button>
 				</div>

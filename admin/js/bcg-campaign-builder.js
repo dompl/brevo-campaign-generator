@@ -68,6 +68,7 @@
 			this.bindMailingListRefresh();
 			this.bindAIGenerateButtons();
 			this.bindCouponSuggestion();
+			this.bindTemplatePicker();
 			this.bindFormSubmit();
 			this.bindOverlayClose();
 
@@ -760,6 +761,27 @@
 				complete: function() {
 					$btn.removeClass( 'is-loading' ).prop( 'disabled', false );
 				}
+			} );
+		},
+
+		// ─── Template Picker ──────────────────────────────────────
+
+		/**
+		 * Bind the template picker card selection.
+		 *
+		 * @return {void}
+		 */
+		bindTemplatePicker: function() {
+			$( '#bcg-template-picker' ).on( 'click', '.bcg-template-card', function() {
+				var $card = $( this );
+				var slug  = $card.data( 'slug' );
+
+				// Update active state.
+				$( '#bcg-template-picker .bcg-template-card' ).removeClass( 'bcg-template-card-active' );
+				$card.addClass( 'bcg-template-card-active' );
+
+				// Update the hidden input.
+				$( '#bcg-template-slug' ).val( slug );
 			} );
 		},
 

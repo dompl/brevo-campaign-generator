@@ -370,10 +370,14 @@ class BCG_OpenAI {
 			! empty( $theme ) ? "Campaign theme/occasion: {$theme}\n\n" : ''
 		);
 
+		$currency        = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'GBP';
+		$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+
 		$system_prompt = "You are an expert email marketing copywriter for a WooCommerce e-commerce store. " .
 			"Write compelling, conversion-focused copy. Be concise. Avoid cliches. " .
 			"Respond only with the requested content - no explanations, no preamble. " .
-			"Always respond in English.";
+			"Always respond in English. " .
+			"The store currency is {$currency} ({$currency_symbol}). Always use this currency symbol when mentioning prices.";
 
 		$result = $this->make_completion_request(
 			$system_prompt,
@@ -577,13 +581,20 @@ class BCG_OpenAI {
 			$language = $this->get_site_language();
 		}
 
+		// Include WooCommerce store currency so AI uses the correct symbol.
+		$currency        = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'GBP';
+		$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+
 		return sprintf(
 			'You are an expert email marketing copywriter for a WooCommerce e-commerce store. ' .
 			'Write compelling, conversion-focused copy. Be concise. Avoid cliches. ' .
 			'Respond only with the requested content - no explanations, no preamble. ' .
-			'Always respond in %s. Tone: %s.',
+			'Always respond in %s. Tone: %s. ' .
+			'The store currency is %s (%s). Always use this currency symbol when mentioning prices.',
 			$language,
-			$tone
+			$tone,
+			$currency,
+			$currency_symbol
 		);
 	}
 
@@ -603,7 +614,8 @@ class BCG_OpenAI {
 			return __( '(No products provided)', 'brevo-campaign-generator' );
 		}
 
-		$lines = array();
+		$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+		$lines           = array();
 
 		foreach ( $products as $index => $product ) {
 			$number = $index + 1;
@@ -615,7 +627,7 @@ class BCG_OpenAI {
 			$line = sprintf( '%d. %s', $number, $name );
 
 			if ( ! empty( $price ) ) {
-				$line .= sprintf( ' (%s)', $price );
+				$line .= sprintf( ' (%s%s)', $currency_symbol, $price );
 			}
 
 			if ( ! empty( $cat ) ) {
@@ -644,13 +656,14 @@ class BCG_OpenAI {
 	 * @return string Formatted product information.
 	 */
 	private function format_single_product( array $product ): string {
-		$parts = array();
+		$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+		$parts           = array();
 
 		$name = $product['name'] ?? __( 'Unknown Product', 'brevo-campaign-generator' );
 		$parts[] = sprintf( 'Name: %s', $name );
 
 		if ( ! empty( $product['price'] ) ) {
-			$parts[] = sprintf( 'Price: %s', $product['price'] );
+			$parts[] = sprintf( 'Price: %s%s', $currency_symbol, $product['price'] );
 		}
 
 		if ( ! empty( $product['category'] ) ) {
@@ -665,8 +678,10 @@ class BCG_OpenAI {
 
 		if ( ! empty( $product['regular_price'] ) && ! empty( $product['sale_price'] ) ) {
 			$parts[] = sprintf(
-				'Regular price: %s, Sale price: %s',
+				'Regular price: %s%s, Sale price: %s%s',
+				$currency_symbol,
 				$product['regular_price'],
+				$currency_symbol,
 				$product['sale_price']
 			);
 		}

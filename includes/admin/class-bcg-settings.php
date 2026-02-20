@@ -437,46 +437,22 @@ class BCG_Settings {
 			)
 		);
 
-		// Sender Name.
-		register_setting( $page, 'bcg_brevo_sender_name', array(
+		// Verified Sender (replaces separate name/email fields).
+		register_setting( $page, 'bcg_brevo_sender', array(
 			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
+			'sanitize_callback' => array( $this, 'sanitize_brevo_sender' ),
 			'default'           => '',
 		) );
 
 		add_settings_field(
-			'bcg_brevo_sender_name',
-			__( 'Default Sender Name', 'brevo-campaign-generator' ),
-			array( $this, 'render_text_field' ),
+			'bcg_brevo_sender',
+			__( 'Default Sender', 'brevo-campaign-generator' ),
+			array( $this, 'render_brevo_sender_field' ),
 			$page,
 			$section,
 			array(
-				'label_for'   => 'bcg_brevo_sender_name',
-				'option_name' => 'bcg_brevo_sender_name',
-				'class'       => 'regular-text',
-				'description' => __( 'The sender name displayed in email clients.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Sender Email.
-		register_setting( $page, 'bcg_brevo_sender_email', array(
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_email',
-			'default'           => '',
-		) );
-
-		add_settings_field(
-			'bcg_brevo_sender_email',
-			__( 'Default Sender Email', 'brevo-campaign-generator' ),
-			array( $this, 'render_text_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_brevo_sender_email',
-				'option_name' => 'bcg_brevo_sender_email',
-				'type'        => 'email',
-				'class'       => 'regular-text',
-				'description' => __( 'The from address for email campaigns. Must be verified in Brevo.', 'brevo-campaign-generator' ),
+				'label_for'   => 'bcg_brevo_sender',
+				'option_name' => 'bcg_brevo_sender',
 			)
 		);
 
@@ -959,6 +935,128 @@ class BCG_Settings {
 	}
 
 	/**
+	 * Render the Brevo verified sender dropdown field.
+	 *
+	 * Populated via AJAX from the Brevo Senders API. Stores the selected
+	 * sender as JSON {"name":"...","email":"..."} in a single option.
+	 *
+	 * @since  1.3.2
+	 * @param  array $args Field arguments.
+	 * @return void
+	 */
+	public function render_brevo_sender_field( array $args ): void {
+		$option_name = $args['option_name'];
+		$raw_value   = get_option( $option_name, '' );
+		$sender_data = is_string( $raw_value ) ? json_decode( $raw_value, true ) : null;
+		$has_api_key = ! empty( get_option( 'bcg_brevo_api_key', '' ) );
+
+		$current_name  = ( is_array( $sender_data ) && ! empty( $sender_data['name'] ) ) ? $sender_data['name'] : '';
+		$current_email = ( is_array( $sender_data ) && ! empty( $sender_data['email'] ) ) ? $sender_data['email'] : '';
+
+		// Build current value string for the hidden input.
+		$current_json = '';
+		if ( $current_name && $current_email ) {
+			$current_json = wp_json_encode( array( 'name' => $current_name, 'email' => $current_email ) );
+		}
+
+		?>
+		<div class="bcg-brevo-sender-wrapper">
+			<select
+				id="bcg_brevo_sender_select"
+				class="bcg-brevo-sender-select regular-text"
+				data-current-name="<?php echo esc_attr( $current_name ); ?>"
+				data-current-email="<?php echo esc_attr( $current_email ); ?>"
+			>
+				<option value="">
+					<?php esc_html_e( '-- Select a verified sender --', 'brevo-campaign-generator' ); ?>
+				</option>
+				<?php if ( $current_name && $current_email ) : ?>
+					<option value="<?php echo esc_attr( $current_json ); ?>" selected>
+						<?php echo esc_html( $current_name . ' <' . $current_email . '>' ); ?>
+					</option>
+				<?php endif; ?>
+			</select>
+			<input
+				type="hidden"
+				id="<?php echo esc_attr( $option_name ); ?>"
+				name="<?php echo esc_attr( $option_name ); ?>"
+				value="<?php echo esc_attr( $current_json ); ?>"
+			/>
+			<button type="button" class="button bcg-refresh-brevo-senders" <?php echo $has_api_key ? '' : 'disabled'; ?>>
+				<?php esc_html_e( 'Refresh Senders', 'brevo-campaign-generator' ); ?>
+			</button>
+			<?php if ( ! $has_api_key ) : ?>
+				<p class="description bcg-notice-warning">
+					<?php esc_html_e( 'Please save a valid Brevo API key in the API Keys tab first.', 'brevo-campaign-generator' ); ?>
+				</p>
+			<?php else : ?>
+				<p class="description">
+					<?php esc_html_e( 'Select a verified sender from your Brevo account. Only senders verified in Brevo will appear. Click Refresh Senders to reload the list.', 'brevo-campaign-generator' ); ?>
+				</p>
+			<?php endif; ?>
+		</div>
+		<script>
+		jQuery(function($) {
+			var $wrapper = $('.bcg-brevo-sender-wrapper');
+			var $select  = $wrapper.find('.bcg-brevo-sender-select');
+			var $hidden  = $wrapper.find('#<?php echo esc_js( $option_name ); ?>');
+
+			function loadSenders() {
+				var currentName  = $select.data('current-name') || '';
+				var currentEmail = $select.data('current-email') || '';
+
+				$select.prop('disabled', true);
+				$select.html('<option value=""><?php echo esc_js( __( 'Loading senders...', 'brevo-campaign-generator' ) ); ?></option>');
+
+				$.post(ajaxurl, {
+					action: 'bcg_get_brevo_senders',
+					nonce: '<?php echo esc_js( wp_create_nonce( 'bcg_nonce' ) ); ?>'
+				}, function(response) {
+					$select.empty().append('<option value=""><?php echo esc_js( __( '-- Select a verified sender --', 'brevo-campaign-generator' ) ); ?></option>');
+
+					if (response.success && response.data.senders) {
+						$.each(response.data.senders, function(i, sender) {
+							var val = JSON.stringify({ name: sender.name, email: sender.email });
+							var label = sender.name + ' <' + sender.email + '>';
+							var selected = (sender.email === currentEmail) ? ' selected' : '';
+							$select.append('<option value=\'' + val.replace(/'/g, '&#39;') + '\'' + selected + '>' + $('<span>').text(label).html() + '</option>');
+						});
+
+						// Update hidden input if something is selected.
+						if ($select.val()) {
+							$hidden.val($select.val());
+						}
+					} else {
+						$select.append('<option value=""><?php echo esc_js( __( 'Failed to load senders', 'brevo-campaign-generator' ) ); ?></option>');
+					}
+
+					$select.prop('disabled', false);
+				}).fail(function() {
+					$select.html('<option value=""><?php echo esc_js( __( 'Error loading senders', 'brevo-campaign-generator' ) ); ?></option>');
+					$select.prop('disabled', false);
+				});
+			}
+
+			// Sync hidden input on change.
+			$select.on('change', function() {
+				$hidden.val($(this).val());
+			});
+
+			// Refresh button.
+			$wrapper.find('.bcg-refresh-brevo-senders').on('click', function() {
+				loadSenders();
+			});
+
+			// Auto-load if API key is present.
+			<?php if ( $has_api_key ) : ?>
+			loadSenders();
+			<?php endif; ?>
+		});
+		</script>
+		<?php
+	}
+
+	/**
 	 * Render the Brevo mailing list select field.
 	 *
 	 * The dropdown is populated via AJAX when the page loads (if a Brevo API
@@ -1285,6 +1383,38 @@ class BCG_Settings {
 	 */
 	public function sanitize_checkbox( mixed $value ): string {
 		return 'yes' === $value ? 'yes' : 'no';
+	}
+
+	/**
+	 * Sanitise the Brevo sender JSON value.
+	 *
+	 * Expects a JSON string with "name" and "email" keys.
+	 *
+	 * @since  1.3.2
+	 * @param  string $value The raw JSON string from the hidden field.
+	 * @return string Sanitised JSON string.
+	 */
+	public function sanitize_brevo_sender( string $value ): string {
+		if ( empty( $value ) ) {
+			return '';
+		}
+
+		$data = json_decode( $value, true );
+
+		if ( ! is_array( $data ) || empty( $data['email'] ) ) {
+			return '';
+		}
+
+		$sanitised = array(
+			'name'  => sanitize_text_field( $data['name'] ?? '' ),
+			'email' => sanitize_email( $data['email'] ),
+		);
+
+		if ( empty( $sanitised['email'] ) ) {
+			return '';
+		}
+
+		return wp_json_encode( $sanitised );
 	}
 
 	// ─── AJAX Handlers ──────────────────────────────────────────────────
