@@ -87,13 +87,16 @@ class BCG_Gemini {
 	 */
 	public function __construct() {
 		$this->api_key = (string) get_option( 'bcg_gemini_api_key', '' );
-		$model         = (string) get_option( 'bcg_gemini_model', 'gemini-2.0-flash' );
+		$model         = (string) get_option( 'bcg_gemini_model', 'gemini-2.5-flash' );
 
 		// Migrate deprecated model names to current equivalents.
 		$deprecated_map = array(
-			'gemini-1.5-flash'     => 'gemini-2.0-flash',
-			'gemini-1.5-pro'       => 'gemini-2.5-pro-preview-05-06',
-			'gemini-2.0-flash-exp' => 'gemini-2.0-flash',
+			'gemini-1.5-flash'              => 'gemini-2.5-flash',
+			'gemini-1.5-pro'                => 'gemini-2.5-pro',
+			'gemini-2.0-flash-exp'          => 'gemini-2.5-flash',
+			'gemini-2.0-flash'              => 'gemini-2.5-flash',
+			'gemini-2.5-flash-preview-05-20' => 'gemini-2.5-flash',
+			'gemini-2.5-pro-preview-05-06'  => 'gemini-2.5-pro',
 		);
 
 		if ( isset( $deprecated_map[ $model ] ) ) {

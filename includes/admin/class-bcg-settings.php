@@ -262,7 +262,7 @@ class BCG_Settings {
 		register_setting( $page, 'bcg_gemini_model', array(
 			'type'              => 'string',
 			'sanitize_callback' => array( $this, 'sanitize_gemini_model' ),
-			'default'           => 'gemini-2.0-flash',
+			'default'           => 'gemini-2.5-flash',
 		) );
 
 		add_settings_field(
@@ -852,7 +852,7 @@ class BCG_Settings {
 	 * @return void
 	 */
 	public function render_gemini_model_field( array $args ): void {
-		$value  = get_option( 'bcg_gemini_model', 'gemini-2.0-flash' );
+		$value  = get_option( 'bcg_gemini_model', 'gemini-2.5-flash' );
 		$models = $this->get_gemini_models();
 
 		?>
@@ -1180,7 +1180,7 @@ class BCG_Settings {
 	public function sanitize_gemini_model( string $value ): string {
 		$valid = array_keys( $this->get_gemini_models() );
 
-		return in_array( $value, $valid, true ) ? $value : 'gemini-2.0-flash';
+		return in_array( $value, $valid, true ) ? $value : 'gemini-2.5-flash';
 	}
 
 	/**
@@ -1739,9 +1739,9 @@ class BCG_Settings {
 	 */
 	public function get_gemini_models(): array {
 		return array(
-			'gemini-2.0-flash'     => __( 'Gemini 2.0 Flash (recommended, fast, cost-efficient)', 'brevo-campaign-generator' ),
-			'gemini-2.5-flash-preview-05-20' => __( 'Gemini 2.5 Flash (preview, best quality)', 'brevo-campaign-generator' ),
-			'gemini-2.5-pro-preview-05-06'   => __( 'Gemini 2.5 Pro (preview, highest quality)', 'brevo-campaign-generator' ),
+			'gemini-2.5-flash'      => __( 'Gemini 2.5 Flash (recommended, fast, cost-efficient)', 'brevo-campaign-generator' ),
+			'gemini-2.5-flash-lite' => __( 'Gemini 2.5 Flash Lite (fastest, lowest cost)', 'brevo-campaign-generator' ),
+			'gemini-2.5-pro'        => __( 'Gemini 2.5 Pro (best quality, higher cost)', 'brevo-campaign-generator' ),
 		);
 	}
 
