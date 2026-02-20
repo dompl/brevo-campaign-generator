@@ -1,0 +1,210 @@
+/**
+ * Brevo Campaign Generator — Base Email CSS
+ *
+ * These styles are used as a reference for email template rendering and CSS
+ * inlining. Email clients have limited CSS support, so this file provides
+ * the foundational styles that are inlined into the HTML before sending.
+ *
+ * @package Brevo_Campaign_Generator
+ * @since   1.0.0
+ */
+
+/* ── Reset ─────────────────────────────────────────────────────────── */
+
+body,
+table,
+td,
+a {
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+table,
+td {
+	mso-table-lspace: 0pt;
+	mso-table-rspace: 0pt;
+}
+
+img {
+	-ms-interpolation-mode: bicubic;
+	border: 0;
+	height: auto;
+	line-height: 100%;
+	outline: none;
+	text-decoration: none;
+}
+
+body {
+	height: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	width: 100% !important;
+}
+
+/* ── Typography ────────────────────────────────────────────────────── */
+
+.bcg-headline {
+	margin: 0 0 16px;
+	font-size: 28px;
+	font-weight: bold;
+	line-height: 1.3;
+	text-align: center;
+}
+
+.bcg-description {
+	margin: 0 0 24px;
+	font-size: 16px;
+	line-height: 1.6;
+	text-align: center;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────── */
+
+.bcg-btn {
+	display: inline-block;
+	padding: 12px 28px;
+	font-size: 14px;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+	border-radius: 4px;
+}
+
+.bcg-btn:hover {
+	opacity: 0.9;
+}
+
+/* ── Product Card ──────────────────────────────────────────────────── */
+
+.bcg-product {
+	width: 100%;
+	margin-bottom: 24px;
+	border-bottom: 1px solid #eeeeee;
+	padding-bottom: 24px;
+}
+
+.bcg-product:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.bcg-product-image {
+	width: 180px;
+	vertical-align: top;
+	padding-right: 16px;
+}
+
+.bcg-product-image img {
+	display: block;
+	width: 100%;
+	max-width: 180px;
+	height: auto;
+	border-radius: 4px;
+}
+
+.bcg-product-content {
+	vertical-align: top;
+}
+
+.bcg-product-content h3 {
+	margin: 0 0 8px;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 1.3;
+}
+
+.bcg-product-content p {
+	margin: 0 0 12px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+/* ── Coupon Block ──────────────────────────────────────────────────── */
+
+.bcg-coupon-block {
+	border-radius: 8px;
+	border: 2px dashed;
+	text-align: center;
+}
+
+.bcg-coupon-text {
+	margin: 0 0 8px;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.bcg-coupon-code {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 24px;
+	font-weight: bold;
+	letter-spacing: 4px;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+
+.bcg-footer {
+	text-align: center;
+	padding: 24px 32px;
+}
+
+.bcg-footer p {
+	margin: 0 0 12px;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #999999;
+}
+
+.bcg-footer a {
+	text-decoration: underline;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 620px) {
+	.bcg-wrapper {
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
+	.bcg-content {
+		padding: 16px !important;
+	}
+
+	.bcg-hero-image {
+		width: 100% !important;
+		height: auto !important;
+	}
+
+	.bcg-product img {
+		width: 100% !important;
+		height: auto !important;
+	}
+
+	.bcg-product-image {
+		width: 100% !important;
+		display: block !important;
+		padding-right: 0 !important;
+		padding-bottom: 12px !important;
+	}
+
+	.bcg-product-content {
+		width: 100% !important;
+		display: block !important;
+	}
+
+	.bcg-product td {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.bcg-coupon-code {
+		font-size: 22px !important;
+		letter-spacing: 3px !important;
+	}
+
+	.bcg-headline,
+	h1 {
+		font-size: 24px !important;
+	}
+}

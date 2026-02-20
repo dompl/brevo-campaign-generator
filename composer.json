@@ -1,0 +1,47 @@
+{
+	"name": "red-frog-studio/brevo-campaign-generator",
+	"description": "WooCommerce plugin to generate Brevo email campaigns using AI.",
+	"type": "wordpress-plugin",
+	"license": "proprietary",
+	"authors": [
+		{
+			"name": "Red Frog Studio",
+			"homepage": "https://redfrogstudio.co.uk"
+		}
+	],
+	"require": {
+		"php": ">=8.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"BCG\\": "includes/"
+		},
+		"classmap": [
+			"includes/class-bcg-plugin.php",
+			"includes/class-bcg-activator.php",
+			"includes/class-bcg-deactivator.php",
+			"includes/admin/class-bcg-admin.php",
+			"includes/admin/class-bcg-settings.php",
+			"includes/admin/class-bcg-credits.php",
+			"includes/admin/class-bcg-stats.php",
+			"includes/campaign/class-bcg-campaign.php",
+			"includes/campaign/class-bcg-product-selector.php",
+			"includes/campaign/class-bcg-coupon.php",
+			"includes/campaign/class-bcg-template.php",
+			"includes/ai/class-bcg-openai.php",
+			"includes/ai/class-bcg-gemini.php",
+			"includes/ai/class-bcg-ai-manager.php",
+			"includes/integrations/class-bcg-brevo.php",
+			"includes/integrations/class-bcg-stripe.php",
+			"includes/db/class-bcg-campaigns-table.php",
+			"includes/db/class-bcg-credits-table.php",
+			"includes/db/class-bcg-transactions-table.php"
+		]
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"sort-packages": true
+	},
+	"minimum-stability": "stable",
+	"prefer-stable": true
+}

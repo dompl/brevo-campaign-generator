@@ -1,0 +1,3776 @@
+/**
+ * Brevo Campaign Generator - Admin Styles
+ *
+ * Base admin styles for the entire plugin. Includes:
+ * - General layout and wrap styles
+ * - Tab navigation
+ * - Settings page fields
+ * - API key masking and test connection buttons
+ * - Credit widget (admin bar)
+ * - Pricing reference table
+ * - Credit packs table
+ * - Utility classes
+ *
+ * @package Brevo_Campaign_Generator
+ * @since   1.0.0
+ */
+
+/* ==========================================================================
+   General Layout
+   ========================================================================== */
+
+.bcg-wrap {
+	max-width: 1200px;
+}
+
+.bcg-wrap h1 {
+	margin-bottom: 12px;
+	font-size: 23px;
+	font-weight: 400;
+	line-height: 1.3;
+}
+
+/* ==========================================================================
+   Tab Navigation
+   ========================================================================== */
+
+.bcg-nav-tab-wrapper {
+	margin-bottom: 20px;
+	border-bottom: 1px solid #c3c4c7;
+	padding-top: 0;
+}
+
+.bcg-nav-tab-wrapper .nav-tab {
+	padding: 8px 16px;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.4;
+	color: #50575e;
+	background: #f0f0f1;
+	border: 1px solid #c3c4c7;
+	border-bottom: none;
+	margin-left: 0;
+	margin-right: 4px;
+	border-radius: 3px 3px 0 0;
+	transition: background-color 0.15s ease, color 0.15s ease;
+	text-decoration: none;
+}
+
+.bcg-nav-tab-wrapper .nav-tab:hover,
+.bcg-nav-tab-wrapper .nav-tab:focus {
+	background: #fff;
+	color: #1d2327;
+}
+
+.bcg-nav-tab-wrapper .nav-tab-active,
+.bcg-nav-tab-wrapper .nav-tab-active:hover,
+.bcg-nav-tab-wrapper .nav-tab-active:focus {
+	background: #fff;
+	color: #1d2327;
+	border-bottom-color: #fff;
+	font-weight: 600;
+}
+
+/* ==========================================================================
+   Settings Form
+   ========================================================================== */
+
+.bcg-settings-form .form-table {
+	margin-top: 12px;
+}
+
+.bcg-settings-form .form-table th {
+	padding: 20px 10px 20px 0;
+	width: 240px;
+	font-weight: 600;
+}
+
+.bcg-settings-form .form-table td {
+	padding: 15px 10px;
+}
+
+.bcg-settings-form h2 {
+	margin-top: 30px;
+	margin-bottom: 8px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #e2e4e7;
+	font-size: 17px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bcg-settings-form h2:first-of-type {
+	margin-top: 0;
+}
+
+/* ==========================================================================
+   API Key Fields
+   ========================================================================== */
+
+.bcg-api-key-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.bcg-api-key-input {
+	font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+	font-size: 13px;
+	letter-spacing: 0.3px;
+}
+
+.bcg-api-key-input::-webkit-input-placeholder {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.bcg-api-key-input::-moz-placeholder {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.bcg-masked-key {
+	margin-top: 4px;
+	font-size: 12px;
+	color: #646970;
+}
+
+.bcg-masked-key code {
+	font-size: 11px;
+	background: #f0f0f1;
+	padding: 2px 6px;
+	border-radius: 3px;
+	color: #50575e;
+	letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Test Connection Button
+   ========================================================================== */
+
+.bcg-test-connection {
+	white-space: nowrap;
+	min-width: 130px;
+	text-align: center;
+}
+
+.bcg-test-connection.is-loading {
+	opacity: 0.7;
+	pointer-events: none;
+	cursor: wait;
+}
+
+.bcg-test-connection.is-loading::after {
+	content: "";
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	margin-left: 6px;
+	border: 2px solid #c3c4c7;
+	border-top-color: #2271b1;
+	border-radius: 50%;
+	animation: bcg-spin 0.6s linear infinite;
+	vertical-align: middle;
+}
+
+@keyframes bcg-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Test result states */
+.bcg-test-result {
+	display: inline-block;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.4;
+	padding: 2px 10px;
+	border-radius: 3px;
+	max-width: 100%;
+	word-break: break-word;
+	transition: opacity 0.2s ease;
+}
+
+.bcg-test-result:empty {
+	display: none;
+}
+
+.bcg-test-result.bcg-test-success {
+	display: inline-block;
+	color: #00a32a;
+	background: #edfaef;
+	border: 1px solid #00a32a;
+}
+
+.bcg-test-result.bcg-test-success::before {
+	content: "\2713 ";
+	font-weight: 700;
+}
+
+.bcg-test-result.bcg-test-error {
+	display: inline-block;
+	color: #d63638;
+	background: #fcf0f1;
+	border: 1px solid #d63638;
+}
+
+.bcg-test-result.bcg-test-error::before {
+	content: "\2717 ";
+	font-weight: 700;
+}
+
+.bcg-test-result.bcg-test-loading {
+	display: inline-block;
+	color: #2271b1;
+	background: #f0f6fc;
+	border: 1px solid #2271b1;
+}
+
+/* ==========================================================================
+   Field Suffix
+   ========================================================================== */
+
+.bcg-field-suffix {
+	color: #646970;
+	font-size: 13px;
+	margin-left: 4px;
+}
+
+/* ==========================================================================
+   Brevo List Selector
+   ========================================================================== */
+
+.bcg-brevo-list-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.bcg-brevo-list-wrapper .description {
+	flex-basis: 100%;
+}
+
+.bcg-brevo-list-select {
+	min-width: 300px;
+}
+
+.bcg-refresh-brevo-lists.is-loading {
+	opacity: 0.7;
+	pointer-events: none;
+}
+
+.bcg-notice-warning {
+	color: #996800;
+	font-style: italic;
+}
+
+/* ==========================================================================
+   Currency Symbol
+   ========================================================================== */
+
+.bcg-currency-symbol {
+	font-weight: 600;
+	font-size: 14px;
+	color: #50575e;
+	margin-right: 2px;
+}
+
+/* ==========================================================================
+   Credit Packs Table
+   ========================================================================== */
+
+.bcg-credit-packs {
+	max-width: 560px;
+}
+
+.bcg-credit-packs-table {
+	border-collapse: collapse;
+}
+
+.bcg-credit-packs-table th {
+	text-align: left;
+	font-weight: 600;
+	font-size: 13px;
+	padding: 10px 12px;
+	background: #f6f7f7;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.bcg-credit-packs-table td {
+	padding: 10px 12px;
+	vertical-align: middle;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-credit-packs-table .small-text {
+	width: 80px;
+}
+
+.bcg-per-credit {
+	color: #646970;
+	font-size: 12px;
+	font-style: italic;
+}
+
+/* ==========================================================================
+   Pricing Reference Table
+   ========================================================================== */
+
+.bcg-pricing-reference {
+	margin-top: 30px;
+	padding-top: 20px;
+	border-top: 1px solid #e2e4e7;
+	max-width: 700px;
+}
+
+.bcg-pricing-reference h3 {
+	margin-top: 0;
+	margin-bottom: 8px;
+	font-size: 15px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bcg-pricing-reference > .description {
+	margin-bottom: 12px;
+	font-style: italic;
+	color: #996800;
+}
+
+.bcg-pricing-table {
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.bcg-pricing-table th {
+	text-align: left;
+	font-weight: 600;
+	font-size: 13px;
+	padding: 8px 12px;
+	background: #f6f7f7;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.bcg-pricing-table td {
+	padding: 8px 12px;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-pricing-table code {
+	font-size: 12px;
+	background: #f0f0f1;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+.bcg-pricing-table .alternate {
+	background: #f9f9f9;
+}
+
+/* ==========================================================================
+   Credit Widget (Admin Bar)
+   ========================================================================== */
+
+#wpadminbar .bcg-credit-widget {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	color: #c3c4c7;
+}
+
+#wpadminbar .bcg-credit-widget strong {
+	color: #fff;
+	font-weight: 700;
+}
+
+#wpadminbar .bcg-credit-icon {
+	font-size: 15px;
+	line-height: 1;
+	margin-right: 2px;
+}
+
+#wpadminbar .bcg-credit-topup {
+	color: #72aee6;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+#wpadminbar .bcg-admin-bar-credits:hover .bcg-credit-topup {
+	color: #fff;
+}
+
+#wpadminbar .bcg-admin-bar-credits > .ab-item {
+	height: auto;
+	line-height: 32px;
+}
+
+/* ==========================================================================
+   Plugin Page Credit Widget (in-page)
+   ========================================================================== */
+
+.bcg-page-credit-widget {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	background: #f0f6fc;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 8px 16px;
+	font-size: 14px;
+	color: #1d2327;
+	margin-bottom: 16px;
+}
+
+.bcg-page-credit-widget .bcg-credit-balance {
+	font-weight: 700;
+	font-size: 16px;
+	color: #2271b1;
+}
+
+.bcg-page-credit-widget .bcg-topup-link {
+	color: #2271b1;
+	text-decoration: none;
+	font-weight: 500;
+	border-left: 1px solid #c3c4c7;
+	padding-left: 8px;
+}
+
+.bcg-page-credit-widget .bcg-topup-link:hover {
+	color: #135e96;
+	text-decoration: underline;
+}
+
+/* ==========================================================================
+   Notices & Alerts
+   ========================================================================== */
+
+.bcg-notice {
+	border-left-width: 4px;
+	padding: 12px 16px;
+	margin: 8px 0 16px;
+	font-size: 13px;
+}
+
+.bcg-notice-info {
+	border-left-color: #72aee6;
+	background: #f0f6fc;
+}
+
+.bcg-notice-success {
+	border-left-color: #00a32a;
+	background: #edfaef;
+}
+
+.bcg-notice-warning {
+	border-left-color: #dba617;
+	background: #fcf9e8;
+}
+
+.bcg-notice-error {
+	border-left-color: #d63638;
+	background: #fcf0f1;
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
+.bcg-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 20px;
+	margin-bottom: 16px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.bcg-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-card-header h2,
+.bcg-card-header h3 {
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.bcg-card-body {
+	font-size: 13px;
+	line-height: 1.6;
+	color: #50575e;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.bcg-btn-primary {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #fff;
+	background: #2271b1;
+	border: 1px solid #2271b1;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 0.15s ease;
+}
+
+.bcg-btn-primary:hover {
+	background: #135e96;
+	border-color: #135e96;
+	color: #fff;
+}
+
+.bcg-btn-secondary {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #2271b1;
+	background: #f6f7f7;
+	border: 1px solid #2271b1;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bcg-btn-secondary:hover {
+	background: #f0f0f1;
+	color: #135e96;
+}
+
+.bcg-btn-danger {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 20px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #d63638;
+	background: #fcf0f1;
+	border: 1px solid #d63638;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 0.15s ease;
+}
+
+.bcg-btn-danger:hover {
+	background: #d63638;
+	color: #fff;
+}
+
+/* ==========================================================================
+   Grid / Flex Utilities
+   ========================================================================== */
+
+.bcg-flex {
+	display: flex;
+}
+
+.bcg-flex-wrap {
+	flex-wrap: wrap;
+}
+
+.bcg-items-center {
+	align-items: center;
+}
+
+.bcg-justify-between {
+	justify-content: space-between;
+}
+
+.bcg-gap-8 {
+	gap: 8px;
+}
+
+.bcg-gap-12 {
+	gap: 12px;
+}
+
+.bcg-gap-16 {
+	gap: 16px;
+}
+
+.bcg-gap-20 {
+	gap: 20px;
+}
+
+.bcg-grid-2 {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+.bcg-grid-3 {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 16px;
+}
+
+/* ==========================================================================
+   Spacing Utilities
+   ========================================================================== */
+
+.bcg-mt-0 { margin-top: 0; }
+.bcg-mt-8 { margin-top: 8px; }
+.bcg-mt-16 { margin-top: 16px; }
+.bcg-mt-20 { margin-top: 20px; }
+.bcg-mt-32 { margin-top: 32px; }
+
+.bcg-mb-0 { margin-bottom: 0; }
+.bcg-mb-8 { margin-bottom: 8px; }
+.bcg-mb-16 { margin-bottom: 16px; }
+.bcg-mb-20 { margin-bottom: 20px; }
+
+.bcg-p-0 { padding: 0; }
+.bcg-p-8 { padding: 8px; }
+.bcg-p-16 { padding: 16px; }
+.bcg-p-20 { padding: 20px; }
+
+/* ==========================================================================
+   Text Utilities
+   ========================================================================== */
+
+.bcg-text-center { text-align: center; }
+.bcg-text-right { text-align: right; }
+.bcg-text-muted { color: #646970; }
+.bcg-text-success { color: #00a32a; }
+.bcg-text-error { color: #d63638; }
+.bcg-text-small { font-size: 12px; }
+
+.bcg-truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* ==========================================================================
+   Loading Spinner
+   ========================================================================== */
+
+.bcg-spinner {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border: 3px solid #e2e4e7;
+	border-top-color: #2271b1;
+	border-radius: 50%;
+	animation: bcg-spin 0.6s linear infinite;
+}
+
+.bcg-spinner-small {
+	width: 14px;
+	height: 14px;
+	border-width: 2px;
+}
+
+/* ==========================================================================
+   Credits & Billing — Balance Card
+   ========================================================================== */
+
+.bcg-balance-card {
+	background: linear-gradient(135deg, #f0f6fc 0%, #e8f0fe 100%);
+	border-color: #72aee6;
+	text-align: center;
+	padding: 32px 20px;
+}
+
+.bcg-balance-label {
+	font-size: 14px;
+	font-weight: 500;
+	color: #50575e;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 8px;
+}
+
+.bcg-balance-value {
+	margin-bottom: 8px;
+}
+
+.bcg-balance-amount {
+	font-size: 48px;
+	font-weight: 700;
+	color: #2271b1;
+	line-height: 1.1;
+	transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.bcg-balance-amount.bcg-balance-updated {
+	color: #00a32a;
+	animation: bcg-pulse 0.6s ease;
+}
+
+@keyframes bcg-pulse {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.08); }
+	100% { transform: scale(1); }
+}
+
+.bcg-balance-unit {
+	font-size: 18px;
+	font-weight: 500;
+	color: #50575e;
+	margin-left: 4px;
+}
+
+.bcg-balance-monetary {
+	font-size: 13px;
+	margin-top: 4px;
+}
+
+/* ==========================================================================
+   Credits & Billing — Credit Pack Cards
+   ========================================================================== */
+
+.bcg-credit-packs-grid {
+	margin-top: 8px;
+}
+
+.bcg-pack-card {
+	background: #fff;
+	border: 2px solid #e2e4e7;
+	border-radius: 8px;
+	padding: 28px 20px;
+	text-align: center;
+	position: relative;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bcg-pack-card:hover {
+	border-color: #2271b1;
+	box-shadow: 0 2px 8px rgba(34, 113, 177, 0.12);
+}
+
+.bcg-pack-card-featured {
+	border-color: #2271b1;
+	box-shadow: 0 2px 12px rgba(34, 113, 177, 0.15);
+}
+
+.bcg-pack-badge {
+	position: absolute;
+	top: -12px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #2271b1;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	padding: 3px 14px;
+	border-radius: 12px;
+	white-space: nowrap;
+}
+
+.bcg-pack-credits {
+	font-size: 36px;
+	font-weight: 700;
+	color: #1d2327;
+	line-height: 1.1;
+	margin-bottom: 2px;
+}
+
+.bcg-pack-credits-label {
+	font-size: 14px;
+	font-weight: 500;
+	color: #646970;
+	margin-bottom: 12px;
+}
+
+.bcg-pack-price {
+	font-size: 22px;
+	font-weight: 600;
+	color: #2271b1;
+	margin-bottom: 4px;
+}
+
+.bcg-pack-per-credit {
+	margin-bottom: 18px;
+}
+
+.bcg-pack-purchase-btn {
+	width: 100%;
+	justify-content: center;
+}
+
+.bcg-pack-purchase-btn.is-loading {
+	opacity: 0.7;
+	pointer-events: none;
+}
+
+/* ==========================================================================
+   Credits & Billing — Stripe Payment Form
+   ========================================================================== */
+
+.bcg-payment-card {
+	border-color: #72aee6;
+	background: #fcfcfc;
+}
+
+.bcg-payment-summary {
+	font-size: 15px;
+	color: #1d2327;
+	padding: 12px 16px;
+	background: #f0f6fc;
+	border-radius: 4px;
+	border: 1px solid #c3c4c7;
+}
+
+.bcg-payment-summary strong {
+	color: #2271b1;
+}
+
+.bcg-form-label {
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+	margin-bottom: 8px;
+}
+
+.bcg-card-element-wrapper {
+	padding: 12px 14px;
+	background: #fff;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bcg-card-element-wrapper:focus-within {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.bcg-card-errors {
+	color: #d63638;
+	font-size: 13px;
+	margin-top: 6px;
+	font-weight: 500;
+}
+
+.bcg-payment-actions {
+	margin-top: 16px;
+}
+
+.bcg-stripe-badge {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.bcg-stripe-badge .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	color: #00a32a;
+}
+
+/* ==========================================================================
+   Credits & Billing — Transaction History
+   ========================================================================== */
+
+.bcg-transaction-filters {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid #c3c4c7;
+	padding-bottom: 0;
+}
+
+.bcg-transaction-filter-link {
+	display: inline-block;
+	padding: 8px 16px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #50575e;
+	text-decoration: none;
+	border-bottom: 2px solid transparent;
+	margin-bottom: -1px;
+	transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.bcg-transaction-filter-link:hover {
+	color: #2271b1;
+	border-bottom-color: #c3c4c7;
+}
+
+.bcg-transaction-filter-link.bcg-filter-active {
+	color: #2271b1;
+	font-weight: 600;
+	border-bottom-color: #2271b1;
+}
+
+.bcg-transactions-table {
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.bcg-transactions-table th {
+	text-align: left;
+	font-weight: 600;
+	font-size: 13px;
+	padding: 10px 12px;
+	background: #f6f7f7;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.bcg-transactions-table td {
+	padding: 10px 12px;
+	vertical-align: middle;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-transactions-table .alternate {
+	background: #f9f9f9;
+}
+
+.bcg-col-date {
+	white-space: nowrap;
+}
+
+.bcg-col-credits {
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.bcg-col-balance {
+	white-space: nowrap;
+	color: #646970;
+}
+
+.bcg-col-description {
+	max-width: 400px;
+}
+
+/* Transaction type badges */
+.bcg-tx-badge {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+	padding: 2px 8px;
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+.bcg-tx-topup {
+	background: #edfaef;
+	color: #00a32a;
+	border: 1px solid #00a32a;
+}
+
+.bcg-tx-usage {
+	background: #fcf0f1;
+	color: #d63638;
+	border: 1px solid #d63638;
+}
+
+.bcg-tx-refund {
+	background: #f0f6fc;
+	color: #2271b1;
+	border: 1px solid #2271b1;
+}
+
+/* ==========================================================================
+   Credits & Billing — Pagination
+   ========================================================================== */
+
+.bcg-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+}
+
+.bcg-pagination-btn {
+	padding: 6px 14px;
+	font-size: 13px;
+}
+
+.bcg-pagination-info {
+	font-size: 13px;
+}
+
+/* ==========================================================================
+   Credits & Billing — Empty State
+   ========================================================================== */
+
+.bcg-empty-state {
+	text-align: center;
+	padding: 32px 20px;
+}
+
+.bcg-empty-state p {
+	font-size: 14px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 782px) {
+	.bcg-settings-form .form-table th {
+		width: auto;
+		padding-bottom: 4px;
+	}
+
+	.bcg-api-key-wrapper {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.bcg-api-key-input {
+		width: 100%;
+	}
+
+	.bcg-brevo-list-wrapper {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.bcg-brevo-list-select {
+		min-width: 100%;
+	}
+
+	.bcg-credit-packs {
+		max-width: 100%;
+		overflow-x: auto;
+	}
+
+	.bcg-grid-2,
+	.bcg-grid-3 {
+		grid-template-columns: 1fr;
+	}
+
+	.bcg-nav-tab-wrapper .nav-tab {
+		display: block;
+		margin-right: 0;
+		margin-bottom: -1px;
+		border-radius: 0;
+	}
+
+	.bcg-nav-tab-wrapper .nav-tab:first-child {
+		border-radius: 3px 3px 0 0;
+	}
+
+	.bcg-balance-amount {
+		font-size: 36px;
+	}
+
+	.bcg-pack-credits {
+		font-size: 28px;
+	}
+
+	.bcg-pack-price {
+		font-size: 18px;
+	}
+
+	.bcg-credit-packs-grid.bcg-grid-3 {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+
+	.bcg-transaction-filters {
+		flex-wrap: wrap;
+	}
+
+	.bcg-transactions-table {
+		font-size: 12px;
+	}
+
+	.bcg-transactions-table th,
+	.bcg-transactions-table td {
+		padding: 8px 6px;
+	}
+
+	.bcg-col-description {
+		max-width: 200px;
+		word-break: break-word;
+	}
+
+	.bcg-pagination {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.bcg-action-buttons {
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.bcg-dashboard-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+}
+
+/* ==========================================================================
+   Dashboard — Campaigns Table
+   ========================================================================== */
+
+.bcg-campaigns-table .bcg-col-title a.row-title {
+	color: #1d2327;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.bcg-campaigns-table .bcg-col-title a.row-title:hover {
+	color: #2271b1;
+}
+
+.bcg-action-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
+}
+
+.bcg-action-buttons .button-small {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	font-size: 12px;
+	line-height: 1.6;
+	padding: 2px 8px;
+}
+
+.bcg-action-buttons .button-small .dashicons {
+	line-height: inherit;
+}
+
+/* Dashboard empty state */
+.bcg-empty-state .bcg-empty-state-icon {
+	margin-bottom: 12px;
+}
+
+/* Dashboard loading state for delete/duplicate buttons */
+.bcg-campaigns-table .is-loading {
+	opacity: 0.6;
+	pointer-events: none;
+	cursor: wait;
+}
+
+/* ==========================================================================
+   Campaign Editor — Two-Column Layout
+   ========================================================================== */
+
+.bcg-editor-wrap {
+	max-width: 100%;
+}
+
+.bcg-editor-page-header {
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.bcg-editor-columns {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.bcg-editor-main {
+	flex: 0 0 58%;
+	max-width: 58%;
+	min-width: 0;
+}
+
+.bcg-editor-preview {
+	flex: 0 0 40%;
+	max-width: 40%;
+	position: sticky;
+	top: 32px;
+}
+
+/* ==========================================================================
+   Campaign Editor — Status Badges
+   ========================================================================== */
+
+.bcg-status-badge {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	padding: 3px 10px;
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+.bcg-status-draft {
+	background: #f0f0f1;
+	color: #50575e;
+	border: 1px solid #c3c4c7;
+}
+
+.bcg-status-ready {
+	background: #f0f6fc;
+	color: #2271b1;
+	border: 1px solid #2271b1;
+}
+
+.bcg-status-sent {
+	background: #edfaef;
+	color: #00a32a;
+	border: 1px solid #00a32a;
+}
+
+.bcg-status-scheduled {
+	background: #fcf9e8;
+	color: #996800;
+	border: 1px solid #dba617;
+}
+
+/* ==========================================================================
+   Campaign Editor — Field Groups
+   ========================================================================== */
+
+.bcg-field-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	color: #1d2327;
+	margin-bottom: 6px;
+}
+
+.bcg-field-with-regen {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.bcg-field-with-regen input[type="text"],
+.bcg-field-with-regen textarea,
+.bcg-field-with-regen select {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-field-with-regen .bcg-regen-btn {
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.bcg-field-group {
+	margin-bottom: 0;
+}
+
+.bcg-radio-label,
+.bcg-checkbox-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	margin-right: 12px;
+	cursor: pointer;
+}
+
+/* ==========================================================================
+   Campaign Editor — Regenerate Buttons
+   ========================================================================== */
+
+.bcg-regen-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 12px;
+	padding: 4px 10px;
+}
+
+.bcg-regen-btn .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+
+.bcg-regen-btn.is-loading {
+	opacity: 0.7;
+	pointer-events: none;
+	cursor: wait;
+}
+
+.bcg-spin-icon {
+	animation: bcg-spin 0.8s linear infinite;
+}
+
+/* ==========================================================================
+   Campaign Editor — Main Image
+   ========================================================================== */
+
+.bcg-main-image-preview {
+	max-width: 100%;
+	border: 1px solid #e2e4e7;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #f6f7f7;
+}
+
+.bcg-main-image-display {
+	display: block;
+	width: 100%;
+	max-height: 300px;
+	object-fit: contain;
+}
+
+/* ==========================================================================
+   Campaign Editor — Product Cards
+   ========================================================================== */
+
+.bcg-products-list {
+	min-height: 40px;
+}
+
+.bcg-product-card {
+	margin-bottom: 12px;
+	transition: opacity 0.2s ease, box-shadow 0.2s ease;
+	cursor: default;
+}
+
+.bcg-product-card.ui-sortable-helper {
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.bcg-sortable-placeholder {
+	border: 2px dashed #c3c4c7;
+	background: #f6f7f7;
+	margin-bottom: 12px;
+	min-height: 80px;
+	border-radius: 4px;
+}
+
+.bcg-product-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 12px;
+	margin-bottom: 12px;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-product-card-drag {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.bcg-drag-handle {
+	cursor: grab;
+	color: #c3c4c7;
+	font-size: 20px;
+	transition: color 0.15s ease;
+}
+
+.bcg-drag-handle:hover {
+	color: #2271b1;
+}
+
+.bcg-product-card-title {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.bcg-product-card-price {
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.bcg-product-card-body {
+	display: flex;
+	gap: 16px;
+}
+
+.bcg-product-card-image-col {
+	flex: 0 0 140px;
+	max-width: 140px;
+}
+
+.bcg-product-card-image-wrapper {
+	border: 1px solid #e2e4e7;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #f6f7f7;
+}
+
+.bcg-product-card-img {
+	display: block;
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+}
+
+.bcg-product-image-source {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.bcg-product-card-content-col {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-remove-product {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	font-size: 12px;
+	cursor: pointer;
+	text-decoration: none;
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+.bcg-remove-product:hover {
+	opacity: 0.8;
+}
+
+.bcg-remove-product .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* ==========================================================================
+   Campaign Editor — Live Preview Panel
+   ========================================================================== */
+
+.bcg-preview-panel {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	overflow: hidden;
+}
+
+.bcg-preview-header {
+	padding: 12px 16px;
+	border-bottom: 1px solid #e2e4e7;
+	background: #f6f7f7;
+}
+
+.bcg-preview-header h3 {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.bcg-preview-device-btn {
+	padding: 4px 8px;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+	cursor: pointer;
+}
+
+.bcg-preview-device-btn.active {
+	background: #2271b1;
+	color: #fff;
+	border-color: #2271b1;
+}
+
+.bcg-preview-device-btn .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	line-height: 18px;
+}
+
+.bcg-preview-iframe-wrapper {
+	position: relative;
+	background: #f0f0f1;
+	min-height: 500px;
+	display: flex;
+	justify-content: center;
+	overflow-x: auto;
+}
+
+.bcg-preview-loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.85);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	z-index: 10;
+	font-size: 13px;
+	color: #50575e;
+}
+
+.bcg-preview-iframe {
+	border: none;
+	width: 100%;
+	height: 750px;
+	background: #fff;
+	transition: width 0.3s ease;
+}
+
+.bcg-preview-desktop-size {
+	width: 100%;
+	max-width: 100%;
+}
+
+.bcg-preview-mobile-size {
+	width: 375px;
+	max-width: 375px;
+	margin: 0 auto;
+	border-left: 1px solid #e2e4e7;
+	border-right: 1px solid #e2e4e7;
+}
+
+/* ==========================================================================
+   Campaign Editor — Sticky Actions Bar
+   ========================================================================== */
+
+.bcg-actions-bar {
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #fff;
+	border-top: 1px solid #c3c4c7;
+	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+	z-index: 100;
+	margin-top: 20px;
+	margin-left: -20px;
+	margin-right: -20px;
+	padding: 0 20px;
+}
+
+.bcg-actions-bar-inner {
+	padding: 12px 0;
+	max-width: 100%;
+}
+
+.bcg-actions-bar .button {
+	white-space: nowrap;
+}
+
+/* ==========================================================================
+   Campaign Editor — Modals
+   ========================================================================== */
+
+.bcg-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 100100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.bcg-modal-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.bcg-modal-content {
+	position: relative;
+	background: #fff;
+	border-radius: 6px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+	max-width: 640px;
+	width: 90%;
+	max-height: 80vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.bcg-modal-small {
+	max-width: 440px;
+}
+
+.bcg-modal-full {
+	max-width: 90vw;
+	max-height: 90vh;
+	width: 90vw;
+	height: 85vh;
+}
+
+.bcg-modal-header {
+	padding: 16px 20px;
+	border-bottom: 1px solid #e2e4e7;
+	flex-shrink: 0;
+}
+
+.bcg-modal-body {
+	padding: 20px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.bcg-modal-footer {
+	padding: 12px 20px;
+	border-top: 1px solid #e2e4e7;
+	flex-shrink: 0;
+}
+
+.bcg-modal-close {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: #50575e;
+	padding: 4px;
+	line-height: 1;
+}
+
+.bcg-modal-close:hover {
+	color: #d63638;
+}
+
+.bcg-modal-close .dashicons {
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+}
+
+body.bcg-modal-open {
+	overflow: hidden;
+}
+
+.bcg-fullscreen-preview-iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+/* ==========================================================================
+   Campaign Editor — Product Search Results
+   ========================================================================== */
+
+.bcg-product-search-results {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.bcg-product-search-item {
+	padding: 10px 12px;
+	border: 1px solid #e2e4e7;
+	border-radius: 4px;
+	margin-bottom: 6px;
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.bcg-product-search-item:hover {
+	background: #f0f6fc;
+	border-color: #2271b1;
+}
+
+.bcg-product-search-item.is-loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.bcg-product-search-item.bcg-item-added {
+	opacity: 0.5;
+	pointer-events: none;
+	background: #edfaef;
+	border-color: #00a32a;
+}
+
+.bcg-search-item-img {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: 4px;
+	border: 1px solid #e2e4e7;
+	flex-shrink: 0;
+}
+
+.bcg-search-item-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-search-item-name {
+	font-size: 13px;
+}
+
+.bcg-search-item-add {
+	color: #2271b1;
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Campaign Editor — Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 1200px) {
+	.bcg-editor-columns {
+		flex-direction: column;
+	}
+
+	.bcg-editor-main,
+	.bcg-editor-preview {
+		flex: none;
+		max-width: 100%;
+		width: 100%;
+	}
+
+	.bcg-editor-preview {
+		position: static;
+	}
+
+	.bcg-preview-iframe {
+		height: 500px;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.bcg-product-card-body {
+		flex-direction: column;
+	}
+
+	.bcg-product-card-image-col {
+		flex: none;
+		max-width: 100%;
+	}
+
+	.bcg-field-with-regen {
+		flex-direction: column;
+	}
+
+	.bcg-field-with-regen .bcg-regen-btn {
+		align-self: flex-start;
+	}
+
+	.bcg-actions-bar-inner {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.bcg-actions-left,
+	.bcg-actions-right {
+		flex-wrap: wrap;
+	}
+}
+
+/* ==========================================================================
+   Template Editor — Layout (2-panel: controls left, preview right)
+   ========================================================================== */
+
+.bcg-template-editor-wrap {
+	max-width: 100%;
+}
+
+.bcg-template-editor-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.bcg-template-editor-header h1 {
+	margin-bottom: 0;
+}
+
+.bcg-template-editor-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.bcg-template-editor-layout {
+	display: flex;
+	gap: 0;
+	min-height: 750px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.bcg-template-panel {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+/* Controls panel (left) — settings tabs + code editor tab */
+.bcg-template-panel-controls {
+	flex: 0 0 380px;
+	max-width: 380px;
+	border-right: 1px solid #c3c4c7;
+	background: #f6f7f7;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+/* Preview panel (right) — fills remaining space */
+.bcg-template-panel-preview {
+	flex: 1 1 auto;
+	min-width: 400px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ==========================================================================
+   Template Editor — Settings Tabs
+   ========================================================================== */
+
+.bcg-template-settings-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	border-bottom: 1px solid #c3c4c7;
+	background: #fff;
+	flex-shrink: 0;
+}
+
+.bcg-template-tab {
+	padding: 8px 10px;
+	font-size: 11px;
+	font-weight: 500;
+	color: #50575e;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	cursor: pointer;
+	transition: color 0.15s ease, border-color 0.15s ease;
+	white-space: nowrap;
+}
+
+.bcg-template-tab:hover {
+	color: #2271b1;
+}
+
+.bcg-template-tab.active {
+	color: #2271b1;
+	font-weight: 600;
+	border-bottom-color: #2271b1;
+}
+
+.bcg-template-tab-code {
+	margin-left: auto;
+	border-left: 1px solid #e2e4e7;
+	background: #f6f7f7;
+}
+
+.bcg-template-tab-code.active {
+	background: #e8f0fe;
+}
+
+/* ==========================================================================
+   Template Editor — Settings Panels
+   ========================================================================== */
+
+.bcg-template-settings-panels {
+	overflow-y: auto;
+	flex: 1;
+}
+
+.bcg-template-settings-panel {
+	display: none;
+}
+
+.bcg-template-settings-panel.active {
+	display: block;
+}
+
+/* Regular settings panels get padding */
+.bcg-template-settings-panel:not(.bcg-template-code-panel) {
+	padding: 16px;
+}
+
+.bcg-template-settings-panel h3 {
+	margin: 0 0 12px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bcg-template-settings-panel .bcg-field-group {
+	margin-bottom: 14px;
+}
+
+.bcg-template-settings-panel .bcg-field-group > label {
+	display: block;
+	font-size: 12px;
+	font-weight: 600;
+	color: #1d2327;
+	margin-bottom: 4px;
+}
+
+.bcg-template-settings-panel .bcg-field-group > label input[type="checkbox"] {
+	margin-right: 4px;
+}
+
+.bcg-template-settings-panel input[type="text"],
+.bcg-template-settings-panel input[type="url"],
+.bcg-template-settings-panel input[type="number"],
+.bcg-template-settings-panel select,
+.bcg-template-settings-panel textarea {
+	font-size: 12px;
+}
+
+.bcg-template-settings-panel .description {
+	font-size: 11px;
+	margin-top: 4px;
+}
+
+.bcg-field-with-button {
+	display: flex;
+	gap: 4px;
+}
+
+.bcg-field-with-button input {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-field-with-button .button {
+	flex-shrink: 0;
+	font-size: 11px;
+	padding: 2px 8px;
+	line-height: 2;
+}
+
+/* Colour inputs */
+.bcg-color-input {
+	width: 36px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+.bcg-color-value {
+	font-size: 11px;
+	font-family: Consolas, Monaco, monospace;
+	color: #646970;
+	margin-left: 6px;
+	vertical-align: middle;
+}
+
+/* ==========================================================================
+   Template Editor — Repeater
+   ========================================================================== */
+
+.bcg-repeater {
+	margin-bottom: 8px;
+}
+
+.bcg-repeater-row {
+	display: flex;
+	gap: 4px;
+	margin-bottom: 6px;
+	align-items: center;
+}
+
+.bcg-repeater-row input[type="text"],
+.bcg-repeater-row input[type="url"] {
+	flex: 1;
+	min-width: 0;
+	font-size: 11px;
+	padding: 4px 6px;
+}
+
+.bcg-repeater-remove {
+	padding: 2px 6px !important;
+	font-size: 14px !important;
+	line-height: 1 !important;
+	color: #d63638 !important;
+	min-width: auto !important;
+	border-color: #d63638 !important;
+}
+
+.bcg-repeater-remove:hover {
+	background: #d63638 !important;
+	color: #fff !important;
+}
+
+.bcg-repeater-add {
+	font-size: 11px !important;
+	padding: 2px 10px !important;
+}
+
+/* ==========================================================================
+   Template Editor — Code Panel (inside controls)
+   ========================================================================== */
+
+.bcg-template-code-panel {
+	display: none;
+	flex-direction: column;
+	height: 100%;
+}
+
+.bcg-template-code-panel.active {
+	display: flex;
+}
+
+.bcg-code-panel-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 16px 8px;
+}
+
+.bcg-code-panel-header h3 {
+	margin: 0 !important;
+}
+
+.bcg-token-reference-toggle {
+	font-size: 11px !important;
+	padding: 4px 10px !important;
+}
+
+.bcg-editor-code-wrapper {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	min-height: 400px;
+}
+
+.bcg-editor-code-wrapper .CodeMirror {
+	flex: 1;
+	height: 100% !important;
+	font-size: 12px;
+	border: none;
+	border-top: 1px solid #e2e4e7;
+}
+
+/* ==========================================================================
+   Template Editor — Token Reference
+   ========================================================================== */
+
+.bcg-token-reference {
+	padding: 12px 16px;
+	background: #f0f6fc;
+	border-bottom: 1px solid #c3c4c7;
+	font-size: 12px;
+	max-height: 250px;
+	overflow-y: auto;
+}
+
+.bcg-token-reference h4 {
+	margin: 0 0 8px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.bcg-token-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.bcg-token-group h5 {
+	margin: 0 0 4px;
+	font-size: 11px;
+	font-weight: 600;
+	color: #50575e;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+}
+
+.bcg-token-group code {
+	display: inline-block;
+	font-size: 10px;
+	background: #fff;
+	padding: 2px 6px;
+	margin: 0 3px 3px 0;
+	border-radius: 2px;
+	border: 1px solid #e2e4e7;
+	color: #1d2327;
+	word-break: break-all;
+}
+
+/* ==========================================================================
+   Template Editor — Preview Panel
+   ========================================================================== */
+
+.bcg-preview-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	border-bottom: 1px solid #c3c4c7;
+	background: #f6f7f7;
+	flex-shrink: 0;
+}
+
+.bcg-preview-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bcg-preview-device-toggle {
+	display: flex;
+	gap: 2px;
+	margin-left: auto;
+}
+
+.bcg-preview-device {
+	padding: 2px 6px !important;
+	line-height: 1 !important;
+}
+
+.bcg-preview-device.active {
+	background: #2271b1 !important;
+	color: #fff !important;
+	border-color: #2271b1 !important;
+}
+
+.bcg-preview-device .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+
+.bcg-preview-status {
+	font-size: 11px;
+	color: #646970;
+	font-style: italic;
+}
+
+.bcg-preview-frame-wrapper {
+	flex: 1;
+	overflow: auto;
+	background: #ffffff;
+	display: flex;
+	justify-content: center;
+}
+
+#bcg-preview-iframe {
+	border: none;
+	background: #fff;
+	width: 100%;
+	min-height: 600px;
+	transition: width 0.3s ease, max-width 0.3s ease;
+}
+
+#bcg-preview-iframe.bcg-preview-desktop {
+	width: 100%;
+	max-width: 660px;
+}
+
+#bcg-preview-iframe.bcg-preview-mobile {
+	width: 375px;
+	max-width: 375px;
+}
+
+/* ==========================================================================
+   Template Editor — Range Fields
+   ========================================================================== */
+
+.bcg-range-field {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.bcg-range-field input[type="range"] {
+	flex: 1;
+}
+
+.bcg-range-value {
+	min-width: 40px;
+	font-size: 13px;
+	color: #50575e;
+}
+
+/* ==========================================================================
+   Template Editor — Section Overlays
+   ========================================================================== */
+
+.bcg-preview-overlay-container {
+	position: relative;
+	width: 100%;
+	max-width: 660px;
+}
+
+#bcg-section-overlays {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+	z-index: 10;
+	overflow: visible;
+}
+
+.bcg-section-overlay {
+	position: absolute;
+	left: 0;
+	right: 0;
+	border: 2px dashed transparent;
+	transition: border-color 0.15s, background 0.15s;
+	pointer-events: auto;
+	cursor: default;
+	box-sizing: border-box;
+}
+
+.bcg-section-overlay:hover {
+	border-color: #2271b1;
+	background: rgba(34, 113, 177, 0.05);
+}
+
+.bcg-section-overlay-actions {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	display: none;
+	gap: 4px;
+	background: #fff;
+	border-radius: 4px;
+	padding: 2px 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+	z-index: 11;
+}
+
+.bcg-section-overlay:hover .bcg-section-overlay-actions {
+	display: flex;
+}
+
+.bcg-section-overlay-label {
+	position: absolute;
+	top: 4px;
+	left: 4px;
+	font-size: 11px;
+	background: #2271b1;
+	color: #fff;
+	padding: 2px 8px;
+	border-radius: 3px;
+	display: none;
+	z-index: 11;
+}
+
+.bcg-section-overlay:hover .bcg-section-overlay-label {
+	display: block;
+}
+
+.bcg-overlay-btn {
+	background: none;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	line-height: 1;
+	color: #50575e;
+}
+
+.bcg-overlay-btn:hover {
+	background: #f0f0f1;
+	border-color: #2271b1;
+	color: #2271b1;
+}
+
+/* ==========================================================================
+   Template Editor — Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 1200px) {
+	.bcg-template-panel-controls {
+		flex: 0 0 320px;
+		max-width: 320px;
+	}
+}
+
+@media screen and (max-width: 900px) {
+	.bcg-template-editor-layout {
+		flex-direction: column;
+		min-height: auto;
+	}
+
+	.bcg-template-panel-controls {
+		flex: none;
+		max-width: 100%;
+		border-right: none;
+		border-bottom: 1px solid #c3c4c7;
+		max-height: 450px;
+	}
+
+	.bcg-template-panel-preview {
+		flex: none;
+		min-width: 0;
+		min-height: 500px;
+	}
+}
+
+/* ==========================================================================
+   Brevo Stats — Page Layout
+   ========================================================================== */
+
+.bcg-stats-wrap {
+	max-width: 100%;
+}
+
+/* ==========================================================================
+   Brevo Stats — Cache Notice
+   ========================================================================== */
+
+.bcg-stats-cache-notice {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 16px;
+	font-size: 13px;
+	color: #646970;
+}
+
+.bcg-stats-cache-notice .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	vertical-align: middle;
+	margin-right: -2px;
+}
+
+#bcg-refresh-stats {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+#bcg-refresh-stats .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	line-height: 14px;
+}
+
+/* ==========================================================================
+   Brevo Stats — Stat Cards
+   ========================================================================== */
+
+.bcg-stats-cards {
+	margin-bottom: 20px;
+}
+
+.bcg-grid-4 {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+}
+
+.bcg-stat-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	transition: box-shadow 0.15s ease;
+}
+
+.bcg-stat-card:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bcg-stat-card-inner {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 20px;
+}
+
+.bcg-stat-icon {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+	color: #2271b1;
+	flex-shrink: 0;
+}
+
+.bcg-stat-content {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-stat-value {
+	display: block;
+	font-size: 26px;
+	font-weight: 700;
+	color: #1d2327;
+	line-height: 1.2;
+}
+
+.bcg-stat-label {
+	display: block;
+	font-size: 12px;
+	font-weight: 500;
+	color: #646970;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+	margin-top: 2px;
+}
+
+/* Stat icon colour variants (dashboard) */
+.bcg-stat-icon-draft {
+	color: #50575e;
+}
+
+.bcg-stat-icon-sent {
+	color: #00a32a;
+}
+
+.bcg-stat-icon-credits {
+	color: #dba617;
+}
+
+/* ==========================================================================
+   Brevo Stats — Filter Bar
+   ========================================================================== */
+
+.bcg-stats-filter-bar {
+	margin-bottom: 16px;
+}
+
+.bcg-stats-filters-row {
+	display: flex;
+	align-items: flex-end;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.bcg-filter-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.bcg-filter-group label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bcg-filter-input {
+	font-size: 13px;
+	padding: 6px 10px;
+	min-width: 140px;
+}
+
+.bcg-filter-actions {
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+}
+
+/* ==========================================================================
+   Brevo Stats — Campaigns Table
+   ========================================================================== */
+
+.bcg-stats-table-card {
+	overflow-x: auto;
+}
+
+.bcg-stats-table {
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.bcg-stats-table th {
+	text-align: left;
+	font-weight: 600;
+	font-size: 12px;
+	padding: 10px 12px;
+	background: #f6f7f7;
+	border-bottom: 1px solid #c3c4c7;
+	white-space: nowrap;
+}
+
+.bcg-stats-table td {
+	padding: 10px 12px;
+	vertical-align: middle;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-stats-table .alternate {
+	background: #f9f9f9;
+}
+
+.bcg-stats-table .bcg-col-expand {
+	width: 40px;
+	text-align: center;
+}
+
+.bcg-stats-table .bcg-col-name {
+	max-width: 250px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-weight: 500;
+}
+
+.bcg-stats-table .bcg-col-date {
+	white-space: nowrap;
+}
+
+.bcg-stats-row-toggle {
+	padding: 2px !important;
+	cursor: pointer;
+}
+
+.bcg-stats-row-toggle .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	color: #2271b1;
+}
+
+/* ==========================================================================
+   Brevo Stats — Status Badges
+   ========================================================================== */
+
+.bcg-status-queued {
+	background: #f0f6fc;
+	color: #2271b1;
+	border: 1px solid #2271b1;
+}
+
+.bcg-status-archive {
+	background: #f0f0f1;
+	color: #50575e;
+	border: 1px solid #c3c4c7;
+}
+
+.bcg-status-suspended {
+	background: #fcf0f1;
+	color: #d63638;
+	border: 1px solid #d63638;
+}
+
+/* ==========================================================================
+   Brevo Stats — Detail Row (expanded)
+   ========================================================================== */
+
+.bcg-stats-detail-row {
+	background: #f0f6fc;
+}
+
+.bcg-stats-detail-row td {
+	padding: 0;
+}
+
+.bcg-stats-detail-content {
+	padding: 20px 24px;
+}
+
+.bcg-stats-detail-content h4 {
+	margin: 0 0 16px;
+	font-size: 15px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bcg-stats-detail-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.bcg-stats-detail-item {
+	background: #fff;
+	border: 1px solid #e2e4e7;
+	border-radius: 4px;
+	padding: 10px 14px;
+	text-align: center;
+}
+
+.bcg-detail-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 500;
+	color: #646970;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+	margin-bottom: 4px;
+}
+
+.bcg-detail-value {
+	display: block;
+	font-size: 18px;
+	font-weight: 700;
+	color: #1d2327;
+}
+
+.bcg-stats-detail-actions {
+	display: flex;
+	gap: 8px;
+}
+
+.bcg-stats-detail-actions .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+	vertical-align: middle;
+	margin-right: 2px;
+}
+
+.bcg-stats-detail-loading {
+	padding: 24px;
+	text-align: center;
+	font-size: 13px;
+	color: #646970;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+/* ==========================================================================
+   Brevo Stats — Skeleton Loading
+   ========================================================================== */
+
+.bcg-skeleton {
+	display: inline-block;
+	background: linear-gradient(90deg, #e2e4e7 25%, #f0f0f1 50%, #e2e4e7 75%);
+	background-size: 200% 100%;
+	animation: bcg-skeleton-loading 1.5s infinite;
+	border-radius: 3px;
+	min-height: 16px;
+	vertical-align: middle;
+}
+
+@keyframes bcg-skeleton-loading {
+	0% { background-position: 200% 0; }
+	100% { background-position: -200% 0; }
+}
+
+.bcg-skeleton-text {
+	width: 80px;
+}
+
+.bcg-skeleton-text-wide {
+	width: 160px;
+}
+
+.bcg-skeleton-text-short {
+	width: 50px;
+}
+
+.bcg-skeleton-icon {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+}
+
+.bcg-skeleton-badge {
+	width: 60px;
+	height: 22px;
+	border-radius: 3px;
+}
+
+/* ==========================================================================
+   Brevo Stats — Pagination
+   ========================================================================== */
+
+.bcg-stats-pagination {
+	padding: 16px 0;
+}
+
+/* ==========================================================================
+   Brevo Stats — Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 1100px) {
+	.bcg-grid-4 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.bcg-stats-detail-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.bcg-grid-4 {
+		grid-template-columns: 1fr;
+	}
+
+	.bcg-stats-filters-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.bcg-filter-input {
+		min-width: auto;
+		width: 100%;
+	}
+
+	.bcg-filter-actions {
+		flex-direction: row;
+	}
+
+	.bcg-stats-table {
+		font-size: 12px;
+	}
+
+	.bcg-stats-table th,
+	.bcg-stats-table td {
+		padding: 8px 6px;
+	}
+
+	.bcg-stat-card-inner {
+		padding: 14px;
+	}
+
+	.bcg-stat-value {
+		font-size: 22px;
+	}
+
+	.bcg-stats-detail-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.bcg-detail-value {
+		font-size: 15px;
+	}
+
+	.bcg-template-editor-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+/* ==========================================================================
+   Campaign Wizard — New Campaign (Step 1)
+   ========================================================================== */
+
+/* -- Wizard layout -------------------------------------------------------- */
+
+.bcg-campaign-wizard {
+	max-width: 820px;
+}
+
+.bcg-wizard-section {
+	margin-bottom: 24px;
+}
+
+.bcg-wizard-section .bcg-card-header .dashicons {
+	margin-right: 6px;
+	color: #646970;
+}
+
+/* -- Field rows ----------------------------------------------------------- */
+
+.bcg-field-row {
+	margin-bottom: 20px;
+}
+
+.bcg-field-row:last-child {
+	margin-bottom: 0;
+}
+
+.bcg-field-label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 6px;
+	color: #1d2327;
+	font-size: 13px;
+}
+
+.bcg-required {
+	color: #d63638;
+	margin-left: 2px;
+}
+
+.bcg-field-with-action {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.bcg-field-with-action input[type="text"],
+.bcg-field-with-action select,
+.bcg-field-with-action textarea {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-field-with-action .bcg-ai-generate-btn,
+.bcg-field-with-action .bcg-btn-secondary {
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+
+.bcg-full-width {
+	width: 100%;
+}
+
+.bcg-select-medium {
+	max-width: 320px;
+	width: 100%;
+}
+
+.bcg-field-suffix {
+	display: inline-block;
+	margin-left: 6px;
+	color: #646970;
+	font-size: 13px;
+	line-height: 30px;
+}
+
+.bcg-field-hint {
+	display: block;
+	margin-top: 4px;
+	font-size: 12px;
+	color: #646970;
+}
+
+/* -- AI generate buttons -------------------------------------------------- */
+
+.bcg-ai-generate-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	color: #7c3aed;
+	background: #f5f0ff;
+	border: 1px solid #ddd0fc;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	white-space: nowrap;
+	height: 30px;
+	line-height: 1;
+}
+
+.bcg-ai-generate-btn:hover {
+	background: #ede5ff;
+	border-color: #c4b0f0;
+	color: #5b21b6;
+}
+
+.bcg-ai-generate-btn:disabled,
+.bcg-ai-generate-btn.bcg-loading {
+	opacity: 0.6;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+.bcg-ai-generate-btn .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+}
+
+.bcg-ai-generate-btn .bcg-spinner-small {
+	width: 14px;
+	height: 14px;
+	border-width: 2px;
+}
+
+/* -- Radio & checkbox labels (card style for wizard) ---------------------- */
+
+.bcg-radio-group {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.bcg-radio-group.bcg-radio-inline {
+	flex-direction: row;
+	gap: 16px;
+}
+
+.bcg-campaign-wizard .bcg-radio-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 10px 14px;
+	background: #f9fafb;
+	border: 1px solid #e2e4e7;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.bcg-campaign-wizard .bcg-radio-label:hover {
+	background: #f0f2f5;
+	border-color: #c3c4c7;
+}
+
+.bcg-campaign-wizard .bcg-radio-label input[type="radio"],
+.bcg-campaign-wizard .bcg-radio-label input[type="checkbox"] {
+	margin-top: 3px;
+	flex-shrink: 0;
+}
+
+.bcg-radio-text {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	line-height: 1.4;
+}
+
+.bcg-radio-desc {
+	font-size: 12px;
+	color: #646970;
+	font-weight: 400;
+}
+
+.bcg-campaign-wizard .bcg-radio-inline .bcg-radio-label {
+	padding: 8px 16px;
+}
+
+.bcg-checkbox-label {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 10px 14px;
+	background: #f9fafb;
+	border: 1px solid #e2e4e7;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.bcg-checkbox-label:hover {
+	background: #f0f2f5;
+	border-color: #c3c4c7;
+}
+
+.bcg-checkbox-label input[type="checkbox"] {
+	margin-top: 3px;
+	flex-shrink: 0;
+}
+
+/* -- Coupon details ------------------------------------------------------- */
+
+.bcg-coupon-details {
+	margin-top: 16px;
+	padding: 16px 20px;
+	background: #fafafa;
+	border: 1px solid #e2e4e7;
+	border-radius: 6px;
+}
+
+.bcg-coupon-details .bcg-field-row:first-child {
+	margin-top: 0;
+}
+
+/* -- Category tree -------------------------------------------------------- */
+
+.bcg-category-tree-wrapper {
+	border: 1px solid #e2e4e7;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.bcg-category-tree-actions {
+	display: flex;
+	gap: 8px;
+	padding: 8px 12px;
+	background: #f9fafb;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.bcg-category-tree-actions .button-link {
+	font-size: 12px;
+	color: #2271b1;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.bcg-category-tree-actions .button-link:hover {
+	color: #135e96;
+	text-decoration: underline;
+}
+
+.bcg-category-tree-list {
+	max-height: 220px;
+	overflow-y: auto;
+	padding: 10px 12px;
+}
+
+.bcg-category-item {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.bcg-category-label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 0;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.bcg-category-label:hover {
+	color: #2271b1;
+}
+
+.bcg-category-count {
+	color: #a0a5aa;
+	font-size: 12px;
+}
+
+.bcg-category-children {
+	margin: 0;
+	padding-left: 22px;
+	list-style: none;
+}
+
+/* -- Manual product picker ------------------------------------------------ */
+
+.bcg-manual-picker-row {
+	margin-top: 12px;
+}
+
+.bcg-product-search-wrapper {
+	position: relative;
+	max-width: 460px;
+}
+
+.bcg-product-search-wrapper input[type="search"] {
+	width: 100%;
+}
+
+.bcg-product-search-results {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-top: 0;
+	border-radius: 0 0 6px 6px;
+	max-height: 280px;
+	overflow-y: auto;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.bcg-search-result-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 12px;
+	cursor: pointer;
+	transition: background 0.1s ease;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.bcg-search-result-item:last-child {
+	border-bottom: 0;
+}
+
+.bcg-search-result-item:hover {
+	background: #f0f6fc;
+}
+
+.bcg-search-result-selected {
+	opacity: 0.5;
+	pointer-events: none;
+	background: #f6f7f7;
+}
+
+.bcg-search-result-img {
+	width: 36px;
+	height: 36px;
+	border-radius: 4px;
+	object-fit: cover;
+	flex-shrink: 0;
+}
+
+.bcg-search-result-info {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+	flex: 1;
+}
+
+.bcg-search-result-name {
+	font-size: 13px;
+	font-weight: 500;
+	color: #1d2327;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.bcg-search-result-meta {
+	font-size: 12px;
+	color: #646970;
+}
+
+.bcg-search-result-cat {
+	font-size: 11px;
+	color: #a0a5aa;
+}
+
+.bcg-search-result-added {
+	font-size: 11px;
+	color: #00a32a;
+	font-weight: 500;
+}
+
+.bcg-search-no-results {
+	padding: 16px;
+	text-align: center;
+	color: #646970;
+	font-size: 13px;
+}
+
+/* -- Manual selected product tags ----------------------------------------- */
+
+.bcg-manual-selected-products {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 10px;
+}
+
+.bcg-manual-product-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 8px 4px 4px;
+	background: #f0f6fc;
+	border: 1px solid #c5d7e8;
+	border-radius: 20px;
+	font-size: 12px;
+	line-height: 1;
+}
+
+.bcg-manual-product-thumb {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.bcg-manual-product-name {
+	color: #1d2327;
+	font-weight: 500;
+	max-width: 140px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.bcg-manual-product-remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #a0a5aa;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+	border-radius: 50%;
+	transition: all 0.15s ease;
+}
+
+.bcg-manual-product-remove:hover {
+	background: #d63638;
+	color: #fff;
+}
+
+/* -- Product preview grid ------------------------------------------------- */
+
+.bcg-product-preview-area {
+	margin-top: 16px;
+}
+
+.bcg-preview-heading {
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 12px;
+}
+
+.bcg-product-preview-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 14px;
+}
+
+.bcg-preview-product-card {
+	background: #fff;
+	border: 1px solid #e2e4e7;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: box-shadow 0.15s ease;
+}
+
+.bcg-preview-product-card:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.bcg-preview-product-image {
+	width: 100%;
+	height: 0;
+	padding-bottom: 100%;
+	position: relative;
+	overflow: hidden;
+	background: #f6f7f7;
+}
+
+.bcg-preview-product-image img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.bcg-preview-product-info {
+	padding: 10px 12px 12px;
+}
+
+.bcg-preview-product-name {
+	font-size: 13px;
+	font-weight: 600;
+	margin: 0 0 4px;
+	color: #1d2327;
+	line-height: 1.3;
+}
+
+.bcg-preview-product-price {
+	font-size: 13px;
+	color: #1d2327;
+	margin-bottom: 6px;
+}
+
+.bcg-preview-product-price del {
+	color: #a0a5aa;
+	margin-right: 4px;
+}
+
+.bcg-preview-product-price ins {
+	text-decoration: none;
+	font-weight: 600;
+	color: #d63638;
+}
+
+.bcg-preview-product-cat {
+	display: block;
+	font-size: 11px;
+	color: #646970;
+	margin-bottom: 2px;
+}
+
+.bcg-preview-product-sales {
+	display: block;
+	font-size: 11px;
+	color: #646970;
+}
+
+.bcg-preview-product-stock {
+	display: inline-block;
+	font-size: 11px;
+	padding: 1px 6px;
+	border-radius: 3px;
+	margin-top: 4px;
+}
+
+.bcg-stock-instock {
+	background: #edfaef;
+	color: #00a32a;
+}
+
+.bcg-stock-outofstock {
+	background: #fcf0f1;
+	color: #d63638;
+}
+
+.bcg-stock-onbackorder {
+	background: #fef8ee;
+	color: #996800;
+}
+
+/* -- Preview products row ------------------------------------------------- */
+
+.bcg-preview-products-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding-top: 6px;
+}
+
+.bcg-preview-products-row .bcg-spinner-small {
+	display: inline-block;
+}
+
+/* -- Wizard actions bar --------------------------------------------------- */
+
+.bcg-wizard-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 24px;
+	padding: 20px 0;
+}
+
+.bcg-btn-large {
+	padding: 10px 28px;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 6px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.bcg-btn-large.bcg-btn-primary {
+	background: #2271b1;
+	color: #fff;
+	border: 1px solid #2271b1;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.bcg-btn-large.bcg-btn-primary:hover {
+	background: #135e96;
+	border-color: #135e96;
+}
+
+.bcg-btn-large.bcg-btn-primary:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* -- Generation overlay --------------------------------------------------- */
+
+.bcg-generation-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100000;
+	background: rgba(0, 0, 0, 0.65);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.bcg-generation-modal {
+	background: #fff;
+	border-radius: 12px;
+	padding: 36px 40px;
+	max-width: 460px;
+	width: 90%;
+	text-align: center;
+	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.bcg-generation-modal h2 {
+	margin: 0 0 6px;
+	font-size: 20px;
+	color: #1d2327;
+}
+
+.bcg-generation-subtitle {
+	color: #646970;
+	font-size: 13px;
+	margin: 0 0 28px;
+}
+
+/* -- Generation steps ----------------------------------------------------- */
+
+.bcg-generation-steps {
+	text-align: left;
+	margin-bottom: 20px;
+}
+
+.bcg-generation-step {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 0;
+	border-bottom: 1px solid #f0f0f1;
+	color: #a0a5aa;
+	transition: color 0.2s ease;
+}
+
+.bcg-generation-step:last-child {
+	border-bottom: 0;
+}
+
+.bcg-step-indicator {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	flex-shrink: 0;
+}
+
+.bcg-step-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: #f0f0f1;
+	color: #a0a5aa;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.bcg-step-label {
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.bcg-step-check {
+	color: #00a32a;
+	font-size: 20px;
+}
+
+.bcg-step-spinner {
+	display: inline-block;
+}
+
+/* Step states */
+
+.bcg-step-active {
+	color: #2271b1;
+}
+
+.bcg-step-active .bcg-step-number {
+	background: #2271b1;
+	color: #fff;
+}
+
+.bcg-step-complete {
+	color: #00a32a;
+}
+
+.bcg-step-complete .bcg-step-number {
+	background: #edfaef;
+	color: #00a32a;
+}
+
+.bcg-step-error {
+	color: #d63638;
+}
+
+.bcg-step-error .bcg-step-number {
+	background: #fcf0f1;
+	color: #d63638;
+}
+
+/* -- Generation actions --------------------------------------------------- */
+
+.bcg-generation-actions {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 16px;
+}
+
+/* -- Wizard notices ------------------------------------------------------- */
+
+#bcg-wizard-notices {
+	margin-bottom: 16px;
+}
+
+.bcg-wizard-notice {
+	position: relative;
+	padding-right: 36px;
+}
+
+.bcg-notice-dismiss {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background: transparent;
+	border: 0;
+	font-size: 18px;
+	color: #a0a5aa;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+}
+
+.bcg-notice-dismiss:hover {
+	color: #d63638;
+}
+
+/* -- Field error state ---------------------------------------------------- */
+
+.bcg-field-error {
+	border-color: #d63638 !important;
+	box-shadow: 0 0 0 1px #d63638 !important;
+}
+
+/* -- Mailing list select -------------------------------------------------- */
+
+.bcg-brevo-list-select {
+	min-width: 260px;
+}
+
+/* ==========================================================================
+   Campaign Wizard — Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 782px) {
+	.bcg-campaign-wizard {
+		max-width: 100%;
+	}
+
+	.bcg-field-with-action {
+		flex-direction: column;
+	}
+
+	.bcg-field-with-action .bcg-ai-generate-btn,
+	.bcg-field-with-action .bcg-btn-secondary {
+		align-self: flex-start;
+	}
+
+	.bcg-radio-group {
+		gap: 6px;
+	}
+
+	.bcg-radio-group.bcg-radio-inline {
+		flex-direction: column;
+	}
+
+	.bcg-product-preview-grid {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: 10px;
+	}
+
+	.bcg-generation-modal {
+		padding: 24px 20px;
+	}
+
+	.bcg-manual-product-name {
+		max-width: 100px;
+	}
+
+	.bcg-select-medium {
+		max-width: 100%;
+	}
+
+	.bcg-wizard-actions {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.bcg-btn-large {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+/* ==========================================================================
+   Template Chooser Strip
+   ========================================================================== */
+
+.bcg-template-chooser {
+	margin-bottom: 16px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 12px 16px;
+}
+
+.bcg-template-chooser-scroll {
+	display: flex;
+	gap: 10px;
+	overflow-x: auto;
+	padding-bottom: 4px;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: thin;
+	scrollbar-color: #c3c4c7 transparent;
+}
+
+.bcg-template-chooser-scroll::-webkit-scrollbar {
+	height: 6px;
+}
+
+.bcg-template-chooser-scroll::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.bcg-template-chooser-scroll::-webkit-scrollbar-thumb {
+	background: #c3c4c7;
+	border-radius: 3px;
+}
+
+.bcg-template-card {
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 10px;
+	border: 2px solid #e2e4e7;
+	border-radius: 6px;
+	background: #fff;
+	cursor: pointer;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+	position: relative;
+	min-width: 100px;
+}
+
+.bcg-template-card:hover {
+	border-color: #2271b1;
+	box-shadow: 0 2px 8px rgba(34, 113, 177, 0.12);
+	transform: translateY(-1px);
+}
+
+.bcg-template-card:focus {
+	outline: 2px solid #2271b1;
+	outline-offset: 1px;
+}
+
+.bcg-template-card-active {
+	border-color: #2271b1;
+	background: #f0f6fc;
+	box-shadow: 0 2px 8px rgba(34, 113, 177, 0.15);
+}
+
+.bcg-template-card-preview {
+	width: 72px;
+	height: 52px;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.bcg-template-card-swatch {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4px;
+	border-radius: 3px;
+}
+
+.bcg-template-card-swatch-inner {
+	width: 48px;
+	height: 38px;
+	border-radius: 2px;
+	padding: 6px 5px;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.bcg-template-card-swatch-line {
+	height: 3px;
+	border-radius: 1px;
+	opacity: 0.3;
+}
+
+.bcg-template-card-swatch-line-short {
+	width: 60%;
+}
+
+.bcg-template-card-swatch-btn {
+	width: 24px;
+	height: 6px;
+	border-radius: 2px;
+	margin-top: auto;
+}
+
+.bcg-template-card-name {
+	font-size: 11px;
+	font-weight: 600;
+	color: #1d2327;
+	white-space: nowrap;
+	line-height: 1.2;
+}
+
+.bcg-template-card-badge {
+	position: absolute;
+	top: -8px;
+	right: -4px;
+	background: #2271b1;
+	color: #fff;
+	font-size: 9px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+	padding: 2px 6px;
+	border-radius: 8px;
+	line-height: 1.2;
+}
+
+/* Responsive: template chooser */
+@media only screen and (max-width: 782px) {
+	.bcg-template-chooser {
+		padding: 8px 10px;
+	}
+
+	.bcg-template-card {
+		min-width: 85px;
+		padding: 6px 8px;
+	}
+
+	.bcg-template-card-preview {
+		width: 60px;
+		height: 44px;
+	}
+
+	.bcg-template-card-swatch-inner {
+		width: 40px;
+		height: 32px;
+	}
+}

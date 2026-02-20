@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>{{subject}}</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style type="text/css">
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
+        #MessageViewBody a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+        @media only screen and (max-width: 620px) {
+            .bcg-wrapper { width: 100% !important; max-width: 100% !important; }
+            .bcg-content { padding: 16px !important; }
+            .bcg-coupon-code { font-size: 22px !important; letter-spacing: 3px !important; }
+            h1 { font-size: 24px !important; }
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:{{setting_background_color}};font-family:{{setting_font_family}};-webkit-font-smoothing:antialiased;">
+
+    <div style="display:none;font-size:1px;color:{{setting_background_color}};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+        {{preview_text}}
+        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+    </div>
+
+    <!-- Text Only: ultra-minimal, no images, thin dividers -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_background_color}};">
+        <tr>
+            <td align="center" style="padding:24px 8px;">
+
+                <table class="bcg-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0" width="{{setting_max_width}}" style="max-width:{{setting_max_width}};background-color:{{setting_content_background}};">
+
+                    <!-- ============ HEADER — text only, no backgrounds ============ -->
+                    <tr>
+                        <td style="padding:24px 32px 16px;">
+                            {{#if logo_url}}
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="left" style="padding-bottom:12px;">
+                                        <a href="{{store_url}}" target="_blank" style="text-decoration:none;">
+                                            <img src="{{setting_logo_url}}" alt="{{store_name}}" width="{{setting_logo_width}}" style="display:block;max-width:100%;height:auto;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+                            {{#if header_text}}
+                            <span style="font-family:{{setting_font_family}};font-size:20px;font-weight:bold;color:{{setting_text_color}};">{{setting_header_text}}</span>
+                            {{/if}}
+                            {{#if show_nav}}
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="left" style="padding:12px 0 0;">
+                                        {{navigation_links}}
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+                        </td>
+                    </tr>
+
+                    <!-- ============ THIN DIVIDER ============ -->
+                    <tr>
+                        <td style="padding:0 32px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="border-top:1px solid #dddddd;height:1px;font-size:1px;line-height:1px;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ============ HEADLINE (no hero image) ============ -->
+                    <tr>
+                        <td class="bcg-content" style="padding:28px 32px 12px;">
+                            <h1 style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:26px;font-weight:bold;color:{{setting_text_color}};line-height:1.3;">
+                                {{campaign_headline}}
+                            </h1>
+                            <p style="margin:0 0 20px;font-family:{{setting_font_family}};font-size:16px;color:{{setting_text_color}};line-height:1.6;">
+                                {{campaign_description}}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- ============ COUPON BLOCK — simple ============ -->
+                    {{#if show_coupon_block}}
+                    <tr>
+                        <td class="bcg-content" style="padding:0 32px 20px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding:16px 0;border-top:1px solid #dddddd;border-bottom:1px solid #dddddd;">
+                                        <p style="margin:0 0 6px;font-family:{{setting_font_family}};font-size:15px;color:{{setting_text_color}};font-weight:600;">
+                                            {{coupon_text}}
+                                        </p>
+                                        <span style="font-family:'Courier New',Courier,monospace;font-size:22px;font-weight:bold;color:{{setting_primary_color}};letter-spacing:3px;">
+                                            {{coupon_code}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    <!-- ============ PRODUCTS (text only, no images) ============ -->
+                    <tr>
+                        <td class="bcg-content" style="padding:8px 32px 20px;">
+                            {{products_block}}
+                        </td>
+                    </tr>
+
+                    <!-- ============ CTA — text link style ============ -->
+                    <tr>
+                        <td style="padding:0 32px 28px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="border-radius:{{setting_button_border_radius}};background-color:{{setting_button_color}};">
+                                        <a href="{{store_url}}" target="_blank" style="display:inline-block;padding:12px 32px;font-family:{{setting_font_family}};font-size:15px;font-weight:bold;color:{{setting_button_text_color}};text-decoration:none;border-radius:{{setting_button_border_radius}};background-color:{{setting_button_color}};">
+                                            Shop Now
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ============ FOOTER — minimal ============ -->
+                    <tr>
+                        <td style="padding:0 32px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="border-top:1px solid #dddddd;height:1px;font-size:1px;line-height:1px;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px 32px;text-align:left;">
+                            <p style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:12px;color:#999999;line-height:1.5;">
+                                {{setting_footer_text}}
+                            </p>
+                            <p style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:12px;color:#999999;">
+                                {{footer_links}}
+                            </p>
+                            <p style="margin:0;font-family:{{setting_font_family}};font-size:11px;color:#bbbbbb;">
+                                &copy; {{current_year}} {{store_name}}
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
