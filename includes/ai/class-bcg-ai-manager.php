@@ -769,6 +769,10 @@ class BCG_AI_Manager {
 	 * @return bool True if the user has enough credits, false otherwise.
 	 */
 	public function check_credits( float $required ): bool {
+		if ( 'yes' === get_option( 'bcg_test_mode', 'no' ) ) {
+			return true;
+		}
+
 		return $this->credits->has_sufficient_credits( $this->user_id, $required );
 	}
 
@@ -784,6 +788,10 @@ class BCG_AI_Manager {
 	 * @return float|\WP_Error The new balance on success, WP_Error on failure.
 	 */
 	public function deduct_credits( float $amount, ?string $service = null, ?string $task = null, ?int $tokens = null ): float|\WP_Error {
+		if ( 'yes' === get_option( 'bcg_test_mode', 'no' ) ) {
+			return 0.0;
+		}
+
 		return $this->credits->deduct_credits( $this->user_id, $amount, $service, $task, $tokens );
 	}
 

@@ -663,6 +663,26 @@ class BCG_Settings {
 				'label'       => __( 'Automatically create a WooCommerce coupon when generating a new campaign.', 'brevo-campaign-generator' ),
 			)
 		);
+
+		// Test Mode.
+		register_setting( $page, 'bcg_test_mode', array(
+			'type'              => 'string',
+			'sanitize_callback' => array( $this, 'sanitize_checkbox' ),
+			'default'           => 'no',
+		) );
+
+		add_settings_field(
+			'bcg_test_mode',
+			__( 'Test Mode', 'brevo-campaign-generator' ),
+			array( $this, 'render_checkbox_field' ),
+			$page,
+			$section,
+			array(
+				'label_for'   => 'bcg_test_mode',
+				'option_name' => 'bcg_test_mode',
+				'label'       => __( 'Enable Test Mode — bypass credit requirements for all AI operations.', 'brevo-campaign-generator' ),
+			)
+		);
 	}
 
 	// ─── Section Description Callbacks ──────────────────────────────────
