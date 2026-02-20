@@ -2105,7 +2105,9 @@ class BCG_Admin {
 			);
 		}
 
-		// Validate sender is configured — read from new JSON option, fall back to legacy.
+		// Resolve sender against Brevo's verified senders list.
+		// Always fetch to ensure we have the correct sender ID; this guarantees
+		// Brevo accepts the sender even if local config is stale or missing.
 		$sender_json  = get_option( 'bcg_brevo_sender', '' );
 		$sender_data  = is_string( $sender_json ) ? json_decode( $sender_json, true ) : null;
 		$sender_email = ( is_array( $sender_data ) && ! empty( $sender_data['email'] ) )
@@ -2114,18 +2116,48 @@ class BCG_Admin {
 		$sender_name  = ( is_array( $sender_data ) && ! empty( $sender_data['name'] ) )
 			? (string) $sender_data['name']
 			: (string) get_option( 'bcg_brevo_sender_name', '' );
+		$sender_id    = ( is_array( $sender_data ) && ! empty( $sender_data['id'] ) )
+			? (int) $sender_data['id']
+			: 0;
 
-		// If no sender is configured locally, auto-fetch the first verified sender from Brevo.
-		if ( empty( $sender_email ) || ! is_email( $sender_email ) ) {
-			$verified_senders = $brevo->get_senders();
-			if ( ! is_wp_error( $verified_senders ) && ! empty( $verified_senders ) ) {
-				$first         = $verified_senders[0];
-				$sender_email  = isset( $first['email'] ) ? (string) $first['email'] : '';
-				$sender_name   = isset( $first['name'] ) ? (string) $first['name'] : '';
-				$sender_id_val = isset( $first['id'] ) ? (int) $first['id'] : 0;
-				// Auto-save so the Settings tab shows the correct sender next visit.
+		// Fetch verified senders from Brevo and resolve the best match.
+		$verified_senders = $brevo->get_senders();
+		if ( ! is_wp_error( $verified_senders ) && ! empty( $verified_senders ) ) {
+			$matched = null;
+
+			// 1. Match by email (case-insensitive).
+			if ( ! empty( $sender_email ) ) {
+				foreach ( $verified_senders as $vs ) {
+					if ( isset( $vs['email'] ) && strtolower( $vs['email'] ) === strtolower( $sender_email ) ) {
+						$matched = $vs;
+						break;
+					}
+				}
+			}
+
+			// 2. Match by stored ID if email lookup failed.
+			if ( null === $matched && $sender_id > 0 ) {
+				foreach ( $verified_senders as $vs ) {
+					if ( isset( $vs['id'] ) && (int) $vs['id'] === $sender_id ) {
+						$matched = $vs;
+						break;
+					}
+				}
+			}
+
+			// 3. Fall back to first verified sender.
+			if ( null === $matched ) {
+				$matched = $verified_senders[0];
+			}
+
+			// Use the resolved sender and persist with correct ID.
+			$sender_email = (string) ( $matched['email'] ?? $sender_email );
+			$sender_name  = (string) ( $matched['name'] ?? $sender_name );
+			$sender_id    = (int) ( $matched['id'] ?? 0 );
+
+			if ( $sender_id > 0 ) {
 				update_option( 'bcg_brevo_sender', wp_json_encode( array(
-					'id'    => $sender_id_val,
+					'id'    => $sender_id,
 					'name'  => $sender_name,
 					'email' => $sender_email,
 				) ) );
@@ -2135,7 +2167,7 @@ class BCG_Admin {
 		if ( empty( $sender_email ) || ! is_email( $sender_email ) ) {
 			return new \WP_Error(
 				'bcg_missing_sender',
-				__( 'Sender email is not configured. Go to Brevo Campaigns > Settings > Brevo tab and select a verified sender.', 'brevo-campaign-generator' )
+				__( 'No verified sender found in your Brevo account. Please check your Brevo API key in Settings > API Keys.', 'brevo-campaign-generator' )
 			);
 		}
 

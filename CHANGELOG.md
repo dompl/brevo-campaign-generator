@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.7] — 2026-02-20
+
+### Fixed
+- **"Sender is invalid / inactive" — complete resolution** — the v1.3.6 fix only auto-fetched a verified sender when the stored email was completely empty or malformed. The real-world failure was that a syntactically valid but non-verified email was already stored, so the auto-fetch never triggered. `ensure_brevo_campaign()` now **always** calls `GET /senders` before every send operation and resolves the sender by: (1) email match, (2) stored ID match, (3) first verified sender as fallback. The resolved sender (with correct Brevo sender `id`) is then persisted to the option and passed in the API payload, guaranteeing Brevo can identify the sender regardless of what was previously stored.
+
+---
+
 ## [1.3.6] — 2026-02-20
 
 ### Fixed
@@ -119,7 +126,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.6...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.7...HEAD
+[1.3.7]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.6...v1.3.7
 [1.3.6]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.5...v1.3.6
 [1.3.5]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.3...v1.3.4
