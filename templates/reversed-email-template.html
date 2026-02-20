@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="x-apple-disable-message-reformatting" />
     <title>{{subject}}</title>
+
     <!--[if mso]>
     <noscript>
         <xml>
@@ -16,164 +17,507 @@
         </xml>
     </noscript>
     <![endif]-->
+
+    <!--
+        ================================================================
+        MIDNIGHT LUXURY — Dark Mode Email Template ("reversed" variant)
+        ================================================================
+
+        DESIGN INTENT:
+        This template applies a forced dark-mode "Midnight Luxury" colour
+        palette. The name "reversed" refers to the product layout direction
+        (image right, text left), which is handled by the PHP template engine
+        when rendering {{products_block}}.
+
+        COLOUR OVERRIDES (intentional):
+        - setting_content_background token value: {{setting_content_background}}
+          This token is recognised by the PHP engine but the visual rendering
+          uses hardcoded dark values (#0A0A14 outer, #141422 content, #06060F
+          footer) to guarantee the dark aesthetic regardless of the saved setting.
+        - setting_background_color token value: {{setting_background_color}}
+          Similarly present for PHP engine compatibility; visual bg is #0A0A14.
+        - setting_text_color token value: {{setting_text_color}}
+          INTENTIONALLY overridden with #E8E4DC (warm ivory) throughout for
+          legibility on dark backgrounds. This is by design, not a bug.
+        - Muted body text uses #B8B4AC (soft warm grey).
+        - Footer text uses #666688 (muted blue-grey).
+
+        FONT NOTE:
+        Cormorant Garamond 600 loaded via Google Fonts @import. Outlook
+        falls back to Georgia, serif. Body/UI text falls back to the
+        setting_font_family token (typically Arial/system font).
+        ================================================================
+    -->
+
     <style type="text/css">
-        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
-        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
-        #MessageViewBody a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
-        @media only screen and (max-width: 620px) {
-            .bcg-wrapper { width: 100% !important; max-width: 100% !important; }
-            .bcg-content { padding: 16px !important; }
-            .bcg-hero-image { width: 100% !important; height: auto !important; }
-            .bcg-product img { width: 100% !important; height: auto !important; }
-            .bcg-product-image { width: 100% !important; display: block !important; padding-left: 0 !important; padding-bottom: 12px !important; }
-            .bcg-product-content { width: 100% !important; display: block !important; }
-            .bcg-product td { display: block !important; width: 100% !important; }
-            .bcg-coupon-code { font-size: 22px !important; letter-spacing: 3px !important; }
-            h1 { font-size: 24px !important; }
+
+        /* ===== Google Fonts ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap');
+
+        /* ===== Full Email Reset ===== */
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            border-collapse: collapse;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background-color: #0A0A14;
+        }
+
+        /* Prevent Apple Mail auto-linking of dates, addresses, phone numbers */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* Prevent Gmail blue links */
+        #MessageViewBody a {
+            color: inherit;
+            text-decoration: none;
+            font-size: inherit;
+            font-family: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+        }
+
+        /* ===== Responsive / Mobile ===== */
+        @media only screen and (max-width: 620px) {
+
+            .bcg-wrapper {
+                width: 100% !important;
+                max-width: 100% !important;
+                border-radius: 0 !important;
+            }
+
+            .bcg-content-pad {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            .bcg-hero-image {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            h1.bcg-main-headline {
+                font-size: 28px !important;
+                letter-spacing: 0.01em !important;
+            }
+
+            .bcg-coupon-code {
+                font-size: 20px !important;
+                letter-spacing: 3px !important;
+            }
+
+            /* Stack product rows vertically on mobile */
+            .bcg-product-row td {
+                display: block !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .bcg-product-image-cell {
+                width: 100% !important;
+                padding-right: 0 !important;
+                padding-left: 0 !important;
+                padding-bottom: 14px !important;
+            }
+
+            .bcg-product-text-cell {
+                width: 100% !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .bcg-product-image-cell img {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                border-radius: 6px !important;
+            }
+
+            .bcg-btn-td {
+                border-radius: 50px !important;
+            }
+
+            .bcg-cta-btn {
+                padding: 15px 32px !important;
+                font-size: 13px !important;
+            }
+
+            .bcg-nav-cell {
+                padding: 10px 0 0 !important;
+            }
+
+        }
+
     </style>
 </head>
-<body style="margin:0;padding:0;background-color:{{setting_background_color}};font-family:{{setting_font_family}};-webkit-font-smoothing:antialiased;">
 
-    <div style="display:none;font-size:1px;color:{{setting_background_color}};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-        {{preview_text}}
-        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+<body style="margin:0;padding:0;background-color:#0A0A14;font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;">
+
+    <!-- ================================================================ -->
+    <!-- PREVIEW TEXT — hidden preheader text shown in inbox snippets      -->
+    <!-- ================================================================ -->
+    <div style="display:none;font-size:1px;color:#0A0A14;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+        {{preview_text}}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
     </div>
 
-    <!-- Reversed: standard card, product images on right -->
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_background_color}};">
+    <!-- ================================================================ -->
+    <!-- OUTER WRAPPER — dark navy outer background                        -->
+    <!-- ================================================================ -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#0A0A14;">
         <tr>
-            <td align="center" style="padding:24px 8px;">
+            <td align="center" style="padding:32px 8px 48px;">
 
-                <table class="bcg-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0" width="{{setting_max_width}}" style="max-width:{{setting_max_width}};background-color:{{setting_content_background}};border-radius:8px;overflow:hidden;">
+                <!-- Outlook width hack -->
+                <!--[if mso]>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center">
+                <tr><td>
+                <![endif]-->
 
-                    <!-- ============ HEADER ============ -->
+                <!-- ============================================================ -->
+                <!-- MAIN CONTAINER — dark navy card                               -->
+                <!-- NOTE: setting_content_background token used in width/layout   -->
+                <!-- but actual bg is hardcoded #141422 for dark theme guarantee.  -->
+                <!-- ============================================================ -->
+                <table class="bcg-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0" width="{{setting_max_width}}" style="max-width:{{setting_max_width}}px;background-color:#141422;border-radius:4px;overflow:hidden;">
+
+                    <!-- ======================================================== -->
+                    <!-- TOP ACCENT BAR                                            -->
+                    <!-- 3px stripe in brand primary colour                        -->
+                    <!-- ======================================================== -->
                     <tr>
-                        <td style="padding:24px 32px 16px;text-align:center;">
+                        <td style="background-color:{{setting_primary_color}};height:3px;font-size:3px;line-height:3px;mso-line-height-rule:exactly;">&nbsp;</td>
+                    </tr>
+
+                    <!-- ======================================================== -->
+                    <!-- HEADER — Logo + Navigation                                -->
+                    <!-- ======================================================== -->
+                    <tr>
+                        <td class="bcg-content-pad" style="padding:30px 40px 22px;background-color:#141422;text-align:center;">
+
+                            <!-- Logo -->
                             {{#if logo_url}}
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td align="center" style="padding-bottom:16px;">
-                                        <a href="{{store_url}}" target="_blank" style="text-decoration:none;">
+                                    <td align="center" style="padding-bottom:20px;">
+                                        <a href="{{store_url}}" target="_blank" style="text-decoration:none;border:0;display:inline-block;">
                                             <img src="{{setting_logo_url}}" alt="{{store_name}}" width="{{setting_logo_width}}" style="display:block;max-width:100%;height:auto;" />
                                         </a>
                                     </td>
                                 </tr>
                             </table>
                             {{/if}}
+
+                            <!-- Header / store name text (used when no logo) -->
                             {{#if header_text}}
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td align="center" style="padding-bottom:8px;">
-                                        <span style="font-family:{{setting_font_family}};font-size:20px;font-weight:bold;color:{{setting_text_color}};">{{setting_header_text}}</span>
+                                    <td align="center" style="padding-bottom:18px;">
+                                        <!-- TEXT COLOR: #E8E4DC — forced warm ivory, overrides setting_text_color -->
+                                        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:600;color:#E8E4DC;letter-spacing:0.08em;display:block;">{{setting_header_text}}</span>
                                     </td>
                                 </tr>
                             </table>
                             {{/if}}
+
+                            <!-- Navigation links -->
                             {{#if show_nav}}
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td align="center" style="padding:8px 0 4px;border-top:1px solid #eeeeee;">
-                                        {{navigation_links}}
+                                    <td class="bcg-nav-cell" align="center" style="padding-top:16px;border-top:1px solid #252538;">
+                                        <!-- Link colour for nav should be set to {{setting_primary_color}}
+                                             by the PHP renderer when outputting navigation_links HTML -->
+                                        <p style="margin:0;padding:8px 0 0;font-family:{{setting_font_family}};font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:{{setting_primary_color}};">
+                                            {{navigation_links}}
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
                             {{/if}}
+
                         </td>
                     </tr>
 
-                    <!-- ============ HERO IMAGE ============ -->
+                    <!-- ======================================================== -->
+                    <!-- HERO IMAGE                                                -->
+                    <!-- ======================================================== -->
                     {{#if campaign_image}}
                     <tr>
-                        <td style="padding:0;">
+                        <td style="padding:0;line-height:0;font-size:0;">
                             <img class="bcg-hero-image" src="{{campaign_image}}" alt="{{campaign_headline}}" width="600" style="display:block;width:100%;max-width:100%;height:auto;" />
                         </td>
                     </tr>
+                    <!-- 2px primary colour accent rule below hero image -->
+                    <tr>
+                        <td style="background-color:{{setting_primary_color}};height:2px;font-size:2px;line-height:2px;mso-line-height-rule:exactly;">&nbsp;</td>
+                    </tr>
                     {{/if}}
 
-                    <!-- ============ HEADLINE + DESCRIPTION ============ -->
+                    <!-- ======================================================== -->
+                    <!-- HEADLINE + DESCRIPTION                                    -->
+                    <!-- ======================================================== -->
                     <tr>
-                        <td class="bcg-content" style="padding:32px 32px 16px;">
-                            <h1 style="margin:0 0 16px;font-family:{{setting_font_family}};font-size:28px;font-weight:bold;color:{{setting_text_color}};line-height:1.3;text-align:center;">
-                                {{campaign_headline}}
-                            </h1>
-                            <p style="margin:0 0 24px;font-family:{{setting_font_family}};font-size:16px;color:{{setting_text_color}};line-height:1.6;text-align:center;">
-                                {{campaign_description}}
-                            </p>
-                        </td>
-                    </tr>
+                        <td class="bcg-content-pad" style="padding:48px 48px 30px;">
 
-                    <!-- ============ COUPON BLOCK ============ -->
-                    {{#if show_coupon_block}}
-                    <tr>
-                        <td class="bcg-content" style="padding:0 32px 24px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_background_color}};border-radius:8px;border:2px dashed {{setting_primary_color}};">
+                            <!-- Decorative short rule above headline (centred) -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td align="center" style="padding:20px 16px;">
-                                        <p style="margin:0 0 8px;font-family:{{setting_font_family}};font-size:15px;color:{{setting_text_color}};font-weight:600;">
-                                            {{coupon_text}}
-                                        </p>
-                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                    <td align="center" style="padding-bottom:30px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="48">
                                             <tr>
-                                                <td align="center" style="background-color:{{setting_content_background}};border:1px solid #dddddd;border-radius:4px;padding:10px 24px;">
-                                                    <span class="bcg-coupon-code" style="font-family:'Courier New',Courier,monospace;font-size:24px;font-weight:bold;color:{{setting_primary_color}};letter-spacing:4px;">
-                                                        {{coupon_code}}
-                                                    </span>
-                                                </td>
+                                                <td style="background-color:{{setting_primary_color}};height:1px;font-size:1px;line-height:1px;mso-line-height-rule:exactly;">&nbsp;</td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
                             </table>
+
+                            <!-- Main headline -->
+                            <!-- FONT: Cormorant Garamond 600, Outlook falls back to Georgia, serif -->
+                            <!-- TEXT COLOR: #FFFFFF — forced white for maximum contrast on dark bg.
+                                 This intentionally overrides setting_text_color. -->
+                            <h1 class="bcg-main-headline" style="margin:0 0 22px;font-family:'Cormorant Garamond',Georgia,serif;font-size:38px;font-weight:600;color:#FFFFFF;line-height:1.2;text-align:center;letter-spacing:0.02em;">
+                                {{campaign_headline}}
+                            </h1>
+
+                            <!-- Decorative short rule below headline (centred) -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-bottom:26px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="48">
+                                            <tr>
+                                                <td style="background-color:{{setting_primary_color}};height:1px;font-size:1px;line-height:1px;mso-line-height-rule:exactly;">&nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Main description -->
+                            <!-- TEXT COLOR: #B8B4AC — muted warm grey, intentional dark-theme override -->
+                            <p style="margin:0;font-family:{{setting_font_family}};font-size:16px;color:#B8B4AC;line-height:1.8;text-align:center;">
+                                {{campaign_description}}
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- ======================================================== -->
+                    <!-- COUPON BLOCK                                              -->
+                    <!-- ======================================================== -->
+                    {{#if show_coupon_block}}
+                    <tr>
+                        <td class="bcg-content-pad" style="padding:0 48px 38px;">
+
+                            <!-- Coupon card — slightly lighter dark bg, primary colour border -->
+                            <!-- BG: #1E1E30 (a step lighter than #141422 for depth on dark) -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#1E1E30;border-radius:8px;border:2px solid {{setting_primary_color}};">
+                                <tr>
+                                    <td align="center" style="padding:30px 28px 26px;">
+
+                                        <!-- Eyebrow label -->
+                                        <!-- TEXT COLOR: #E8E4DC — warm ivory, dark theme -->
+                                        <p style="margin:0 0 8px;font-family:'Cormorant Garamond',Georgia,serif;font-size:11px;font-weight:600;color:{{setting_primary_color}};letter-spacing:0.2em;text-transform:uppercase;">
+                                            Exclusive Offer
+                                        </p>
+
+                                        <!-- Coupon descriptive text -->
+                                        <p style="margin:0 0 20px;font-family:{{setting_font_family}};font-size:16px;color:#E8E4DC;line-height:1.55;font-weight:400;">
+                                            {{coupon_text}}
+                                        </p>
+
+                                        <!-- Coupon code display box -->
+                                        <!-- BG: #141422 (content background) so it recedes slightly into the card -->
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td align="center" style="background-color:#141422;border:1px solid {{setting_primary_color}};border-radius:8px;padding:14px 36px;">
+                                                    <!-- COUPON CODE COLOR: setting_primary_color — pops as accent -->
+                                                    <span class="bcg-coupon-code" style="font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:bold;color:{{setting_primary_color}};letter-spacing:5px;display:block;">
+                                                        {{coupon_code}}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
                         </td>
                     </tr>
                     {{/if}}
 
-                    <!-- ============ PRODUCTS BLOCK ============ -->
+                    <!-- ======================================================== -->
+                    <!-- PRODUCTS BLOCK                                            -->
+                    <!-- ======================================================== -->
+                    <!--
+                        REVERSED LAYOUT:
+                        The PHP template engine renders this template's products with
+                        image on the RIGHT, text/copy on the LEFT. This visual context
+                        (dark background, ivory text) provides the correct backdrop.
+
+                        When the PHP engine renders product cards for this template,
+                        product headlines should use #FFFFFF, product descriptions
+                        #B8B4AC, and Buy Now buttons should use setting_button_color
+                        with 50px border-radius (pill) for the luxury feel.
+                    -->
                     <tr>
-                        <td class="bcg-content" style="padding:8px 32px 24px;">
-                            {{products_block}}
+                        <td class="bcg-content-pad" style="padding:0 48px 32px;">
+
+                            <!-- Section label bar -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding-bottom:22px;border-bottom:1px solid #252538;">
+                                        <!-- LABEL COLOR: setting_primary_color -->
+                                        <p style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:10px;font-weight:600;color:{{setting_primary_color}};letter-spacing:0.2em;text-transform:uppercase;">
+                                            Featured Products
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Spacer -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr><td style="height:20px;font-size:20px;line-height:20px;mso-line-height-rule:exactly;">&nbsp;</td></tr>
+                            </table>
+
+                            <!-- Products output from PHP engine -->
+                            <!-- Default text color #E8E4DC for dark theme context -->
+                            <div style="color:#E8E4DC;font-family:{{setting_font_family}};">
+                                {{products_block}}
+                            </div>
+
                         </td>
                     </tr>
 
-                    <!-- ============ CTA BUTTON ============ -->
+                    <!-- Full-width divider using primary colour -->
                     <tr>
-                        <td align="center" style="padding:0 32px 32px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <td style="padding:0 48px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td align="center" style="border-radius:{{setting_button_border_radius}};background-color:{{setting_button_color}};">
-                                        <a href="{{store_url}}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:{{setting_font_family}};font-size:16px;font-weight:bold;color:{{setting_button_text_color}};text-decoration:none;border-radius:{{setting_button_border_radius}};background-color:{{setting_button_color}};">
-                                            Shop Now
-                                        </a>
-                                    </td>
+                                    <td style="border-top:1px solid {{setting_primary_color}};height:1px;font-size:1px;line-height:1px;mso-line-height-rule:exactly;">&nbsp;</td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
 
-                    <!-- ============ FOOTER ============ -->
+                    <!-- ======================================================== -->
+                    <!-- CTA BUTTON                                                -->
+                    <!-- Pill-shaped (50px border-radius) — pops on dark bg       -->
+                    <!-- ======================================================== -->
                     <tr>
-                        <td style="padding:24px 32px;text-align:center;border-top:1px solid #eeeeee;">
-                            <p style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:12px;color:#999999;line-height:1.5;">
-                                {{setting_footer_text}}
-                            </p>
-                            <p style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:12px;color:#999999;">
-                                {{footer_links}}
-                            </p>
-                            <p style="margin:0;font-family:{{setting_font_family}};font-size:11px;color:#bbbbbb;">
-                                &copy; {{current_year}} {{store_name}}. All rights reserved.
-                            </p>
+                        <td align="center" style="padding:38px 48px 48px;">
+
+                            <!-- MSO VML button fallback for Outlook -->
+                            <!--[if mso]>
+                            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                                href="{{store_url}}"
+                                style="height:52px;v-text-anchor:middle;width:240px;"
+                                arcsize="50%"
+                                strokecolor="{{setting_button_color}}"
+                                fillcolor="{{setting_button_color}}">
+                                <w:anchorlock/>
+                                <center style="color:{{setting_button_text_color}};font-family:Georgia,serif;font-size:14px;font-weight:bold;letter-spacing:0.1em;text-transform:uppercase;">
+                                    Shop the Collection
+                                </center>
+                            </v:roundrect>
+                            <![endif]-->
+
+                            <!--[if !mso]><!-->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="bcg-btn-td" align="center" style="border-radius:50px;background-color:{{setting_button_color}};">
+                                        <a class="bcg-cta-btn" href="{{store_url}}" target="_blank" style="display:inline-block;padding:16px 48px;font-family:{{setting_font_family}};font-size:14px;font-weight:bold;color:{{setting_button_text_color}};text-decoration:none;border-radius:50px;background-color:{{setting_button_color}};letter-spacing:0.12em;text-transform:uppercase;mso-padding-alt:0;">
+                                            Shop the Collection
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--<![endif]-->
+
                         </td>
                     </tr>
 
+                    <!-- ======================================================== -->
+                    <!-- FOOTER                                                    -->
+                    <!-- BG: #06060F — deepest dark, even darker than content     -->
+                    <!-- TEXT: #666688 — muted blue-grey for de-emphasised info   -->
+                    <!-- ======================================================== -->
+                    <tr>
+                        <td style="padding:0;background-color:#06060F;border-top:1px solid #1A1A2E;">
+
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td class="bcg-content-pad" style="padding:30px 40px;text-align:center;">
+
+                                        <!-- Footer descriptive text -->
+                                        <p style="margin:0 0 10px;font-family:{{setting_font_family}};font-size:12px;color:#666688;line-height:1.65;">
+                                            {{setting_footer_text}}
+                                        </p>
+
+                                        <!-- Footer links (Privacy Policy, Unsubscribe, etc.) -->
+                                        <p style="margin:0 0 14px;font-family:{{setting_font_family}};font-size:12px;color:#666688;line-height:1.5;">
+                                            {{footer_links}}
+                                        </p>
+
+                                        <!-- Thin divider -->
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="border-top:1px solid #1E1E30;height:1px;font-size:1px;line-height:1px;mso-line-height-rule:exactly;padding-bottom:14px;">&nbsp;</td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Copyright line -->
+                                        <p style="margin:0;font-family:{{setting_font_family}};font-size:11px;color:#3A3A5A;">
+                                            &copy; {{current_year}} <a href="{{store_url}}" target="_blank" style="color:#3A3A5A;text-decoration:none;">{{store_name}}</a>. All rights reserved.
+                                        </p>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Bottom accent bar — mirrors top accent bar -->
+                    <tr>
+                        <td style="background-color:{{setting_primary_color}};height:3px;font-size:3px;line-height:3px;mso-line-height-rule:exactly;">&nbsp;</td>
+                    </tr>
+
                 </table>
+                <!-- /Main container -->
+
+                <!--[if mso]>
+                </td></tr>
+                </table>
+                <![endif]-->
 
             </td>
         </tr>
     </table>
+    <!-- /Outer wrapper -->
 
 </body>
 </html>

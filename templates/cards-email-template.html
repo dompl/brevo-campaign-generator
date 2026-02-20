@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="x-apple-disable-message-reformatting" />
     <title>{{subject}}</title>
+
     <!--[if mso]>
     <noscript>
         <xml>
@@ -16,73 +17,262 @@
         </xml>
     </noscript>
     <![endif]-->
+
+    <!--
+        ================================================================
+        ELEVATED CARDS — Floating Cards Email Template
+        ================================================================
+
+        DESIGN INTENT:
+        Each major content section (header, hero, headline, coupon,
+        products, CTA) is its own white card floating inside a cool
+        light-grey outer background (#E8E8EE). Cards have 12px border
+        radius with no outer border — white on grey creates the depth
+        effect automatically. 12px gap separates each card.
+
+        The outer container has NO background of its own (transparent),
+        so the outer grey shows between the cards. This creates the
+        modern "floating cards on grey" SaaS aesthetic.
+
+        FONT: DM Sans loaded via Google Fonts @import.
+        Fallback: Helvetica Neue, Helvetica, Arial, sans-serif.
+
+        COUPON: Full pill treatment — setting_primary_color background,
+        white text, 50px border-radius. Very prominent.
+
+        CTA CARD: Just the button, centered, large pill.
+
+        FOOTER: Plain text in the grey outer area — not a card.
+
+        TOKEN REFERENCES (for PHP engine scanning):
+        - Outer bg (setting_background_color): {{setting_background_color}}
+          Not used visually — outer bg is hardcoded #E8E8EE for this design.
+        - Content bg (setting_content_background): {{setting_content_background}}
+          Not used visually — cards are white (#ffffff) regardless of setting.
+        - Body font (setting_font_family): {{setting_font_family}}
+          DM Sans is loaded via Google Fonts; this is the Outlook fallback font.
+        ================================================================
+    -->
+
     <style type="text/css">
-        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
-        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
-        #MessageViewBody a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
-        @media only screen and (max-width: 620px) {
-            .bcg-wrapper { width: 100% !important; max-width: 100% !important; }
-            .bcg-content { padding: 16px !important; }
-            .bcg-hero-image { width: 100% !important; height: auto !important; }
-            .bcg-product img { width: 100% !important; height: auto !important; }
-            .bcg-coupon-code { font-size: 22px !important; letter-spacing: 3px !important; }
-            h1 { font-size: 24px !important; }
+
+        /* ===== Google Fonts ===== */
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap');
+
+        /* ===== Full Email Reset ===== */
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            border-collapse: collapse;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background-color: #E8E8EE;
+        }
+
+        /* Prevent Apple Mail auto-linking */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* Prevent Gmail blue auto-links */
+        #MessageViewBody a {
+            color: inherit;
+            text-decoration: none;
+            font-size: inherit;
+            font-family: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+        }
+
+        /* ===== Responsive / Mobile ===== */
+        @media only screen and (max-width: 620px) {
+
+            .bcg-outer-wrapper {
+                padding: 16px 0 24px !important;
+            }
+
+            .bcg-cards-container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .bcg-card-pad {
+                padding: 24px 20px !important;
+            }
+
+            .bcg-card-radius {
+                border-radius: 8px !important;
+            }
+
+            .bcg-hero-image {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            h1.bcg-headline {
+                font-size: 24px !important;
+                line-height: 1.25 !important;
+            }
+
+            .bcg-coupon-code-pill {
+                padding: 14px 24px !important;
+            }
+
+            .bcg-coupon-code {
+                font-size: 22px !important;
+                letter-spacing: 3px !important;
+            }
+
+            .bcg-cta-pill {
+                padding: 16px 32px !important;
+                font-size: 15px !important;
+            }
+
+            .bcg-product-row td {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            .bcg-product-img-td {
+                width: 100% !important;
+                padding-right: 0 !important;
+                padding-bottom: 14px !important;
+            }
+
+            .bcg-product-img-td img {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
+            .bcg-product-text-td {
+                width: 100% !important;
+            }
+
+            .bcg-nav-text {
+                font-size: 11px !important;
+            }
+
+        }
+
     </style>
 </head>
-<body style="margin:0;padding:0;background-color:{{setting_background_color}};font-family:{{setting_font_family}};-webkit-font-smoothing:antialiased;">
 
-    <div style="display:none;font-size:1px;color:{{setting_background_color}};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-        {{preview_text}}
-        &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+<body style="margin:0;padding:0;background-color:#E8E8EE;font-family:'DM Sans',{{setting_font_family}};-webkit-font-smoothing:antialiased;">
+
+    <!-- ================================================================ -->
+    <!-- PREVIEW TEXT — hidden preheader text shown in inbox snippets      -->
+    <!-- ================================================================ -->
+    <div style="display:none;font-size:1px;color:#E8E8EE;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+        {{preview_text}}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
     </div>
 
-    <!-- Cards: each section in its own bordered box with gaps between -->
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_background_color}};">
+    <!-- ================================================================ -->
+    <!-- OUTER WRAPPER — cool light grey: #E8E8EE                         -->
+    <!-- This grey shows BETWEEN cards, creating the floating card effect  -->
+    <!-- ================================================================ -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#E8E8EE;">
         <tr>
-            <td align="center" style="padding:24px 8px;">
+            <td class="bcg-outer-wrapper" align="center" style="padding:28px 8px 36px;">
 
-                <table class="bcg-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0" width="{{setting_max_width}}" style="max-width:{{setting_max_width}};">
+                <!-- Outlook width constraint -->
+                <!--[if mso]>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center">
+                <tr><td>
+                <![endif]-->
 
-                    <!-- ============ HEADER CARD ============ -->
+                <!-- ============================================================ -->
+                <!-- CARDS CONTAINER — transparent background, cards stack inside  -->
+                <!-- Width is governed by setting_max_width but bg is transparent  -->
+                <!-- so the outer grey shows as the "gaps" between cards.          -->
+                <!-- ============================================================ -->
+                <table class="bcg-cards-container" role="presentation" border="0" cellpadding="0" cellspacing="0" width="{{setting_max_width}}" style="max-width:{{setting_max_width}}px;background-color:transparent;">
+
+                    <!-- ======================================================== -->
+                    <!-- CARD 1 — HEADER                                           -->
+                    <!-- Compact. Logo centred. Nav below if enabled.             -->
+                    <!-- ======================================================== -->
                     <tr>
                         <td style="padding-bottom:12px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_content_background}};border-radius:8px;border:1px solid #e0e0e0;">
+                            <table class="bcg-card-radius" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff;border-radius:12px;overflow:hidden;">
                                 <tr>
-                                    <td style="padding:20px 24px;text-align:center;">
+                                    <td class="bcg-card-pad" style="padding:26px 32px 20px;text-align:center;">
+
+                                        <!-- Logo -->
                                         {{#if logo_url}}
-                                        <a href="{{store_url}}" target="_blank" style="text-decoration:none;">
-                                            <img src="{{setting_logo_url}}" alt="{{store_name}}" width="{{setting_logo_width}}" style="display:inline-block;max-width:100%;height:auto;" />
-                                        </a>
-                                        {{/if}}
-                                        {{#if header_text}}
-                                        <span style="font-family:{{setting_font_family}};font-size:20px;font-weight:bold;color:{{setting_text_color}};display:block;padding-top:4px;">{{setting_header_text}}</span>
-                                        {{/if}}
-                                        {{#if show_nav}}
-                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:12px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                             <tr>
-                                                <td align="center" style="padding-top:8px;border-top:1px solid #eeeeee;">
-                                                    {{navigation_links}}
+                                                <td align="center" style="padding-bottom:{{#if show_nav}}14px{{/if}}{{#if header_text}}0{{/if}};">
+                                                    <a href="{{store_url}}" target="_blank" style="text-decoration:none;border:0;display:inline-block;">
+                                                        <img src="{{setting_logo_url}}" alt="{{store_name}}" width="{{setting_logo_width}}" style="display:block;max-width:100%;height:auto;" />
+                                                    </a>
                                                 </td>
                                             </tr>
                                         </table>
                                         {{/if}}
+
+                                        <!-- Header / store name text (shown when no logo) -->
+                                        {{#if header_text}}
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td align="center" style="padding-bottom:14px;">
+                                                    <span style="font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;color:{{setting_text_color}};display:block;letter-spacing:-0.02em;">{{setting_header_text}}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        {{/if}}
+
+                                        <!-- Navigation links -->
+                                        {{#if show_nav}}
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td align="center" style="padding-top:14px;border-top:1px solid #EDEDF0;">
+                                                    <p class="bcg-nav-text" style="margin:0;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:{{setting_text_color}};">
+                                                        {{navigation_links}}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        {{/if}}
+
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
 
-                    <!-- ============ HERO CARD ============ -->
+                    <!-- ======================================================== -->
+                    <!-- CARD 2 — HERO IMAGE                                       -->
+                    <!-- Image fills the card fully edge to edge with 12px radius  -->
+                    <!-- ======================================================== -->
                     {{#if campaign_image}}
                     <tr>
                         <td style="padding-bottom:12px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:8px;overflow:hidden;border:1px solid #e0e0e0;">
+                            <!-- border-radius + overflow:hidden on the table; image fills 100% -->
+                            <table class="bcg-card-radius" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-radius:12px;overflow:hidden;line-height:0;font-size:0;">
                                 <tr>
-                                    <td>
+                                    <td style="padding:0;line-height:0;font-size:0;">
                                         <img class="bcg-hero-image" src="{{campaign_image}}" alt="{{campaign_headline}}" width="600" style="display:block;width:100%;max-width:100%;height:auto;" />
                                     </td>
                                 </tr>
@@ -91,43 +281,84 @@
                     </tr>
                     {{/if}}
 
-                    <!-- ============ HEADLINE CARD ============ -->
+                    <!-- ======================================================== -->
+                    <!-- CARD 3 — HEADLINE + DESCRIPTION                          -->
+                    <!-- Generous padding. DM Sans 700 headline, 32px.            -->
+                    <!-- ======================================================== -->
                     <tr>
                         <td style="padding-bottom:12px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_content_background}};border-radius:8px;border:1px solid #e0e0e0;">
+                            <table class="bcg-card-radius" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff;border-radius:12px;overflow:hidden;">
                                 <tr>
-                                    <td class="bcg-content" style="padding:28px 28px 20px;">
-                                        <h1 style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:28px;font-weight:bold;color:{{setting_text_color}};line-height:1.3;text-align:center;">
+                                    <td class="bcg-card-pad" style="padding:36px 44px 28px;">
+
+                                        <!-- Accent bar above headline — thin, primary colour -->
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td align="center" style="padding-bottom:24px;">
+                                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="36">
+                                                        <tr>
+                                                            <td style="background-color:{{setting_primary_color}};height:3px;font-size:3px;line-height:3px;border-radius:3px;mso-line-height-rule:exactly;">&nbsp;</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Main headline -->
+                                        <!-- DM Sans 700, 32px, tight tracking -->
+                                        <h1 class="bcg-headline" style="margin:0 0 16px;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:32px;font-weight:700;color:{{setting_text_color}};line-height:1.2;text-align:center;letter-spacing:-0.02em;">
                                             {{campaign_headline}}
                                         </h1>
-                                        <p style="margin:0;font-family:{{setting_font_family}};font-size:16px;color:{{setting_text_color}};line-height:1.6;text-align:center;">
+
+                                        <!-- Description -->
+                                        <p style="margin:0;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;color:{{setting_text_color}};line-height:1.7;text-align:center;opacity:0.78;">
                                             {{campaign_description}}
                                         </p>
+
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
 
-                    <!-- ============ COUPON CARD ============ -->
+                    <!-- ======================================================== -->
+                    <!-- CARD 4 — COUPON                                           -->
+                    <!-- Centred. Full pill coupon code — primary bg, white text.  -->
+                    <!-- ======================================================== -->
                     {{#if show_coupon_block}}
                     <tr>
                         <td style="padding-bottom:12px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_content_background}};border-radius:8px;border:2px dashed {{setting_primary_color}};">
+                            <table class="bcg-card-radius" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff;border-radius:12px;overflow:hidden;">
                                 <tr>
-                                    <td align="center" style="padding:20px 16px;">
-                                        <p style="margin:0 0 8px;font-family:{{setting_font_family}};font-size:15px;color:{{setting_text_color}};font-weight:600;">
+                                    <td class="bcg-card-pad" align="center" style="padding:32px 36px 30px;">
+
+                                        <!-- Coupon eyebrow label -->
+                                        <p style="margin:0 0 6px;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:{{setting_primary_color}};letter-spacing:0.16em;text-transform:uppercase;">
+                                            Special Offer
+                                        </p>
+
+                                        <!-- Coupon descriptive text -->
+                                        <p style="margin:0 0 20px;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:18px;font-weight:500;color:{{setting_text_color}};line-height:1.4;text-align:center;letter-spacing:-0.01em;">
                                             {{coupon_text}}
                                         </p>
+
+                                        <!-- Full pill coupon code — primary colour background, white text -->
+                                        <!-- This is the "full pill treatment" — 50px border-radius, very prominent -->
                                         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <td align="center" style="background-color:{{setting_background_color}};border:1px solid #dddddd;border-radius:4px;padding:10px 24px;">
-                                                    <span class="bcg-coupon-code" style="font-family:'Courier New',Courier,monospace;font-size:24px;font-weight:bold;color:{{setting_primary_color}};letter-spacing:4px;">
+                                                <td class="bcg-coupon-code-pill" align="center" style="background-color:{{setting_primary_color}};border-radius:50px;padding:16px 40px;">
+                                                    <span class="bcg-coupon-code" style="font-family:'Courier New',Courier,monospace;font-size:26px;font-weight:bold;color:#ffffff;letter-spacing:5px;display:block;white-space:nowrap;">
                                                         {{coupon_code}}
                                                     </span>
                                                 </td>
                                             </tr>
                                         </table>
+
+                                        <!-- Small "click to copy" hint -->
+                                        <p style="margin:12px 0 0;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;color:#9999AA;letter-spacing:0.02em;">
+                                            Enter this code at checkout
+                                        </p>
+
                                     </td>
                                 </tr>
                             </table>
@@ -135,12 +366,32 @@
                     </tr>
                     {{/if}}
 
-                    <!-- ============ PRODUCTS CARD ============ -->
+                    <!-- ======================================================== -->
+                    <!-- CARD 5 — PRODUCTS                                         -->
+                    <!-- Products in their standard block. Clean card context.     -->
+                    <!-- ======================================================== -->
                     <tr>
                         <td style="padding-bottom:12px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_content_background}};border-radius:8px;border:1px solid #e0e0e0;">
+                            <table class="bcg-card-radius" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff;border-radius:12px;overflow:hidden;">
                                 <tr>
-                                    <td class="bcg-content" style="padding:20px 24px;">
+                                    <td style="padding-bottom:10px;">
+
+                                        <!-- Products card header bar -->
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="padding:20px 28px 18px;border-bottom:1px solid #F0F0F4;">
+                                                    <p style="margin:0;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:{{setting_primary_color}};letter-spacing:0.16em;text-transform:uppercase;">
+                                                        Featured Products
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bcg-card-pad" style="padding:16px 28px 24px;">
+                                        <!-- Products output from PHP engine -->
                                         {{products_block}}
                                     </td>
                                 </tr>
@@ -148,47 +399,93 @@
                         </td>
                     </tr>
 
-                    <!-- ============ CTA CARD ============ -->
+                    <!-- ======================================================== -->
+                    <!-- CARD 6 — CTA BUTTON                                       -->
+                    <!-- Just the button, centred. Large pill.                     -->
+                    <!-- ======================================================== -->
                     <tr>
-                        <td style="padding-bottom:12px;">
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:{{setting_content_background}};border-radius:8px;border:1px solid #e0e0e0;">
+                        <td style="padding-bottom:20px;">
+                            <table class="bcg-card-radius" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#ffffff;border-radius:12px;overflow:hidden;">
                                 <tr>
-                                    <td align="center" style="padding:24px;">
+                                    <td class="bcg-card-pad" align="center" style="padding:28px 36px;">
+
+                                        <!-- MSO VML pill button fallback for Outlook -->
+                                        <!--[if mso]>
+                                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                                            href="{{store_url}}"
+                                            style="height:54px;v-text-anchor:middle;width:240px;"
+                                            arcsize="50%"
+                                            strokecolor="{{setting_button_color}}"
+                                            fillcolor="{{setting_button_color}}">
+                                            <w:anchorlock/>
+                                            <center style="color:{{setting_button_text_color}};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;letter-spacing:0.04em;">
+                                                Shop Now
+                                            </center>
+                                        </v:roundrect>
+                                        <![endif]-->
+
+                                        <!--[if !mso]><!-->
                                         <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <td align="center" style="border-radius:{{setting_button_border_radius}};background-color:{{setting_button_color}};">
-                                                    <a href="{{store_url}}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:{{setting_font_family}};font-size:16px;font-weight:bold;color:{{setting_button_text_color}};text-decoration:none;border-radius:{{setting_button_border_radius}};background-color:{{setting_button_color}};">
+                                                <td align="center" style="border-radius:50px;background-color:{{setting_button_color}};">
+                                                    <a class="bcg-cta-pill" href="{{store_url}}" target="_blank" style="display:inline-block;padding:18px 52px;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;font-weight:700;color:{{setting_button_text_color}};text-decoration:none;border-radius:50px;background-color:{{setting_button_color}};letter-spacing:0.02em;white-space:nowrap;">
                                                         Shop Now
                                                     </a>
                                                 </td>
                                             </tr>
                                         </table>
+                                        <!--<![endif]-->
+
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
 
-                    <!-- ============ FOOTER ============ -->
+                    <!-- ======================================================== -->
+                    <!-- FOOTER — plain text in the grey outer area (NOT a card)   -->
+                    <!-- This is intentionally plain, outside any white card.      -->
+                    <!-- ======================================================== -->
                     <tr>
-                        <td style="padding:12px 16px 0;text-align:center;">
-                            <p style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:12px;color:#999999;line-height:1.5;">
+                        <td style="padding:8px 16px 0;text-align:center;">
+
+                            <!-- Footer descriptive text -->
+                            <p style="margin:0 0 8px;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;font-weight:400;color:#8888A0;line-height:1.6;">
                                 {{setting_footer_text}}
                             </p>
-                            <p style="margin:0 0 12px;font-family:{{setting_font_family}};font-size:12px;color:#999999;">
+
+                            <!-- Footer links -->
+                            <p style="margin:0 0 8px;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;color:#8888A0;">
                                 {{footer_links}}
                             </p>
-                            <p style="margin:0;font-family:{{setting_font_family}};font-size:11px;color:#bbbbbb;">
-                                &copy; {{current_year}} {{store_name}}. All rights reserved.
+
+                            <!-- Thin divider -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="border-top:1px solid #D8D8E0;height:1px;font-size:1px;line-height:1px;mso-line-height-rule:exactly;padding-bottom:8px;">&nbsp;</td>
+                                </tr>
+                            </table>
+
+                            <!-- Copyright line -->
+                            <p style="margin:0;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;color:#ABABBE;">
+                                &copy; {{current_year}} <a href="{{store_url}}" target="_blank" style="color:#ABABBE;text-decoration:none;">{{store_name}}</a>. All rights reserved.
                             </p>
+
                         </td>
                     </tr>
 
                 </table>
+                <!-- /Cards container -->
+
+                <!--[if mso]>
+                </td></tr>
+                </table>
+                <![endif]-->
 
             </td>
         </tr>
     </table>
+    <!-- /Outer wrapper -->
 
 </body>
 </html>

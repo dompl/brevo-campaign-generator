@@ -17,6 +17,25 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.3] — 2026-02-20
+
+### Changed
+- **Complete email template redesign** — all 10 templates rebuilt with modern aesthetics, Google Fonts, and distinct visual identities:
+  - **Default** — "Refined Premium": DM Serif Display headline, solid-fill pill coupon, bold top accent bar
+  - **Feature** — "Hero Spotlight": Bebas Neue headline in a full-width primary colour band above hero, dramatic visual hierarchy
+  - **Reversed** — "Midnight Luxury": dark mode (deep charcoal), Cormorant Garamond, gold/primary accents, dark coupon card
+  - **Cards** — "Elevated Cards": DM Sans, each section as a separate white card floating on grey, pill coupon
+  - **Full-width** — "Bold & Vivid": Oswald, full-bleed colour header and headline band, squared-off squared coupon block
+  - **Alternating** — "Editorial Magazine": Libre Baskerville + Open Sans, top/bottom accent bars, italic coupon code
+  - **Grid** — "Modern Commerce Grid": Nunito, primary accent stripe under header, pill coupon, cool grey outer
+  - **Centered** — "Luxury Centered": Cinzel + Lato, rectangular framed card, decorative accent line, zero border-radius elegance
+  - **Compact** — "Smart Newsletter": Merriweather, left-aligned pull-quote headline, horizontal inline coupon
+  - **Text-only** — "Literary Elegance": Cormorant Garamond throughout, typographic coupon, parchment background
+- Replaced dashed-border coupon boxes with filled pill designs across all templates
+- All templates now include Google Fonts with robust email client fallbacks and MSO VML button compatibility
+
+---
+
 ## [1.3.2] — 2026-02-20
 
 ### Added
