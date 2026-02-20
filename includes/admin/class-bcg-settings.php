@@ -1016,7 +1016,7 @@ class BCG_Settings {
 
 					if (response.success && response.data.senders) {
 						$.each(response.data.senders, function(i, sender) {
-							var val = JSON.stringify({ name: sender.name, email: sender.email });
+							var val = JSON.stringify({ id: sender.id, name: sender.name, email: sender.email });
 							var label = sender.name + ' <' + sender.email + '>';
 							var selected = (sender.email === currentEmail) ? ' selected' : '';
 							$select.append('<option value=\'' + val.replace(/'/g, '&#39;') + '\'' + selected + '>' + $('<span>').text(label).html() + '</option>');
@@ -1406,6 +1406,7 @@ class BCG_Settings {
 		}
 
 		$sanitised = array(
+			'id'    => isset( $data['id'] ) ? absint( $data['id'] ) : 0,
 			'name'  => sanitize_text_field( $data['name'] ?? '' ),
 			'email' => sanitize_email( $data['email'] ),
 		);

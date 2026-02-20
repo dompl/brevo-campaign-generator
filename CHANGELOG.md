@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.6] — 2026-02-20
+
+### Fixed
+- **"Sender is invalid / inactive" on Send Test, Create in Brevo, Send Now** — the Brevo API requires the sender to match a verified sender in the account. Three issues combined to cause this: (1) the sender `id` was not stored in the `bcg_brevo_sender` option when a verified sender was selected in Settings, meaning Brevo had to match by email alone and could fail on any formatting discrepancy; (2) the sender `id` was not included in the campaign creation/update API payload even when present; (3) if no sender was configured at all (e.g. fresh install or upgrade from pre-v1.3.2), the code fell back to legacy free-text options or WordPress admin email which are not verified Brevo senders. Fixed by: storing `id` alongside `name`/`email` in the option JSON, including `id` in the Brevo API sender payload, and auto-fetching the first verified Brevo sender at send time if nothing is configured (saves automatically to the option for future use).
+
+---
+
 ## [1.3.5] — 2026-02-20
 
 ### Fixed
@@ -112,7 +119,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.5...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.6...HEAD
+[1.3.6]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.5...v1.3.6
 [1.3.5]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.2...v1.3.3

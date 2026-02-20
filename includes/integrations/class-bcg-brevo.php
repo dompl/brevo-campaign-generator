@@ -741,6 +741,9 @@ class BCG_Brevo {
 		// Read sender from the new unified JSON option, fall back to legacy separate options.
 		$sender_json  = get_option( 'bcg_brevo_sender', '' );
 		$sender_data  = is_string( $sender_json ) ? json_decode( $sender_json, true ) : null;
+		$sender_id    = ( is_array( $sender_data ) && ! empty( $sender_data['id'] ) )
+			? (int) $sender_data['id']
+			: 0;
 		$sender_name  = ( is_array( $sender_data ) && ! empty( $sender_data['name'] ) )
 			? (string) $sender_data['name']
 			: (string) get_option( 'bcg_brevo_sender_name', get_bloginfo( 'name' ) );
@@ -754,13 +757,19 @@ class BCG_Brevo {
 			$prefixed_name = trim( $prefix ) . ' ' . $name;
 		}
 
+		// Build sender array — include id if stored (most reliable), else name+email.
+		$sender_payload = array(
+			'name'  => sanitize_text_field( $sender_name ),
+			'email' => sanitize_email( $sender_email ),
+		);
+		if ( $sender_id > 0 ) {
+			$sender_payload['id'] = $sender_id;
+		}
+
 		$payload = array(
 			'name'        => sanitize_text_field( $prefixed_name ),
 			'subject'     => sanitize_text_field( $subject ),
-			'sender'      => array(
-				'name'  => sanitize_text_field( $sender_name ),
-				'email' => sanitize_email( $sender_email ),
-			),
+			'sender'      => $sender_payload,
 			'type'        => 'classic',
 			'htmlContent' => $html_content,
 			'recipients'  => array(

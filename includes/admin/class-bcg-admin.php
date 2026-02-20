@@ -2115,6 +2115,23 @@ class BCG_Admin {
 			? (string) $sender_data['name']
 			: (string) get_option( 'bcg_brevo_sender_name', '' );
 
+		// If no sender is configured locally, auto-fetch the first verified sender from Brevo.
+		if ( empty( $sender_email ) || ! is_email( $sender_email ) ) {
+			$verified_senders = $brevo->get_senders();
+			if ( ! is_wp_error( $verified_senders ) && ! empty( $verified_senders ) ) {
+				$first         = $verified_senders[0];
+				$sender_email  = isset( $first['email'] ) ? (string) $first['email'] : '';
+				$sender_name   = isset( $first['name'] ) ? (string) $first['name'] : '';
+				$sender_id_val = isset( $first['id'] ) ? (int) $first['id'] : 0;
+				// Auto-save so the Settings tab shows the correct sender next visit.
+				update_option( 'bcg_brevo_sender', wp_json_encode( array(
+					'id'    => $sender_id_val,
+					'name'  => $sender_name,
+					'email' => $sender_email,
+				) ) );
+			}
+		}
+
 		if ( empty( $sender_email ) || ! is_email( $sender_email ) ) {
 			return new \WP_Error(
 				'bcg_missing_sender',
