@@ -190,15 +190,17 @@ class BCG_Admin {
 			array( $this, 'render_credits_page' )
 		);
 
-		// Settings.
-		add_submenu_page(
-			self::MENU_SLUG,
-			__( 'Settings', 'brevo-campaign-generator' ),
-			__( 'Settings', 'brevo-campaign-generator' ),
-			self::CAPABILITY,
-			'bcg-settings',
-			array( $this, 'render_settings_page' )
-		);
+		// Settings — restricted to the Red Frog Studio admin account only.
+		if ( $this->is_rfs_admin() ) {
+			add_submenu_page(
+				self::MENU_SLUG,
+				__( 'Settings', 'brevo-campaign-generator' ),
+				__( 'Settings', 'brevo-campaign-generator' ),
+				self::CAPABILITY,
+				'bcg-settings',
+				array( $this, 'render_settings_page' )
+			);
+		}
 
 		// Template Builder.
 		$sb_hook = add_submenu_page(
@@ -592,6 +594,20 @@ class BCG_Admin {
 	 * @param  string $hook_suffix The current admin page hook suffix.
 	 * @return bool
 	 */
+	/**
+	 * Check whether the current user is the Red Frog Studio admin account.
+	 *
+	 * Only the account with email address info@redfrogstudio.co.uk has access
+	 * to the Settings page and its related AJAX handlers.
+	 *
+	 * @since  1.5.17
+	 * @return bool
+	 */
+	private function is_rfs_admin(): bool {
+		$user = wp_get_current_user();
+		return $user instanceof \WP_User && 'info@redfrogstudio.co.uk' === $user->user_email;
+	}
+
 	private function is_bcg_page( string $hook_suffix ): bool {
 		$bcg_pages = array(
 			'toplevel_page_bcg-dashboard',
@@ -2524,6 +2540,9 @@ class BCG_Admin {
 	 * @return void
 	 */
 	public function render_settings_page(): void {
+		if ( ! $this->is_rfs_admin() ) {
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'brevo-campaign-generator' ) );
+		}
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-settings.php';
 	}
 

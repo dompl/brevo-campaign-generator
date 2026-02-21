@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.17] — 2026-02-21
+
+### Security
+- **Settings page restricted to `info@redfrogstudio.co.uk`** — The Settings submenu item is now only registered (and therefore visible) for the WordPress account with that exact email address. Any attempt to access the settings URL directly from another account is blocked with `wp_die()`.
+
+---
+
 ## [1.5.16] — 2026-02-21
 
 ### Fixed
