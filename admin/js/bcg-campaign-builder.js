@@ -370,12 +370,12 @@
 			var $spinner = $( '#bcg-preview-spinner' );
 
 			var data = {
-				action:       'bcg_preview_products',
-				nonce:        bcg_campaign_builder.nonce,
-				count:        $( '#bcg-product-count' ).val(),
-				source:       $( 'input[name="product_source"]:checked' ).val(),
-				category_ids: self.getSelectedCategories(),
-				manual_ids:   self.manualProductIds
+				action:         'bcg_preview_products',
+				nonce:          bcg_campaign_builder.nonce,
+				product_count:  $( '#bcg-product-count' ).val(),
+				product_source: $( 'input[name="product_source"]:checked' ).val(),
+				category_ids:   self.getSelectedCategories(),
+				manual_ids:     self.manualProductIds
 			};
 
 			$btn.prop( 'disabled', true );

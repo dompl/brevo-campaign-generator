@@ -131,8 +131,8 @@ class BCG_Product_Selector {
 	public function format_product_preview( WC_Product $product ): array {
 		$image_id  = $product->get_image_id();
 		$image_url = $image_id
-			? wp_get_attachment_image_url( $image_id, 'medium' )
-			: wc_placeholder_img_src( 'medium' );
+			? wp_get_attachment_image_url( $image_id, 'thumbnail' )
+			: wc_placeholder_img_src( 'thumbnail' );
 
 		// Get the primary category name.
 		$category = '';

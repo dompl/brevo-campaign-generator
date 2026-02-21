@@ -763,17 +763,34 @@ a.bcg-btn-danger:hover {
 	color: var(--bcg-accent);
 }
 
-/* Loading spinner inside buttons */
+/* Loading spinner — base */
+.bcg-spinner,
 .bcg-btn-spinner {
 	display: inline-block;
-	width: 12px;
-	height: 12px;
-	border: 2px solid rgba(255, 255, 255, 0.25);
-	border-top-color: currentColor;
+	border-style: solid;
 	border-radius: 50%;
 	animation: bcg-spin 0.55s linear infinite;
 	vertical-align: middle;
 	flex-shrink: 0;
+}
+
+/* Default standalone size — used next to buttons */
+.bcg-spinner {
+	width: 16px;
+	height: 16px;
+	border-width: 2px;
+	border-color: var(--bcg-border);
+	border-top-color: var(--bcg-accent);
+}
+
+/* Small variant inside / next to action buttons */
+.bcg-spinner-small,
+.bcg-btn-spinner {
+	width: 12px;
+	height: 12px;
+	border-width: 2px;
+	border-color: rgba(255, 255, 255, 0.25);
+	border-top-color: currentColor;
 }
 
 @keyframes bcg-spin {
@@ -2203,6 +2220,9 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 
 /* ── Preview products row ── */
 .bcg-preview-products-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	margin-top: 4px;
 }
 
