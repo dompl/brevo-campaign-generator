@@ -1385,6 +1385,8 @@ class BCG_Template {
 			'{{setting_logo_width}}'             => absint( $settings['logo_width'] ?? 180 ) . 'px',
 			'{{setting_header_text}}'            => esc_html( $settings['header_text'] ?? '' ),
 			'{{setting_footer_text}}'            => wp_kses_post( $settings['footer_text'] ?? '' ),
+			'{{setting_logo_alignment}}'         => esc_attr( $settings['logo_alignment'] ?? 'left' ),
+			'{{setting_header_bg}}'              => esc_attr( $settings['header_bg'] ?? '#ffffff' ),
 		);
 
 		$html = str_replace( array_keys( $css_vars ), array_values( $css_vars ), $html );
@@ -1708,6 +1710,8 @@ class BCG_Template {
 			'product_gap'           => 24,
 			'product_button_size'   => 'medium',
 			'section_order'         => null,
+			'logo_alignment'        => 'left',
+			'header_bg'             => '#ffffff',
 		);
 	}
 
