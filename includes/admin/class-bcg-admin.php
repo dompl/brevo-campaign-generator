@@ -199,7 +199,7 @@ class BCG_Admin {
 		);
 
 		// Section Builder.
-		add_submenu_page(
+		$sb_hook = add_submenu_page(
 			self::MENU_SLUG,
 			__( 'Section Builder', 'brevo-campaign-generator' ),
 			__( 'Section Builder', 'brevo-campaign-generator' ),
@@ -207,6 +207,7 @@ class BCG_Admin {
 			'bcg-section-builder',
 			array( $this, 'render_section_builder_page' )
 		);
+		add_action( 'load-' . $sb_hook, array( $this, 'add_section_builder_help_tabs' ) );
 
 		// Edit Campaign (hidden — not shown in the nav menu).
 		add_submenu_page(
@@ -518,6 +519,11 @@ class BCG_Admin {
 						'confirm_del_tmpl' => __( 'Delete this saved template? This cannot be undone.', 'brevo-campaign-generator' ),
 						'select_image'     => __( 'Select Image', 'brevo-campaign-generator' ),
 						'use_image'        => __( 'Use this image', 'brevo-campaign-generator' ),
+						'move_up'          => __( 'Move up', 'brevo-campaign-generator' ),
+						'move_down'        => __( 'Move down', 'brevo-campaign-generator' ),
+						'edit_settings'    => __( 'Edit settings', 'brevo-campaign-generator' ),
+						'remove'           => __( 'Remove', 'brevo-campaign-generator' ),
+						'generate_section' => __( 'Generate with AI', 'brevo-campaign-generator' ),
 					),
 				)
 			);
@@ -2438,6 +2444,98 @@ class BCG_Admin {
 	 */
 	public function render_edit_campaign_page(): void {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-edit-campaign.php';
+	}
+
+	/**
+	 * Add contextual help tabs to the Section Builder admin screen.
+	 *
+	 * Registered via load-{hook} to attach before the page renders.
+	 *
+	 * @since  1.5.3
+	 * @return void
+	 */
+	public function add_section_builder_help_tabs(): void {
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return;
+		}
+
+		$screen->add_help_tab( array(
+			'id'      => 'bcg-sb-overview',
+			'title'   => __( 'Overview', 'brevo-campaign-generator' ),
+			'content' =>
+				'<h2>' . __( 'Section Builder', 'brevo-campaign-generator' ) . '</h2>' .
+				'<p>' . __( 'The Section Builder lets you compose reusable email templates by combining individual <strong>sections</strong> (blocks) into a named layout. These layouts can then be applied when creating a campaign.', 'brevo-campaign-generator' ) . '</p>' .
+				'<p>' . __( 'The builder has three panels:', 'brevo-campaign-generator' ) . '</p>' .
+				'<ul>' .
+				'<li><strong>' . __( 'Sections (left)', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'Click any section variant to add it to the canvas. Variants are grouped into categories; click a category header to expand or collapse it.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li><strong>' . __( 'Canvas (centre)', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'Drag the &#9776; handle to reorder sections. Use the ↑ ↓ buttons for keyboard accessibility. Click ✎ to open the settings panel for a section. Click ✕ to remove it.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li><strong>' . __( 'Settings (right)', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'Shows editable fields for the selected section. Every change triggers a live preview update within 300 ms. Colour pickers sync with their hex input field.', 'brevo-campaign-generator' ) . '</li>' .
+				'</ul>',
+		) );
+
+		$screen->add_help_tab( array(
+			'id'      => 'bcg-sb-sections',
+			'title'   => __( 'Section Types', 'brevo-campaign-generator' ),
+			'content' =>
+				'<h2>' . __( 'Available Section Types', 'brevo-campaign-generator' ) . '</h2>' .
+				'<table style="width:100%;border-collapse:collapse;">' .
+				'<thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #ddd;">' . __( 'Type', 'brevo-campaign-generator' ) . '</th>' .
+				'<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #ddd;">' . __( 'AI', 'brevo-campaign-generator' ) . '</th>' .
+				'<th style="text-align:left;padding:6px 8px;border-bottom:1px solid #ddd;">' . __( 'Description', 'brevo-campaign-generator' ) . '</th></tr></thead>' .
+				'<tbody>' .
+				'<tr><td style="padding:5px 8px;">Header</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Logo, site name, optional navigation links.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Hero / Banner</td><td style="padding:5px 8px;">✨</td><td style="padding:5px 8px;">' . __( 'Large banner with headline, subtext, and a CTA button. Supports a background image.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Heading</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Standalone section headline with optional accent line and subtext.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Text Block</td><td style="padding:5px 8px;">✨</td><td style="padding:5px 8px;">' . __( 'Rich paragraph block with optional heading.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Image</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Full-width or aligned image block. Optionally linked.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Products</td><td style="padding:5px 8px;">✨</td><td style="padding:5px 8px;">' . __( 'WooCommerce product grid. Enter product IDs; supports 1–3 columns. AI generates per-product copy.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Banner</td><td style="padding:5px 8px;">✨</td><td style="padding:5px 8px;">' . __( 'Coloured announcement strip with heading and subtext.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">List</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Bullet, numbered, checkmark, or plain list. Items defined as JSON.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Call to Action</td><td style="padding:5px 8px;">✨</td><td style="padding:5px 8px;">' . __( 'Centred heading + subtext + prominent button.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Coupon</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Dashed-border coupon code block with discount text and expiry.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Divider</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Thin horizontal rule; configurable colour, thickness, and margin.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Spacer</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Blank vertical gap.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'<tr><td style="padding:5px 8px;">Footer</td><td style="padding:5px 8px;">—</td><td style="padding:5px 8px;">' . __( 'Unsubscribe link, footer text, and optional footer links.', 'brevo-campaign-generator' ) . '</td></tr>' .
+				'</tbody></table>' .
+				'<p style="margin-top:12px;font-style:italic;">' . __( '✨ = AI can generate or suggest copy for this section type.', 'brevo-campaign-generator' ) . '</p>',
+		) );
+
+		$screen->add_help_tab( array(
+			'id'      => 'bcg-sb-ai',
+			'title'   => __( 'AI Generation', 'brevo-campaign-generator' ),
+			'content' =>
+				'<h2>' . __( 'AI-Powered Content Generation', 'brevo-campaign-generator' ) . '</h2>' .
+				'<p>' . __( '<strong>Generate All with AI</strong> — fills headline, subtext, and copy fields for every AI-capable section in one click. Requires an OpenAI API key (set in Settings → API Keys).', 'brevo-campaign-generator' ) . '</p>' .
+				'<p>' . __( 'Before generating, provide context in the toolbar:', 'brevo-campaign-generator' ) . '</p>' .
+				'<ul>' .
+				'<li><strong>' . __( 'Campaign theme', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'e.g. "Black Friday", "Summer Sale", "New Arrivals". Leave blank for a general email.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li><strong>' . __( 'Tone of voice', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'Professional, Friendly, Urgent, Playful, or Luxury.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li><strong>' . __( 'Language', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'The target language for the generated copy.', 'brevo-campaign-generator' ) . '</li>' .
+				'</ul>' .
+				'<p>' . __( 'You can also regenerate a single section by clicking the ✨ icon on its canvas card or in the settings panel.', 'brevo-campaign-generator' ) . '</p>' .
+				'<p>' . __( 'For the <strong>Products</strong> section, enter comma-separated WooCommerce product IDs first; AI will generate a headline and short description for each product.', 'brevo-campaign-generator' ) . '</p>',
+		) );
+
+		$screen->add_help_tab( array(
+			'id'      => 'bcg-sb-save',
+			'title'   => __( 'Saving & Loading', 'brevo-campaign-generator' ),
+			'content' =>
+				'<h2>' . __( 'Templates', 'brevo-campaign-generator' ) . '</h2>' .
+				'<p>' . __( 'Named templates let you save a section layout and reuse it for future campaigns.', 'brevo-campaign-generator' ) . '</p>' .
+				'<ol>' .
+				'<li>' . __( 'Type a name in the <strong>Template Name</strong> field at the top-left.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li>' . __( 'Click <strong>Save Template</strong>. The template is stored in the database and the unsaved-changes indicator (●) disappears.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li>' . __( 'To reload it later, click <strong>Load Template</strong> and choose from the list.', 'brevo-campaign-generator' ) . '</li>' .
+				'<li>' . __( 'Saving again with the same template open performs an <strong>update</strong>; saving with a new name creates a <strong>copy</strong>.', 'brevo-campaign-generator' ) . '</li>' .
+				'</ol>' .
+				'<p>' . __( 'The unsaved-changes dot (●) in the Canvas panel header shows when there are changes that have not yet been saved.', 'brevo-campaign-generator' ) . '</p>',
+		) );
+
+		$screen->set_help_sidebar(
+			'<p><strong>' . __( 'For more information:', 'brevo-campaign-generator' ) . '</strong></p>' .
+			'<p><a href="https://github.com/dompl/brevo-campaign-generator" target="_blank">' . __( 'GitHub Repository', 'brevo-campaign-generator' ) . '</a></p>'
+		);
 	}
 
 	/**

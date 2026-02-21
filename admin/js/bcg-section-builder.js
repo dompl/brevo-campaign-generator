@@ -27,8 +27,9 @@
 		currentTemplateId: 0, // ID of the loaded/saved template (0 = new).
 		mediaFrame:   null,   // WP media frame instance.
 
-		i18n:  bcg_section_builder.i18n  || {},
-		types: bcg_section_builder.section_types || {},
+		i18n:    bcg_section_builder.i18n          || {},
+		types:   bcg_section_builder.section_types || {},
+		presets: bcg_section_builder.presets       || [],
 
 		// ── Initialisation ─────────────────────────────────────────────────
 
@@ -261,10 +262,10 @@
 					'<span class="bcg-sb-section-label">' + self.escHtml( label ) + '</span>' +
 					'<div class="bcg-sb-section-actions">' +
 						aiBtn +
-						'<button type="button" class="bcg-sb-move-up bcg-btn-icon" title="<?php esc_attr_e( 'Move up', 'brevo-campaign-generator' ); ?>"><span class="material-icons-outlined">keyboard_arrow_up</span></button>' +
-						'<button type="button" class="bcg-sb-move-down bcg-btn-icon" title="<?php esc_attr_e( 'Move down', 'brevo-campaign-generator' ); ?>"><span class="material-icons-outlined">keyboard_arrow_down</span></button>' +
-						'<button type="button" class="bcg-sb-section-edit bcg-btn-icon" title="<?php esc_attr_e( 'Edit settings', 'brevo-campaign-generator' ); ?>"><span class="material-icons-outlined">settings</span></button>' +
-						'<button type="button" class="bcg-sb-section-remove bcg-btn-icon bcg-btn-danger-icon" title="<?php esc_attr_e( 'Remove', 'brevo-campaign-generator' ); ?>"><span class="material-icons-outlined">delete</span></button>' +
+						'<button type="button" class="bcg-sb-move-up bcg-btn-icon" title="' + self.escAttr( self.i18n.move_up || 'Move up' ) + '"><span class="material-icons-outlined">keyboard_arrow_up</span></button>' +
+						'<button type="button" class="bcg-sb-move-down bcg-btn-icon" title="' + self.escAttr( self.i18n.move_down || 'Move down' ) + '"><span class="material-icons-outlined">keyboard_arrow_down</span></button>' +
+						'<button type="button" class="bcg-sb-section-edit bcg-btn-icon" title="' + self.escAttr( self.i18n.edit_settings || 'Edit settings' ) + '"><span class="material-icons-outlined">settings</span></button>' +
+						'<button type="button" class="bcg-sb-section-remove bcg-btn-icon bcg-btn-danger-icon" title="' + self.escAttr( self.i18n.remove || 'Remove' ) + '"><span class="material-icons-outlined">delete</span></button>' +
 					'</div>'
 				);
 

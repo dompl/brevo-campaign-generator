@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.3] — 2026-02-21
+
+### Fixed
+- **Section Builder palette empty** — `presets` was never initialised in the `BCGSectionBuilder` JS object. `bcg_section_builder.presets` was passed from PHP but not assigned to `this.presets`, so `renderPalette()` always received `undefined` and showed "No sections available". Added `presets: bcg_section_builder.presets || []` to the object state definition.
+- **PHP template tags in JS** — four `<?php esc_attr_e(…) ?>` calls were embedded in `bcg-section-builder.js` inside JS string literals. Because `bcg-section-builder.js` is a static `.js` file (not parsed by PHP), these tags rendered literally as tooltip text. Replaced with i18n lookups (`self.i18n.move_up`, `self.i18n.move_down`, `self.i18n.edit_settings`, `self.i18n.remove`) backed by English fallback strings; corresponding keys added to the `bcg_section_builder` localisation array.
+
+### Added
+- **Section Builder User Guide** (contextual help) — four help tabs now appear in the WordPress screen Help menu (top-right) on the Section Builder page: *Overview*, *Section Types*, *AI Generation*, and *Saving & Loading*. Each tab explains the relevant workflow in plain language, including a complete section-type reference table. Implemented via `add_section_builder_help_tabs()` hooked to `load-{page_hook}`.
+
+---
+
 ## [1.5.2] — 2026-02-21
 
 ### Fixed
