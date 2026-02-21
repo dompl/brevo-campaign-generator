@@ -450,6 +450,18 @@
 
 			// Bind field change events for this panel.
 			self.bindSettingsFields( section.id );
+
+			// Append live section preview.
+			$body.append(
+				'<div class="bcg-sb-section-preview-wrap">' +
+				'<div class="bcg-sb-section-preview-header">' +
+				'<span class="material-icons-outlined">preview</span>' +
+				'<span>Live Preview</span>' +
+				'</div>' +
+				'<iframe id="bcg-sb-section-preview-iframe" class="bcg-sb-section-iframe" scrolling="no" frameborder="0"></iframe>' +
+				'</div>'
+			);
+			self.updateSectionPreview( section.id );
 		},
 
 		/**
@@ -486,9 +498,12 @@
 					var rangeMin  = field.min  !== undefined ? field.min  : 0;
 					var rangeMax  = field.max  !== undefined ? field.max  : 100;
 					var rangeStep = field.step !== undefined ? field.step : 1;
+					var numVal    = parseFloat( value );
+					if ( isNaN( numVal ) ) { numVal = rangeMin; }
+					var rangePct  = rangeMax > rangeMin ? ( ( numVal - rangeMin ) / ( rangeMax - rangeMin ) ) * 100 : 0;
 					input  = '<div class="bcg-sb-range-wrap">';
-					input += '<input type="range" class="bcg-sb-range-input" data-key="' + self.escAttr( field.key ) + '" min="' + rangeMin + '" max="' + rangeMax + '" step="' + rangeStep + '" value="' + self.escAttr( String( value ) ) + '" />';
-					input += '<span class="bcg-sb-range-value">' + self.escHtml( String( value ) ) + '</span>';
+					input += '<input type="range" class="bcg-sb-range-input bcg-range" data-key="' + self.escAttr( field.key ) + '" min="' + rangeMin + '" max="' + rangeMax + '" step="' + rangeStep + '" value="' + self.escAttr( String( numVal ) ) + '" style="--range-progress:' + rangePct.toFixed(1) + '%">';
+					input += '<span class="bcg-sb-range-value">' + self.escHtml( String( numVal ) ) + '</span>';
 					input += '</div>';
 					break;
 
@@ -512,12 +527,21 @@
 					break;
 
 				case 'select':
-					input = '<select id="' + id + '" class="bcg-sb-field-input bcg-select" data-key="' + self.escAttr( key ) + '">';
+					var selLabel = String( value );
 					$.each( field.options || [], function ( j, opt ) {
-						var sel = String( opt.value ) === String( value ) ? ' selected' : '';
-						input += '<option value="' + self.escAttr( String( opt.value ) ) + '"' + sel + '>' + self.escHtml( opt.label ) + '</option>';
+						if ( String( opt.value ) === String( value ) ) { selLabel = opt.label; return false; }
 					} );
-					input += '</select>';
+					input  = '<div class="bcg-select-wrapper bcg-sb-custom-select" data-key="' + self.escAttr( key ) + '">';
+					input += '<button type="button" class="bcg-select-trigger" aria-haspopup="listbox" aria-expanded="false">';
+					input += '<span class="bcg-select-value">' + self.escHtml( selLabel ) + '</span>';
+					input += '<span class="material-icons-outlined" style="font-size:18px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>';
+					input += '</button>';
+					input += '<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">';
+					$.each( field.options || [], function ( j, opt ) {
+						var isSel = String( opt.value ) === String( value );
+						input += '<div class="bcg-select-option' + ( isSel ? ' is-selected' : '' ) + '" data-value="' + self.escAttr( String( opt.value ) ) + '" role="option" aria-selected="' + ( isSel ? 'true' : 'false' ) + '">' + self.escHtml( opt.label ) + '</div>';
+					} );
+					input += '</div></div>';
 					break;
 
 				case 'image':
@@ -574,6 +598,7 @@
 				}
 
 				self.updateSetting( sectionId, key, val );
+				self.debounceSectionPreview( sectionId );
 
 				// Sync color text → picker.
 				if ( $el.hasClass( 'bcg-sb-color-text' ) ) {
@@ -582,13 +607,57 @@
 				}
 			} );
 
-			// Range slider — live value display.
+			// Range slider — live value display + track fill.
 			$( '#bcg-sb-settings-body' ).on( 'input', '.bcg-sb-range-input', function () {
 				var $input = $( this );
 				var key    = $input.data( 'key' );
 				var val    = parseFloat( $input.val() );
+				var min    = parseFloat( $input.attr( 'min' ) || 0 );
+				var max    = parseFloat( $input.attr( 'max' ) || 100 );
+				var pct    = max > min ? ( ( val - min ) / ( max - min ) ) * 100 : 0;
+				$input[0].style.setProperty( '--range-progress', pct.toFixed(1) + '%' );
 				$input.closest( '.bcg-sb-range-wrap' ).find( '.bcg-sb-range-value' ).text( val );
 				self.updateSetting( sectionId, key, val );
+				self.debounceSectionPreview( sectionId );
+			} );
+
+			// Custom select — option chosen.
+			$body.on( 'click', '.bcg-sb-custom-select .bcg-select-option', function ( e ) {
+				e.stopPropagation();
+				var $opt     = $( this );
+				var $wrapper = $opt.closest( '.bcg-sb-custom-select' );
+				var key      = $wrapper.data( 'key' );
+				var val      = String( $opt.data( 'value' ) );
+				$wrapper.find( '.bcg-select-value' ).text( $opt.text() );
+				$wrapper.find( '.bcg-select-option' ).removeClass( 'is-selected' ).attr( 'aria-selected', 'false' );
+				$opt.addClass( 'is-selected' ).attr( 'aria-selected', 'true' );
+				$wrapper.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$wrapper.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+				self.updateSetting( sectionId, key, val );
+				self.debounceSectionPreview( sectionId );
+			} );
+
+			// Custom select — trigger toggle (position using fixed coords to escape overflow:hidden).
+			$body.on( 'click', '.bcg-sb-custom-select .bcg-select-trigger', function ( e ) {
+				e.stopPropagation();
+				var $trigger = $( this );
+				var $menu    = $trigger.next( '.bcg-select-menu' );
+				var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
+				// Close all others inside settings body.
+				$body.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$body.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+				if ( ! isOpen ) {
+					var rect = $trigger[0].getBoundingClientRect();
+					$menu.css( {
+						position: 'fixed',
+						top:      ( rect.bottom + 2 ) + 'px',
+						left:     rect.left + 'px',
+						width:    rect.width + 'px',
+						'z-index': 999999,
+					} );
+					$menu.removeClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'true' );
+				}
 			} );
 
 			// Color picker → sync text input.
@@ -639,6 +708,60 @@
 
 
 		// ── Product Select Widget ─────────────────────────────────────────
+
+		/**
+		 * Fire a debounced single-section preview update.
+		 *
+		 * @param {string} sectionId
+		 */
+		debounceSectionPreview: function ( sectionId ) {
+			var self = this;
+			if ( self._sectionPreviewTimer ) {
+				clearTimeout( self._sectionPreviewTimer );
+			}
+			self._sectionPreviewTimer = setTimeout( function () {
+				if ( self.selectedId === sectionId ) {
+					self.updateSectionPreview( sectionId );
+				}
+			}, 350 );
+		},
+
+		/**
+		 * Render just the selected section into the settings panel preview iframe.
+		 *
+		 * @param {string} sectionId
+		 */
+		updateSectionPreview: function ( sectionId ) {
+			var self    = this;
+			var section = self.getSectionById( sectionId );
+			var $iframe = $( '#bcg-sb-section-preview-iframe' );
+			if ( ! section || ! $iframe.length ) { return; }
+
+			$.ajax( {
+				url:  self.ajaxUrl,
+				type: 'POST',
+				data: {
+					action:   'bcg_sb_preview',
+					nonce:    self.nonce,
+					sections: JSON.stringify( [ section ] ),
+				},
+				success: function ( response ) {
+					if ( response.success && response.data.html ) {
+						var doc = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
+						doc.open();
+						doc.write( response.data.html );
+						doc.close();
+						// Auto-size to content after load.
+						setTimeout( function () {
+							try {
+								var h = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+								if ( h > 20 ) { $iframe.css( 'height', h + 'px' ); }
+							} catch ( ex ) {}
+						}, 200 );
+					}
+				},
+			} );
+		},
 
 		/**
 		 * Build the HTML for a product AJAX-select field.

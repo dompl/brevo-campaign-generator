@@ -17,6 +17,25 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.10] — 2026-02-21
+
+### Added
+- **Red Flowbite-style range slider** — `<input type="range">` fields now use a fully custom CSS slider: gradient track filled in red (`#e63529`) up to the current value via `--range-progress` CSS variable, 16px red thumb with grow-on-hover animation, cross-browser `-webkit` and `-moz` support. Value indicator displayed in red bold text.
+- **Custom dropdowns for all select fields** — settings panel `select` fields now use the same `.bcg-select-wrapper / .bcg-select-trigger / .bcg-select-menu` custom dropdown used everywhere else in the plugin. Options position with `fixed` coords to escape `overflow:hidden` ancestors.
+- **Live per-section preview** — selecting a section in the canvas now shows a scaled live preview iframe at the bottom of the settings panel. The preview auto-updates (350ms debounce) whenever any setting is changed (sliders, colours, text, dropdowns).
+
+### Fixed
+- **Product tags gap** — the CSS container rule was using the wrong class name (`.bcg-manual-product-tags` instead of `.bcg-sb-product-tags`), so the `flex + gap` layout never applied. Fixed — selected products now display with correct spacing.
+
+---
+
+## [1.5.9] — 2026-02-21
+
+### Fixed
+- **Settings panel crash** — `case 'range':` in `renderField` used undeclared `html` variable and wrong variable name `val` (should be `value`), throwing a ReferenceError that silently crashed the settings panel on every section click.
+
+---
+
 ## [1.5.8] — 2026-02-21
 
 ### Added
