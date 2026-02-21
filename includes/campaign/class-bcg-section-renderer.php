@@ -270,29 +270,32 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_text( array $s, int $mw, string $font ): string {
-		$bg      = esc_attr( $s['bg_color'] );
-		$tc      = esc_attr( $s['text_color'] );
-		$pad     = (int) $s['padding'];
-		$fsize   = (int) $s['font_size'];
-		$align   = in_array( $s['alignment'], array( 'left', 'center', 'right' ), true ) ? $s['alignment'] : 'left';
+		$bg       = esc_attr( $s['bg_color'] );
+		$tc       = esc_attr( $s['text_color'] );
+		$pt       = (int) ( $s['padding_top']    ?? $s['padding'] ?? 30 );
+		$pb       = (int) ( $s['padding_bottom'] ?? $s['padding'] ?? 30 );
+		$fsize    = (int) $s['font_size'];
+		$hsize    = (int) ( $s['heading_size']  ?? 22 );
+		$lh       = sprintf( '%.1f', (int) ( $s['line_height'] ?? 170 ) / 100 );
+		$align    = in_array( $s['alignment'], array( 'left', 'center', 'right' ), true ) ? $s['alignment'] : 'left';
 
 		$heading_html = '';
 		if ( ! empty( $s['heading'] ) ) {
 			$heading_html = sprintf(
-				'<tr><td style="padding-bottom:12px;"><h2 style="font-family:%s;font-size:22px;font-weight:700;color:%s;margin:0;padding:0;text-align:%s;">%s</h2></td></tr>',
-				esc_attr( $font ), $tc, $align, esc_html( $s['heading'] )
+				'<tr><td style="padding-bottom:12px;"><h2 style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;padding:0;text-align:%s;">%s</h2></td></tr>',
+				esc_attr( $font ), $hsize, $tc, $align, esc_html( $s['heading'] )
 			);
 		}
 
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
-					<td style="padding:%dpx;">
+					<td style="padding:%dpx 30px %dpx;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							%s
 							<tr>
 								<td>
-									<p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:1.7;text-align:%s;">%s</p>
+									<p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:%s;text-align:%s;">%s</p>
 								</td>
 							</tr>
 						</table>
@@ -300,9 +303,9 @@ class BCG_Section_Renderer {
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
-			$pad,
+			$pt, $pb,
 			$heading_html,
-			esc_attr( $font ), $fsize, $tc, $align,
+			esc_attr( $font ), $fsize, $tc, $lh, $align,
 			nl2br( esc_html( $s['body'] ) )
 		);
 	}
@@ -495,7 +498,8 @@ class BCG_Section_Renderer {
 	private static function render_banner( array $s, int $mw, string $font ): string {
 		$bg         = esc_attr( $s['bg_color'] );
 		$tc         = esc_attr( $s['text_color'] );
-		$pad        = (int) $s['padding'];
+		$pt         = (int) ( $s['padding_top']    ?? $s['padding'] ?? 30 );
+		$pb         = (int) ( $s['padding_bottom'] ?? $s['padding'] ?? 30 );
 		$heading    = esc_html( $s['heading'] );
 		$subtext    = esc_html( $s['subtext'] );
 		$h_fsize    = (int) ( $s['heading_font_size'] ?? 26 );
@@ -513,7 +517,7 @@ class BCG_Section_Renderer {
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
-					<td style="padding:%dpx 30px;text-align:%s;">
+					<td style="padding:%dpx 30px %dpx;text-align:%s;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td style="text-align:%s;">
@@ -526,7 +530,7 @@ class BCG_Section_Renderer {
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
-			$pad, $align,
+			$pt, $pb, $align,
 			$align,
 			esc_attr( $font ), $h_fsize, $tc, $heading,
 			$subtext_html
@@ -545,7 +549,8 @@ class BCG_Section_Renderer {
 	private static function render_cta( array $s, int $mw, string $font ): string {
 		$bg         = esc_attr( $s['bg_color'] );
 		$tc         = esc_attr( $s['text_color'] );
-		$pad        = (int) $s['padding'];
+		$pt         = (int) ( $s['padding_top']    ?? $s['padding'] ?? 40 );
+		$pb         = (int) ( $s['padding_bottom'] ?? $s['padding'] ?? 40 );
 		$btn_bg     = esc_attr( $s['button_bg'] );
 		$btn_tc     = esc_attr( $s['button_text_color'] );
 		$heading    = esc_html( $s['heading'] );
@@ -569,7 +574,7 @@ class BCG_Section_Renderer {
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
-					<td style="padding:%dpx 30px;text-align:center;">
+					<td style="padding:%dpx 30px %dpx;text-align:center;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td style="padding-bottom:16px;text-align:center;">
@@ -587,7 +592,7 @@ class BCG_Section_Renderer {
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
-			$pad,
+			$pt, $pb,
 			esc_attr( $font ), $h_fsize, $tc, $heading,
 			$subtext_html,
 			$btn_url, $btn_pad_v, $btn_pad_h, $btn_bg, $btn_tc, esc_attr( $font ), $btn_fsize, $btn_lbl
@@ -769,7 +774,8 @@ class BCG_Section_Renderer {
 		$accent  = esc_attr( $s['accent_color'] );
 		$align   = in_array( $s['alignment'], array( 'left', 'center', 'right' ), true ) ? $s['alignment'] : 'center';
 		$fsize   = (int) $s['font_size'];
-		$pad     = (int) $s['padding'];
+		$pt      = (int) ( $s['padding_top']    ?? $s['padding'] ?? 30 );
+		$pb      = (int) ( $s['padding_bottom'] ?? $s['padding'] ?? 30 );
 		$text    = esc_html( $s['text'] );
 		$subtext = esc_html( $s['subtext'] ?? '' );
 
@@ -793,7 +799,7 @@ class BCG_Section_Renderer {
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
-					<td style="padding:%dpx 30px;">
+					<td style="padding:%dpx 30px %dpx;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td style="text-align:%s;">
@@ -807,7 +813,7 @@ class BCG_Section_Renderer {
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
-			$pad,
+			$pt, $pb,
 			$align,
 			esc_attr( $font ), $fsize, $tc, $text,
 			$accent_html,
@@ -829,7 +835,8 @@ class BCG_Section_Renderer {
 		$tc      = esc_attr( $s['text_color'] );
 		$accent  = esc_attr( $s['accent_color'] );
 		$fsize   = (int) $s['font_size'];
-		$pad     = (int) $s['padding'];
+		$pt      = (int) ( $s['padding_top']    ?? $s['padding'] ?? 30 );
+		$pb      = (int) ( $s['padding_bottom'] ?? $s['padding'] ?? 30 );
 		$text_align = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? ( $s['text_align'] ?? 'left' ) : 'left';
 		$style   = $s['list_style'] ?? 'bullets';
 
@@ -886,7 +893,7 @@ class BCG_Section_Renderer {
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
-					<td style="padding:%dpx 30px;">
+					<td style="padding:%dpx 30px %dpx;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							%s
 							<tr>
@@ -901,7 +908,7 @@ class BCG_Section_Renderer {
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
-			$pad,
+			$pt, $pb,
 			$heading_html,
 			$rows
 		);

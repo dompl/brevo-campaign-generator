@@ -17,6 +17,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.13] — 2026-02-21
+
+### Added
+- **Heading Size control** — Text Block section now has a dedicated `Heading Size (px)` range slider (14–48 px, default 22) so the heading and body font sizes can be adjusted independently.
+- **Line Height control** — Text Block section now has a `Line Height (%)` range slider (100–220, default 170 = 1.7). Controls body text line spacing directly in the settings panel.
+- **Separate Padding Top / Bottom** — All sections that previously had a single `Padding (px)` field now have independent `Padding Top` and `Padding Bottom` sliders: Text Block, Banner, CTA, Heading, and List sections.
+- **Layout-based section presets** — Complete overhaul of the Section Builder palette. All 36 variants now differ in structural layout (alignment, column count, presence of navigation/button/subtext, compact vs spacious, heading vs body-only), not just colour. Colour-only duplicates removed. 11 categories, 2–5 meaningful variants each.
+
+### Fixed
+- **Backward compatibility** — Renderer falls back to the old `padding` value for any existing saved sections that have not yet been updated, so existing templates continue to render correctly.
+
+---
+
 ## [1.5.12] — 2026-02-21
 
 ### Added
