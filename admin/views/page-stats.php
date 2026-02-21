@@ -22,6 +22,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 ?>
 
 <div class="wrap bcg-wrap bcg-stats-wrap">
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 
 	<h1><?php esc_html_e( 'Brevo Campaign Statistics', 'brevo-campaign-generator' ); ?></h1>
 

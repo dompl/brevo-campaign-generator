@@ -63,6 +63,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 }
 ?>
 <div class="wrap bcg-wrap bcg-new-campaign-wrap">
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 
 	<h1><?php esc_html_e( 'New Campaign', 'brevo-campaign-generator' ); ?></h1>
 

@@ -98,6 +98,7 @@ $status_badge_classes = array(
 ?>
 
 <div class="wrap bcg-wrap">
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 
 	<!-- ─── Page Header ────────────────────────────────────────────── -->
 

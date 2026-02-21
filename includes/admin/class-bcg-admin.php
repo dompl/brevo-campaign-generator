@@ -50,6 +50,7 @@ class BCG_Admin {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menus' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_filter( 'admin_body_class', array( $this, 'add_bcg_body_class' ) );
 		add_action( 'admin_bar_menu', array( $this, 'add_credit_widget_to_admin_bar' ), 100 );
 
 		$this->register_ajax_handlers();
@@ -218,6 +219,14 @@ class BCG_Admin {
 			BCG_PLUGIN_URL . 'admin/css/bcg-admin.css',
 			array(),
 			BCG_VERSION
+		);
+
+		// Google Fonts for BCG custom admin design.
+		wp_enqueue_style(
+			'bcg-google-fonts',
+			'https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
+			array(),
+			null
 		);
 
 		// WordPress colour picker for template/settings.
@@ -2351,5 +2360,20 @@ class BCG_Admin {
 	 */
 	public function render_edit_campaign_page(): void {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-edit-campaign.php';
+	}
+
+	/**
+	 * Add custom body class to all BCG admin pages.
+	 *
+	 * @since  1.4.0
+	 * @param  string $classes Space-separated list of body classes.
+	 * @return string Modified body classes.
+	 */
+	public function add_bcg_body_class( string $classes ): string {
+		$screen = get_current_screen();
+		if ( $screen && $this->is_bcg_page( $screen->id ) ) {
+			$classes .= ' bcg-admin-page';
+		}
+		return $classes;
 	}
 }
