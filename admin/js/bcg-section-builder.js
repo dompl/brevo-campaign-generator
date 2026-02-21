@@ -214,6 +214,28 @@
 				}
 				$( '.bcg-sb-variant-card' ).first().focus();
 			} );
+
+			// Canvas card preview toggle.
+			$( document ).on( 'click', '.bcg-sb-card-preview-toggle', function ( e ) {
+				e.stopPropagation();
+				var $btn     = $( this );
+				var $card    = $btn.closest( '.bcg-sb-section' );
+				var id       = $card.data( 'id' );
+				var $preview = $card.find( '.bcg-sb-card-preview' );
+				var $icon    = $btn.find( '.material-icons-outlined' );
+				var isOpen   = $preview.is( ':visible' );
+				if ( isOpen ) {
+					$preview.slideUp( 200 );
+					$icon.text( 'visibility' );
+					$btn.attr( 'title', 'Show preview' );
+				} else {
+					$preview.slideDown( 200, function () {
+						self.updateSectionPreview( id );
+					} );
+					$icon.text( 'visibility_off' );
+					$btn.attr( 'title', 'Hide preview' );
+				}
+			} );
 		},
 
 		/**
@@ -251,11 +273,11 @@
 		 * @return {jQuery}
 		 */
 		buildSectionCard: function ( section ) {
-			var self      = this;
-			var typeDef   = self.types[ section.type ] || {};
-			var label     = typeDef.label || section.type;
-			var icon      = typeDef.icon  || 'widgets';
-			var hasAi     = !! typeDef.has_ai;
+			var self    = this;
+			var typeDef = self.types[ section.type ] || {};
+			var label   = typeDef.label || section.type;
+			var icon    = typeDef.icon  || 'widgets';
+			var hasAi   = !! typeDef.has_ai;
 
 			var aiBtn = hasAi
 				? '<button type="button" class="bcg-sb-section-ai bcg-btn-icon" title="' + self.escHtml( self.i18n.generating || 'Generate with AI' ) + '">' +
@@ -265,19 +287,29 @@
 			var $card = $( '<div>' )
 				.addClass( 'bcg-sb-section' )
 				.attr( 'data-id', section.id )
-				.attr( 'data-type', section.type )
-				.html(
-					'<span class="bcg-sb-drag-handle material-icons-outlined">drag_indicator</span>' +
-					'<span class="bcg-sb-section-icon material-icons-outlined">' + self.escHtml( icon ) + '</span>' +
-					'<span class="bcg-sb-section-label">' + self.escHtml( label ) + '</span>' +
-					'<div class="bcg-sb-section-actions">' +
-						aiBtn +
-						'<button type="button" class="bcg-sb-move-up bcg-btn-icon" title="' + self.escAttr( self.i18n.move_up || 'Move up' ) + '"><span class="material-icons-outlined">keyboard_arrow_up</span></button>' +
-						'<button type="button" class="bcg-sb-move-down bcg-btn-icon" title="' + self.escAttr( self.i18n.move_down || 'Move down' ) + '"><span class="material-icons-outlined">keyboard_arrow_down</span></button>' +
-						'<button type="button" class="bcg-sb-section-edit bcg-btn-icon" title="' + self.escAttr( self.i18n.edit_settings || 'Edit settings' ) + '"><span class="material-icons-outlined">settings</span></button>' +
-						'<button type="button" class="bcg-sb-section-remove bcg-btn-icon bcg-btn-danger-icon" title="' + self.escAttr( self.i18n.remove || 'Remove' ) + '"><span class="material-icons-outlined">delete</span></button>' +
-					'</div>'
-				);
+				.attr( 'data-type', section.type );
+
+			var headerHtml =
+				'<div class="bcg-sb-section-header">' +
+				'<span class="bcg-sb-drag-handle material-icons-outlined">drag_indicator</span>' +
+				'<span class="bcg-sb-section-icon material-icons-outlined">' + self.escHtml( icon ) + '</span>' +
+				'<span class="bcg-sb-section-label">' + self.escHtml( label ) + '</span>' +
+				'<div class="bcg-sb-section-actions">' +
+					aiBtn +
+					'<button type="button" class="bcg-sb-move-up bcg-btn-icon" title="' + self.escAttr( self.i18n.move_up || 'Move up' ) + '"><span class="material-icons-outlined">keyboard_arrow_up</span></button>' +
+					'<button type="button" class="bcg-sb-move-down bcg-btn-icon" title="' + self.escAttr( self.i18n.move_down || 'Move down' ) + '"><span class="material-icons-outlined">keyboard_arrow_down</span></button>' +
+					'<button type="button" class="bcg-sb-section-edit bcg-btn-icon" title="' + self.escAttr( self.i18n.edit_settings || 'Edit settings' ) + '"><span class="material-icons-outlined">settings</span></button>' +
+					'<button type="button" class="bcg-sb-card-preview-toggle bcg-btn-icon" title="Toggle preview"><span class="material-icons-outlined">visibility</span></button>' +
+					'<button type="button" class="bcg-sb-section-remove bcg-btn-icon bcg-btn-danger-icon" title="' + self.escAttr( self.i18n.remove || 'Remove' ) + '"><span class="material-icons-outlined">delete</span></button>' +
+				'</div>' +
+				'</div>';
+
+			var previewHtml =
+				'<div class="bcg-sb-card-preview" style="display:none;">' +
+				'<iframe class="bcg-sb-card-iframe" scrolling="no" frameborder="0"></iframe>' +
+				'</div>';
+
+			$card.html( headerHtml + previewHtml );
 
 			return $card;
 		},
@@ -451,17 +483,6 @@
 			// Bind field change events for this panel.
 			self.bindSettingsFields( section.id );
 
-			// Append live section preview.
-			$body.append(
-				'<div class="bcg-sb-section-preview-wrap">' +
-				'<div class="bcg-sb-section-preview-header">' +
-				'<span class="material-icons-outlined">preview</span>' +
-				'<span>Live Preview</span>' +
-				'</div>' +
-				'<iframe id="bcg-sb-section-preview-iframe" class="bcg-sb-section-iframe" scrolling="no" frameborder="0"></iframe>' +
-				'</div>'
-			);
-			self.updateSectionPreview( section.id );
 		},
 
 		/**
@@ -579,11 +600,14 @@
 		 * @param {string} sectionId Section UUID.
 		 */
 		bindSettingsFields: function ( sectionId ) {
-			var self = this;
+			var self  = this;
 			var $body = $( '#bcg-sb-settings-body' );
 
-			// Text, textarea, number, json, image url.
-			$body.on( 'input change', '.bcg-sb-field-input', function () {
+			// Remove stale delegated handlers from previous section to prevent accumulation.
+			$body.off( '.bcgFields' );
+
+			// Text, textarea, number, json, image url, toggles.
+			$body.on( 'input.bcgFields change.bcgFields', '.bcg-sb-field-input', function () {
 				var $el  = $( this );
 				var key  = $el.data( 'key' );
 				var type = $el.attr( 'type' );
@@ -608,7 +632,7 @@
 			} );
 
 			// Range slider — live value display + track fill.
-			$( '#bcg-sb-settings-body' ).on( 'input', '.bcg-sb-range-input', function () {
+			$body.on( 'input.bcgFields', '.bcg-sb-range-input', function () {
 				var $input = $( this );
 				var key    = $input.data( 'key' );
 				var val    = parseFloat( $input.val() );
@@ -622,7 +646,7 @@
 			} );
 
 			// Custom select — option chosen.
-			$body.on( 'click', '.bcg-sb-custom-select .bcg-select-option', function ( e ) {
+			$body.on( 'click.bcgFields', '.bcg-sb-custom-select .bcg-select-option', function ( e ) {
 				e.stopPropagation();
 				var $opt     = $( this );
 				var $wrapper = $opt.closest( '.bcg-sb-custom-select' );
@@ -637,8 +661,8 @@
 				self.debounceSectionPreview( sectionId );
 			} );
 
-			// Custom select — trigger toggle (position using fixed coords to escape overflow:hidden).
-			$body.on( 'click', '.bcg-sb-custom-select .bcg-select-trigger', function ( e ) {
+			// Custom select — trigger toggle.
+			$body.on( 'click.bcgFields', '.bcg-sb-custom-select .bcg-select-trigger', function ( e ) {
 				e.stopPropagation();
 				var $trigger = $( this );
 				var $menu    = $trigger.next( '.bcg-select-menu' );
@@ -649,10 +673,10 @@
 				if ( ! isOpen ) {
 					var rect = $trigger[0].getBoundingClientRect();
 					$menu.css( {
-						position: 'fixed',
-						top:      ( rect.bottom + 2 ) + 'px',
-						left:     rect.left + 'px',
-						width:    rect.width + 'px',
+						position:  'fixed',
+						top:       ( rect.bottom + 2 ) + 'px',
+						left:      rect.left + 'px',
+						width:     rect.width + 'px',
 						'z-index': 999999,
 					} );
 					$menu.removeClass( 'bcg-dropdown-closed' );
@@ -660,18 +684,25 @@
 				}
 			} );
 
+			// Close dropdown when clicking outside.
+			$( document ).off( 'click.bcgFieldsDoc' ).on( 'click.bcgFieldsDoc', function () {
+				$body.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$body.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+			} );
+
 			// Color picker → sync text input.
-			$body.on( 'input', '.bcg-sb-color-picker', function () {
+			$body.on( 'input.bcgFields', '.bcg-sb-color-picker', function () {
 				var $el  = $( this );
 				var key  = $el.data( 'key' );
 				var val  = $el.val();
 				// Update the text sibling.
 				$body.find( '.bcg-sb-color-text[data-key="' + key + '"]' ).val( val );
 				self.updateSetting( sectionId, key, val );
+				self.debounceSectionPreview( sectionId );
 			} );
 
 			// Media library button.
-			$body.on( 'click', '.bcg-sb-image-btn', function () {
+			$body.on( 'click.bcgFields', '.bcg-sb-image-btn', function () {
 				var targetId = $( this ).data( 'target' );
 				var $input   = $( '#' + targetId );
 				var key      = $input.data( 'key' );
@@ -689,13 +720,14 @@
 					var attachment = self.mediaFrame.state().get( 'selection' ).first().toJSON();
 					$input.val( attachment.url );
 					self.updateSetting( sectionId, key, attachment.url );
+					self.debounceSectionPreview( sectionId );
 				} );
 
 				self.mediaFrame.open();
 			} );
 
 			// Per-section AI button in settings panel.
-			$body.on( 'click', '.bcg-sb-settings-ai-btn', function () {
+			$body.on( 'click.bcgFields', '.bcg-sb-settings-ai-btn', function () {
 				var id = $( this ).data( 'id' );
 				self.generateSection( id );
 			} );
@@ -720,31 +752,51 @@
 				clearTimeout( self._sectionPreviewTimer );
 			}
 			self._sectionPreviewTimer = setTimeout( function () {
-				if ( self.selectedId === sectionId ) {
-					self.updateSectionPreview( sectionId );
-				}
+				// updateSectionPreview checks internally if card preview is visible.
+				self.updateSectionPreview( sectionId );
 			}, 350 );
 		},
 
 		/**
-		 * Render just the selected section into the settings panel preview iframe.
+		 * Render a section into its canvas-card inline preview iframe.
+		 * Only fires if the card's preview area is currently visible.
 		 *
 		 * @param {string} sectionId
 		 */
 		updateSectionPreview: function ( sectionId ) {
-			var self    = this;
-			var section = self.getSectionById( sectionId );
-			var $iframe = $( '#bcg-sb-section-preview-iframe' );
-			if ( ! section || ! $iframe.length ) { return; }
+			var self     = this;
+			var section  = self.getSectionById( sectionId );
+			var $card    = $( '.bcg-sb-section[data-id="' + sectionId + '"]' );
+			var $preview = $card.find( '.bcg-sb-card-preview' );
+			var $iframe  = $card.find( '.bcg-sb-card-iframe' );
+			if ( ! section || ! $iframe.length || ! $preview.is( ':visible' ) ) { return; }
 
 			$.ajax( {
-				url:  self.ajaxUrl,
+				url:  bcg_section_builder.ajax_url,
 				type: 'POST',
 				data: {
 					action:   'bcg_sb_preview',
-					nonce:    self.nonce,
+					nonce:    bcg_section_builder.nonce,
 					sections: JSON.stringify( [ section ] ),
 				},
+				success: function ( response ) {
+					if ( response.success && response.data.html ) {
+						var doc = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
+						doc.open();
+						doc.write( response.data.html );
+						doc.close();
+						// Auto-size to content after load.
+						setTimeout( function () {
+							try {
+								var h = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+								if ( h > 20 ) { $iframe.css( 'height', h + 'px' ); }
+							} catch ( ex ) {}
+						}, 300 );
+					}
+				},
+			} );
+		},
+
 				success: function ( response ) {
 					if ( response.success && response.data.html ) {
 						var doc = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
@@ -836,6 +888,7 @@
 
 			function sync() {
 				self.updateSetting( sectionId, key, getIds().join( ',' ) );
+				self.debounceSectionPreview( sectionId );
 			}
 
 			// Search on input.

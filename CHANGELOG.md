@@ -17,6 +17,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.11] — 2026-02-21
+
+### Added
+- **Canvas card inline preview** — each section card on the canvas now has a `visibility` eye button. Clicking it expands an inline preview below the card (scaled iframe, populated via AJAX). The preview auto-refreshes when settings change. Replaces the old settings-panel preview.
+- **Sliders everywhere** — all remaining `number` fields in the Section Registry are now `range` sliders with appropriate min/max/step: `logo_width`, `headline_size`, `padding_top/bottom`, `font_size`, `padding`, `width`, `thickness`, `margin_top/bottom`, `height`, and all heading/list padding and font sizes.
+
+### Fixed
+- **Dropdown handler accumulation** — `bindSettingsFields` now uses namespaced jQuery events (`.bcgFields`) and calls `$body.off('.bcgFields')` before re-attaching. Switching between sections no longer stacks duplicate handlers, fixing the dropdown toggle that would open and immediately close.
+- **Custom dropdown update** — text alignment and all other `select` fields now correctly save when an option is chosen (the sectionId closure was being shadowed by accumulated handlers).
+- **Preview AJAX broken** — `updateSectionPreview` was using `self.ajaxUrl` and `self.nonce` which were `undefined` on the JS controller object. Fixed to use `bcg_section_builder.ajax_url` and `bcg_section_builder.nonce` (the WP-localised globals).
+- **Product preview not refreshing** — adding/removing products in the product select widget now triggers `debounceSectionPreview`, so the canvas card preview updates live.
+
+---
+
 ## [1.5.10] — 2026-02-21
 
 ### Added

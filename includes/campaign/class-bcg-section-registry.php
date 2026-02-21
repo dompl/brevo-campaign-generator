@@ -111,7 +111,7 @@ class BCG_Section_Registry {
 				'has_ai' => false,
 				'fields' => array(
 					array( 'key' => 'logo_url',    'label' => __( 'Logo URL', 'brevo-campaign-generator' ),        'type' => 'image',  'default' => '' ),
-					array( 'key' => 'logo_width',  'label' => __( 'Logo Width (px)', 'brevo-campaign-generator' ), 'type' => 'number', 'default' => 180 ),
+					array( 'key' => 'logo_width',  'label' => __( 'Logo Width (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 180, 'min' => 50, 'max' => 400, 'step' => 5 ),
 					array( 'key' => 'bg_color',    'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#ffffff' ),
 					array( 'key' => 'show_nav',    'label' => __( 'Show Navigation', 'brevo-campaign-generator' ),  'type' => 'toggle', 'default' => false ),
 					array( 'key' => 'nav_links',   'label' => __( 'Nav Links (JSON)', 'brevo-campaign-generator' ), 'type' => 'json',   'default' => '[]' ),
@@ -127,7 +127,7 @@ class BCG_Section_Registry {
 					array( 'key' => 'bg_color',       'label' => __( 'Background Colour', 'brevo-campaign-generator' ),  'type' => 'color',  'default' => '#1a1a2e' ),
 					array( 'key' => 'image_url',      'label' => __( 'Background Image URL', 'brevo-campaign-generator' ), 'type' => 'image',  'default' => '' ),
 					array( 'key' => 'headline',       'label' => __( 'Headline', 'brevo-campaign-generator' ),            'type' => 'text',   'default' => 'Your Campaign Headline' ),
-					array( 'key' => 'headline_size',  'label' => __( 'Headline Size (px)', 'brevo-campaign-generator' ),  'type' => 'number', 'default' => 36 ),
+					array( 'key' => 'headline_size',  'label' => __( 'Headline Size (px)', 'brevo-campaign-generator' ),  'type' => 'range', 'default' => 36, 'min' => 16, 'max' => 60, 'step' => 1 ),
 					array( 'key' => 'headline_color', 'label' => __( 'Headline Colour', 'brevo-campaign-generator' ),     'type' => 'color',  'default' => '#ffffff' ),
 					array( 'key' => 'subtext',        'label' => __( 'Subtext', 'brevo-campaign-generator' ),             'type' => 'textarea', 'default' => 'Discover our latest collection' ),
 					array( 'key' => 'subtext_color',  'label' => __( 'Subtext Colour', 'brevo-campaign-generator' ),      'type' => 'color',  'default' => '#cccccc' ),
@@ -139,8 +139,8 @@ class BCG_Section_Registry {
 					array( 'key' => 'cta_font_size',  'label' => __( 'Button Font Size (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 16, 'min' => 10, 'max' => 28, 'step' => 1 ),
 					array( 'key' => 'cta_padding_h',  'label' => __( 'Button Padding H (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 32, 'min' => 8, 'max' => 60, 'step' => 1 ),
 					array( 'key' => 'cta_padding_v',  'label' => __( 'Button Padding V (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 14, 'min' => 4, 'max' => 28, 'step' => 1 ),
-					array( 'key' => 'padding_top',    'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),    'type' => 'number', 'default' => 48 ),
-					array( 'key' => 'padding_bottom', 'label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ), 'type' => 'number', 'default' => 48 ),
+					array( 'key' => 'padding_top',    'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),    'type' => 'range', 'default' => 48, 'min' => 0, 'max' => 120, 'step' => 4 ),
+					array( 'key' => 'padding_bottom', 'label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 48, 'min' => 0, 'max' => 120, 'step' => 4 ),
 				),
 			),
 
@@ -154,8 +154,8 @@ class BCG_Section_Registry {
 					array( 'key' => 'body',       'label' => __( 'Body Text', 'brevo-campaign-generator' ),       'type' => 'textarea', 'default' => 'Add your text content here.' ),
 					array( 'key' => 'text_color', 'label' => __( 'Text Colour', 'brevo-campaign-generator' ),     'type' => 'color',    'default' => '#333333' ),
 					array( 'key' => 'bg_color',   'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#ffffff' ),
-					array( 'key' => 'font_size',  'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),   'type' => 'number',  'default' => 15 ),
-					array( 'key' => 'padding',    'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),     'type' => 'number',  'default' => 30 ),
+					array( 'key' => 'font_size',  'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),   'type' => 'range',   'default' => 15, 'min' => 10, 'max' => 28, 'step' => 1 ),
+					array( 'key' => 'padding',    'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),     'type' => 'range',   'default' => 30, 'min' => 0, 'max' => 60, 'step' => 2 ),
 					array( 'key' => 'alignment',  'label' => __( 'Text Alignment', 'brevo-campaign-generator' ),   'type' => 'select',  'default' => 'left',
 						'options' => array(
 							array( 'value' => 'left',   'label' => __( 'Left', 'brevo-campaign-generator' ) ),
@@ -175,7 +175,7 @@ class BCG_Section_Registry {
 					array( 'key' => 'image_url',  'label' => __( 'Image URL', 'brevo-campaign-generator' ),   'type' => 'image',  'default' => '' ),
 					array( 'key' => 'alt_text',   'label' => __( 'Alt Text', 'brevo-campaign-generator' ),    'type' => 'text',   'default' => '' ),
 					array( 'key' => 'link_url',   'label' => __( 'Link URL', 'brevo-campaign-generator' ),    'type' => 'text',   'default' => '' ),
-					array( 'key' => 'width',      'label' => __( 'Width (%)', 'brevo-campaign-generator' ),   'type' => 'number', 'default' => 100 ),
+					array( 'key' => 'width',      'label' => __( 'Width (%)', 'brevo-campaign-generator' ),   'type' => 'range',  'default' => 100, 'min' => 20, 'max' => 100, 'step' => 5 ),
 					array( 'key' => 'alignment',  'label' => __( 'Alignment', 'brevo-campaign-generator' ),   'type' => 'select', 'default' => 'center',
 						'options' => array(
 							array( 'value' => 'left',   'label' => __( 'Left', 'brevo-campaign-generator' ) ),
@@ -236,7 +236,7 @@ class BCG_Section_Registry {
 							array( 'value' => 'right',  'label' => __( 'Right', 'brevo-campaign-generator' ) ),
 						),
 					),
-					array( 'key' => 'padding',           'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),         'type' => 'number',   'default' => 30 ),
+					array( 'key' => 'padding',           'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),         'type' => 'range',    'default' => 30, 'min' => 0, 'max' => 80, 'step' => 2 ),
 				),
 			),
 
@@ -259,7 +259,7 @@ class BCG_Section_Registry {
 					array( 'key' => 'button_padding_v',   'label' => __( 'Button Padding V (px)', 'brevo-campaign-generator' ), 'type' => 'range',  'default' => 16, 'min' => 6,  'max' => 32, 'step' => 1 ),
 					array( 'key' => 'bg_color',           'label' => __( 'Background Colour', 'brevo-campaign-generator' ),    'type' => 'color',    'default' => '#f5f5f5' ),
 					array( 'key' => 'text_color',         'label' => __( 'Text Colour', 'brevo-campaign-generator' ),          'type' => 'color',    'default' => '#333333' ),
-					array( 'key' => 'padding',            'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),         'type' => 'number',   'default' => 40 ),
+					array( 'key' => 'padding',            'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),         'type' => 'range',    'default' => 40, 'min' => 0, 'max' => 80, 'step' => 2 ),
 				),
 			),
 
@@ -284,9 +284,9 @@ class BCG_Section_Registry {
 				'has_ai' => false,
 				'fields' => array(
 					array( 'key' => 'color',         'label' => __( 'Colour', 'brevo-campaign-generator' ),            'type' => 'color',  'default' => '#e5e5e5' ),
-					array( 'key' => 'thickness',     'label' => __( 'Thickness (px)', 'brevo-campaign-generator' ),    'type' => 'number', 'default' => 1 ),
-					array( 'key' => 'margin_top',    'label' => __( 'Margin Top (px)', 'brevo-campaign-generator' ),   'type' => 'number', 'default' => 20 ),
-					array( 'key' => 'margin_bottom', 'label' => __( 'Margin Bottom (px)', 'brevo-campaign-generator' ),'type' => 'number', 'default' => 20 ),
+					array( 'key' => 'thickness',     'label' => __( 'Thickness (px)', 'brevo-campaign-generator' ),    'type' => 'range',  'default' => 1, 'min' => 1, 'max' => 8, 'step' => 1 ),
+					array( 'key' => 'margin_top',    'label' => __( 'Margin Top (px)', 'brevo-campaign-generator' ),   'type' => 'range',  'default' => 20, 'min' => 0, 'max' => 60, 'step' => 2 ),
+					array( 'key' => 'margin_bottom', 'label' => __( 'Margin Bottom (px)', 'brevo-campaign-generator' ),'type' => 'range',  'default' => 20, 'min' => 0, 'max' => 60, 'step' => 2 ),
 				),
 			),
 
@@ -296,7 +296,7 @@ class BCG_Section_Registry {
 				'icon'   => 'space_bar',
 				'has_ai' => false,
 				'fields' => array(
-					array( 'key' => 'height', 'label' => __( 'Height (px)', 'brevo-campaign-generator' ), 'type' => 'number', 'default' => 30 ),
+					array( 'key' => 'height', 'label' => __( 'Height (px)', 'brevo-campaign-generator' ), 'type' => 'range',  'default' => 30, 'min' => 8, 'max' => 120, 'step' => 4 ),
 				),
 			),
 
@@ -308,7 +308,7 @@ class BCG_Section_Registry {
 				'fields' => array(
 					array( 'key' => 'text',         'label' => __( 'Heading Text', 'brevo-campaign-generator' ),       'type' => 'text',     'default' => 'Section Heading' ),
 					array( 'key' => 'subtext',      'label' => __( 'Subtext', 'brevo-campaign-generator' ),            'type' => 'text',     'default' => '' ),
-					array( 'key' => 'font_size',    'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),     'type' => 'number',   'default' => 28 ),
+					array( 'key' => 'font_size',    'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),     'type' => 'range',    'default' => 28, 'min' => 16, 'max' => 48, 'step' => 1 ),
 					array( 'key' => 'text_color',   'label' => __( 'Text Colour', 'brevo-campaign-generator' ),        'type' => 'color',    'default' => '#111111' ),
 					array( 'key' => 'bg_color',     'label' => __( 'Background Colour', 'brevo-campaign-generator' ),  'type' => 'color',    'default' => '#ffffff' ),
 					array( 'key' => 'alignment',    'label' => __( 'Alignment', 'brevo-campaign-generator' ),          'type' => 'select',   'default' => 'center',
@@ -320,7 +320,7 @@ class BCG_Section_Registry {
 					),
 					array( 'key' => 'accent_color', 'label' => __( 'Accent Colour', 'brevo-campaign-generator' ),     'type' => 'color',    'default' => '#e63529' ),
 					array( 'key' => 'show_accent',  'label' => __( 'Show Accent Line', 'brevo-campaign-generator' ),  'type' => 'toggle',   'default' => true ),
-					array( 'key' => 'padding',      'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),      'type' => 'number',   'default' => 30 ),
+					array( 'key' => 'padding',      'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),      'type' => 'range',    'default' => 30, 'min' => 0, 'max' => 60, 'step' => 2 ),
 				),
 			),
 
@@ -343,7 +343,7 @@ class BCG_Section_Registry {
 					array( 'key' => 'text_color',   'label' => __( 'Text Colour', 'brevo-campaign-generator' ),       'type' => 'color',  'default' => '#333333' ),
 					array( 'key' => 'bg_color',     'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#ffffff' ),
 					array( 'key' => 'accent_color', 'label' => __( 'Accent / Icon Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#e63529' ),
-					array( 'key' => 'font_size',    'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),    'type' => 'number', 'default' => 15 ),
+					array( 'key' => 'font_size',    'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),    'type' => 'range',  'default' => 15, 'min' => 10, 'max' => 24, 'step' => 1 ),
 					array( 'key' => 'text_align',   'label' => __( 'Text Alignment', 'brevo-campaign-generator' ),    'type' => 'select', 'default' => 'left',
 						'options' => array(
 							array( 'value' => 'left',   'label' => __( 'Left', 'brevo-campaign-generator' ) ),
@@ -351,7 +351,7 @@ class BCG_Section_Registry {
 							array( 'value' => 'right',  'label' => __( 'Right', 'brevo-campaign-generator' ) ),
 						),
 					),
-					array( 'key' => 'padding',      'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),      'type' => 'number', 'default' => 30 ),
+					array( 'key' => 'padding',      'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),      'type' => 'range',  'default' => 30, 'min' => 0, 'max' => 60, 'step' => 2 ),
 				),
 			),
 
