@@ -1,6 +1,6 @@
 <?php
 /**
- * Section Builder admin page.
+ * Template Builder admin page.
  *
  * Three-panel layout: Palette | Canvas | Settings Panel
  * Toolbar: Template name, Load, Save, Generate All, Preview

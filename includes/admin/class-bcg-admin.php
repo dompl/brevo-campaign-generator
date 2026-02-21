@@ -110,7 +110,7 @@ class BCG_Admin {
 		// Brevo senders.
 		add_action( 'wp_ajax_bcg_get_brevo_senders', array( $this, 'handle_get_brevo_senders' ) );
 
-		// Section Builder.
+		// Template Builder.
 		add_action( 'wp_ajax_bcg_sb_preview',          array( $this, 'handle_sb_preview' ) );
 		add_action( 'wp_ajax_bcg_sb_save_template',    array( $this, 'handle_sb_save_template' ) );
 		add_action( 'wp_ajax_bcg_sb_get_templates',    array( $this, 'handle_sb_get_templates' ) );
@@ -198,13 +198,13 @@ class BCG_Admin {
 			array( $this, 'render_settings_page' )
 		);
 
-		// Section Builder.
+		// Template Builder.
 		$sb_hook = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'Section Builder', 'brevo-campaign-generator' ),
-			__( 'Section Builder', 'brevo-campaign-generator' ),
+			__( 'Template Builder', 'brevo-campaign-generator' ),
+			__( 'Template Builder', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
-			'bcg-section-builder',
+			'bcg-template-builder',
 			array( $this, 'render_section_builder_page' )
 		);
 		add_action( 'load-' . $sb_hook, array( $this, 'add_section_builder_help_tabs' ) );
@@ -479,7 +479,7 @@ class BCG_Admin {
 		}
 
 		// Section Builder page.
-		if ( str_contains( $hook_suffix, 'bcg-section-builder' ) ) {
+		if ( str_contains( $hook_suffix, 'bcg-template-builder' ) ) {
 			wp_enqueue_media();
 			wp_enqueue_script( 'jquery-ui-sortable' );
 
@@ -589,7 +589,7 @@ class BCG_Admin {
 			'toplevel_page_bcg-dashboard',
 			'brevo-campaigns_page_bcg-new-campaign',
 			'brevo-campaigns_page_bcg-template-editor',
-			'brevo-campaigns_page_bcg-section-builder',
+			'brevo-campaigns_page_bcg-template-builder',
 			'brevo-campaigns_page_bcg-stats',
 			'brevo-campaigns_page_bcg-credits',
 			'brevo-campaigns_page_bcg-settings',
@@ -2447,7 +2447,7 @@ class BCG_Admin {
 	}
 
 	/**
-	 * Add contextual help tabs to the Section Builder admin screen.
+	 * Add contextual help tabs to the Template Builder admin screen.
 	 *
 	 * Registered via load-{hook} to attach before the page renders.
 	 *
@@ -2464,8 +2464,8 @@ class BCG_Admin {
 			'id'      => 'bcg-sb-overview',
 			'title'   => __( 'Overview', 'brevo-campaign-generator' ),
 			'content' =>
-				'<h2>' . __( 'Section Builder', 'brevo-campaign-generator' ) . '</h2>' .
-				'<p>' . __( 'The Section Builder lets you compose reusable email templates by combining individual <strong>sections</strong> (blocks) into a named layout. These layouts can then be applied when creating a campaign.', 'brevo-campaign-generator' ) . '</p>' .
+				'<h2>' . __( 'Template Builder', 'brevo-campaign-generator' ) . '</h2>' .
+				'<p>' . __( 'The Template Builder lets you compose reusable email templates by combining individual <strong>sections</strong> (blocks) into a named layout. These layouts can then be applied when creating a campaign.', 'brevo-campaign-generator' ) . '</p>' .
 				'<p>' . __( 'The builder has three panels:', 'brevo-campaign-generator' ) . '</p>' .
 				'<ul>' .
 				'<li><strong>' . __( 'Sections (left)', 'brevo-campaign-generator' ) . '</strong> — ' . __( 'Click any section variant to add it to the canvas. Variants are grouped into categories; click a category header to expand or collapse it.', 'brevo-campaign-generator' ) . '</li>' .
@@ -2548,7 +2548,7 @@ class BCG_Admin {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-section-builder.php';
 	}
 
-	// ─── Section Builder AJAX Handlers ─────────────────────────────────
+	// ─── Template Builder AJAX Handlers ─────────────────────────────────
 
 	/**
 	 * Handle bcg_sb_preview — render sections JSON to HTML for preview iframe.

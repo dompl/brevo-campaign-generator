@@ -3784,7 +3784,11 @@ body.bcg-admin-page .bcg-sb-palette {
 	background:    var(--bcg-bg-surface);
 	border:        1px solid var(--bcg-border);
 	border-radius: var(--bcg-radius);
-	overflow:      hidden;
+	overflow-x:    hidden;
+	overflow-y:    auto;
+	max-height:    calc(100vh - 120px);
+	position:      sticky;
+	top:           32px;
 }
 
 /* ── Palette: category accordion ─────────────────────────────────────── */

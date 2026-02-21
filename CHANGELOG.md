@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.5] — 2026-02-21
+
+### Changed
+- **Renamed "Section Builder" → "Template Builder"** — the admin menu item, page title, help tab headings, and URL slug (`bcg-section-builder` → `bcg-template-builder`) are all updated to "Template Builder". Internal file names and script handles are unchanged.
+- **Palette panel now scrolls independently** — `.bcg-sb-palette` changed from `overflow: hidden` to `overflow-x: hidden; overflow-y: auto` with `max-height: calc(100vh - 120px)` and `position: sticky; top: 32px`. Accordion category groups remain expanded by default; the panel scrolls within the viewport so all categories are reachable without scrolling the entire page.
+
+---
+
 ## [1.5.4] — 2026-02-21
 
 ### Fixed
@@ -212,7 +220,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.4...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.5...HEAD
+[1.5.5]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.1...v1.5.2
