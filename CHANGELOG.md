@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.12] — 2026-02-21
+
+### Added
+- **Header Text/Link Colour** — Header section now has a `Text / Link Colour` field (colour picker). Controls the logo fallback text colour and all navigation link colours, allowing light text on dark backgrounds.
+- **Navigation Links repeater** — The header `nav_links` field is now a user-friendly repeater UI (Label + URL inputs per row, + Add Link / × Remove buttons) instead of raw JSON. Changes serialize to JSON internally and trigger live preview refresh automatically.
+
+### Fixed
+- **Nav links field showed raw JSON** — Replaced the `json` type for `nav_links` with a new `links` field type that renders a proper row-based repeater in the settings panel.
+
+---
+
 ## [1.5.11] — 2026-02-21
 
 ### Added

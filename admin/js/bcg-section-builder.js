@@ -584,6 +584,33 @@
 						'</textarea><span class="bcg-sb-json-hint">JSON format</span>';
 					break;
 
+				case 'links':
+					// Parse value — can be a JSON string or already an array.
+					var linkItems = [];
+					try {
+						linkItems = typeof value === 'string' ? JSON.parse( value ) : value;
+						if ( ! Array.isArray( linkItems ) ) { linkItems = []; }
+					} catch ( e ) {
+						linkItems = [];
+					}
+					input  = '<div class="bcg-sb-links-field" data-key="' + self.escAttr( key ) + '">';
+					input += '<div class="bcg-sb-links-rows">';
+					$.each( linkItems, function ( li, lnk ) {
+						var lLabel = lnk.label || '';
+						var lUrl   = lnk.url   || '';
+						input += '<div class="bcg-sb-link-row">';
+						input += '<input type="text" class="bcg-input bcg-sb-link-label" placeholder="Label" value="' + self.escAttr( lLabel ) + '" />';
+						input += '<input type="text" class="bcg-input bcg-sb-link-url" placeholder="https://" value="' + self.escAttr( lUrl ) + '" />';
+						input += '<button type="button" class="bcg-btn-icon bcg-sb-link-remove" title="Remove link"><span class="material-icons-outlined">close</span></button>';
+						input += '</div>';
+					} );
+					input += '</div>';
+					input += '<button type="button" class="bcg-btn-secondary bcg-btn-xs bcg-sb-link-add">';
+					input += '<span class="material-icons-outlined">add</span> Add Link';
+					input += '</button>';
+					input += '</div>';
+					break;
+
 				default:
 					input = '<input type="text" id="' + id + '" class="bcg-sb-field-input bcg-input" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '" />';
 			}
@@ -730,6 +757,46 @@
 			$body.on( 'click.bcgFields', '.bcg-sb-settings-ai-btn', function () {
 				var id = $( this ).data( 'id' );
 				self.generateSection( id );
+			} );
+
+			// Links repeater — helper to serialize all rows → JSON → updateSetting.
+			function serializeLinks( $field ) {
+				var links = [];
+				$field.find( '.bcg-sb-link-row' ).each( function () {
+					var $row  = $( this );
+					var label = $row.find( '.bcg-sb-link-label' ).val();
+					var url   = $row.find( '.bcg-sb-link-url' ).val();
+					if ( label || url ) {
+						links.push( { label: label, url: url } );
+					}
+				} );
+				self.updateSetting( sectionId, $field.data( 'key' ), JSON.stringify( links ) );
+				self.debounceSectionPreview( sectionId );
+			}
+
+			// Links repeater — add new row.
+			$body.on( 'click.bcgFields', '.bcg-sb-link-add', function () {
+				var $field = $( this ).closest( '.bcg-sb-links-field' );
+				var newRow = '<div class="bcg-sb-link-row">' +
+					'<input type="text" class="bcg-input bcg-sb-link-label" placeholder="Label" value="" />' +
+					'<input type="text" class="bcg-input bcg-sb-link-url" placeholder="https://" value="" />' +
+					'<button type="button" class="bcg-btn-icon bcg-sb-link-remove" title="Remove link"><span class="material-icons-outlined">close</span></button>' +
+					'</div>';
+				$field.find( '.bcg-sb-links-rows' ).append( newRow );
+				$field.find( '.bcg-sb-link-row:last-child .bcg-sb-link-label' ).trigger( 'focus' );
+				serializeLinks( $field );
+			} );
+
+			// Links repeater — remove a row.
+			$body.on( 'click.bcgFields', '.bcg-sb-link-remove', function () {
+				var $field = $( this ).closest( '.bcg-sb-links-field' );
+				$( this ).closest( '.bcg-sb-link-row' ).remove();
+				serializeLinks( $field );
+			} );
+
+			// Links repeater — input change.
+			$body.on( 'input.bcgFields change.bcgFields', '.bcg-sb-links-field input', function () {
+				serializeLinks( $( this ).closest( '.bcg-sb-links-field' ) );
 			} );
 
 			// Product select widgets — bind each one found in the panel.

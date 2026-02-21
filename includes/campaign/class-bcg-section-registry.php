@@ -114,7 +114,8 @@ class BCG_Section_Registry {
 					array( 'key' => 'logo_width',  'label' => __( 'Logo Width (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 180, 'min' => 50, 'max' => 400, 'step' => 5 ),
 					array( 'key' => 'bg_color',    'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#ffffff' ),
 					array( 'key' => 'show_nav',    'label' => __( 'Show Navigation', 'brevo-campaign-generator' ),  'type' => 'toggle', 'default' => false ),
-					array( 'key' => 'nav_links',   'label' => __( 'Nav Links (JSON)', 'brevo-campaign-generator' ), 'type' => 'json',   'default' => '[]' ),
+					array( 'key' => 'text_color', 'label' => __( 'Text / Link Colour', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#333333' ),
+					array( 'key' => 'nav_links',  'label' => __( 'Navigation Links', 'brevo-campaign-generator' ),  'type' => 'links',  'default' => '[]' ),
 				),
 			),
 

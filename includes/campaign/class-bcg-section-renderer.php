@@ -123,9 +123,10 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_header( array $s, int $max_width, string $font ): string {
-		$bg      = esc_attr( $s['bg_color'] );
-		$logo_url = esc_url( $s['logo_url'] );
-		$logo_w  = (int) $s['logo_width'];
+		$bg         = esc_attr( $s['bg_color'] );
+		$text_color = esc_attr( $s['text_color'] ?? '#333333' );
+		$logo_url   = esc_url( $s['logo_url'] );
+		$logo_w     = (int) $s['logo_width'];
 
 		$logo_html = '';
 		if ( $logo_url ) {
@@ -138,24 +139,26 @@ class BCG_Section_Renderer {
 			);
 		} else {
 			$logo_html = sprintf(
-				'<span style="font-family:%s;font-size:22px;font-weight:700;color:#333333;">%s</span>',
+				'<span style="font-family:%s;font-size:22px;font-weight:700;color:%s;">%s</span>',
 				esc_attr( $font ),
+				$text_color,
 				esc_html( get_bloginfo( 'name' ) )
 			);
 		}
 
 		$nav_html = '';
 		if ( ! empty( $s['show_nav'] ) ) {
-			$links = array();
+			$links    = array();
 			$nav_data = is_string( $s['nav_links'] ) ? json_decode( $s['nav_links'], true ) : $s['nav_links'];
 			if ( is_array( $nav_data ) ) {
 				foreach ( $nav_data as $link ) {
 					if ( ! empty( $link['label'] ) ) {
-						$href     = ! empty( $link['url'] ) ? esc_url( $link['url'] ) : '#';
-						$links[]  = sprintf(
-							'<a href="%s" style="font-family:%s;font-size:14px;color:#555555;text-decoration:none;margin-left:16px;">%s</a>',
+						$href    = ! empty( $link['url'] ) ? esc_url( $link['url'] ) : '#';
+						$links[] = sprintf(
+							'<a href="%s" style="font-family:%s;font-size:14px;color:%s;text-decoration:none;margin-left:16px;">%s</a>',
 							$href,
 							esc_attr( $font ),
+							$text_color,
 							esc_html( $link['label'] )
 						);
 					}

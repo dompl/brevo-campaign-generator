@@ -4724,3 +4724,34 @@ body.bcg-admin-page .bcg-spin {
 .bcg-sb-section:has(.bcg-sb-card-preview:visible) .bcg-sb-card-preview-toggle .material-icons-outlined {
 	color: var(--bcg-primary, #e63529);
 }
+
+/* ── Section builder: links repeater ── */
+.bcg-sb-links-field {
+	display:        flex;
+	flex-direction: column;
+	gap:            6px;
+}
+.bcg-sb-links-rows {
+	display:        flex;
+	flex-direction: column;
+	gap:            4px;
+}
+.bcg-sb-link-row {
+	display:     flex;
+	align-items: center;
+	gap:         4px;
+}
+.bcg-sb-link-row .bcg-input {
+	flex:      1;
+	min-width: 0;
+	font-size: 12px;
+	padding:   5px 8px;
+}
+.bcg-sb-link-row .bcg-sb-link-url {
+	flex: 1.5;
+}
+.bcg-sb-link-add {
+	align-self: flex-start;
+	margin-top: 2px;
+	gap:        4px;
+}
