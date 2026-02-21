@@ -374,6 +374,8 @@ class BCG_Section_Renderer {
 		$btn_pad_v   = (int) ( $s['button_padding_v'] ?? 10 );
 		$prod_gap    = (int) ( $s['product_gap'] ?? 15 );
 		$text_align  = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? $s['text_align'] : 'left';
+		$square_imgs = ! empty( $s['square_images'] );
+		$img_size    = (int) ( $s['image_size'] ?? 200 );
 
 		// Parse product IDs.
 		$ids_raw = $s['product_ids'] ?? '';
@@ -430,11 +432,19 @@ class BCG_Section_Renderer {
 				);
 			}
 
+			// Build image attributes — square crop or natural height.
+			$img_style = $square_imgs
+				? sprintf( 'display:block;%swidth:%dpx;height:%dpx;object-fit:cover;border:0;outline:none;', 'center' === $text_align ? 'margin:0 auto;' : '', $img_size, $img_size )
+				: sprintf( 'display:block;%smax-width:100%%;height:auto;border:0;outline:none;',             'center' === $text_align ? 'margin:0 auto;' : '' );
+			$img_attrs = $square_imgs
+				? sprintf( 'width="%d" height="%d"', $img_size, $img_size )
+				: 'width="200"';
+
 			$cells[] = sprintf(
 				'<td style="vertical-align:top;padding:%dpx;width:%d%%;">
 					<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 						<tr><td style="text-align:%s;">
-							<img src="%s" alt="%s" width="200" style="display:block;%smax-width:100%%;height:auto;border:0;outline:none;" />
+							<img src="%s" alt="%s" %s style="%s" />
 						</td></tr>
 						<tr><td style="padding-top:12px;text-align:%s;">
 							<h3 style="font-family:%s;font-size:%dpx;font-weight:700;color:#333333;margin:0;padding:0;text-align:%s;">%s</h3>
@@ -448,7 +458,8 @@ class BCG_Section_Renderer {
 				$text_align,
 				esc_url( $thumb_url ),
 				$name,
-				'center' === $text_align ? 'margin:0 auto;' : '',
+				$img_attrs,
+				$img_style,
 				$text_align,
 				esc_attr( $font ),
 				$title_fsize,

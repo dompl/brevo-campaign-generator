@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.14] — 2026-02-21
+
+### Added
+- **Square Crop Images** — Products section now has a `Square Crop Images` toggle. When on, all product images are rendered at equal width × height with `object-fit:cover` so they tile uniformly regardless of the original image proportions.
+- **Image Size (px)** — Companion range slider (80–320 px, default 200) to control the square size. Works independently of column count.
+
+---
+
 ## [1.5.13] — 2026-02-21
 
 ### Added

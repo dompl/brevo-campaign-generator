@@ -217,6 +217,8 @@ class BCG_Section_Registry {
 					array( 'key' => 'button_font_size', 'label' => __( 'Button Font Size (px)', 'brevo-campaign-generator' ),'type' => 'range', 'default' => 14, 'min' => 10, 'max' => 22, 'step' => 1 ),
 					array( 'key' => 'button_padding_h', 'label' => __( 'Button Padding H (px)', 'brevo-campaign-generator' ),'type' => 'range', 'default' => 20, 'min' => 8,  'max' => 48, 'step' => 1 ),
 					array( 'key' => 'button_padding_v', 'label' => __( 'Button Padding V (px)', 'brevo-campaign-generator' ),'type' => 'range', 'default' => 10, 'min' => 4,  'max' => 24, 'step' => 1 ),
+					array( 'key' => 'square_images',    'label' => __( 'Square Crop Images', 'brevo-campaign-generator' ),  'type' => 'toggle', 'default' => false ),
+					array( 'key' => 'image_size',       'label' => __( 'Image Size (px)', 'brevo-campaign-generator' ),     'type' => 'range',  'default' => 200, 'min' => 80, 'max' => 320, 'step' => 8 ),
 					array( 'key' => 'bg_color',         'label' => __( 'Background Colour', 'brevo-campaign-generator' ),    'type' => 'color',  'default' => '#ffffff' ),
 				),
 			),
