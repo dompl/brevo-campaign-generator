@@ -17,6 +17,25 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.4.0] — 2026-02-21
+
+### Added
+- **Complete admin UI redesign** — dark premium SaaS aesthetic across all plugin pages; custom CSS design system with variables, toggle switches, radio cards, and refined typography
+- **10 new email templates** — Classic, Feature, Dark, Cards, Compact, Text-Only, Grid, Centered, Full-Width, Alternating; each with distinct heading fonts loaded via Google Fonts
+- **Template picker on New Campaign wizard** — responsive grid of clickable template cards with visual previews; chosen template is saved with the campaign
+- **Custom dropdown component** — all native `<select>` elements across every admin page (Settings, New Campaign, Edit Campaign, Stats) replaced with a bespoke keyboard-accessible custom dropdown, loaded globally on all BCG pages
+- **Category toggle switches** — Filter by Category on the New Campaign wizard uses compact toggle switches instead of plain checkboxes
+- **Replace-product button** — each product card in the Preview Products grid shows a circular refresh icon on hover; clicking it fetches a different product from the same source/category (excluding all already-shown products) and swaps the card in-place with a fade animation
+- **Template editor overhaul** — header settings panel, colour grid, section overlays with drag-to-reorder, sticky preview panel, desktop/mobile device toggle, Google Fonts integration
+
+### Fixed
+- **Preview Products spinner not visible** — `.bcg-spinner` CSS class was missing; now defined alongside `.bcg-btn-spinner`
+- **Preview Products ignoring changed settings** — JS was sending `count`/`source` keys but PHP read `product_count`/`product_source`; parameter names now match
+- **Product images too large in preview/search** — added `object-fit: cover` containers with fixed dimensions and `!important` overrides for both the search-results dropdown (40×40 px) and the preview grid (110 px height)
+- **Product preview images now use thumbnail size** — `format_product_preview()` requests WordPress `thumbnail` instead of `medium` for admin UI; email rendering continues to use `medium` at render time
+
+---
+
 ## [1.3.8] — 2026-02-20
 
 ### Fixed
