@@ -63,14 +63,11 @@
 			$.each( presets, function ( i, cat ) {
 				var $group = $( '<div>' ).addClass( 'bcg-sb-palette-group' );
 
-				var $header = $( '<button>' )
-					.attr( 'type', 'button' )
+				var $header = $( '<div>' )
 					.addClass( 'bcg-sb-palette-group-header' )
-					.attr( 'aria-expanded', 'true' )
 					.html(
 						'<span class="material-icons-outlined bcg-sb-palette-cat-icon">' + self.escHtml( cat.icon || 'widgets' ) + '</span>' +
-						'<span class="bcg-sb-palette-group-label">' + self.escHtml( cat.label ) + '</span>' +
-						'<span class="bcg-sb-palette-group-chevron material-icons-outlined">expand_more</span>'
+						'<span class="bcg-sb-palette-group-label">' + self.escHtml( cat.label ) + '</span>'
 					);
 
 				var $variants = $( '<div>' ).addClass( 'bcg-sb-palette-variants' );
@@ -121,26 +118,7 @@
 				self.addSection( type, settings );
 			} );
 
-			// Category header click — exclusive accordion (one open at a time).
-			$( document ).on( 'click', '.bcg-sb-palette-group-header', function () {
-				var $btn      = $( this );
-				var $variants = $btn.next( '.bcg-sb-palette-variants' );
-				var expanded  = $btn.attr( 'aria-expanded' ) === 'true';
-
-				// Close all other open groups.
-				if ( ! expanded ) {
-					$( '.bcg-sb-palette-group-header[aria-expanded="true"]' ).each( function () {
-						var $other = $( this );
-						$other.attr( 'aria-expanded', 'false' );
-						$other.find( '.bcg-sb-palette-group-chevron' ).text( 'expand_more' );
-						$other.next( '.bcg-sb-palette-variants' ).addClass( 'bcg-sb-palette-variants-collapsed' );
-					} );
-				}
-
-				$btn.attr( 'aria-expanded', String( ! expanded ) );
-				$btn.find( '.bcg-sb-palette-group-chevron' ).text( expanded ? 'expand_more' : 'expand_less' );
-				$variants.toggleClass( 'bcg-sb-palette-variants-collapsed', expanded );
-			} );
+			// Category headers are plain labels — no accordion toggle.
 		},
 
 		// ── Canvas ─────────────────────────────────────────────────────────

@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.18] — 2026-02-21
+
+### Fixed
+- **Palette section categories no longer accordion** — Category group headers are now plain non-interactive labels instead of collapsible buttons. All variant cards are always visible. The chevron icon and click-to-collapse/expand behaviour have been removed.
+
+---
+
 ## [1.5.17] — 2026-02-21
 
 ### Security
