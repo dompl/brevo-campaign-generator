@@ -221,20 +221,21 @@ class BCG_Admin {
 			BCG_VERSION
 		);
 
-		// Google Fonts for BCG custom admin design.
-		wp_enqueue_style(
-			'bcg-google-fonts',
-			'https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap',
-			array(),
-			null
-		);
-
 		// Google Material Icons (Outlined variant).
 		wp_enqueue_style(
 			'bcg-material-icons',
 			'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
 			array(),
 			null
+		);
+
+		// Flowbite UI components (tooltips, modals, dropdowns).
+		wp_enqueue_script(
+			'bcg-flowbite',
+			'https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js',
+			array(),
+			'2.3.0',
+			true
 		);
 
 		// WordPress colour picker for template/settings.

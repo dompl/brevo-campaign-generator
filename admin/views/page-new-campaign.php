@@ -115,7 +115,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						/>
 						<button
 							type="button"
-							class="button bcg-ai-generate-btn"
+							class="bcg-btn-secondary bcg-ai-generate-btn"
 							data-field="subject_line"
 							data-action="bcg_regenerate_field"
 						>
@@ -139,7 +139,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						/>
 						<button
 							type="button"
-							class="button bcg-ai-generate-btn"
+							class="bcg-btn-secondary bcg-ai-generate-btn"
 							data-field="preview_text"
 							data-action="bcg_regenerate_field"
 						>
@@ -177,7 +177,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						</select>
 						<button
 							type="button"
-							class="button bcg-refresh-lists-btn"
+							class="bcg-btn-secondary bcg-refresh-lists-btn"
 							id="bcg-refresh-lists"
 						>
 							<?php esc_html_e( 'Refresh', 'brevo-campaign-generator' ); ?>
@@ -220,53 +220,57 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<label class="bcg-field-label">
 						<?php esc_html_e( 'Product Source', 'brevo-campaign-generator' ); ?>
 					</label>
-					<fieldset class="bcg-radio-group" id="bcg-product-source-group">
-						<label class="bcg-radio-label">
+					<div class="bcg-radio-cards" id="bcg-product-source-group" role="radiogroup">
+						<label class="bcg-radio-card">
 							<input
 								type="radio"
 								name="product_source"
 								value="bestsellers"
 								checked
 							/>
-							<span class="bcg-radio-text">
-								<strong><?php esc_html_e( 'Best Sellers', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-radio-desc"><?php esc_html_e( 'Sorted by sales count (highest first)', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-radio-card-dot"></span>
+							<span class="bcg-radio-card-body">
+								<span class="bcg-radio-card-title"><?php esc_html_e( 'Best Sellers', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-radio-card-desc"><?php esc_html_e( 'Sorted by sales count (highest first)', 'brevo-campaign-generator' ); ?></span>
 							</span>
 						</label>
-						<label class="bcg-radio-label">
+						<label class="bcg-radio-card">
 							<input
 								type="radio"
 								name="product_source"
 								value="leastsold"
 							/>
-							<span class="bcg-radio-text">
-								<strong><?php esc_html_e( 'Least Sold', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-radio-desc"><?php esc_html_e( 'Sorted by sales count (lowest first)', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-radio-card-dot"></span>
+							<span class="bcg-radio-card-body">
+								<span class="bcg-radio-card-title"><?php esc_html_e( 'Least Sold', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-radio-card-desc"><?php esc_html_e( 'Sorted by sales count (lowest first)', 'brevo-campaign-generator' ); ?></span>
 							</span>
 						</label>
-						<label class="bcg-radio-label">
+						<label class="bcg-radio-card">
 							<input
 								type="radio"
 								name="product_source"
 								value="latest"
 							/>
-							<span class="bcg-radio-text">
-								<strong><?php esc_html_e( 'Latest Products', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-radio-desc"><?php esc_html_e( 'Sorted by date (newest first)', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-radio-card-dot"></span>
+							<span class="bcg-radio-card-body">
+								<span class="bcg-radio-card-title"><?php esc_html_e( 'Latest Products', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-radio-card-desc"><?php esc_html_e( 'Sorted by date (newest first)', 'brevo-campaign-generator' ); ?></span>
 							</span>
 						</label>
-						<label class="bcg-radio-label">
+						<label class="bcg-radio-card">
 							<input
 								type="radio"
 								name="product_source"
 								value="manual"
 							/>
-							<span class="bcg-radio-text">
-								<strong><?php esc_html_e( 'Manual Selection', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-radio-desc"><?php esc_html_e( 'Search and pick products individually', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-radio-card-dot"></span>
+							<span class="bcg-radio-card-body">
+								<span class="bcg-radio-card-title"><?php esc_html_e( 'Manual Selection', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-radio-card-desc"><?php esc_html_e( 'Search and pick products individually', 'brevo-campaign-generator' ); ?></span>
 							</span>
 						</label>
-					</fieldset>
+					</div>
 				</div>
 
 				<!-- Manual Product Picker (hidden by default) -->
@@ -297,10 +301,10 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						</label>
 						<div class="bcg-category-tree-wrapper" id="bcg-category-tree">
 							<div class="bcg-category-tree-actions">
-								<button type="button" class="button button-small" id="bcg-category-select-all">
+								<button type="button" class="bcg-btn-secondary bcg-btn-sm" id="bcg-category-select-all">
 									<?php esc_html_e( 'Select All', 'brevo-campaign-generator' ); ?>
 								</button>
-								<button type="button" class="button button-small" id="bcg-category-deselect-all">
+								<button type="button" class="bcg-btn-secondary bcg-btn-sm" id="bcg-category-deselect-all">
 									<?php esc_html_e( 'Deselect All', 'brevo-campaign-generator' ); ?>
 								</button>
 							</div>
@@ -315,7 +319,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				<div class="bcg-field-row bcg-preview-products-row">
 					<button
 						type="button"
-						class="button bcg-btn-secondary"
+						class="bcg-btn-secondary"
 						id="bcg-preview-products-btn"
 					>
 						<?php esc_html_e( 'Preview Products', 'brevo-campaign-generator' ); ?>
@@ -344,18 +348,23 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 			</div>
 			<div class="bcg-card-body">
 
-				<!-- Generate coupon checkbox -->
+				<!-- Generate coupon toggle -->
 				<div class="bcg-field-row">
-					<label class="bcg-checkbox-label" for="bcg-generate-coupon">
-						<input
-							type="checkbox"
-							id="bcg-generate-coupon"
-							name="generate_coupon"
-							value="1"
-							<?php checked( $default_auto_coupon, 'yes' ); ?>
-						/>
-						<strong><?php esc_html_e( 'Generate coupon automatically', 'brevo-campaign-generator' ); ?></strong>
-						<span class="bcg-radio-desc"><?php esc_html_e( 'Creates a WooCommerce coupon code for this campaign', 'brevo-campaign-generator' ); ?></span>
+					<label class="bcg-toggle" for="bcg-generate-coupon">
+						<span class="bcg-toggle-switch">
+							<input
+								type="checkbox"
+								id="bcg-generate-coupon"
+								name="generate_coupon"
+								value="1"
+								<?php checked( $default_auto_coupon, 'yes' ); ?>
+							/>
+							<span class="bcg-toggle-thumb"></span>
+						</span>
+						<span class="bcg-toggle-content">
+							<span class="bcg-toggle-title"><?php esc_html_e( 'Generate coupon automatically', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-toggle-description"><?php esc_html_e( 'Creates a unique WooCommerce coupon code for this campaign', 'brevo-campaign-generator' ); ?></span>
+						</span>
 					</label>
 				</div>
 
@@ -367,16 +376,24 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						<label class="bcg-field-label">
 							<?php esc_html_e( 'Discount Type', 'brevo-campaign-generator' ); ?>
 						</label>
-						<fieldset class="bcg-radio-group bcg-radio-inline">
-							<label class="bcg-radio-label">
+						<div class="bcg-radio-cards bcg-radio-cards-inline" role="radiogroup">
+							<label class="bcg-radio-card">
 								<input type="radio" name="coupon_type" value="percent" checked />
-								<?php esc_html_e( 'Percentage', 'brevo-campaign-generator' ); ?>
+								<span class="bcg-radio-card-dot"></span>
+								<span class="bcg-radio-card-body">
+									<span class="bcg-radio-card-title"><?php esc_html_e( 'Percentage', 'brevo-campaign-generator' ); ?></span>
+									<span class="bcg-radio-card-desc"><?php esc_html_e( 'e.g. 20% off', 'brevo-campaign-generator' ); ?></span>
+								</span>
 							</label>
-							<label class="bcg-radio-label">
+							<label class="bcg-radio-card">
 								<input type="radio" name="coupon_type" value="fixed_cart" />
-								<?php esc_html_e( 'Fixed Amount', 'brevo-campaign-generator' ); ?>
+								<span class="bcg-radio-card-dot"></span>
+								<span class="bcg-radio-card-body">
+									<span class="bcg-radio-card-title"><?php esc_html_e( 'Fixed Amount', 'brevo-campaign-generator' ); ?></span>
+									<span class="bcg-radio-card-desc"><?php esc_html_e( 'e.g. £5 off cart', 'brevo-campaign-generator' ); ?></span>
+								</span>
 							</label>
-						</fieldset>
+						</div>
 					</div>
 
 					<!-- Discount Value -->
@@ -398,7 +415,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 							<span class="bcg-field-suffix" id="bcg-discount-suffix">%</span>
 							<button
 								type="button"
-								class="button bcg-ai-generate-btn"
+								class="bcg-btn-secondary bcg-ai-generate-btn"
 								id="bcg-suggest-discount-btn"
 								data-action="bcg_generate_coupon"
 							>
@@ -509,17 +526,22 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					</select>
 				</div>
 
-				<!-- Generate AI Images -->
+				<!-- Generate AI Images toggle -->
 				<div class="bcg-field-row">
-					<label class="bcg-checkbox-label" for="bcg-generate-images">
-						<input
-							type="checkbox"
-							id="bcg-generate-images"
-							name="generate_images"
-							value="1"
-						/>
-						<strong><?php esc_html_e( 'Generate product images with AI', 'brevo-campaign-generator' ); ?></strong>
-						<span class="bcg-radio-desc"><?php esc_html_e( 'Uses Gemini to create campaign imagery. If unchecked, WooCommerce product images are used.', 'brevo-campaign-generator' ); ?></span>
+					<label class="bcg-toggle" for="bcg-generate-images">
+						<span class="bcg-toggle-switch">
+							<input
+								type="checkbox"
+								id="bcg-generate-images"
+								name="generate_images"
+								value="1"
+							/>
+							<span class="bcg-toggle-thumb"></span>
+						</span>
+						<span class="bcg-toggle-content">
+							<span class="bcg-toggle-title"><?php esc_html_e( 'Generate product images with AI', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-toggle-description"><?php esc_html_e( 'Uses Gemini to create campaign imagery. If unchecked, WooCommerce product images are used instead.', 'brevo-campaign-generator' ); ?></span>
+						</span>
 					</label>
 				</div>
 
@@ -647,7 +669,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<p id="bcg-generation-error-message"></p>
 				</div>
 				<div class="bcg-generation-actions" id="bcg-generation-actions" style="display: none;">
-					<button type="button" class="button" id="bcg-generation-cancel">
+					<button type="button" class="bcg-btn-secondary" id="bcg-generation-cancel">
 						<?php esc_html_e( 'Close', 'brevo-campaign-generator' ); ?>
 					</button>
 				</div>
@@ -660,7 +682,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		<div class="bcg-wizard-actions">
 			<button
 				type="submit"
-				class="button bcg-btn-primary bcg-btn-large"
+				class="bcg-btn-primary bcg-btn-large"
 				id="bcg-generate-campaign-btn"
 			>
 				<?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?>
