@@ -400,12 +400,19 @@
 		 * Build custom dropdown UIs for all .bcg-select-styled <select> elements.
 		 */
 		initCustomSelects: function () {
+			// Use the global bcgInitCustomSelects if available (avoids double-building).
+			if (typeof window.bcgInitCustomSelects === 'function') {
+				window.bcgInitCustomSelects($('.bcg-template-settings-panel'));
+				return;
+			}
+
+			// Fallback: local implementation.
 			$('.bcg-template-settings-panel .bcg-select-styled').each(function () {
 				var $select = $(this);
-				if ($select.data('custom-select-built')) {
+				if ($select.data('bcg-custom-built')) {
 					return;
 				}
-				$select.data('custom-select-built', true);
+				$select.data('bcg-custom-built', true);
 
 				var selectedVal  = $select.val();
 				var selectedText = $select.find('option:selected').text().trim();

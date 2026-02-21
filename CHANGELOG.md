@@ -17,6 +17,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.2] — 2026-02-21
+
+### Fixed
+- **Duplicate dropdowns in Template Editor** — `bcg-settings.js` (loaded globally) and `bcg-template-editor.js` both ran their own custom-select initializer with different guard keys, causing every `<select>` on the template editor to be wrapped twice (two visible dropdowns). Template editor now delegates to `window.bcgInitCustomSelects` from the global script, which is guarded to run only once per element.
+- **Navigation toggle unresponsive after first click** — the toggle checkbox was `width:0;height:0`, so only clicking the adjacent label text toggled it. Changed to `width:100%;height:100%;z-index:1` so the invisible checkbox covers the full pill area; the visual thumb now has `pointer-events:none`.
+- **Section Builder header misaligned** — `plugin-header.php` was included inside `.bcg-wrap` instead of outside it (like all other pages), causing the brand bar to appear inset rather than flush with the page edge.
+
+---
+
 ## [1.5.1] — 2026-02-21
 
 ### Added
@@ -182,7 +191,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.1...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.2...HEAD
+[1.5.2]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/dompl/brevo-campaign-generator/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.8...v1.4.0

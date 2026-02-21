@@ -14,9 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="bcg-wrap bcg-section-builder-page">
-
-	<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 
 	<!-- ── Toolbar ───────────────────────────────────────────────────── -->
 	<div class="bcg-sb-toolbar">
