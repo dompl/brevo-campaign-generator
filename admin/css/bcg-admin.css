@@ -1970,6 +1970,243 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 }
 
 /* ==========================================================================
+   28ac-b. Product Search & Preview — New Campaign Wizard
+   ========================================================================== */
+
+/* ── Product search dropdown ── */
+.bcg-product-search-wrapper {
+	position: relative;
+}
+
+.bcg-product-search-results {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+	max-height: 280px;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--bcg-border) transparent;
+}
+
+.bcg-search-result-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 12px;
+	cursor: pointer;
+	border-bottom: 1px solid var(--bcg-border-subtle);
+	transition: background var(--bcg-transition);
+}
+
+.bcg-search-result-item:last-child {
+	border-bottom: none;
+}
+
+.bcg-search-result-item:hover,
+.bcg-search-result-item:focus {
+	background: var(--bcg-bg-hover);
+}
+
+.bcg-search-result-item.bcg-search-result-selected {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.bcg-search-result-img {
+	width: 40px !important;
+	height: 40px !important;
+	object-fit: cover;
+	border-radius: var(--bcg-radius-sm);
+	flex-shrink: 0;
+	display: block;
+}
+
+.bcg-search-result-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	flex: 1;
+}
+
+.bcg-search-result-name {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--bcg-text-primary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+}
+
+.bcg-search-result-meta {
+	font-size: 11px;
+	color: var(--bcg-text-muted);
+}
+
+.bcg-search-result-cat {
+	font-size: 10px;
+	color: var(--bcg-text-muted);
+	opacity: 0.75;
+}
+
+.bcg-search-result-added {
+	font-size: 10px;
+	color: var(--bcg-success);
+	font-weight: 600;
+	flex-shrink: 0;
+	margin-left: auto;
+}
+
+.bcg-search-no-results {
+	padding: 12px 14px;
+	font-size: 13px;
+	color: var(--bcg-text-muted);
+	text-align: center;
+}
+
+/* ── Manually selected product tags ── */
+.bcg-manual-selected-products {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+.bcg-manual-product-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-pill);
+	padding: 4px 10px 4px 5px;
+	font-size: 12px;
+	color: var(--bcg-text-secondary);
+}
+
+.bcg-manual-product-thumb {
+	width: 24px !important;
+	height: 24px !important;
+	object-fit: cover;
+	border-radius: 50%;
+	flex-shrink: 0;
+	display: block;
+}
+
+.bcg-manual-product-remove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--bcg-text-muted);
+	font-size: 14px;
+	line-height: 1;
+	padding: 0;
+	margin-left: 2px;
+	transition: color var(--bcg-transition);
+}
+
+.bcg-manual-product-remove:hover {
+	color: var(--bcg-error);
+}
+
+/* ── Product preview grid (after clicking Preview Products) ── */
+.bcg-product-preview-area {
+	margin-top: 16px;
+}
+
+.bcg-preview-heading {
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.07em !important;
+	text-transform: uppercase !important;
+	color: var(--bcg-text-muted) !important;
+	margin: 0 0 12px 0 !important;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.bcg-product-preview-grid {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 150px, 1fr ) );
+	gap: 12px;
+}
+
+.bcg-preview-product-card {
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	overflow: hidden;
+}
+
+.bcg-preview-product-image {
+	width: 100%;
+	height: 110px;
+	overflow: hidden;
+	background: var(--bcg-bg-input);
+}
+
+.bcg-preview-product-image img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover;
+	display: block;
+}
+
+.bcg-preview-product-info {
+	padding: 8px 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.bcg-preview-product-name {
+	font-size: 12px !important;
+	font-weight: 600 !important;
+	color: var(--bcg-text-primary) !important;
+	margin: 0 !important;
+	line-height: 1.3 !important;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.bcg-preview-product-price {
+	font-size: 12px;
+	color: var(--bcg-accent);
+	font-weight: 600;
+}
+
+.bcg-preview-product-cat,
+.bcg-preview-product-sales {
+	font-size: 10px;
+	color: var(--bcg-text-muted);
+}
+
+.bcg-preview-product-stock {
+	font-size: 10px;
+	font-weight: 600;
+	display: inline-block;
+}
+
+.bcg-stock-instock  { color: var(--bcg-success); }
+.bcg-stock-outofstock { color: var(--bcg-error); }
+.bcg-stock-onbackorder { color: var(--bcg-warning); }
+
+/* ── Preview products row ── */
+.bcg-preview-products-row {
+	margin-top: 4px;
+}
+
+/* ==========================================================================
    28d. Template Editor — Two-Panel Layout
    ========================================================================== */
 
