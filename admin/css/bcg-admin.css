@@ -2168,6 +2168,7 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	height: 110px;
 	overflow: hidden;
 	background: var(--bcg-bg-input);
+	position: relative;
 }
 
 .bcg-preview-product-image img {
@@ -2175,6 +2176,50 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	height: 100% !important;
 	object-fit: cover;
 	display: block;
+}
+
+/* Replace product button — appears on hover over the image */
+.bcg-replace-product-btn {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: none;
+	background: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	opacity: 0;
+	transform: scale( 0.8 );
+	transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
+}
+
+.bcg-preview-product-image:hover .bcg-replace-product-btn {
+	opacity: 1;
+	transform: scale( 1 );
+}
+
+.bcg-replace-product-btn:hover {
+	background: var(--bcg-accent) !important;
+}
+
+.bcg-replace-product-btn.is-replacing {
+	opacity: 1;
+	transform: scale( 1 );
+	pointer-events: none;
+	animation: bcg-spin 0.6s linear infinite;
+}
+
+.bcg-replace-product-btn svg {
+	display: block;
+	flex-shrink: 0;
 }
 
 .bcg-preview-product-info {

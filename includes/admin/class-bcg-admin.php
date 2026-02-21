@@ -1192,12 +1192,14 @@ class BCG_Admin {
 		$count        = isset( $_POST['product_count'] ) ? absint( $_POST['product_count'] ) : (int) get_option( 'bcg_default_products_per_campaign', 3 );
 		$category_ids = isset( $_POST['category_ids'] ) && is_array( $_POST['category_ids'] ) ? array_map( 'absint', $_POST['category_ids'] ) : array();
 		$manual_ids   = isset( $_POST['manual_ids'] ) && is_array( $_POST['manual_ids'] ) ? array_map( 'absint', $_POST['manual_ids'] ) : array();
+		$exclude_ids  = isset( $_POST['exclude_ids'] ) && is_array( $_POST['exclude_ids'] ) ? array_map( 'absint', $_POST['exclude_ids'] ) : array();
 
 		$config = array(
 			'count'        => $count,
 			'source'       => $source,
 			'category_ids' => $category_ids,
 			'manual_ids'   => $manual_ids,
+			'exclude_ids'  => $exclude_ids,
 		);
 
 		$products = $product_selector->preview_products( $config );
