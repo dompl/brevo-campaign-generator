@@ -206,7 +206,7 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 						</form>
 
 						<div class="bcg-stripe-badge bcg-mt-16 bcg-text-muted bcg-text-small">
-							<span class="dashicons dashicons-lock"></span>
+							<span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:4px;">lock</span>
 							<?php esc_html_e( 'Payments are processed securely by Stripe. Your card details never touch our servers.', 'brevo-campaign-generator' ); ?>
 						</div>
 					</div>

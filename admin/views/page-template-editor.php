@@ -131,15 +131,15 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			<?php endif; ?>
 		</h1>
 		<div class="bcg-template-editor-actions">
-			<button type="button" class="button bcg-btn-secondary" id="bcg-reset-template">
+			<button type="button" class="bcg-btn-secondary" id="bcg-reset-template">
 				<?php esc_html_e( 'Reset to Default', 'brevo-campaign-generator' ); ?>
 			</button>
 			<?php if ( $campaign_id ) : ?>
-				<button type="button" class="button bcg-btn-secondary" id="bcg-save-to-campaign" data-campaign-id="<?php echo esc_attr( $campaign_id ); ?>">
+				<button type="button" class="bcg-btn-secondary" id="bcg-save-to-campaign" data-campaign-id="<?php echo esc_attr( $campaign_id ); ?>">
 					<?php esc_html_e( 'Save to Campaign', 'brevo-campaign-generator' ); ?>
 				</button>
 			<?php endif; ?>
-			<button type="button" class="button bcg-btn-primary" id="bcg-save-default-template">
+			<button type="button" class="bcg-btn-primary" id="bcg-save-default-template">
 				<?php esc_html_e( 'Save as Default Template', 'brevo-campaign-generator' ); ?>
 			</button>
 		</div>
@@ -227,7 +227,6 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<?php esc_html_e( 'Footer', 'brevo-campaign-generator' ); ?>
 				</button>
 				<button type="button" class="bcg-template-tab bcg-template-tab-code" data-tab="code">
-					<span class="dashicons dashicons-editor-code" style="font-size:14px;width:14px;height:14px;line-height:14px;vertical-align:middle;margin-right:2px;"></span>
 					<?php esc_html_e( 'HTML', 'brevo-campaign-generator' ); ?>
 				</button>
 			</nav>
@@ -696,11 +695,11 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			<div class="bcg-preview-toolbar">
 				<span class="bcg-preview-label"><?php esc_html_e( 'Live Preview', 'brevo-campaign-generator' ); ?></span>
 				<div class="bcg-preview-device-toggle">
-					<button type="button" class="button bcg-preview-device active" data-device="desktop" title="<?php esc_attr_e( 'Desktop Preview', 'brevo-campaign-generator' ); ?>">
-						<span class="dashicons dashicons-desktop"></span>
+					<button type="button" class="bcg-btn-secondary bcg-btn-sm bcg-preview-device active" data-device="desktop" title="<?php esc_attr_e( 'Desktop Preview', 'brevo-campaign-generator' ); ?>">
+						<span class="material-icons-outlined" style="font-size:16px!important;">desktop_windows</span>
 					</button>
-					<button type="button" class="button bcg-preview-device" data-device="mobile" title="<?php esc_attr_e( 'Mobile Preview', 'brevo-campaign-generator' ); ?>">
-						<span class="dashicons dashicons-smartphone"></span>
+					<button type="button" class="bcg-btn-secondary bcg-btn-sm bcg-preview-device" data-device="mobile" title="<?php esc_attr_e( 'Mobile Preview', 'brevo-campaign-generator' ); ?>">
+						<span class="material-icons-outlined" style="font-size:16px!important;">smartphone</span>
 					</button>
 				</div>
 				<span class="bcg-preview-status" id="bcg-preview-status"></span>
