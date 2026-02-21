@@ -145,6 +145,19 @@ class BCG_Activator {
 		) $charset_collate;";
 
 		dbDelta( $sql_transactions );
+
+		// ── bcg_section_templates ────────────────────────────────────
+		$sql_section_templates = "CREATE TABLE {$prefix}bcg_section_templates (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			name VARCHAR(255) NOT NULL,
+			description TEXT,
+			sections LONGTEXT NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id)
+		) $charset_collate;";
+
+		dbDelta( $sql_section_templates );
 	}
 
 	/**
@@ -295,6 +308,37 @@ class BCG_Activator {
 				$wpdb->query(
 					"ALTER TABLE {$table} ADD COLUMN template_slug VARCHAR(50) DEFAULT 'classic' AFTER coupon_type"
 				);
+			}
+		}
+
+		// Add section builder columns (introduced in 1.5.0).
+		if ( version_compare( $installed_version, '1.5.0', '<' ) ) {
+			global $wpdb;
+
+			$table = $wpdb->prefix . 'bcg_campaigns';
+
+			// builder_type column.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$col = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM {$table} LIKE %s", 'builder_type' ) );
+			if ( empty( $col ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+				$wpdb->query( "ALTER TABLE {$table} ADD COLUMN builder_type ENUM('flat','sections') NOT NULL DEFAULT 'flat' AFTER template_slug" );
+			}
+
+			// sections_json column.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$col = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM {$table} LIKE %s", 'sections_json' ) );
+			if ( empty( $col ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+				$wpdb->query( "ALTER TABLE {$table} ADD COLUMN sections_json LONGTEXT NULL AFTER builder_type" );
+			}
+
+			// section_template_id column.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$col = $wpdb->get_results( $wpdb->prepare( "SHOW COLUMNS FROM {$table} LIKE %s", 'section_template_id' ) );
+			if ( empty( $col ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+				$wpdb->query( "ALTER TABLE {$table} ADD COLUMN section_template_id BIGINT UNSIGNED NULL AFTER sections_json" );
 			}
 		}
 	}

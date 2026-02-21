@@ -111,6 +111,7 @@ class BCG_Plugin {
 		require_once $includes . 'db/class-bcg-campaigns-table.php';
 		require_once $includes . 'db/class-bcg-credits-table.php';
 		require_once $includes . 'db/class-bcg-transactions-table.php';
+		require_once $includes . 'db/class-bcg-section-templates-table.php';
 
 		// Admin classes.
 		require_once $includes . 'admin/class-bcg-admin.php';
@@ -124,6 +125,9 @@ class BCG_Plugin {
 		require_once $includes . 'campaign/class-bcg-coupon.php';
 		require_once $includes . 'campaign/class-bcg-template-registry.php';
 		require_once $includes . 'campaign/class-bcg-template.php';
+		require_once $includes . 'campaign/class-bcg-section-registry.php';
+		require_once $includes . 'campaign/class-bcg-section-renderer.php';
+		require_once $includes . 'campaign/class-bcg-section-ai.php';
 
 		// AI classes.
 		require_once $includes . 'ai/class-bcg-openai.php';

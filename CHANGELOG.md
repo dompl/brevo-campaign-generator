@@ -17,6 +17,23 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.0] — 2026-02-21
+
+### Added
+- **Section Builder** — new admin page (`Brevo Campaigns → Section Builder`) with a three-panel layout (palette, canvas, settings) for composing email templates from 11 reusable section types
+- **11 section types**: Header, Hero/Banner, Text Block, Image, Products, Banner, Call to Action, Coupon, Divider, Spacer, Footer — each with a fully defined field schema and email-safe renderer
+- **Drag-to-reorder canvas** — jQuery UI Sortable for section cards; move-up/move-down buttons for keyboard accessibility
+- **Live settings panel** — clicking any canvas card opens its fields (text, textarea, number, colour picker, toggle, select, image picker, JSON) in the right panel with real-time preview updates (300ms debounce)
+- **Named section templates** — save/load/delete named templates persisted in the new `bcg_section_templates` database table
+- **AI generation** — "Generate All with AI" fills all `has_ai` sections in one click; per-section AI regeneration button; uses existing OpenAI integration
+- **3 new OpenAI methods**: `generate_text_block()`, `generate_banner_text()`, `generate_cta_text()` for Section Builder AI generation
+- **Email-safe HTML renderer** (`BCG_Section_Renderer`) — table-based layout with fully inlined CSS; no external stylesheets or class names in output for maximum email client compatibility
+- **7 new AJAX endpoints**: `bcg_sb_preview`, `bcg_sb_save_template`, `bcg_sb_get_templates`, `bcg_sb_load_template`, `bcg_sb_delete_template`, `bcg_sb_generate_all`, `bcg_sb_generate_section`
+- **DB migration** — `bcg_section_templates` table created on activation; `builder_type`, `sections_json`, `section_template_id` columns added to `bcg_campaigns` via `maybe_upgrade()`
+- Section Builder styles integrated into existing `bcg-admin.css` design system
+
+---
+
 ## [1.4.0] — 2026-02-21
 
 ### Added

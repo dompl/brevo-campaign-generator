@@ -1055,6 +1055,156 @@ class BCG_OpenAI {
 	 *
 	 * @return true|\WP_Error True on success, WP_Error on failure.
 	 */
+	// ─── Section Builder Generation Methods ───────────────────────────
+
+	/**
+	 * Generate heading and body text for a text block section.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param array  $context  Campaign context: products[], theme, currency_symbol.
+	 * @param string $tone     Tone of voice.
+	 * @param string $language Target language.
+	 * @return array|\WP_Error Array with 'heading' and 'body' keys, or WP_Error.
+	 */
+	public function generate_text_block( array $context, string $tone, string $language ): array|\WP_Error {
+		$product_summary = $this->build_product_summary( $context['products'] ?? array() );
+		$theme           = sanitize_text_field( $context['theme'] ?? '' );
+
+		$user_prompt = sprintf(
+			"Write a text block for a promotional email campaign.\n\n" .
+			"Products being promoted:\n%s\n\n" .
+			"%s" .
+			"Return ONLY a valid JSON object with exactly these keys:\n" .
+			"- \"heading\": a short, punchy heading (max 60 characters, or empty string if none needed)\n" .
+			"- \"body\": 2-3 sentences of engaging email copy\n\n" .
+			"Return ONLY the JSON object, no markdown code fences, no explanation.",
+			$product_summary,
+			! empty( $theme ) ? "Campaign theme: {$theme}\n\n" : ''
+		);
+
+		$result = $this->make_completion_request(
+			$this->build_system_prompt( $tone, $language ),
+			$user_prompt,
+			self::TEMPERATURE_CREATIVE,
+			300
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$parsed = json_decode( $result, true );
+		if ( ! is_array( $parsed ) || ! array_key_exists( 'body', $parsed ) ) {
+			return array( 'heading' => '', 'body' => $result );
+		}
+
+		return array(
+			'heading' => sanitize_text_field( $parsed['heading'] ?? '' ),
+			'body'    => sanitize_textarea_field( $parsed['body'] ?? '' ),
+		);
+	}
+
+	/**
+	 * Generate heading and subtext for a banner section.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param array  $context  Campaign context: products[], theme, currency_symbol.
+	 * @param string $tone     Tone of voice.
+	 * @param string $language Target language.
+	 * @return array|\WP_Error Array with 'heading' and 'subtext' keys, or WP_Error.
+	 */
+	public function generate_banner_text( array $context, string $tone, string $language ): array|\WP_Error {
+		$product_summary = $this->build_product_summary( $context['products'] ?? array() );
+		$theme           = sanitize_text_field( $context['theme'] ?? '' );
+
+		$user_prompt = sprintf(
+			"Write a bold promotional banner for a marketing email.\n\n" .
+			"Products being promoted:\n%s\n\n" .
+			"%s" .
+			"Return ONLY a valid JSON object with exactly these keys:\n" .
+			"- \"heading\": a bold, impactful heading (max 50 characters)\n" .
+			"- \"subtext\": a short supporting sentence (max 100 characters)\n\n" .
+			"Return ONLY the JSON object, no markdown code fences, no explanation.",
+			$product_summary,
+			! empty( $theme ) ? "Campaign theme: {$theme}\n\n" : ''
+		);
+
+		$result = $this->make_completion_request(
+			$this->build_system_prompt( $tone, $language ),
+			$user_prompt,
+			self::TEMPERATURE_CREATIVE,
+			200
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$parsed = json_decode( $result, true );
+		if ( ! is_array( $parsed ) || ! array_key_exists( 'heading', $parsed ) ) {
+			return array( 'heading' => $result, 'subtext' => '' );
+		}
+
+		return array(
+			'heading' => sanitize_text_field( $parsed['heading'] ?? '' ),
+			'subtext' => sanitize_text_field( $parsed['subtext'] ?? '' ),
+		);
+	}
+
+	/**
+	 * Generate heading, subtext, and button text for a CTA section.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param array  $context  Campaign context: products[], theme, currency_symbol.
+	 * @param string $tone     Tone of voice.
+	 * @param string $language Target language.
+	 * @return array|\WP_Error Array with 'heading', 'subtext', 'button_text' keys, or WP_Error.
+	 */
+	public function generate_cta_text( array $context, string $tone, string $language ): array|\WP_Error {
+		$product_summary = $this->build_product_summary( $context['products'] ?? array() );
+		$theme           = sanitize_text_field( $context['theme'] ?? '' );
+
+		$user_prompt = sprintf(
+			"Write a compelling call-to-action section for a promotional email.\n\n" .
+			"Products being promoted:\n%s\n\n" .
+			"%s" .
+			"Return ONLY a valid JSON object with exactly these keys:\n" .
+			"- \"heading\": an engaging CTA heading (max 60 characters)\n" .
+			"- \"subtext\": supporting text to encourage clicks (max 120 characters)\n" .
+			"- \"button_text\": the button label (max 25 characters, e.g. 'Shop Now', 'Claim Offer')\n\n" .
+			"Return ONLY the JSON object, no markdown code fences, no explanation.",
+			$product_summary,
+			! empty( $theme ) ? "Campaign theme: {$theme}\n\n" : ''
+		);
+
+		$result = $this->make_completion_request(
+			$this->build_system_prompt( $tone, $language ),
+			$user_prompt,
+			self::TEMPERATURE_CREATIVE,
+			250
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$parsed = json_decode( $result, true );
+		if ( ! is_array( $parsed ) || ! array_key_exists( 'heading', $parsed ) ) {
+			return array( 'heading' => $result, 'subtext' => '', 'button_text' => 'Shop Now' );
+		}
+
+		return array(
+			'heading'     => sanitize_text_field( $parsed['heading'] ?? '' ),
+			'subtext'     => sanitize_text_field( $parsed['subtext'] ?? '' ),
+			'button_text' => sanitize_text_field( $parsed['button_text'] ?? 'Shop Now' ),
+		);
+	}
+
+	// ─── Test Connection ─────────────────────────────────────────────
+
 	public function test_connection(): true|\WP_Error {
 		if ( empty( $this->api_key ) ) {
 			return new \WP_Error(

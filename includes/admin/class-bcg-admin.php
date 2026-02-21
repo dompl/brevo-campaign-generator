@@ -109,6 +109,15 @@ class BCG_Admin {
 
 		// Brevo senders.
 		add_action( 'wp_ajax_bcg_get_brevo_senders', array( $this, 'handle_get_brevo_senders' ) );
+
+		// Section Builder.
+		add_action( 'wp_ajax_bcg_sb_preview',          array( $this, 'handle_sb_preview' ) );
+		add_action( 'wp_ajax_bcg_sb_save_template',    array( $this, 'handle_sb_save_template' ) );
+		add_action( 'wp_ajax_bcg_sb_get_templates',    array( $this, 'handle_sb_get_templates' ) );
+		add_action( 'wp_ajax_bcg_sb_load_template',    array( $this, 'handle_sb_load_template' ) );
+		add_action( 'wp_ajax_bcg_sb_delete_template',  array( $this, 'handle_sb_delete_template' ) );
+		add_action( 'wp_ajax_bcg_sb_generate_all',     array( $this, 'handle_sb_generate_all' ) );
+		add_action( 'wp_ajax_bcg_sb_generate_section', array( $this, 'handle_sb_generate_section' ) );
 	}
 
 	/**
@@ -187,6 +196,16 @@ class BCG_Admin {
 			self::CAPABILITY,
 			'bcg-settings',
 			array( $this, 'render_settings_page' )
+		);
+
+		// Section Builder.
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Section Builder', 'brevo-campaign-generator' ),
+			__( 'Section Builder', 'brevo-campaign-generator' ),
+			self::CAPABILITY,
+			'bcg-section-builder',
+			array( $this, 'render_section_builder_page' )
 		);
 
 		// Edit Campaign (hidden — not shown in the nav menu).
@@ -458,6 +477,51 @@ class BCG_Admin {
 			);
 		}
 
+		// Section Builder page.
+		if ( str_contains( $hook_suffix, 'bcg-section-builder' ) ) {
+			wp_enqueue_media();
+			wp_enqueue_script( 'jquery-ui-sortable' );
+
+			wp_enqueue_script(
+				'bcg-section-builder',
+				BCG_PLUGIN_URL . 'admin/js/bcg-section-builder.js',
+				array( 'jquery', 'jquery-ui-sortable', 'wp-util' ),
+				filemtime( BCG_PLUGIN_DIR . 'admin/js/bcg-section-builder.js' ),
+				true
+			);
+
+			$currency_code   = get_option( 'bcg_stripe_currency', 'GBP' );
+			$currency_symbol = $settings_obj->get_currency_symbol( $currency_code );
+
+			wp_localize_script(
+				'bcg-section-builder',
+				'bcg_section_builder',
+				array(
+					'ajax_url'      => admin_url( 'admin-ajax.php' ),
+					'nonce'         => wp_create_nonce( 'bcg_nonce' ),
+					'section_types' => BCG_Section_Registry::get_all_for_js(),
+					'currency_symbol' => $currency_symbol,
+					'i18n'          => array(
+						'confirm_delete'   => __( 'Delete this section?', 'brevo-campaign-generator' ),
+						'unsaved_changes'  => __( 'You have unsaved changes. Leave anyway?', 'brevo-campaign-generator' ),
+						'saving'           => __( 'Saving...', 'brevo-campaign-generator' ),
+						'saved'            => __( 'Template saved.', 'brevo-campaign-generator' ),
+						'save_error'       => __( 'Failed to save template.', 'brevo-campaign-generator' ),
+						'loading'          => __( 'Loading...', 'brevo-campaign-generator' ),
+						'generating'       => __( 'Generating AI content...', 'brevo-campaign-generator' ),
+						'generate_error'   => __( 'AI generation failed. Please try again.', 'brevo-campaign-generator' ),
+						'preview_error'    => __( 'Preview error.', 'brevo-campaign-generator' ),
+						'name_required'    => __( 'Template name is required.', 'brevo-campaign-generator' ),
+						'no_sections'      => __( 'Add at least one section before saving.', 'brevo-campaign-generator' ),
+						'confirm_load'     => __( 'Loading a template will replace your current canvas. Continue?', 'brevo-campaign-generator' ),
+						'confirm_del_tmpl' => __( 'Delete this saved template? This cannot be undone.', 'brevo-campaign-generator' ),
+						'select_image'     => __( 'Select Image', 'brevo-campaign-generator' ),
+						'use_image'        => __( 'Use this image', 'brevo-campaign-generator' ),
+					),
+				)
+			);
+		}
+
 		// Credits & Billing page — Stripe.js integration.
 		if ( str_contains( $hook_suffix, 'bcg-credits' ) ) {
 			// Load Stripe.js from CDN.
@@ -518,6 +582,7 @@ class BCG_Admin {
 			'toplevel_page_bcg-dashboard',
 			'brevo-campaigns_page_bcg-new-campaign',
 			'brevo-campaigns_page_bcg-template-editor',
+			'brevo-campaigns_page_bcg-section-builder',
 			'brevo-campaigns_page_bcg-stats',
 			'brevo-campaigns_page_bcg-credits',
 			'brevo-campaigns_page_bcg-settings',
@@ -2372,6 +2437,237 @@ class BCG_Admin {
 	 */
 	public function render_edit_campaign_page(): void {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-edit-campaign.php';
+	}
+
+	/**
+	 * Render the Section Builder page.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function render_section_builder_page(): void {
+		require_once BCG_PLUGIN_DIR . 'admin/views/page-section-builder.php';
+	}
+
+	// ─── Section Builder AJAX Handlers ─────────────────────────────────
+
+	/**
+	 * Handle bcg_sb_preview — render sections JSON to HTML for preview iframe.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_preview(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$sections_raw = isset( $_POST['sections'] ) ? wp_unslash( $_POST['sections'] ) : '[]';
+		$sections     = json_decode( $sections_raw, true );
+
+		if ( ! is_array( $sections ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid sections data.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$html = BCG_Section_Renderer::render_sections( $sections );
+
+		wp_send_json_success( array( 'html' => $html ) );
+	}
+
+	/**
+	 * Handle bcg_sb_save_template — upsert a named section template.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_save_template(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		$name        = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
+		$description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+		$id          = absint( $_POST['id'] ?? 0 );
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$sections_raw = isset( $_POST['sections'] ) ? wp_unslash( $_POST['sections'] ) : '[]';
+		$sections     = json_decode( $sections_raw, true );
+
+		if ( empty( $name ) ) {
+			wp_send_json_error( array( 'message' => __( 'Template name is required.', 'brevo-campaign-generator' ) ) );
+		}
+
+		if ( ! is_array( $sections ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid sections data.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$result = BCG_Section_Templates_Table::upsert( $name, $description, $sections, $id ?: null );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success( array( 'id' => $result, 'message' => __( 'Template saved.', 'brevo-campaign-generator' ) ) );
+	}
+
+	/**
+	 * Handle bcg_sb_get_templates — list all saved section templates.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_get_templates(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		$templates = BCG_Section_Templates_Table::get_all();
+
+		wp_send_json_success( array( 'templates' => $templates ) );
+	}
+
+	/**
+	 * Handle bcg_sb_load_template — return sections JSON for a given template ID.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_load_template(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		$id = absint( $_POST['id'] ?? 0 );
+		if ( ! $id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid template ID.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$template = BCG_Section_Templates_Table::get( $id );
+		if ( is_wp_error( $template ) ) {
+			wp_send_json_error( array( 'message' => $template->get_error_message() ) );
+		}
+
+		$sections = json_decode( $template->sections, true );
+		if ( ! is_array( $sections ) ) {
+			$sections = array();
+		}
+
+		wp_send_json_success( array(
+			'id'          => (int) $template->id,
+			'name'        => $template->name,
+			'description' => $template->description,
+			'sections'    => $sections,
+		) );
+	}
+
+	/**
+	 * Handle bcg_sb_delete_template — delete a section template by ID.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_delete_template(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		$id = absint( $_POST['id'] ?? 0 );
+		if ( ! $id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid template ID.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$result = BCG_Section_Templates_Table::delete( $id );
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success( array( 'message' => __( 'Template deleted.', 'brevo-campaign-generator' ) ) );
+	}
+
+	/**
+	 * Handle bcg_sb_generate_all — AI-fill all has_ai sections.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_generate_all(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$sections_raw = isset( $_POST['sections'] ) ? wp_unslash( $_POST['sections'] ) : '[]';
+		$sections     = json_decode( $sections_raw, true );
+
+		if ( ! is_array( $sections ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid sections data.', 'brevo-campaign-generator' ) ) );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$context_raw = isset( $_POST['context'] ) ? wp_unslash( $_POST['context'] ) : '{}';
+		$context     = json_decode( $context_raw, true );
+		if ( ! is_array( $context ) ) {
+			$context = array();
+		}
+
+		$context['tone']     = sanitize_text_field( $context['tone'] ?? 'Professional' );
+		$context['language'] = sanitize_text_field( $context['language'] ?? 'English' );
+		$context['theme']    = sanitize_text_field( $context['theme'] ?? '' );
+
+		$updated_sections = BCG_Section_AI::generate_all( $sections, $context );
+
+		wp_send_json_success( array( 'sections' => $updated_sections ) );
+	}
+
+	/**
+	 * Handle bcg_sb_generate_section — AI-fill a single section by index.
+	 *
+	 * @since  1.5.0
+	 * @return void
+	 */
+	public function handle_sb_generate_section(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		$type = sanitize_key( wp_unslash( $_POST['section_type'] ?? '' ) );
+		if ( empty( $type ) ) {
+			wp_send_json_error( array( 'message' => __( 'Section type is required.', 'brevo-campaign-generator' ) ) );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$settings_raw = isset( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : '{}';
+		$settings     = json_decode( $settings_raw, true );
+		if ( ! is_array( $settings ) ) {
+			$settings = array();
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$context_raw = isset( $_POST['context'] ) ? wp_unslash( $_POST['context'] ) : '{}';
+		$context     = json_decode( $context_raw, true );
+		if ( ! is_array( $context ) ) {
+			$context = array();
+		}
+
+		$context['tone']     = sanitize_text_field( $context['tone'] ?? 'Professional' );
+		$context['language'] = sanitize_text_field( $context['language'] ?? 'English' );
+		$context['theme']    = sanitize_text_field( $context['theme'] ?? '' );
+
+		$result = BCG_Section_AI::generate( $type, $settings, $context );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success( array( 'settings' => $result ) );
 	}
 
 	/**
