@@ -66,14 +66,14 @@
 				var $header = $( '<button>' )
 					.attr( 'type', 'button' )
 					.addClass( 'bcg-sb-palette-group-header' )
-					.attr( 'aria-expanded', 'false' )
+					.attr( 'aria-expanded', 'true' )
 					.html(
 						'<span class="material-icons-outlined bcg-sb-palette-cat-icon">' + self.escHtml( cat.icon || 'widgets' ) + '</span>' +
 						'<span class="bcg-sb-palette-group-label">' + self.escHtml( cat.label ) + '</span>' +
 						'<span class="bcg-sb-palette-group-chevron material-icons-outlined">expand_more</span>'
 					);
 
-				var $variants = $( '<div>' ).addClass( 'bcg-sb-palette-variants bcg-sb-palette-variants-collapsed' );
+				var $variants = $( '<div>' ).addClass( 'bcg-sb-palette-variants' );
 
 				$.each( cat.variants, function ( j, variant ) {
 					var $card = $( '<button>' )

@@ -221,14 +221,15 @@ class BCG_Section_Renderer {
 		$cta_fsize  = (int) ( $s['cta_font_size'] ?? 16 );
 		$cta_pad_h  = (int) ( $s['cta_padding_h'] ?? 32 );
 		$cta_pad_v  = (int) ( $s['cta_padding_v'] ?? 14 );
+		$cta_radius = (int) ( $s['cta_border_radius'] ?? 4 );
 		$s_fsize    = (int) ( $s['subtext_font_size'] ?? 16 );
 		$cta_html = '';
 		if ( $cta_text ) {
 			$cta_html = sprintf(
 				'<tr><td style="padding-top:24px;text-align:center;">
-					<a href="%s" style="display:inline-block;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>
+					<a href="%s" style="display:inline-block;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:%dpx;">%s</a>
 				</td></tr>',
-				$cta_url, $cta_pad_v, $cta_pad_h, $cta_bg, $cta_tc, esc_attr( $font ), $cta_fsize, $cta_text
+				$cta_url, $cta_pad_v, $cta_pad_h, $cta_bg, $cta_tc, esc_attr( $font ), $cta_fsize, $cta_radius, $cta_text
 			);
 		}
 
@@ -372,6 +373,8 @@ class BCG_Section_Renderer {
 		$btn_fsize   = (int) ( $s['button_font_size'] ?? 14 );
 		$btn_pad_h   = (int) ( $s['button_padding_h'] ?? 20 );
 		$btn_pad_v   = (int) ( $s['button_padding_v'] ?? 10 );
+		$btn_tc     = esc_attr( $s['button_text_color'] ?? '#ffffff' );
+		$btn_radius = (int) ( $s['button_border_radius'] ?? 4 );
 		$prod_gap    = (int) ( $s['product_gap'] ?? 15 );
 		$text_align  = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? $s['text_align'] : 'left';
 		$square_imgs = ! empty( $s['square_images'] );
@@ -421,13 +424,15 @@ class BCG_Section_Renderer {
 			$btn_html   = '';
 			if ( $show_btn ) {
 				$btn_html = sprintf(
-					'<a href="%s" style="display:inline-block;margin-top:12px;padding:%dpx %dpx;background-color:%s;color:#ffffff;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>',
+					'<a href="%s" style="display:inline-block;margin-top:12px;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:%dpx;">%s</a>',
 					esc_url( $product->get_permalink() ),
 					$btn_pad_v,
 					$btn_pad_h,
 					$btn_color,
+					$btn_tc,
 					esc_attr( $font ),
 					$btn_fsize,
+					$btn_radius,
 					$btn_text
 				);
 			}
@@ -573,6 +578,7 @@ class BCG_Section_Renderer {
 		$btn_fsize  = (int) ( $s['button_font_size'] ?? 17 );
 		$btn_pad_h  = (int) ( $s['button_padding_h'] ?? 40 );
 		$btn_pad_v  = (int) ( $s['button_padding_v'] ?? 16 );
+		$btn_radius = (int) ( $s['button_border_radius'] ?? 4 );
 
 		$subtext_html = '';
 		if ( $subtext ) {
@@ -595,7 +601,7 @@ class BCG_Section_Renderer {
 							%s
 							<tr>
 								<td style="text-align:center;">
-									<a href="%s" style="display:inline-block;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>
+									<a href="%s" style="display:inline-block;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:%dpx;">%s</a>
 								</td>
 							</tr>
 						</table>
@@ -606,7 +612,7 @@ class BCG_Section_Renderer {
 			$pt, $pb,
 			esc_attr( $font ), $h_fsize, $tc, $heading,
 			$subtext_html,
-			$btn_url, $btn_pad_v, $btn_pad_h, $btn_bg, $btn_tc, esc_attr( $font ), $btn_fsize, $btn_lbl
+			$btn_url, $btn_pad_v, $btn_pad_h, $btn_bg, $btn_tc, esc_attr( $font ), $btn_fsize, $btn_radius, $btn_lbl
 		);
 	}
 

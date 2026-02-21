@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.16] — 2026-02-21
+
+### Fixed
+- **Palette accordion starts expanded** — All section category groups in the palette now open by default so variant cards are immediately visible and clickable. Groups can still be collapsed/expanded by clicking the category header.
+
+### Added
+- **Button Border Radius** — Hero, CTA, and Products sections now have a `Button Border Radius (px)` range slider (0–30 px, default 4). The hardcoded `4px` in the renderer is replaced with the field value.
+- **Button Text Colour** — Products section now has a `Button Text Colour` colour picker (default `#ffffff`). Previously the button text colour was hardcoded white.
+
+---
+
 ## [1.5.15] — 2026-02-21
 
 ### Added
