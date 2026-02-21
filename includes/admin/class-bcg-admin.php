@@ -218,7 +218,7 @@ class BCG_Admin {
 			'bcg-admin',
 			BCG_PLUGIN_URL . 'admin/css/bcg-admin.css',
 			array(),
-			BCG_VERSION
+			filemtime( BCG_PLUGIN_DIR . 'admin/css/bcg-admin.css' )
 		);
 
 		// Google Material Icons (Outlined variant).
@@ -414,7 +414,7 @@ class BCG_Admin {
 				'bcg-template-editor',
 				BCG_PLUGIN_URL . 'admin/js/bcg-template-editor.js',
 				array( 'jquery', 'wp-util' ),
-				BCG_VERSION,
+				filemtime( BCG_PLUGIN_DIR . 'admin/js/bcg-template-editor.js' ),
 				true
 			);
 

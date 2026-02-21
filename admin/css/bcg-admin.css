@@ -2043,40 +2043,162 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	overflow: hidden;
 }
 
-/* Settings tab nav */
-.bcg-template-settings-tabs {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 2px;
+/* ============================================================
+   Settings tab navigation — dropdown style
+   ============================================================ */
+
+.bcg-tab-nav-dropdown {
+	position: relative;
 	padding: 10px 12px;
 	border-bottom: 1px solid var(--bcg-border);
 	background: var(--bcg-bg-raised);
 }
 
-.bcg-template-tab {
-	padding: 5px 9px;
+.bcg-tab-nav-trigger {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 9px 14px;
+	background: var(--bcg-bg-input);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	color: var(--bcg-text-primary);
 	font-family: var(--bcg-font-body);
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: 600;
-	color: var(--bcg-text-muted);
-	background: transparent;
-	border: 1px solid transparent;
-	border-radius: var(--bcg-radius-sm);
 	cursor: pointer;
-	transition: all var(--bcg-transition);
-	white-space: nowrap;
-	line-height: 1.4;
+	transition: border-color 0.15s, background 0.15s;
+	text-align: left;
 }
 
-.bcg-template-tab:hover {
+.bcg-tab-nav-trigger:hover,
+.bcg-tab-nav-trigger[aria-expanded="true"] {
+	border-color: var(--bcg-accent);
+	background: var(--bcg-accent-dim);
+}
+
+.bcg-tab-nav-chevron {
+	margin-left: auto;
+	flex-shrink: 0;
+	transition: transform 0.2s ease;
+	color: var(--bcg-text-muted);
+}
+
+.bcg-tab-nav-trigger[aria-expanded="true"] .bcg-tab-nav-chevron {
+	transform: rotate(180deg);
+	color: var(--bcg-accent);
+}
+
+/* Dropdown menu */
+.bcg-tab-nav-menu {
+	position: absolute;
+	top: calc(100% - 2px);
+	left: 12px;
+	right: 12px;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-top: none;
+	border-radius: 0 0 var(--bcg-radius) var(--bcg-radius);
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+	overflow: hidden;
+	animation: bcg-dropdown-in 0.15s ease;
+}
+
+.bcg-tab-nav-menu.bcg-dropdown-closed {
+	display: none;
+}
+
+@keyframes bcg-dropdown-in {
+	from { opacity: 0; transform: translateY(-6px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropdown items */
+.bcg-tab-nav-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 14px;
+	background: none;
+	border: none;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+	color: var(--bcg-text-secondary);
+	font-family: var(--bcg-font-body);
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.12s, color 0.12s;
+	text-align: left;
+}
+
+.bcg-tab-nav-item:last-child {
+	border-bottom: none;
+}
+
+.bcg-tab-nav-item .material-icons-outlined {
+	font-size: 16px;
+	color: var(--bcg-text-muted);
+	flex-shrink: 0;
+}
+
+.bcg-tab-nav-item:hover {
 	background: var(--bcg-bg-hover);
 	color: var(--bcg-text-primary);
 }
 
-.bcg-template-tab.active {
-	background: var(--bcg-accent-dim);
-	border-color: rgba(230, 53, 41, 0.3);
+.bcg-tab-nav-item:hover .material-icons-outlined {
 	color: var(--bcg-accent);
+}
+
+.bcg-tab-nav-item.active {
+	background: var(--bcg-accent-dim);
+	color: var(--bcg-accent);
+	font-weight: 600;
+}
+
+.bcg-tab-nav-item.active .material-icons-outlined {
+	color: var(--bcg-accent);
+}
+
+.bcg-tab-nav-item-code {
+	border-top: 1px solid var(--bcg-border) !important;
+}
+
+/* ============================================================
+   Custom-styled native <select> elements in plugin pages
+   ============================================================ */
+
+.bcg-admin-page .bcg-wrap select,
+.bcg-admin-page .bcg-template-settings-panel select {
+	appearance: none;
+	-webkit-appearance: none;
+	background-color: var(--bcg-bg-input);
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	padding-right: 32px;
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-sm);
+	color: var(--bcg-text-primary);
+	font-size: 13px;
+	cursor: pointer;
+	transition: border-color 0.15s, box-shadow 0.15s;
+	height: 34px;
+}
+
+.bcg-admin-page .bcg-wrap select:focus,
+.bcg-admin-page .bcg-template-settings-panel select:focus {
+	outline: none;
+	border-color: var(--bcg-accent);
+	box-shadow: 0 0 0 2px var(--bcg-accent-dim);
+}
+
+.bcg-admin-page .bcg-wrap select option {
+	background-color: var(--bcg-bg-raised);
+	color: var(--bcg-text-primary);
 }
 
 /* Settings panel content areas */

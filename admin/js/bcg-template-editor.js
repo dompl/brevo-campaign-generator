@@ -164,6 +164,30 @@
 				}
 			});
 
+			// Tab nav dropdown: toggle open/close on trigger click.
+			$(document).on('click', '#bcg-tab-nav-btn', function (e) {
+				e.stopPropagation();
+				var $menu  = $('#bcg-tab-nav-menu');
+				var isOpen = !$menu.hasClass('bcg-dropdown-closed');
+				if (isOpen) {
+					$menu.addClass('bcg-dropdown-closed');
+					$(this).attr('aria-expanded', 'false');
+					$menu.attr('aria-hidden', 'true');
+				} else {
+					$menu.removeClass('bcg-dropdown-closed');
+					$(this).attr('aria-expanded', 'true');
+					$menu.attr('aria-hidden', 'false');
+				}
+			});
+
+			// Close tab nav dropdown when clicking outside.
+			$(document).on('click', function (e) {
+				if (!$(e.target).closest('#bcg-tab-nav-dropdown').length) {
+					$('#bcg-tab-nav-menu').addClass('bcg-dropdown-closed');
+					$('#bcg-tab-nav-btn').attr('aria-expanded', 'false');
+				}
+			});
+
 			// Settings tab navigation (includes code tab).
 			$(document).on('click', '.bcg-template-tab', function (e) {
 				e.preventDefault();
@@ -300,6 +324,13 @@
 			$('.bcg-template-tab[data-tab="' + tabName + '"]').addClass('active');
 			$('.bcg-template-settings-panel').removeClass('active');
 			$('.bcg-template-settings-panel[data-panel="' + tabName + '"]').addClass('active');
+
+			// Update dropdown trigger label and close the menu.
+			var label = $('.bcg-template-tab[data-tab="' + tabName + '"]').clone().children('span.material-icons-outlined').remove().end().text().trim();
+			$('#bcg-tab-nav-label').text(label);
+			$('#bcg-tab-nav-menu').addClass('bcg-dropdown-closed');
+			$('#bcg-tab-nav-btn').attr('aria-expanded', 'false');
+			$('#bcg-tab-nav-menu').attr('aria-hidden', 'true');
 		},
 
 		/**
