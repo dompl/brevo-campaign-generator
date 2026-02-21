@@ -265,6 +265,15 @@ class BCG_Admin {
 		wp_enqueue_script( 'bcg-admin-global' );
 		wp_localize_script( 'bcg-admin-global', 'bcgData', $bcg_data );
 
+		// Global UI helpers — custom selects, etc. Loaded on every BCG page.
+		wp_enqueue_script(
+			'bcg-settings',
+			BCG_PLUGIN_URL . 'admin/js/bcg-settings.js',
+			array( 'jquery', 'wp-color-picker' ),
+			filemtime( BCG_PLUGIN_DIR . 'admin/js/bcg-settings.js' ),
+			true
+		);
+
 		// ── Per-page scripts ───────────────────────────────────────────
 
 		// Dashboard page JS.
@@ -318,16 +327,8 @@ class BCG_Admin {
 			);
 		}
 
-		// Settings page JS.
+		// Settings page — localise bcg_settings for test-connection / list-refresh handlers.
 		if ( str_contains( $hook_suffix, 'bcg-settings' ) ) {
-			wp_enqueue_script(
-				'bcg-settings',
-				BCG_PLUGIN_URL . 'admin/js/bcg-settings.js',
-				array( 'jquery', 'wp-color-picker' ),
-				BCG_VERSION,
-				true
-			);
-
 			wp_localize_script(
 				'bcg-settings',
 				'bcg_settings',

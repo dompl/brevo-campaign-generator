@@ -230,9 +230,11 @@
 		}
 	};
 
-	// Initialise on DOM ready.
+	// Initialise on DOM ready — only on the settings page where bcg_settings is localised.
 	$( function() {
-		BCGSettings.init();
+		if ( typeof bcg_settings !== 'undefined' ) {
+			BCGSettings.init();
+		}
 	} );
 
 } )( jQuery );

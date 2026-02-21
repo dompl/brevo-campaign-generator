@@ -733,10 +733,14 @@ function bcg_render_category_tree( array $all_categories, array $lookup, int $pa
 		}
 
 		echo '<li class="bcg-category-item">';
-		echo '<label class="bcg-category-label">';
+		echo '<label class="bcg-category-toggle">';
+		echo '<span class="bcg-toggle-switch">';
 		echo '<input type="checkbox" name="category_ids[]" value="' . esc_attr( $term_id ) . '" class="bcg-category-checkbox" />';
-		echo ' ' . esc_html( $cat['name'] );
+		echo '<span class="bcg-toggle-thumb"></span>';
+		echo '</span>';
+		echo '<span class="bcg-category-toggle-text">' . esc_html( $cat['name'] );
 		echo ' <span class="bcg-category-count">(' . esc_html( $cat['count'] ) . ')</span>';
+		echo '</span>';
 		echo '</label>';
 
 		if ( $has_children ) {

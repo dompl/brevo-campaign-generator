@@ -470,7 +470,7 @@ body.bcg-admin-page .bcg-wrap a:hover {
 	background: var(--bcg-bg-surface);
 	border: 1px solid var(--bcg-border);
 	border-radius: var(--bcg-radius-lg);
-	padding: 20px 22px;
+	padding: 24px 20px;
 	position: relative;
 	overflow: hidden;
 	transition: border-color var(--bcg-transition-slow), transform var(--bcg-transition-slow);
@@ -507,8 +507,11 @@ body.bcg-admin-page .bcg-wrap a:hover {
 
 .bcg-stat-card-inner {
 	display: flex !important;
+	flex-direction: column !important;
 	align-items: center !important;
-	gap: 14px;
+	justify-content: center;
+	gap: 12px;
+	text-align: center;
 }
 
 .bcg-stat-icon {
@@ -551,8 +554,9 @@ body.bcg-admin-page .bcg-stat-icon .material-icons-outlined {
 .bcg-stat-content {
 	display: flex !important;
 	flex-direction: column !important;
+	align-items: center !important;
 	gap: 2px;
-	min-width: 0;
+	text-align: center;
 }
 
 .bcg-stat-value {
@@ -2507,6 +2511,13 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	margin-top: 3px;
 }
 
+/* Template picker grid — new campaign wizard section 5 */
+.bcg-template-picker {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 100px, 1fr ) );
+	gap: 10px;
+}
+
 /* Code editor textarea */
 .bcg-editor-code-wrapper {
 	min-height: 300px;
@@ -2914,6 +2925,81 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 body.bcg-admin-page .bcg-wrap input[type="date"]::-webkit-calendar-picker-indicator {
 	filter: invert(0.7);
 	cursor: pointer;
+}
+
+/* Category filter tree — new campaign wizard */
+.bcg-category-tree-wrapper {
+	background: var(--bcg-bg-input);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 12px 16px;
+}
+
+.bcg-category-tree-actions {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.bcg-category-list,
+.bcg-category-children {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.bcg-category-children {
+	padding-left: 22px;
+	margin-top: 4px;
+	border-left: 2px solid var(--bcg-border);
+}
+
+.bcg-category-item {
+	margin: 5px 0;
+}
+
+/* Compact toggle for category rows (no card border/background) */
+.bcg-category-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+	padding: 3px 0;
+	background: none;
+	border: none;
+}
+
+.bcg-category-toggle:hover .bcg-category-toggle-text {
+	color: var(--bcg-text-primary);
+}
+
+.bcg-category-toggle .bcg-toggle-switch {
+	width: 34px;
+	height: 20px;
+	flex-shrink: 0;
+}
+
+.bcg-category-toggle .bcg-toggle-thumb::after {
+	width: 14px;
+	height: 14px;
+	top: 2px;
+	left: 2px;
+}
+
+.bcg-category-toggle .bcg-toggle-switch input:checked ~ .bcg-toggle-thumb::after {
+	left: 16px;
+}
+
+.bcg-category-toggle-text {
+	font-size: 13px;
+	color: var(--bcg-text-secondary);
+	transition: color var(--bcg-transition);
+	line-height: 1.4;
+}
+
+.bcg-category-count {
+	color: var(--bcg-text-muted);
+	font-size: 11px;
 }
 
 /* ==========================================================================
