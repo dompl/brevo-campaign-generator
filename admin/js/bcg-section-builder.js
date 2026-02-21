@@ -796,25 +796,6 @@
 				},
 			} );
 		},
-
-				success: function ( response ) {
-					if ( response.success && response.data.html ) {
-						var doc = $iframe[0].contentDocument || $iframe[0].contentWindow.document;
-						doc.open();
-						doc.write( response.data.html );
-						doc.close();
-						// Auto-size to content after load.
-						setTimeout( function () {
-							try {
-								var h = doc.documentElement.scrollHeight || doc.body.scrollHeight;
-								if ( h > 20 ) { $iframe.css( 'height', h + 'px' ); }
-							} catch ( ex ) {}
-						}, 200 );
-					}
-				},
-			} );
-		},
-
 		/**
 		 * Build the HTML for a product AJAX-select field.
 		 *
