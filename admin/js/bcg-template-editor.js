@@ -712,7 +712,6 @@
 						'<div class="bcg-section-overlay-actions">' +
 							'<button type="button" class="bcg-overlay-btn bcg-overlay-move-up" title="Move Up">&uarr;</button>' +
 							'<button type="button" class="bcg-overlay-btn bcg-overlay-move-down" title="Move Down">&darr;</button>' +
-							'<button type="button" class="bcg-overlay-btn bcg-overlay-duplicate" title="Duplicate">&#x2398;</button>' +
 							'<button type="button" class="bcg-overlay-btn bcg-overlay-delete" title="Delete">&times;</button>' +
 						'</div>' +
 					'</div>'

@@ -2201,6 +2201,91 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	pointer-events: auto;
 }
 
+/* Individual section overlay — sits absolutely over the email section */
+.bcg-section-overlay {
+	position: absolute;
+	left: 0;
+	right: 0;
+	box-sizing: border-box;
+	border: 1px solid transparent;
+	border-radius: 2px;
+	transition: border-color 0.2s ease, background 0.2s ease;
+	pointer-events: auto;
+}
+
+.bcg-section-overlay:hover {
+	border-color: rgba(232, 64, 64, 0.5);
+	background: rgba(232, 64, 64, 0.04);
+}
+
+.bcg-section-overlay-label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: rgba(232, 64, 64, 0.92);
+	color: #fff;
+	font-size: 9px;
+	font-weight: 700;
+	padding: 2px 7px;
+	border-radius: 0 0 4px 0;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	white-space: nowrap;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	pointer-events: none;
+	z-index: 1;
+	font-family: var(--bcg-font);
+}
+
+.bcg-section-overlay:hover .bcg-section-overlay-label {
+	opacity: 1;
+}
+
+.bcg-section-overlay-actions {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	display: flex;
+	gap: 3px;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	z-index: 2;
+}
+
+.bcg-section-overlay:hover .bcg-section-overlay-actions {
+	opacity: 1;
+}
+
+.bcg-overlay-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: none;
+	border-radius: 4px;
+	background: rgba(10, 10, 15, 0.82);
+	color: #fff;
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+	transition: background 0.15s ease, transform 0.1s ease;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.bcg-overlay-btn:hover {
+	background: var(--bcg-accent);
+	transform: scale(1.1);
+}
+
+.bcg-overlay-btn.bcg-overlay-delete:hover {
+	background: #dc3545 !important;
+}
+
 .bcg-preview-iframe {
 	width: 100%;
 	border: none;
