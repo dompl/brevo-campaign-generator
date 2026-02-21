@@ -75,6 +75,9 @@ class BCG_Campaign {
 		'mailing_list_id',
 		'scheduled_at',
 		'sent_at',
+		'builder_type',
+		'sections_json',
+		'section_template_id',
 	);
 
 	/**
@@ -182,6 +185,24 @@ class BCG_Campaign {
 			}
 			$insert_data['template_settings'] = $settings;
 			$format[]                         = '%s';
+		}
+
+		// Builder type — 'flat' or 'sections'.
+		if ( isset( $data['builder_type'] ) ) {
+			$insert_data['builder_type'] = in_array( $data['builder_type'], array( 'flat', 'sections' ), true ) ? $data['builder_type'] : 'flat';
+			$format[]                    = '%s';
+		}
+
+		// Sections JSON — stored as-is (full JSON).
+		if ( isset( $data['sections_json'] ) ) {
+			$insert_data['sections_json'] = $data['sections_json'];
+			$format[]                     = '%s';
+		}
+
+		// Section template ID — reference to bcg_section_templates.
+		if ( isset( $data['section_template_id'] ) && null !== $data['section_template_id'] ) {
+			$insert_data['section_template_id'] = absint( $data['section_template_id'] );
+			$format[]                           = '%d';
 		}
 
 		// Coupon discount (decimal).
@@ -1209,6 +1230,25 @@ class BCG_Campaign {
 					'format' => '%s',
 				);
 
+			case 'builder_type':
+				return array(
+					'value'  => in_array( $value, array( 'flat', 'sections' ), true ) ? $value : 'flat',
+					'format' => '%s',
+				);
+
+			case 'sections_json':
+				// Full sections JSON — stored as-is.
+				return array(
+					'value'  => $value,
+					'format' => '%s',
+				);
+
+			case 'section_template_id':
+				return array(
+					'value'  => null !== $value ? absint( $value ) : null,
+					'format' => '%d',
+				);
+
 			default:
 				return array(
 					'value'  => sanitize_text_field( (string) $value ),
@@ -1285,6 +1325,8 @@ class BCG_Campaign {
 			'main_image_url',
 			'coupon_code',
 			'coupon_discount',
+			'sections_json',
+			'section_template_id',
 		);
 
 		return in_array( $key, $nullable_fields, true );

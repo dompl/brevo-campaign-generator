@@ -2823,6 +2823,129 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	gap: 10px;
 }
 
+/* ── My Templates section (campaign wizard) ───────────────────────── */
+
+body.bcg-admin-page .bcg-my-templates-section {
+	margin-top: var(--bcg-space-6);
+	padding-top: var(--bcg-space-5);
+	border-top: 1px solid var(--bcg-border);
+}
+
+body.bcg-admin-page .bcg-my-templates-heading {
+	display:     flex;
+	align-items: center;
+	gap:         var(--bcg-space-2);
+	margin:      0 0 var(--bcg-space-2);
+	font-size:   14px;
+	font-weight: 700;
+	color:       var(--bcg-text-primary);
+}
+
+body.bcg-admin-page .bcg-my-templates-heading .material-icons-outlined {
+	font-size: 18px;
+	color:     var(--bcg-accent);
+}
+
+body.bcg-admin-page .bcg-badge {
+	display:       inline-flex;
+	align-items:   center;
+	padding:       2px 8px;
+	background:    var(--bcg-accent-dim, rgba(232,64,64,0.1));
+	color:         var(--bcg-accent);
+	border-radius: 20px;
+	font-size:     10px;
+	font-weight:   700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+body.bcg-admin-page .bcg-my-templates-desc {
+	margin:    0 0 var(--bcg-space-3);
+	font-size: 13px;
+}
+
+body.bcg-admin-page .bcg-my-templates-grid {
+	display:   flex;
+	flex-wrap: wrap;
+	gap:       var(--bcg-space-3);
+}
+
+body.bcg-admin-page .bcg-my-templates-loading,
+body.bcg-admin-page .bcg-my-templates-empty {
+	display:     flex;
+	align-items: center;
+	gap:         var(--bcg-space-2);
+	color:       var(--bcg-text-muted);
+	font-size:   13px;
+	padding:     var(--bcg-space-3) 0;
+}
+
+body.bcg-admin-page .bcg-my-templates-empty .material-icons-outlined {
+	font-size: 18px;
+}
+
+body.bcg-admin-page .bcg-my-templates-empty a {
+	color: var(--bcg-accent);
+}
+
+/* Section template cards */
+body.bcg-admin-page .bcg-section-template-card {
+	display:        flex;
+	flex-direction: column;
+	align-items:    center;
+	gap:            6px;
+	padding:        12px 14px;
+	width:          110px;
+	background:     var(--bcg-bg-surface);
+	border:         2px solid var(--bcg-border);
+	border-radius:  var(--bcg-radius);
+	cursor:         pointer;
+	transition:     border-color 0.15s, box-shadow 0.15s, background 0.15s;
+	text-align:     center;
+}
+
+body.bcg-admin-page .bcg-section-template-card:hover {
+	border-color: var(--bcg-accent);
+	background:   var(--bcg-bg-hover);
+}
+
+body.bcg-admin-page .bcg-section-template-card.bcg-section-template-card-active {
+	border-color: var(--bcg-accent);
+	background:   var(--bcg-accent-dim, rgba(232,64,64,0.08));
+	box-shadow:   0 0 0 3px var(--bcg-accent-dim, rgba(232,64,64,0.15));
+}
+
+body.bcg-admin-page .bcg-stc-icon {
+	width:         40px;
+	height:        40px;
+	border-radius: 50%;
+	background:    var(--bcg-accent-dim, rgba(232,64,64,0.1));
+	display:       flex;
+	align-items:   center;
+	justify-content: center;
+	flex-shrink:   0;
+}
+
+body.bcg-admin-page .bcg-stc-icon .material-icons-outlined {
+	font-size: 20px;
+	color:     var(--bcg-accent);
+}
+
+body.bcg-admin-page .bcg-stc-name {
+	font-size:   12px;
+	font-weight: 600;
+	color:       var(--bcg-text-primary);
+	word-break:  break-word;
+	line-height: 1.3;
+}
+
+body.bcg-admin-page .bcg-stc-desc {
+	font-size: 11px;
+	color:     var(--bcg-text-muted);
+	word-break: break-word;
+	line-height: 1.2;
+}
+
 /* Code editor textarea */
 .bcg-editor-code-wrapper {
 	min-height: 300px;

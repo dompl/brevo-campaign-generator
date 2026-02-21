@@ -77,6 +77,7 @@
 			this.bindAIGenerateButtons();
 			this.bindCouponSuggestion();
 			this.bindTemplatePicker();
+			this.bindSectionTemplatePicker();
 			this.bindFormSubmit();
 			this.bindOverlayClose();
 
@@ -85,6 +86,9 @@
 
 			// Load mailing lists on page load.
 			this.loadMailingLists();
+
+			// Load section templates on page load.
+			this.loadSectionTemplates();
 		},
 
 		// ─── Product Source Radio Toggle ────────────────────────────
@@ -883,6 +887,90 @@
 
 				// Update the hidden input.
 				$( '#bcg-template-slug' ).val( slug );
+
+				// Deselect any section template card.
+				$( '.bcg-section-template-card' ).removeClass( 'bcg-section-template-card-active' );
+				$( '#bcg-section-template-id' ).val( 0 );
+			} );
+		},
+
+		// ── My Templates (section builder templates) ───────────────
+
+		/**
+		 * Load user-built section templates and render them in the My Templates grid.
+		 *
+		 * @return {void}
+		 */
+		loadSectionTemplates: function() {
+			var $grid    = $( '#bcg-my-templates-grid' );
+			var $loading = $( '#bcg-my-templates-loading' );
+
+			if ( ! $grid.length ) { return; }
+
+			$.ajax( {
+				url:  bcg_campaign_builder.ajax_url,
+				type: 'POST',
+				data: { action: 'bcg_get_section_templates', nonce: bcg_campaign_builder.nonce },
+				success: function ( res ) {
+					$loading.remove();
+					if ( ! res.success || ! res.data.templates || res.data.templates.length === 0 ) {
+						$grid.append(
+							'<p class="bcg-my-templates-empty">' +
+							'<span class="material-icons-outlined">add_circle_outline</span>' +
+							'No templates yet. <a href="' + bcg_campaign_builder.template_builder_url + '">Build one in the Template Builder</a>.' +
+							'</p>'
+						);
+						return;
+					}
+					$.each( res.data.templates, function ( i, tpl ) {
+						var $card = $( '<button>' )
+							.attr( 'type', 'button' )
+							.addClass( 'bcg-section-template-card' )
+							.attr( 'data-id', parseInt( tpl.id, 10 ) )
+							.attr( 'data-name', tpl.name )
+							.html(
+								'<div class="bcg-stc-icon"><span class="material-icons-outlined">dashboard_customize</span></div>' +
+								'<span class="bcg-stc-name">' + $( '<span>' ).text( tpl.name ).html() + '</span>' +
+								( tpl.description ? '<span class="bcg-stc-desc">' + $( '<span>' ).text( tpl.description ).html() + '</span>' : '' )
+							);
+						$grid.append( $card );
+					} );
+				},
+				error: function () {
+					$loading.remove();
+					$grid.append( '<p class="bcg-my-templates-empty bcg-error">Could not load templates.</p>' );
+				}
+			} );
+		},
+
+		/**
+		 * Bind section template card click — select it, deselect flat templates.
+		 *
+		 * @return {void}
+		 */
+		bindSectionTemplatePicker: function() {
+			$( document ).on( 'click', '.bcg-section-template-card', function () {
+				var $card      = $( this );
+				var id         = parseInt( $card.data( 'id' ), 10 );
+				var isSelected = $card.hasClass( 'bcg-section-template-card-active' );
+
+				if ( isSelected ) {
+					// Deselect — revert to first flat template.
+					$card.removeClass( 'bcg-section-template-card-active' );
+					$( '#bcg-section-template-id' ).val( 0 );
+					var $firstFlat = $( '.bcg-template-card' ).first();
+					$firstFlat.addClass( 'bcg-template-card-active' );
+					$( '#bcg-template-slug' ).val( $firstFlat.data( 'slug' ) || 'classic' );
+				} else {
+					// Deselect all flat templates.
+					$( '.bcg-template-card' ).removeClass( 'bcg-template-card-active' );
+					$( '#bcg-template-slug' ).val( 'sections' );
+					// Deselect other section template cards.
+					$( '.bcg-section-template-card' ).removeClass( 'bcg-section-template-card-active' );
+					// Select this card.
+					$card.addClass( 'bcg-section-template-card-active' );
+					$( '#bcg-section-template-id' ).val( id );
+				}
 			} );
 		},
 

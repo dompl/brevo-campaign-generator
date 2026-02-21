@@ -114,6 +114,7 @@ class BCG_Admin {
 		add_action( 'wp_ajax_bcg_sb_preview',          array( $this, 'handle_sb_preview' ) );
 		add_action( 'wp_ajax_bcg_sb_save_template',    array( $this, 'handle_sb_save_template' ) );
 		add_action( 'wp_ajax_bcg_sb_get_templates',    array( $this, 'handle_sb_get_templates' ) );
+		add_action( 'wp_ajax_bcg_get_section_templates', array( $this, 'handle_get_section_templates' ) );
 		add_action( 'wp_ajax_bcg_sb_load_template',    array( $this, 'handle_sb_load_template' ) );
 		add_action( 'wp_ajax_bcg_sb_delete_template',  array( $this, 'handle_sb_delete_template' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_all',     array( $this, 'handle_sb_generate_all' ) );
@@ -324,10 +325,11 @@ class BCG_Admin {
 				'bcg-campaign-builder',
 				'bcg_campaign_builder',
 				array(
-					'ajax_url'        => admin_url( 'admin-ajax.php' ),
-					'nonce'           => wp_create_nonce( 'bcg_nonce' ),
-					'edit_url'        => admin_url( 'admin.php?page=bcg-edit-campaign' ),
-					'currency_symbol' => $currency_symbol,
+					'ajax_url'             => admin_url( 'admin-ajax.php' ),
+					'nonce'                => wp_create_nonce( 'bcg_nonce' ),
+					'edit_url'             => admin_url( 'admin.php?page=bcg-edit-campaign' ),
+					'template_builder_url' => admin_url( 'admin.php?page=bcg-template-builder' ),
+					'currency_symbol'      => $currency_symbol,
 					'i18n'            => array(
 						'title_required'          => __( 'Campaign title is required.', 'brevo-campaign-generator' ),
 						'manual_products_required' => __( 'Please select at least one product for manual selection.', 'brevo-campaign-generator' ),
@@ -705,6 +707,7 @@ class BCG_Admin {
 
 		// Template selection.
 		$template_slug = isset( $_POST['template_slug'] ) ? sanitize_text_field( wp_unslash( $_POST['template_slug'] ) ) : 'classic';
+		$section_template_id = isset( $_POST['section_template_id'] ) ? absint( $_POST['section_template_id'] ) : 0;
 
 		// ── 2. Create draft campaign ────────────────────────────────────
 
@@ -712,25 +715,34 @@ class BCG_Admin {
 		$template_engine   = new BCG_Template();
 		$template_registry = BCG_Template_Registry::get_instance();
 
-		// Use the selected template's HTML and settings, falling back to default.
-		$tpl_html     = $template_registry->get_template_html( $template_slug );
-		$tpl_settings = $template_registry->get_template_settings( $template_slug );
+		// For section templates, use a placeholder until sections are rendered.
+		if ( $section_template_id > 0 ) {
+			$template_slug = 'sections';
+			$tpl_html      = '';
+			$tpl_settings  = $template_engine->get_default_settings();
+		} else {
+			// Use the selected flat template's HTML and settings, falling back to default.
+			$tpl_html     = $template_registry->get_template_html( $template_slug );
+			$tpl_settings = $template_registry->get_template_settings( $template_slug );
 
-		if ( empty( $tpl_html ) ) {
-			$tpl_html = $template_engine->get_default_template();
-		}
-		if ( empty( $tpl_settings ) ) {
-			$tpl_settings = $template_engine->get_default_settings();
+			if ( empty( $tpl_html ) ) {
+				$tpl_html = $template_engine->get_default_template();
+			}
+			if ( empty( $tpl_settings ) ) {
+				$tpl_settings = $template_engine->get_default_settings();
+			}
 		}
 
 		$draft_data = array(
-			'title'             => $title,
-			'subject'           => $subject,
-			'preview_text'      => $preview_text,
-			'mailing_list_id'   => $mailing_list_id,
-			'template_slug'     => $template_slug,
-			'template_html'     => $tpl_html,
-			'template_settings' => wp_json_encode( $tpl_settings ),
+			'title'               => $title,
+			'subject'             => $subject,
+			'preview_text'        => $preview_text,
+			'mailing_list_id'     => $mailing_list_id,
+			'template_slug'       => $template_slug,
+			'template_html'       => $tpl_html,
+			'template_settings'   => wp_json_encode( $tpl_settings ),
+			'builder_type'        => $section_template_id > 0 ? 'sections' : 'flat',
+			'section_template_id' => $section_template_id > 0 ? $section_template_id : null,
 		);
 
 		$campaign_id = $campaign_handler->create_draft( $draft_data );
@@ -780,6 +792,79 @@ class BCG_Admin {
 				$coupon_code = '';
 			} else {
 				$coupon_code = $coupon_result;
+			}
+		}
+
+		// ── 4b. Section template: inject coupon + products + run AI ──────────
+
+		$sections_json_encoded = '';
+
+		if ( $section_template_id > 0 ) {
+			$section_tpl = BCG_Section_Templates_Table::get( $section_template_id );
+
+			if ( ! is_wp_error( $section_tpl ) ) {
+				$sections = json_decode( $section_tpl->sections, true );
+
+				if ( is_array( $sections ) ) {
+					// Inject coupon data into any Coupon-type sections.
+					if ( ! empty( $coupon_code ) ) {
+						$currency_sym  = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+						$discount_text = 'percent' === $discount_type
+							? sprintf( '%.0f%% off your order', $discount_value )
+							: sprintf( '%s%.2f off your order', $currency_sym, $discount_value );
+						$expiry_text   = sprintf( 'Valid for %d days', $expiry_days );
+
+						foreach ( $sections as &$section ) {
+							if ( isset( $section['type'] ) && 'coupon' === $section['type'] ) {
+								$section['settings']['coupon_code']   = $coupon_code;
+								$section['settings']['discount_text'] = $discount_text;
+								$section['settings']['expiry_text']   = $expiry_text;
+							}
+						}
+						unset( $section );
+					}
+
+					// Inject campaign products into any Products sections that have no IDs set.
+					if ( ! empty( $product_data_for_ai ) ) {
+						$product_ids_str = implode( ',', array_map( fn( $p ) => (int) $p['id'], $product_data_for_ai ) );
+						foreach ( $sections as &$section ) {
+							if ( isset( $section['type'] ) && 'products' === $section['type'] ) {
+								if ( empty( trim( $section['settings']['product_ids'] ?? '' ) ) ) {
+									$section['settings']['product_ids'] = $product_ids_str;
+								}
+							}
+						}
+						unset( $section );
+					}
+
+					// Run AI generation for all AI-capable sections.
+					$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+					$ai_context      = array(
+						'products'        => $product_data_for_ai,
+						'theme'           => $theme,
+						'tone'            => $tone,
+						'language'        => $language,
+						'currency_symbol' => $currency_symbol,
+					);
+
+					$sections = BCG_Section_AI::generate_all( $sections, $ai_context );
+
+					// Render sections to email-safe HTML using global template settings.
+					$global_settings = json_decode( get_option( 'bcg_default_template_settings', '{}' ), true );
+					if ( ! is_array( $global_settings ) ) {
+						$global_settings = array();
+					}
+
+					$rendered_html         = BCG_Section_Renderer::render_sections( $sections, $global_settings );
+					$sections_json_encoded = wp_json_encode( $sections );
+
+					// Persist rendered HTML and sections JSON to the campaign.
+					$campaign_handler->update( $campaign_id, array(
+						'template_html'       => $rendered_html,
+						'sections_json'       => $sections_json_encoded,
+						'section_template_id' => $section_template_id,
+					) );
+				}
 			}
 		}
 
@@ -2610,6 +2695,34 @@ class BCG_Admin {
 		}
 
 		wp_send_json_success( array( 'id' => $result, 'message' => __( 'Template saved.', 'brevo-campaign-generator' ) ) );
+	}
+
+	/**
+	 * Handle bcg_get_section_templates — return saved section templates for the campaign wizard.
+	 *
+	 * @since  1.5.7
+	 * @return void
+	 */
+	public function handle_get_section_templates(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$templates = BCG_Section_Templates_Table::get_all();
+
+		$formatted = array();
+		foreach ( $templates as $tpl ) {
+			$formatted[] = array(
+				'id'          => (int) $tpl->id,
+				'name'        => $tpl->name,
+				'description' => $tpl->description ?? '',
+				'updated_at'  => $tpl->updated_at ?? '',
+			);
+		}
+
+		wp_send_json_success( array( 'templates' => $formatted ) );
 	}
 
 	/**

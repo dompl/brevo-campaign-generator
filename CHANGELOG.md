@@ -17,6 +17,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.7] — 2026-02-21
+
+### Added
+- **"My Templates" in campaign wizard** — Section 5 (Email Template) now shows a "My Templates" panel below the built-in template grid. Templates saved in the Template Builder are loaded via AJAX and displayed as clickable cards. Selecting one sets `builder_type = sections` and stores the `section_template_id`; clicking again or selecting a flat template deselects it.
+- **Section template generation flow** — when a "My Template" is selected and the user clicks Generate Campaign, the handler: (1) loads the saved section template's JSON from the database; (2) injects the campaign's coupon code, discount text, and expiry into any Coupon-type sections automatically; (3) fills selected campaign products into any Products sections that have no IDs set; (4) runs `BCG_Section_AI::generate_all()` to populate AI-capable sections (Hero, Text, Banner, CTA, Products) using the chosen tone, theme, and language; (5) renders sections to email-safe HTML via `BCG_Section_Renderer`; (6) persists `builder_type`, `sections_json`, `section_template_id`, and rendered `template_html` to the campaign.
+- **`bcg_get_section_templates` AJAX endpoint** — returns saved Template Builder templates for the campaign wizard My Templates panel.
+- **`builder_type`, `sections_json`, `section_template_id`** added to `BCG_Campaign::UPDATABLE_CAMPAIGN_FIELDS` and `create_draft()` so these fields are properly persisted and sanitised.
+
+---
+
 ## [1.5.6] — 2026-02-21
 
 ### Fixed
@@ -231,7 +241,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.6...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.7...HEAD
+[1.5.7]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.6...v1.5.7
 [1.5.6]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.5...v1.5.6
 [1.5.5]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.3...v1.5.4

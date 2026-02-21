@@ -619,6 +619,24 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<?php endforeach; ?>
 				</div>
 				<input type="hidden" id="bcg-template-slug" name="template_slug" value="classic" />
+			<input type="hidden" id="bcg-section-template-id" name="section_template_id" value="0" />
+
+			<div class="bcg-my-templates-section">
+				<h3 class="bcg-my-templates-heading">
+					<span class="material-icons-outlined">dashboard_customize</span>
+					<?php esc_html_e( 'My Templates', 'brevo-campaign-generator' ); ?>
+					<span class="bcg-badge"><?php esc_html_e( 'Template Builder', 'brevo-campaign-generator' ); ?></span>
+				</h3>
+				<p class="description bcg-my-templates-desc">
+					<?php esc_html_e( 'Templates you\'ve built in the Template Builder. Selecting one will use your custom section layout and populate content with AI.', 'brevo-campaign-generator' ); ?>
+				</p>
+				<div class="bcg-my-templates-grid" id="bcg-my-templates-grid">
+					<div class="bcg-my-templates-loading" id="bcg-my-templates-loading">
+						<span class="material-icons-outlined bcg-spin">refresh</span>
+						<?php esc_html_e( 'Loading your templates…', 'brevo-campaign-generator' ); ?>
+					</div>
+				</div>
+			</div>
 			</div>
 		</div>
 
