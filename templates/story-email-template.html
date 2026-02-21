@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <title>{{subject}}</title>
+
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+
+    <!--
+        ================================================================
+        STORY — Narrative / Brand Story Email Template
+        ================================================================
+
+        DESIGN INTENT:
+        A long-form editorial email designed for immersive reading.
+        Libre Baskerville (serif) brings warmth and authenticity.
+        Large line-height, generous padding, and a comfortable content
+        width make this ideal for storytelling campaigns.
+
+        A decorative pull quote sits between the description and the
+        products — a coloured left border with italic quote text. This
+        gives the reader a pause point and highlights a key message.
+
+        Products appear below as supporting examples, rendered in full
+        width stacked layout via {{products_block}}.
+
+        FONT: Libre Baskerville (Google Fonts, serif). DM Sans used for
+        UI elements (nav, footer, labels). MSO fallback: Georgia.
+
+        DATA-BCG-SECTION attributes mark each major section.
+        ================================================================
+    -->
+
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;700&display=swap');
+
+        /* ===== Reset ===== */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
+        /* ===== Link overrides ===== */
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
+        u + #body a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+        #MessageViewBody a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+
+        /* ===== Responsive ===== */
+        @media only screen and (max-width: 640px) {
+            .bcg-outer-td        { padding: 0 !important; }
+            .bcg-wrapper         { width: 100% !important; border-radius: 0 !important; }
+            .bcg-header-td       { padding: 24px 20px 20px 20px !important; }
+            .bcg-hero-img        { width: 100% !important; height: auto !important; }
+            .bcg-chapter-td      { padding: 32px 20px 12px 20px !important; }
+            h1.bcg-headline      { font-size: 26px !important; line-height: 1.3 !important; }
+            .bcg-body-td         { padding: 0 20px 28px 20px !important; }
+            .bcg-body-p          { font-size: 17px !important; }
+            .bcg-pullquote-td    { padding: 0 20px 32px 20px !important; }
+            .bcg-pullquote-inner { padding: 16px 0 16px 20px !important; }
+            .bcg-pullquote-p     { font-size: 17px !important; }
+            .bcg-products-td     { padding: 0 20px 16px 20px !important; }
+            .bcg-btn-td          { padding: 20px 20px 40px 20px !important; }
+            .bcg-footer-td       { padding: 28px 20px !important; }
+            .bcg-nav-table       { display: none !important; }
+        }
+    </style>
+</head>
+
+<body id="body" style="margin: 0; padding: 0; background-color: {{setting_background_color}}; font-family: 'DM Sans', {{setting_font_family}}; -webkit-font-smoothing: antialiased;">
+
+    <!-- Preheader (hidden) -->
+    <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: {{setting_background_color}}; mso-hide: all;">
+        {{preview_text}}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+    </div>
+
+    <!-- ============================================================
+         OUTER WRAPPER
+         ============================================================ -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: {{setting_background_color}};">
+        <tr>
+            <td class="bcg-outer-td" align="center" style="padding: 40px 16px;">
+
+                <!--[if mso]>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center">
+                <tr><td>
+                <![endif]-->
+
+                <!-- ============================================================
+                     MAIN CONTAINER
+                     ============================================================ -->
+                <table class="bcg-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width: 600px; background-color: {{setting_content_background}}; border-radius: 4px; overflow: hidden;">
+
+                    <!-- ===== HEADER ===== -->
+                    <tr data-bcg-section="header">
+                        <td class="bcg-header-td" align="center" style="padding: 32px 48px 24px 48px; background-color: {{setting_content_background}}; border-bottom: 1px solid #E8E8E8;">
+
+                            {{#if logo_url}}
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-bottom: 16px;">
+                                        <a href="{{store_url}}" target="_blank" style="text-decoration: none; display: inline-block;">
+                                            <img src="{{setting_logo_url}}" alt="{{store_name}}" width="{{setting_logo_width}}" style="display: block; margin: 0 auto; max-width: 100%; height: auto; width: {{setting_logo_width}}px;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+
+                            {{#if header_text}}
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-bottom: 16px;">
+                                        <a href="{{store_url}}" target="_blank" style="text-decoration: none;">
+                                            <span style="font-family: 'Libre Baskerville', Georgia, serif; font-size: 20px; font-weight: 700; color: {{setting_text_color}}; letter-spacing: -0.3px;">{{setting_header_text}}</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+
+                            {{#if show_nav}}
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-top: 8px;">
+                                        <table class="bcg-nav-table" role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                                            <tr>
+                                                {{navigation_links}}
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+
+                        </td>
+                    </tr>
+
+                    <!-- ===== HERO IMAGE ===== -->
+                    {{#if campaign_image}}
+                    <tr data-bcg-section="hero">
+                        <td style="padding: 0; line-height: 0; font-size: 0;">
+                            <img class="bcg-hero-img" src="{{campaign_image}}" alt="{{campaign_headline}}" width="600" style="display: block; width: 100%; max-width: 600px; height: auto;" />
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    <!-- ===== CHAPTER HEADLINE ===== -->
+                    <tr data-bcg-section="headline">
+                        <td class="bcg-chapter-td" align="left" style="padding: 44px 56px 16px 56px; background-color: {{setting_content_background}};">
+
+                            <!-- Issue / edition label -->
+                            <p style="margin: 0 0 16px 0; font-family: 'DM Sans', {{setting_font_family}}; font-size: 11px; font-weight: 700; color: {{setting_primary_color}}; text-transform: uppercase; letter-spacing: 3px; line-height: 1;">From the Collection</p>
+
+                            <!-- Chapter headline — serif, left-aligned, editorial -->
+                            <!--[if mso]>
+                            <h1 style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 30px; font-weight: 700; line-height: 1.3; color: {{setting_text_color}}; text-align: left; letter-spacing: -0.3px;">{{campaign_headline}}</h1>
+                            <![endif]-->
+                            <!--[if !mso]><!-->
+                            <h1 class="bcg-headline" style="margin: 0; font-family: 'Libre Baskerville', {{setting_heading_font_family}}; font-size: 30px; font-weight: 700; line-height: 1.3; color: {{setting_text_color}}; text-align: left; letter-spacing: -0.3px;">{{campaign_headline}}</h1>
+                            <!--<![endif]-->
+
+                            <!-- Decorative rule below headline -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding-top: 20px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="48">
+                                            <tr>
+                                                <td style="background-color: {{setting_primary_color}}; height: 3px; font-size: 3px; line-height: 3px; mso-line-height-rule: exactly;">&nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- ===== LONG-FORM BODY TEXT ===== -->
+                    <tr data-bcg-section="description">
+                        <td class="bcg-body-td" align="left" style="padding: 20px 56px 36px 56px; background-color: {{setting_content_background}};">
+                            <p class="bcg-body-p" style="margin: 0; font-family: 'Libre Baskerville', Georgia, serif; font-size: 17px; line-height: 2.0; color: {{setting_text_color}}; text-align: left; opacity: 0.88;">{{campaign_description}}</p>
+                        </td>
+                    </tr>
+
+                    <!-- ===== DECORATIVE PULL QUOTE ===== -->
+                    <tr data-bcg-section="pullquote">
+                        <td class="bcg-pullquote-td" align="left" style="padding: 0 56px 40px 56px; background-color: {{setting_content_background}};">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td class="bcg-pullquote-inner" style="padding: 20px 0 20px 24px; border-left: 4px solid {{setting_primary_color}};">
+                                        <p class="bcg-pullquote-p" style="margin: 0; font-family: 'Libre Baskerville', Georgia, serif; font-size: 18px; font-style: italic; line-height: 1.7; color: {{setting_primary_color}}; font-weight: 400;">Quality you can see, feel, and trust &#8212; find your favourite in our collection.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ===== COUPON BLOCK ===== -->
+                    {{#if show_coupon_block}}
+                    <tr data-bcg-section="coupon">
+                        <td align="center" style="padding: 0 56px 44px 56px; background-color: {{setting_content_background}};">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="background-color: {{setting_primary_color}}; border-radius: 50px; padding: 22px 32px;">
+                                        <p style="margin: 0 0 10px 0; font-family: 'DM Sans', {{setting_font_family}}; font-size: 11px; font-weight: 700; color: #FFFFFF; text-transform: uppercase; letter-spacing: 3px; line-height: 1; opacity: 0.9;">{{coupon_text}}</p>
+                                        <p style="margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 26px; font-weight: 700; color: #FFFFFF; letter-spacing: 7px; line-height: 1.1;">{{coupon_code}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    <!-- ===== PRODUCTS BLOCK ===== -->
+                    <tr data-bcg-section="products">
+                        <td class="bcg-products-td" style="padding: 0 40px 24px 40px; background-color: {{setting_content_background}}; border-top: 1px solid #EEEEEE;">
+                            <!-- Thin label above products -->
+                            <p style="margin: 24px 0 16px 0; font-family: 'DM Sans', {{setting_font_family}}; font-size: 11px; font-weight: 700; color: {{setting_primary_color}}; text-transform: uppercase; letter-spacing: 3px; line-height: 1;">Shop the Story</p>
+                            {{products_block}}
+                        </td>
+                    </tr>
+
+                    <!-- ===== CTA BUTTON ===== -->
+                    <tr data-bcg-section="cta">
+                        <td class="bcg-btn-td" align="center" style="padding: 16px 40px 52px 40px; background-color: {{setting_content_background}};">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="border-radius: {{setting_button_border_radius}}px; background-color: {{setting_button_color}};">
+                                        <!--[if mso]>
+                                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{store_url}}" style="height: 56px; v-text-anchor: middle; width: 220px;" arcsize="50%" fillcolor="{{setting_button_color}}" stroke="f">
+                                            <w:anchorlock/>
+                                            <center style="color: {{setting_button_text_color}}; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; mso-line-height-rule: exactly;">Read More &amp; Shop</center>
+                                        </v:roundrect>
+                                        <![endif]-->
+                                        <!--[if !mso]><!-->
+                                        <a href="{{store_url}}" target="_blank" style="display: inline-block; background-color: {{setting_button_color}}; border-radius: {{setting_button_border_radius}}px; color: {{setting_button_text_color}}; font-family: 'DM Sans', {{setting_font_family}}; font-size: 14px; font-weight: 700; text-decoration: none; letter-spacing: 0.5px; padding: 18px 48px; mso-hide: all;">Read More &amp; Shop</a>
+                                        <!--<![endif]-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ===== FOOTER ===== -->
+                    <tr data-bcg-section="footer">
+                        <td class="bcg-footer-td" align="center" style="padding: 28px 48px 32px 48px; background-color: #F9F8F6; border-top: 1px solid #E8E4DF;">
+                            <p style="margin: 0 0 10px 0; font-family: 'DM Sans', {{setting_font_family}}; font-size: 11px; line-height: 1.7; color: #AAAAAA;">{{setting_footer_text}}</p>
+                            <p style="margin: 0 0 10px 0; font-family: 'DM Sans', {{setting_font_family}}; font-size: 11px; color: #AAAAAA;">{{footer_links}}</p>
+                            <p style="margin: 0; font-family: 'DM Sans', {{setting_font_family}}; font-size: 11px; color: #CCCCCC;">&copy; {{current_year}} <a href="{{store_url}}" target="_blank" style="color: #AAAAAA; text-decoration: none;">{{store_name}}</a>. All rights reserved.</p>
+                        </td>
+                    </tr>
+
+                </table>
+                <!-- /MAIN CONTAINER -->
+
+                <!--[if mso]>
+                </td></tr>
+                </table>
+                <![endif]-->
+
+            </td>
+        </tr>
+    </table>
+    <!-- /OUTER WRAPPER -->
+
+</body>
+</html>

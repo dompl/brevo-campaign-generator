@@ -170,7 +170,7 @@ class BCG_Template {
 		$settings = $this->parse_template_settings( $settings_json );
 
 		// Merge sample data with defaults.
-		$data = wp_parse_args( $sample_data, $this->get_sample_data() );
+		$data = wp_parse_args( $sample_data, $this->get_sample_data( $settings ) );
 
 		// Build products block from sample data if products are present.
 		$products = $data['products'] ?? array();
@@ -1385,6 +1385,8 @@ class BCG_Template {
 			'{{setting_logo_width}}'             => absint( $settings['logo_width'] ?? 180 ) . 'px',
 			'{{setting_header_text}}'            => esc_html( $settings['header_text'] ?? '' ),
 			'{{setting_footer_text}}'            => wp_kses_post( $settings['footer_text'] ?? '' ),
+			'{{setting_logo_alignment}}'         => esc_attr( $settings['logo_alignment'] ?? 'left' ),
+			'{{setting_header_bg}}'              => esc_attr( $settings['header_bg'] ?? '#ffffff' ),
 		);
 
 		$html = str_replace( array_keys( $css_vars ), array_values( $css_vars ), $html );
@@ -1708,6 +1710,8 @@ class BCG_Template {
 			'product_gap'           => 24,
 			'product_button_size'   => 'medium',
 			'section_order'         => null,
+			'logo_alignment'        => 'left',
+			'header_bg'             => '#ffffff',
 		);
 	}
 
@@ -1776,7 +1780,7 @@ class BCG_Template {
 	 *
 	 * @return array Sample data array with realistic placeholder content.
 	 */
-	private function get_sample_data(): array {
+	private function get_sample_data( array $settings = array() ): array {
 		$store_name = get_bloginfo( 'name' );
 
 		if ( empty( $store_name ) ) {
@@ -1791,7 +1795,8 @@ class BCG_Template {
 			'coupon_text'          => __( 'Use code SAVE20 for 20% off your order!', 'brevo-campaign-generator' ),
 			'store_name'           => $store_name,
 			'store_url'            => home_url( '/' ),
-			'logo_url'             => '',
+			'logo_url'             => $settings['logo_url'] ?? '',
+			'header_text'          => $settings['header_text'] ?? '',
 			'unsubscribe_url'      => '#',
 			'current_year'         => gmdate( 'Y' ),
 			'subject'              => __( 'Our Top Picks Just for You', 'brevo-campaign-generator' ),

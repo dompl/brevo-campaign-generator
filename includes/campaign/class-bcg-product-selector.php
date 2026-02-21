@@ -131,8 +131,8 @@ class BCG_Product_Selector {
 	public function format_product_preview( WC_Product $product ): array {
 		$image_id  = $product->get_image_id();
 		$image_url = $image_id
-			? wp_get_attachment_image_url( $image_id, 'medium' )
-			: wc_placeholder_img_src( 'medium' );
+			? wp_get_attachment_image_url( $image_id, 'thumbnail' )
+			: wc_placeholder_img_src( 'thumbnail' );
 
 		// Get the primary category name.
 		$category = '';
@@ -350,6 +350,11 @@ class BCG_Product_Selector {
 			$args['category'] = $this->get_category_slugs( $config['category_ids'] );
 		}
 
+		// Exclude specific product IDs (used for replace-product feature).
+		if ( ! empty( $config['exclude_ids'] ) ) {
+			$args['exclude'] = array_map( 'absint', $config['exclude_ids'] );
+		}
+
 		return $args;
 	}
 
@@ -412,6 +417,7 @@ class BCG_Product_Selector {
 			'source'       => 'bestsellers',
 			'category_ids' => array(),
 			'manual_ids'   => array(),
+			'exclude_ids'  => array(),
 		);
 
 		$config = wp_parse_args( $config, $defaults );
@@ -437,6 +443,13 @@ class BCG_Product_Selector {
 		}
 		$config['manual_ids'] = array_map( 'absint', $config['manual_ids'] );
 		$config['manual_ids'] = array_filter( $config['manual_ids'] );
+
+		// Sanitise exclude IDs (products to skip when selecting).
+		if ( ! is_array( $config['exclude_ids'] ) ) {
+			$config['exclude_ids'] = array();
+		}
+		$config['exclude_ids'] = array_map( 'absint', $config['exclude_ids'] );
+		$config['exclude_ids'] = array_filter( $config['exclude_ids'] );
 
 		return $config;
 	}

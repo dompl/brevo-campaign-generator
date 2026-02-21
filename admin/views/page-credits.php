@@ -58,56 +58,56 @@ $total_items  = $transactions_data['total'];
 $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) && ! empty( get_option( 'bcg_stripe_secret_key', '' ) );
 ?>
 
+
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="wrap bcg-wrap">
-	<h1><?php esc_html_e( 'Credits & Billing', 'brevo-campaign-generator' ); ?></h1>
 
 	<!-- Payment Messages Container -->
 	<div id="bcg-payment-messages" style="display: none;"></div>
 
+	<!-- ─── Page Title ─────────────────────────────────────────────── -->
+	<div class="bcg-dashboard-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-20">
+		<h1><?php esc_html_e( 'Credits & Billing', 'brevo-campaign-generator' ); ?></h1>
+	</div>
+
 	<!-- ══════════════════════════════════════════════════════════════════
-	     Credit Balance Card
+	     Top Section: Balance + Packs side by side
 	     ══════════════════════════════════════════════════════════════════ -->
-	<div class="bcg-card bcg-balance-card">
-		<div class="bcg-balance-display">
-			<div class="bcg-balance-label">
-				<?php esc_html_e( 'Your Credit Balance', 'brevo-campaign-generator' ); ?>
+	<div class="bcg-billing-top">
+
+		<!-- Left: Balance Card -->
+		<div class="bcg-billing-balance">
+			<div class="bcg-billing-balance-icon">
+				<span class="material-icons-outlined" style="font-size: 24px;" aria-hidden="true">toll</span>
 			</div>
-			<div class="bcg-balance-value">
-				<span class="bcg-balance-amount"><?php echo esc_html( number_format( $current_balance, 0 ) ); ?></span>
-				<span class="bcg-balance-unit"><?php esc_html_e( 'credits', 'brevo-campaign-generator' ); ?></span>
-			</div>
-			<div class="bcg-balance-monetary bcg-text-muted">
+			<div class="bcg-billing-balance-amount"><?php echo esc_html( number_format( $current_balance, 0 ) ); ?></div>
+			<div class="bcg-billing-balance-unit"><?php esc_html_e( 'credits', 'brevo-campaign-generator' ); ?></div>
+			<div class="bcg-billing-balance-value">
 				<?php
 				$credit_value = (float) get_option( 'bcg_credit_value', '0.05' );
 				$monetary     = $current_balance * $credit_value;
 				printf(
 					/* translators: 1: currency symbol, 2: monetary value */
-					esc_html__( 'Approximate value: %1$s%2$s', 'brevo-campaign-generator' ),
+					esc_html__( '≈ %1$s%2$s equivalent', 'brevo-campaign-generator' ),
 					esc_html( $currency_symbol ),
 					esc_html( number_format( $monetary, 2 ) )
 				);
 				?>
 			</div>
 		</div>
-	</div>
 
-	<!-- ══════════════════════════════════════════════════════════════════
-	     Credit Packs — Top Up
-	     ══════════════════════════════════════════════════════════════════ -->
-	<div class="bcg-card">
-		<div class="bcg-card-header">
-			<h2><?php esc_html_e( 'Top Up Credits', 'brevo-campaign-generator' ); ?></h2>
-		</div>
-		<div class="bcg-card-body">
+		<!-- Right: Credit Packs -->
+		<div class="bcg-billing-packs">
+			<div class="bcg-billing-packs-heading"><?php esc_html_e( 'Top Up Credits', 'brevo-campaign-generator' ); ?></div>
 
 			<?php if ( ! $stripe_configured ) : ?>
-				<div class="bcg-notice bcg-notice-warning">
+				<div class="bcg-notice bcg-notice-warning bcg-mb-16">
 					<p>
 						<?php
 						printf(
 							/* translators: %s: URL to settings page */
 							wp_kses(
-								__( 'Stripe is not configured. Please add your Stripe API keys in the <a href="%s">Settings page</a> to enable credit purchases.', 'brevo-campaign-generator' ),
+								__( 'Stripe is not configured. Add your API keys in <a href="%s">Settings</a> to enable purchases.', 'brevo-campaign-generator' ),
 								array( 'a' => array( 'href' => array() ) )
 							),
 							esc_url( admin_url( 'admin.php?page=bcg-settings&tab=api-keys' ) )
@@ -117,30 +117,23 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 				</div>
 			<?php endif; ?>
 
-			<div class="bcg-grid-3 bcg-credit-packs-grid">
+			<div class="bcg-billing-packs-grid">
 				<?php foreach ( $credit_packs as $pack_key => $pack ) : ?>
 					<?php
 					$per_credit = $pack['credits'] > 0 ? $pack['price'] / $pack['credits'] : 0;
-					$is_best    = 2 === $pack_key; // Last pack is usually best value.
+					$is_best    = 2 === $pack_key;
 					?>
-					<div class="bcg-pack-card<?php echo $is_best ? ' bcg-pack-card-featured' : ''; ?>">
+					<div class="bcg-billing-pack<?php echo $is_best ? ' bcg-billing-pack-featured' : ''; ?>">
 						<?php if ( $is_best ) : ?>
-							<div class="bcg-pack-badge">
-								<?php esc_html_e( 'Best Value', 'brevo-campaign-generator' ); ?>
-							</div>
+							<div class="bcg-billing-pack-badge"><?php esc_html_e( 'Best Value', 'brevo-campaign-generator' ); ?></div>
 						<?php endif; ?>
-						<div class="bcg-pack-credits">
-							<?php echo esc_html( number_format( $pack['credits'] ) ); ?>
+						<div class="bcg-billing-pack-credits"><?php echo esc_html( number_format( $pack['credits'] ) ); ?></div>
+						<div class="bcg-billing-pack-label"><?php esc_html_e( 'credits', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-billing-pack-divider"></div>
+						<div class="bcg-billing-pack-price">
+							<?php echo esc_html( $currency_symbol . number_format( $pack['price'], 2 ) ); ?>
 						</div>
-						<div class="bcg-pack-credits-label">
-							<?php esc_html_e( 'credits', 'brevo-campaign-generator' ); ?>
-						</div>
-						<div class="bcg-pack-price">
-							<?php
-							echo esc_html( $currency_symbol . number_format( $pack['price'], 2 ) );
-							?>
-						</div>
-						<div class="bcg-pack-per-credit bcg-text-muted bcg-text-small">
+						<div class="bcg-billing-pack-rate">
 							<?php
 							printf(
 								/* translators: 1: currency symbol, 2: cost per credit */
@@ -152,7 +145,7 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 						</div>
 						<button
 							type="button"
-							class="bcg-pack-purchase-btn<?php echo $is_best ? ' bcg-btn-primary' : ' bcg-btn-secondary'; ?>"
+							class="bcg-billing-pack-btn<?php echo $is_best ? ' bcg-btn-primary' : ' bcg-btn-secondary'; ?> bcg-pack-purchase-btn"
 							data-pack-key="<?php echo esc_attr( $pack_key ); ?>"
 							<?php echo $stripe_configured ? '' : 'disabled'; ?>
 						>
@@ -161,57 +154,54 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 					</div>
 				<?php endforeach; ?>
 			</div>
+		</div>
+	</div>
 
-			<!-- ── Stripe Payment Form (hidden until pack selected) ── -->
-			<div id="bcg-stripe-payment-section" style="display: none;">
-				<div class="bcg-card bcg-payment-card bcg-mt-20">
-					<div class="bcg-card-header">
-						<h3><?php esc_html_e( 'Complete Your Purchase', 'brevo-campaign-generator' ); ?></h3>
+	<!-- ── Stripe Payment Form (hidden until pack selected) ──────────── -->
+	<div id="bcg-stripe-payment-section" style="display: none;">
+		<div class="bcg-card bcg-payment-card bcg-mb-24">
+			<div class="bcg-card-header">
+				<h3><?php esc_html_e( 'Complete Your Purchase', 'brevo-campaign-generator' ); ?></h3>
+			</div>
+			<div class="bcg-card-body">
+
+				<div class="bcg-payment-summary bcg-mb-16">
+					<p>
+						<?php esc_html_e( 'You are purchasing:', 'brevo-campaign-generator' ); ?>
+						<strong>
+							<span id="bcg-payment-summary-credits">0</span>
+							<?php esc_html_e( 'credits', 'brevo-campaign-generator' ); ?>
+						</strong>
+						<?php esc_html_e( 'for', 'brevo-campaign-generator' ); ?>
+						<strong><span id="bcg-payment-summary-price"></span></strong>
+					</p>
+				</div>
+
+				<form id="bcg-payment-form" style="display: none;">
+					<div class="bcg-form-row bcg-mb-16">
+						<label for="bcg-card-element" class="bcg-form-label">
+							<?php esc_html_e( 'Card Details', 'brevo-campaign-generator' ); ?>
+						</label>
+						<div id="bcg-card-element" class="bcg-card-element-wrapper"></div>
+						<div id="bcg-card-errors" class="bcg-card-errors" role="alert" style="display: none;"></div>
 					</div>
-					<div class="bcg-card-body">
 
-						<div class="bcg-payment-summary bcg-mb-16">
-							<p>
-								<?php esc_html_e( 'You are purchasing:', 'brevo-campaign-generator' ); ?>
-								<strong>
-									<span id="bcg-payment-summary-credits">0</span>
-									<?php esc_html_e( 'credits', 'brevo-campaign-generator' ); ?>
-								</strong>
-								<?php esc_html_e( 'for', 'brevo-campaign-generator' ); ?>
-								<strong><span id="bcg-payment-summary-price"></span></strong>
-							</p>
-						</div>
-
-						<form id="bcg-payment-form" style="display: none;">
-							<div class="bcg-form-row bcg-mb-16">
-								<label for="bcg-card-element" class="bcg-form-label">
-									<?php esc_html_e( 'Card Details', 'brevo-campaign-generator' ); ?>
-								</label>
-								<div id="bcg-card-element" class="bcg-card-element-wrapper">
-									<!-- Stripe Card Element will be mounted here -->
-								</div>
-								<div id="bcg-card-errors" class="bcg-card-errors" role="alert" style="display: none;"></div>
-							</div>
-
-							<div class="bcg-payment-actions bcg-flex bcg-items-center bcg-gap-12">
-								<button type="submit" id="bcg-submit-payment" class="bcg-btn-primary">
-									<?php esc_html_e( 'Pay Now', 'brevo-campaign-generator' ); ?>
-								</button>
-								<button type="button" id="bcg-cancel-payment" class="bcg-btn-secondary">
-									<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
-								</button>
-								<span id="bcg-payment-spinner" class="bcg-spinner bcg-spinner-small" style="display: none;"></span>
-							</div>
-						</form>
-
-						<div class="bcg-stripe-badge bcg-mt-16 bcg-text-muted bcg-text-small">
-							<span class="dashicons dashicons-lock"></span>
-							<?php esc_html_e( 'Payments are processed securely by Stripe. Your card details never touch our servers.', 'brevo-campaign-generator' ); ?>
-						</div>
+					<div class="bcg-payment-actions bcg-flex bcg-items-center bcg-gap-12">
+						<button type="submit" id="bcg-submit-payment" class="bcg-btn-primary">
+							<?php esc_html_e( 'Pay Now', 'brevo-campaign-generator' ); ?>
+						</button>
+						<button type="button" id="bcg-cancel-payment" class="bcg-btn-secondary">
+							<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
+						</button>
+						<span id="bcg-payment-spinner" class="bcg-spinner bcg-spinner-small" style="display: none;"></span>
 					</div>
+				</form>
+
+				<div class="bcg-stripe-badge bcg-mt-16">
+					<span class="material-icons-outlined" style="font-size:13px;vertical-align:middle;margin-right:5px;color:var(--bcg-success);">lock</span>
+					<span class="bcg-text-muted bcg-text-small"><?php esc_html_e( 'Payments processed securely by Stripe. Your card details never touch our servers.', 'brevo-campaign-generator' ); ?></span>
 				</div>
 			</div>
-
 		</div>
 	</div>
 
@@ -246,7 +236,7 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 				$base_url = admin_url( 'admin.php?page=bcg-credits' );
 
 				foreach ( $filter_links as $filter_type => $filter_label ) :
-					$is_active = ( $tx_type === $filter_type );
+					$is_active  = ( $tx_type === $filter_type );
 					$filter_url = add_query_arg( 'tx_type', $filter_type, $base_url );
 					?>
 					<a
@@ -259,7 +249,10 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 			</div>
 
 			<?php if ( empty( $transactions ) ) : ?>
-				<div class="bcg-empty-state">
+				<div class="bcg-empty-state" style="padding: 40px 24px;">
+					<div class="bcg-empty-state-icon">
+						<span class="material-icons-outlined" style="font-size: 28px; color: var(--bcg-text-muted);" aria-hidden="true">receipt_long</span>
+					</div>
 					<p class="bcg-text-muted">
 						<?php
 						if ( 'all' === $tx_type ) {
@@ -268,7 +261,7 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 							printf(
 								/* translators: %s: transaction type */
 								esc_html__( 'No %s transactions found.', 'brevo-campaign-generator' ),
-								esc_html( $filter_links[ $tx_type ] )
+								esc_html( strtolower( $filter_links[ $tx_type ] ) )
 							);
 						}
 						?>
@@ -324,9 +317,7 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 										<?php echo esc_html( $type_label ); ?>
 									</span>
 								</td>
-								<td class="bcg-col-description">
-									<?php echo esc_html( $tx->description ); ?>
-								</td>
+								<td class="bcg-col-description"><?php echo esc_html( $tx->description ); ?></td>
 								<td class="bcg-col-credits <?php echo $is_credit ? 'bcg-text-success' : 'bcg-text-error'; ?>">
 									<?php
 									if ( $is_credit ) {
@@ -356,7 +347,6 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 							admin_url( 'admin.php' )
 						);
 
-						// Previous page.
 						if ( $tx_page > 1 ) :
 							$prev_url = add_query_arg( 'tx_page', $tx_page - 1, $pagination_base );
 							?>
@@ -377,7 +367,6 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 						</span>
 
 						<?php
-						// Next page.
 						if ( $tx_page < $total_pages ) :
 							$next_url = add_query_arg( 'tx_page', $tx_page + 1, $pagination_base );
 							?>
@@ -393,3 +382,4 @@ $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) &
 	</div>
 
 </div>
+

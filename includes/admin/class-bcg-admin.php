@@ -50,6 +50,7 @@ class BCG_Admin {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menus' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_filter( 'admin_body_class', array( $this, 'add_bcg_body_class' ) );
 		add_action( 'admin_bar_menu', array( $this, 'add_credit_widget_to_admin_bar' ), 100 );
 
 		$this->register_ajax_handlers();
@@ -217,7 +218,24 @@ class BCG_Admin {
 			'bcg-admin',
 			BCG_PLUGIN_URL . 'admin/css/bcg-admin.css',
 			array(),
-			BCG_VERSION
+			filemtime( BCG_PLUGIN_DIR . 'admin/css/bcg-admin.css' )
+		);
+
+		// Google Material Icons (Outlined variant).
+		wp_enqueue_style(
+			'bcg-material-icons',
+			'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
+			array(),
+			null
+		);
+
+		// Flowbite UI components (tooltips, modals, dropdowns).
+		wp_enqueue_script(
+			'bcg-flowbite',
+			'https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js',
+			array(),
+			'2.3.0',
+			true
 		);
 
 		// WordPress colour picker for template/settings.
@@ -246,6 +264,15 @@ class BCG_Admin {
 		wp_register_script( 'bcg-admin-global', '', array(), BCG_VERSION, false );
 		wp_enqueue_script( 'bcg-admin-global' );
 		wp_localize_script( 'bcg-admin-global', 'bcgData', $bcg_data );
+
+		// Global UI helpers — custom selects, etc. Loaded on every BCG page.
+		wp_enqueue_script(
+			'bcg-settings',
+			BCG_PLUGIN_URL . 'admin/js/bcg-settings.js',
+			array( 'jquery', 'wp-color-picker' ),
+			filemtime( BCG_PLUGIN_DIR . 'admin/js/bcg-settings.js' ),
+			true
+		);
 
 		// ── Per-page scripts ───────────────────────────────────────────
 
@@ -300,16 +327,8 @@ class BCG_Admin {
 			);
 		}
 
-		// Settings page JS.
+		// Settings page — localise bcg_settings for test-connection / list-refresh handlers.
 		if ( str_contains( $hook_suffix, 'bcg-settings' ) ) {
-			wp_enqueue_script(
-				'bcg-settings',
-				BCG_PLUGIN_URL . 'admin/js/bcg-settings.js',
-				array( 'jquery', 'wp-color-picker' ),
-				BCG_VERSION,
-				true
-			);
-
 			wp_localize_script(
 				'bcg-settings',
 				'bcg_settings',
@@ -396,7 +415,7 @@ class BCG_Admin {
 				'bcg-template-editor',
 				BCG_PLUGIN_URL . 'admin/js/bcg-template-editor.js',
 				array( 'jquery', 'wp-util' ),
-				BCG_VERSION,
+				filemtime( BCG_PLUGIN_DIR . 'admin/js/bcg-template-editor.js' ),
 				true
 			);
 
@@ -1173,12 +1192,14 @@ class BCG_Admin {
 		$count        = isset( $_POST['product_count'] ) ? absint( $_POST['product_count'] ) : (int) get_option( 'bcg_default_products_per_campaign', 3 );
 		$category_ids = isset( $_POST['category_ids'] ) && is_array( $_POST['category_ids'] ) ? array_map( 'absint', $_POST['category_ids'] ) : array();
 		$manual_ids   = isset( $_POST['manual_ids'] ) && is_array( $_POST['manual_ids'] ) ? array_map( 'absint', $_POST['manual_ids'] ) : array();
+		$exclude_ids  = isset( $_POST['exclude_ids'] ) && is_array( $_POST['exclude_ids'] ) ? array_map( 'absint', $_POST['exclude_ids'] ) : array();
 
 		$config = array(
 			'count'        => $count,
 			'source'       => $source,
 			'category_ids' => $category_ids,
 			'manual_ids'   => $manual_ids,
+			'exclude_ids'  => $exclude_ids,
 		);
 
 		$products = $product_selector->preview_products( $config );
@@ -2351,5 +2372,20 @@ class BCG_Admin {
 	 */
 	public function render_edit_campaign_page(): void {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-edit-campaign.php';
+	}
+
+	/**
+	 * Add custom body class to all BCG admin pages.
+	 *
+	 * @since  1.4.0
+	 * @param  string $classes Space-separated list of body classes.
+	 * @return string Modified body classes.
+	 */
+	public function add_bcg_body_class( string $classes ): string {
+		$screen = get_current_screen();
+		if ( $screen && $this->is_bcg_page( $screen->id ) ) {
+			$classes .= ' bcg-admin-page';
+		}
+		return $classes;
 	}
 }

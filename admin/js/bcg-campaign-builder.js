@@ -53,6 +53,14 @@
 		activeRequests: {},
 
 		/**
+		 * Product IDs currently shown in the preview grid.
+		 * Used to exclude them when replacing a single product.
+		 *
+		 * @type {Array}
+		 */
+		previewProductIds: [],
+
+		/**
 		 * Initialise the builder. Binds all event listeners.
 		 *
 		 * @return {void}
@@ -356,6 +364,18 @@
 				e.preventDefault();
 				self.loadProductPreview();
 			} );
+
+			// Replace-product button (event-delegated — cards are rendered dynamically).
+			$( '#bcg-product-preview-grid' ).on( 'click', '.bcg-replace-product-btn', function( e ) {
+				e.preventDefault();
+				e.stopPropagation();
+				var $btn = $( this );
+				if ( $btn.hasClass( 'is-replacing' ) ) {
+					return;
+				}
+				var productId = parseInt( $btn.closest( '.bcg-preview-product-card' ).data( 'product-id' ), 10 );
+				self.replacePreviewProduct( $btn, productId );
+			} );
 		},
 
 		/**
@@ -370,12 +390,12 @@
 			var $spinner = $( '#bcg-preview-spinner' );
 
 			var data = {
-				action:       'bcg_preview_products',
-				nonce:        bcg_campaign_builder.nonce,
-				count:        $( '#bcg-product-count' ).val(),
-				source:       $( 'input[name="product_source"]:checked' ).val(),
-				category_ids: self.getSelectedCategories(),
-				manual_ids:   self.manualProductIds
+				action:         'bcg_preview_products',
+				nonce:          bcg_campaign_builder.nonce,
+				product_count:  $( '#bcg-product-count' ).val(),
+				product_source: $( 'input[name="product_source"]:checked' ).val(),
+				category_ids:   self.getSelectedCategories(),
+				manual_ids:     self.manualProductIds
 			};
 
 			$btn.prop( 'disabled', true );
@@ -413,6 +433,43 @@
 		},
 
 		/**
+		 * Build the HTML for a single product preview card.
+		 *
+		 * @param {Object} product Product data object.
+		 * @return {string} HTML string for the card.
+		 */
+		buildProductCardHtml: function( product ) {
+			var self = this;
+			var html = '';
+
+			html += '<div class="bcg-preview-product-card" data-product-id="' + parseInt( product.id, 10 ) + '">';
+			html += '<div class="bcg-preview-product-image">';
+			html += '<img src="' + self.escapeAttr( product.image_url ) + '" alt="' + self.escapeAttr( product.name ) + '" />';
+			html += '<button type="button" class="bcg-replace-product-btn" title="Replace with a different product">';
+			html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>';
+			html += '</button>';
+			html += '</div>';
+			html += '<div class="bcg-preview-product-info">';
+			html += '<h4 class="bcg-preview-product-name">' + self.escapeHtml( product.name ) + '</h4>';
+			html += '<div class="bcg-preview-product-price">' + product.price_html + '</div>';
+			if ( product.category ) {
+				html += '<span class="bcg-preview-product-cat">' + self.escapeHtml( product.category ) + '</span>';
+			}
+			if ( product.total_sales > 0 ) {
+				html += '<span class="bcg-preview-product-sales">' +
+					product.total_sales + ' ' + bcg_campaign_builder.i18n.sales +
+					'</span>';
+			}
+			html += '<span class="bcg-preview-product-stock bcg-stock-' + self.escapeAttr( product.stock_status ) + '">' +
+				self.escapeHtml( product.stock_status ) +
+				'</span>';
+			html += '</div>';
+			html += '</div>';
+
+			return html;
+		},
+
+		/**
 		 * Render product preview cards in the preview area.
 		 *
 		 * @param {Array} products Array of product preview objects.
@@ -423,6 +480,9 @@
 			var $area = $( '#bcg-product-preview-area' );
 			var $grid = $( '#bcg-product-preview-grid' );
 			var html  = '';
+
+			// Reset tracked IDs.
+			self.previewProductIds = [];
 
 			if ( ! products.length ) {
 				html = '<div class="bcg-empty-state"><p>' +
@@ -437,30 +497,71 @@
 			$( '#bcg-preview-count' ).text( '(' + products.length + ')' );
 
 			$.each( products, function( i, product ) {
-				html += '<div class="bcg-preview-product-card">';
-				html += '<div class="bcg-preview-product-image">';
-				html += '<img src="' + self.escapeAttr( product.image_url ) + '" alt="' + self.escapeAttr( product.name ) + '" />';
-				html += '</div>';
-				html += '<div class="bcg-preview-product-info">';
-				html += '<h4 class="bcg-preview-product-name">' + self.escapeHtml( product.name ) + '</h4>';
-				html += '<div class="bcg-preview-product-price">' + product.price_html + '</div>';
-				if ( product.category ) {
-					html += '<span class="bcg-preview-product-cat">' + self.escapeHtml( product.category ) + '</span>';
-				}
-				if ( product.total_sales > 0 ) {
-					html += '<span class="bcg-preview-product-sales">' +
-						product.total_sales + ' ' + bcg_campaign_builder.i18n.sales +
-						'</span>';
-				}
-				html += '<span class="bcg-preview-product-stock bcg-stock-' + self.escapeAttr( product.stock_status ) + '">' +
-					self.escapeHtml( product.stock_status ) +
-					'</span>';
-				html += '</div>';
-				html += '</div>';
+				self.previewProductIds.push( parseInt( product.id, 10 ) );
+				html += self.buildProductCardHtml( product );
 			} );
 
 			$grid.html( html );
 			$area.slideDown( 200 );
+		},
+
+		/**
+		 * Replace a single product card with a different product from the same source.
+		 *
+		 * Sends an AJAX request for 1 product, excluding all currently displayed
+		 * product IDs. On success, swaps the card in-place.
+		 *
+		 * @param {jQuery} $btn      The replace button element.
+		 * @param {number} productId The product ID being replaced.
+		 * @return {void}
+		 */
+		replacePreviewProduct: function( $btn, productId ) {
+			var self  = this;
+			var $card = $btn.closest( '.bcg-preview-product-card' );
+
+			$btn.addClass( 'is-replacing' );
+
+			var data = {
+				action:         'bcg_preview_products',
+				nonce:          bcg_campaign_builder.nonce,
+				product_count:  1,
+				product_source: $( 'input[name="product_source"]:checked' ).val(),
+				category_ids:   self.getSelectedCategories(),
+				manual_ids:     [],
+				exclude_ids:    self.previewProductIds
+			};
+
+			$.ajax( {
+				url:  bcg_campaign_builder.ajax_url,
+				type: 'POST',
+				data: data,
+				success: function( response ) {
+					if ( response.success && response.data.products && response.data.products.length ) {
+						var newProduct = response.data.products[ 0 ];
+						var newId      = parseInt( newProduct.id, 10 );
+
+						// Swap the tracked ID.
+						var idx = self.previewProductIds.indexOf( productId );
+						if ( idx !== -1 ) {
+							self.previewProductIds[ idx ] = newId;
+						}
+
+						// Replace the card DOM.
+						var $newCard = $( self.buildProductCardHtml( newProduct ) );
+						$newCard.css( 'opacity', 0 );
+						$card.replaceWith( $newCard );
+						$newCard.animate( { opacity: 1 }, 250 );
+					}
+					// If no replacement found, silently restore the button.
+				},
+				error: function() {
+					// Network error — just restore the button state.
+				},
+				complete: function() {
+					// Button is gone if replace succeeded, but safe to run anyway.
+					$btn.removeClass( 'is-replacing' );
+				}
+			} );
 		},
 
 		/**

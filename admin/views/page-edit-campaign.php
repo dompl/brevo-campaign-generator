@@ -78,6 +78,7 @@ $dashboard_url = admin_url( 'admin.php?page=bcg-dashboard' );
 // Nonce for all AJAX operations.
 $nonce = wp_create_nonce( 'bcg_nonce' );
 ?>
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="wrap bcg-wrap bcg-editor-wrap">
 
 	<!-- Page header -->
@@ -323,7 +324,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								<?php esc_html_e( 'Discount Type', 'brevo-campaign-generator' ); ?>
 							</label>
 							<select id="bcg-coupon-type"
-								class="bcg-campaign-field bcg-coupon-field"
+								class="bcg-campaign-field bcg-coupon-field bcg-select-styled"
 								data-field="coupon_type">
 								<option value="percent" <?php selected( $coupon_type, 'percent' ); ?>>
 									<?php esc_html_e( 'Percentage (%)', 'brevo-campaign-generator' ); ?>

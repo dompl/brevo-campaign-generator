@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <title>{{subject}}</title>
+
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+        /* ===== Reset ===== */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
+        /* ===== Link overrides ===== */
+        a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
+        u + #body a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+        #MessageViewBody a { color: inherit; text-decoration: none; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+
+        /* ===== Responsive ===== */
+        @media only screen and (max-width: 640px) {
+            .bcg-outer-td       { padding: 12px 0 !important; }
+            .bcg-wrapper        { width: 100% !important; border-radius: 0 !important; }
+            .bcg-header-td      { padding: 24px 20px 0 20px !important; }
+            .bcg-nav-table      { display: none !important; }
+            .bcg-editorial-td   { padding: 24px 20px !important; }
+            .bcg-headline       { font-size: 26px !important; line-height: 1.3 !important; }
+            .bcg-products-td    { padding: 0 20px 20px 20px !important; }
+            .bcg-story-td       { padding: 24px 20px !important; }
+            .bcg-pull-quote     { font-size: 18px !important; }
+            .bcg-btn-td         { padding: 20px 20px 36px 20px !important; }
+            .bcg-coupon-td      { padding: 0 20px 28px 20px !important; }
+            .bcg-footer-td      { padding: 20px 20px !important; }
+            .bcg-hero-img       { width: 100% !important; height: auto !important; }
+        }
+    </style>
+</head>
+
+<body id="body" style="margin: 0; padding: 0; background-color: {{setting_background_color}}; font-family: {{setting_font_family}}; -webkit-font-smoothing: antialiased;">
+
+    <!-- Preheader (hidden) -->
+    <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: {{setting_background_color}}; mso-hide: all;">
+        {{preview_text}}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+    </div>
+
+    <!-- ============================================================
+         OUTER WRAPPER
+         ============================================================ -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: {{setting_background_color}};">
+        <tr>
+            <td class="bcg-outer-td" align="center" style="padding: 36px 16px;">
+
+                <!--[if mso]>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" align="center">
+                <tr><td>
+                <![endif]-->
+
+                <!-- ============================================================
+                     MAIN CONTAINER
+                     ============================================================ -->
+                <table class="bcg-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width: 600px; background-color: {{setting_content_background}}; border-radius: 4px; overflow: hidden;">
+
+                    <!-- ===== TOP RULED LINE ===== -->
+                    <tr>
+                        <td style="background-color: {{setting_primary_color}}; height: 3px; font-size: 3px; line-height: 3px; mso-line-height-rule: exactly;">&nbsp;</td>
+                    </tr>
+
+                    <!-- ===== HEADER ===== -->
+                    <tr data-bcg-section="header">
+                        <td class="bcg-header-td" align="center" style="padding: 32px 40px 0 40px; background-color: {{setting_content_background}};">
+
+                            {{#if logo_url}}
+                            <!-- Logo -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-bottom: 20px;">
+                                        <a href="{{store_url}}" target="_blank" style="text-decoration: none;">
+                                            <img src="{{setting_logo_url}}" alt="{{store_name}}" width="{{setting_logo_width}}" style="display: block; margin: 0 auto; max-width: 100%; height: auto; width: {{setting_logo_width}}px;" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+
+                            {{#if header_text}}
+                            <!-- Store name fallback -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding-bottom: 20px;">
+                                        <a href="{{store_url}}" target="_blank" style="text-decoration: none;">
+                                            <span style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 700; color: {{setting_text_color}}; letter-spacing: 0px;">{{setting_header_text}}</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+
+                            {{#if show_nav}}
+                            <!-- Navigation -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="border-top: 1px solid {{setting_primary_color}}; padding-top: 14px; padding-bottom: 8px;">
+                                        <table class="bcg-nav-table" role="presentation" border="0" cellpadding="0" cellspacing="0" align="center">
+                                            <tr>
+                                                {{navigation_links}}
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/if}}
+
+                        </td>
+                    </tr>
+
+                    <!-- ===== EDITORIAL HEADLINE ===== -->
+                    <tr data-bcg-section="headline">
+                        <td class="bcg-editorial-td" align="center" style="padding: 40px 40px 12px 40px; background-color: {{setting_content_background}};">
+                            <!-- Ruled line above headline -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="border-bottom: 1px solid {{setting_primary_color}}; padding-bottom: 20px;">
+                                        <p style="margin: 0 0 6px 0; font-family: {{setting_font_family}}; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: {{setting_primary_color}};">Newsletter</p>
+                                        <!--[if mso]>
+                                        <h1 style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 34px; font-weight: 700; line-height: 1.25; color: {{setting_text_color}}; text-align: left;">{{campaign_headline}}</h1>
+                                        <![endif]-->
+                                        <!--[if !mso]><!-->
+                                        <h1 class="bcg-headline" style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 34px; font-weight: 700; line-height: 1.25; color: {{setting_text_color}}; text-align: left;">{{campaign_headline}}</h1>
+                                        <!--<![endif]-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ===== MAIN DESCRIPTION ===== -->
+                    <tr data-bcg-section="description">
+                        <td align="left" style="padding: 16px 40px 32px 40px; background-color: {{setting_content_background}};">
+                            <p style="margin: 0; font-family: {{setting_font_family}}; font-size: 16px; line-height: 1.8; color: {{setting_text_color}}; opacity: 0.85;">{{campaign_description}}</p>
+                        </td>
+                    </tr>
+
+                    <!-- ===== HERO IMAGE ===== -->
+                    {{#if campaign_image}}
+                    <tr data-bcg-section="hero-image">
+                        <td style="padding: 0; line-height: 0; font-size: 0;">
+                            <img class="bcg-hero-img" src="{{campaign_image}}" alt="{{campaign_headline}}" width="600" style="display: block; width: 100%; max-width: 600px; height: auto;" />
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    <!-- ===== PRODUCTS BLOCK ===== -->
+                    <tr data-bcg-section="products">
+                        <td class="bcg-products-td" style="padding: 32px 40px 8px 40px; background-color: {{setting_content_background}};">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0 0 20px 0; font-family: {{setting_font_family}}; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: {{setting_primary_color}}; border-top: 1px solid {{setting_primary_color}}; padding-top: 16px;">Featured Products</p>
+                                        {{products_block}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ===== EDITORIAL STORY BLOCK ===== -->
+                    <tr data-bcg-section="story">
+                        <td class="bcg-story-td" style="padding: 32px 40px 32px 40px; background-color: {{setting_content_background}}; border-top: 1px solid #EEEEEE;">
+                            <!-- Pull quote -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="border-left: 3px solid {{setting_primary_color}}; padding: 8px 0 8px 20px;">
+                                        <!--[if mso]>
+                                        <p class="bcg-pull-quote" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 20px; font-style: italic; line-height: 1.6; color: {{setting_text_color}};">{{campaign_description}}</p>
+                                        <![endif]-->
+                                        <!--[if !mso]><!-->
+                                        <p class="bcg-pull-quote" style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-style: italic; line-height: 1.6; color: {{setting_text_color}};">{{campaign_description}}</p>
+                                        <!--<![endif]-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 20px;">
+                                        <p style="margin: 0; font-family: {{setting_font_family}}; font-size: 14px; line-height: 1.7; color: {{setting_text_color}}; opacity: 0.7;">Explore our carefully curated selection at <a href="{{store_url}}" target="_blank" style="color: {{setting_link_color}}; text-decoration: underline;">{{store_name}}</a> and discover what's new this season.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ===== COUPON BLOCK ===== -->
+                    {{#if show_coupon_block}}
+                    <tr data-bcg-section="coupon">
+                        <td class="bcg-coupon-td" align="center" style="padding: 0 40px 36px 40px; background-color: {{setting_content_background}};">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="border: 2px solid {{setting_primary_color}}; padding: 24px 28px;">
+                                        <p style="margin: 0 0 8px 0; font-family: {{setting_font_family}}; font-size: 10px; font-weight: 700; color: {{setting_primary_color}}; text-transform: uppercase; letter-spacing: 3px; line-height: 1;">Exclusive Offer</p>
+                                        <p style="margin: 0 0 10px 0; font-family: {{setting_font_family}}; font-size: 14px; color: {{setting_text_color}}; line-height: 1.5;">{{coupon_text}}</p>
+                                        <p style="margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 26px; font-weight: 700; color: {{setting_primary_color}}; letter-spacing: 6px; line-height: 1.1;">{{coupon_code}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    {{/if}}
+
+                    <!-- ===== CTA BUTTON ===== -->
+                    <tr data-bcg-section="cta">
+                        <td class="bcg-btn-td" align="center" style="padding: 8px 40px 48px 40px; background-color: {{setting_content_background}};">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="border-radius: {{setting_button_border_radius}}px; background-color: {{setting_button_color}};">
+                                        <!--[if mso]>
+                                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{store_url}}" style="height: 52px; v-text-anchor: middle; width: 200px;" arcsize="5%" fillcolor="{{setting_button_color}}" stroke="f">
+                                            <w:anchorlock/>
+                                            <center style="color: {{setting_button_text_color}}; font-family: {{setting_font_family}}; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; mso-line-height-rule: exactly;">Read More &rarr;</center>
+                                        </v:roundrect>
+                                        <![endif]-->
+                                        <!--[if !mso]><!-->
+                                        <a href="{{store_url}}" target="_blank" style="display: inline-block; background-color: {{setting_button_color}}; border-radius: {{setting_button_border_radius}}px; color: {{setting_button_text_color}}; font-family: {{setting_font_family}}; font-size: 13px; font-weight: 700; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; padding: 16px 44px; mso-hide: all;">Read More &rarr;</a>
+                                        <!--<![endif]-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ===== FOOTER ===== -->
+                    <tr data-bcg-section="footer">
+                        <td class="bcg-footer-td" align="center" style="padding: 24px 40px 28px 40px; background-color: #F7F7F7; border-top: 2px solid {{setting_primary_color}};">
+                            <p style="margin: 0 0 8px 0; font-family: {{setting_font_family}}; font-size: 11px; line-height: 1.7; color: #AAAAAA;">{{setting_footer_text}}</p>
+                            <p style="margin: 0 0 8px 0; font-family: {{setting_font_family}}; font-size: 11px; color: #AAAAAA;">{{footer_links}}</p>
+                            <p style="margin: 0; font-family: {{setting_font_family}}; font-size: 11px; color: #CCCCCC;">&copy; {{current_year}} <a href="{{store_url}}" target="_blank" style="color: #AAAAAA; text-decoration: none;">{{store_name}}</a>. All rights reserved.</p>
+                        </td>
+                    </tr>
+
+                </table>
+                <!-- /MAIN CONTAINER -->
+
+                <!--[if mso]>
+                </td></tr>
+                </table>
+                <![endif]-->
+
+            </td>
+        </tr>
+    </table>
+    <!-- /OUTER WRAPPER -->
+
+</body>
+</html>

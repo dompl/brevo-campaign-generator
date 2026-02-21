@@ -112,6 +112,7 @@ $font_families = array(
 $nonce = wp_create_nonce( 'bcg_nonce' );
 ?>
 
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="wrap bcg-wrap bcg-template-editor-wrap">
 
 	<div class="bcg-template-editor-header">
@@ -130,15 +131,15 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			<?php endif; ?>
 		</h1>
 		<div class="bcg-template-editor-actions">
-			<button type="button" class="button bcg-btn-secondary" id="bcg-reset-template">
+			<button type="button" class="bcg-btn-secondary" id="bcg-reset-template">
 				<?php esc_html_e( 'Reset to Default', 'brevo-campaign-generator' ); ?>
 			</button>
 			<?php if ( $campaign_id ) : ?>
-				<button type="button" class="button bcg-btn-secondary" id="bcg-save-to-campaign" data-campaign-id="<?php echo esc_attr( $campaign_id ); ?>">
+				<button type="button" class="bcg-btn-secondary" id="bcg-save-to-campaign" data-campaign-id="<?php echo esc_attr( $campaign_id ); ?>">
 					<?php esc_html_e( 'Save to Campaign', 'brevo-campaign-generator' ); ?>
 				</button>
 			<?php endif; ?>
-			<button type="button" class="button bcg-btn-primary" id="bcg-save-default-template">
+			<button type="button" class="bcg-btn-primary" id="bcg-save-default-template">
 				<?php esc_html_e( 'Save as Default Template', 'brevo-campaign-generator' ); ?>
 			</button>
 		</div>
@@ -203,39 +204,60 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 		<!-- ============================================================ -->
 		<div class="bcg-template-panel bcg-template-panel-controls" id="bcg-controls-panel">
 
-			<nav class="bcg-template-settings-tabs">
-				<button type="button" class="bcg-template-tab active" data-tab="branding">
-					<?php esc_html_e( 'Branding', 'brevo-campaign-generator' ); ?>
+			<!-- Settings section dropdown nav -->
+			<div class="bcg-tab-nav-dropdown" id="bcg-tab-nav-dropdown">
+				<button
+					type="button"
+					id="bcg-tab-nav-btn"
+					class="bcg-tab-nav-trigger"
+					aria-expanded="false"
+					aria-haspopup="true"
+					aria-controls="bcg-tab-nav-menu"
+				>
+					<span class="bcg-tab-nav-label" id="bcg-tab-nav-label"><?php esc_html_e( 'Header', 'brevo-campaign-generator' ); ?></span>
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="bcg-tab-nav-chevron" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
 				</button>
-				<button type="button" class="bcg-template-tab" data-tab="layout">
-					<?php esc_html_e( 'Layout', 'brevo-campaign-generator' ); ?>
-				</button>
-				<button type="button" class="bcg-template-tab" data-tab="colours">
-					<?php esc_html_e( 'Colours', 'brevo-campaign-generator' ); ?>
-				</button>
-				<button type="button" class="bcg-template-tab" data-tab="button">
-					<?php esc_html_e( 'Button', 'brevo-campaign-generator' ); ?>
-				</button>
-				<button type="button" class="bcg-template-tab" data-tab="typography">
-					<?php esc_html_e( 'Typography', 'brevo-campaign-generator' ); ?>
-				</button>
-				<button type="button" class="bcg-template-tab" data-tab="navigation">
-					<?php esc_html_e( 'Navigation', 'brevo-campaign-generator' ); ?>
-				</button>
-				<button type="button" class="bcg-template-tab" data-tab="footer">
-					<?php esc_html_e( 'Footer', 'brevo-campaign-generator' ); ?>
-				</button>
-				<button type="button" class="bcg-template-tab bcg-template-tab-code" data-tab="code">
-					<span class="dashicons dashicons-editor-code" style="font-size:14px;width:14px;height:14px;line-height:14px;vertical-align:middle;margin-right:2px;"></span>
-					<?php esc_html_e( 'HTML', 'brevo-campaign-generator' ); ?>
-				</button>
-			</nav>
+				<div id="bcg-tab-nav-menu" class="bcg-tab-nav-menu bcg-dropdown-closed" role="menu" aria-hidden="true">
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item active" data-tab="header" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">web</span>
+						<?php esc_html_e( 'Header', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item" data-tab="layout" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">dashboard</span>
+						<?php esc_html_e( 'Layout', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item" data-tab="colours" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">color_lens</span>
+						<?php esc_html_e( 'Colours', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item" data-tab="button" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">smart_button</span>
+						<?php esc_html_e( 'Button', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item" data-tab="typography" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">text_fields</span>
+						<?php esc_html_e( 'Typography', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item" data-tab="navigation" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">link</span>
+						<?php esc_html_e( 'Navigation', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item" data-tab="footer" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">crop_free</span>
+						<?php esc_html_e( 'Footer', 'brevo-campaign-generator' ); ?>
+					</button>
+					<button type="button" class="bcg-template-tab bcg-tab-nav-item bcg-tab-nav-item-code" data-tab="code" role="menuitem">
+						<span class="material-icons-outlined" aria-hidden="true">code</span>
+						<?php esc_html_e( 'HTML', 'brevo-campaign-generator' ); ?>
+					</button>
+				</div>
+			</div>
 
 			<div class="bcg-template-settings-panels">
 
-				<!-- Branding Tab -->
-				<div class="bcg-template-settings-panel active" data-panel="branding">
-					<h3><?php esc_html_e( 'Branding', 'brevo-campaign-generator' ); ?></h3>
+				<!-- Header Tab -->
+				<div class="bcg-template-settings-panel active" data-panel="header">
+					<h3><?php esc_html_e( 'Header', 'brevo-campaign-generator' ); ?></h3>
 
 					<div class="bcg-field-group">
 						<label for="bcg-setting-logo_url"><?php esc_html_e( 'Logo URL', 'brevo-campaign-generator' ); ?></label>
@@ -248,24 +270,35 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 								value="<?php echo esc_attr( $current_settings['logo_url'] ?? '' ); ?>"
 								placeholder="<?php esc_attr_e( 'https://example.com/logo.png', 'brevo-campaign-generator' ); ?>"
 							/>
-							<button type="button" class="button bcg-upload-media" data-target="bcg-setting-logo_url">
+							<button type="button" class="bcg-btn-secondary bcg-upload-media" data-target="bcg-setting-logo_url">
 								<?php esc_html_e( 'Upload', 'brevo-campaign-generator' ); ?>
 							</button>
 						</div>
 					</div>
 
-					<div class="bcg-field-group">
+					<div class="bcg-field-group bcg-field-group-inline">
 						<label for="bcg-setting-logo_width"><?php esc_html_e( 'Logo Width (px)', 'brevo-campaign-generator' ); ?></label>
 						<input
 							type="number"
 							id="bcg-setting-logo_width"
-							class="bcg-template-setting small-text"
+							class="bcg-template-setting bcg-input-medium"
 							data-setting="logo_width"
 							value="<?php echo esc_attr( absint( $current_settings['logo_width'] ?? 180 ) ); ?>"
 							min="40"
 							max="600"
 							step="1"
 						/>
+					</div>
+
+					<div class="bcg-field-group">
+						<label><?php esc_html_e( 'Logo Alignment', 'brevo-campaign-generator' ); ?></label>
+						<?php $logo_align = $current_settings['logo_alignment'] ?? 'left'; ?>
+						<div class="bcg-segmented-control" data-for="bcg-setting-logo_alignment">
+							<button type="button" class="bcg-segment<?php echo $logo_align === 'left' ? ' is-active' : ''; ?>" data-value="left"><?php esc_html_e( 'Left', 'brevo-campaign-generator' ); ?></button>
+							<button type="button" class="bcg-segment<?php echo $logo_align === 'center' ? ' is-active' : ''; ?>" data-value="center"><?php esc_html_e( 'Center', 'brevo-campaign-generator' ); ?></button>
+							<button type="button" class="bcg-segment<?php echo $logo_align === 'right' ? ' is-active' : ''; ?>" data-value="right"><?php esc_html_e( 'Right', 'brevo-campaign-generator' ); ?></button>
+						</div>
+						<input type="hidden" id="bcg-setting-logo_alignment" class="bcg-template-setting" data-setting="logo_alignment" value="<?php echo esc_attr( $logo_align ); ?>"/>
 					</div>
 
 					<div class="bcg-field-group">
@@ -280,6 +313,20 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 						/>
 						<p class="description"><?php esc_html_e( 'Displayed when no logo is set.', 'brevo-campaign-generator' ); ?></p>
 					</div>
+
+					<div class="bcg-field-group">
+						<label for="bcg-setting-header_bg"><?php esc_html_e( 'Header Background', 'brevo-campaign-generator' ); ?></label>
+						<div class="bcg-colour-row">
+							<input
+								type="color"
+								id="bcg-setting-header_bg"
+								class="bcg-template-setting bcg-color-input"
+								data-setting="header_bg"
+								value="<?php echo esc_attr( $current_settings['header_bg'] ?? '#ffffff' ); ?>"
+							/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['header_bg'] ?? '#ffffff' ); ?></span>
+						</div>
+					</div>
 				</div>
 
 				<!-- Layout Tab -->
@@ -291,7 +338,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 						<input
 							type="number"
 							id="bcg-setting-max_width"
-							class="bcg-template-setting small-text"
+							class="bcg-template-setting bcg-input-medium"
 							data-setting="max_width"
 							value="<?php echo esc_attr( absint( $current_settings['max_width'] ?? 600 ) ); ?>"
 							min="400"
@@ -302,7 +349,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 
 					<div class="bcg-field-group">
 						<label for="bcg-setting-product_layout"><?php esc_html_e( 'Product Layout', 'brevo-campaign-generator' ); ?></label>
-						<select id="bcg-setting-product_layout" class="bcg-template-setting widefat" data-setting="product_layout">
+						<select id="bcg-setting-product_layout" class="bcg-template-setting bcg-select-styled" data-setting="product_layout">
 							<option value="stacked" <?php selected( $current_settings['product_layout'] ?? 'stacked', 'stacked' ); ?>>
 								<?php esc_html_e( 'Stacked (image on top)', 'brevo-campaign-generator' ); ?>
 							</option>
@@ -338,7 +385,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 
 					<div class="bcg-field-group">
 						<label for="bcg-setting-products_per_row"><?php esc_html_e( 'Products Per Row', 'brevo-campaign-generator' ); ?></label>
-						<select id="bcg-setting-products_per_row" class="bcg-template-setting widefat" data-setting="products_per_row">
+						<select id="bcg-setting-products_per_row" class="bcg-template-setting bcg-select-styled" data-setting="products_per_row">
 							<option value="1" <?php selected( $current_settings['products_per_row'] ?? 1, 1 ); ?>>1</option>
 							<option value="2" <?php selected( $current_settings['products_per_row'] ?? 1, 2 ); ?>>2</option>
 							<option value="3" <?php selected( $current_settings['products_per_row'] ?? 1, 3 ); ?>>3</option>
@@ -363,118 +410,76 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					</div>
 
 					<div class="bcg-field-group">
-						<label>
-							<input
-								type="checkbox"
-								id="bcg-setting-show_coupon_block"
-								class="bcg-template-setting"
-								data-setting="show_coupon_block"
-								<?php checked( ! empty( $current_settings['show_coupon_block'] ) ); ?>
-							/>
-							<?php esc_html_e( 'Show Coupon Block', 'brevo-campaign-generator' ); ?>
-						</label>
+						<div class="bcg-field-toggle">
+							<span class="bcg-toggle-switch">
+								<input
+									type="checkbox"
+									id="bcg-setting-show_coupon_block"
+									class="bcg-template-setting"
+									data-setting="show_coupon_block"
+									<?php checked( ! empty( $current_settings['show_coupon_block'] ) ); ?>
+								/>
+								<span class="bcg-toggle-thumb"></span>
+							</span>
+							<label for="bcg-setting-show_coupon_block"><?php esc_html_e( 'Show Coupon Block', 'brevo-campaign-generator' ); ?></label>
+						</div>
 					</div>
 				</div>
 
 				<!-- Colours Tab -->
 				<div class="bcg-template-settings-panel" data-panel="colours">
 					<h3><?php esc_html_e( 'Colours', 'brevo-campaign-generator' ); ?></h3>
-
-					<div class="bcg-field-group">
-						<label for="bcg-setting-background_color"><?php esc_html_e( 'Page Background', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-background_color"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="background_color"
-							value="<?php echo esc_attr( $current_settings['background_color'] ?? '#f5f5f5' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['background_color'] ?? '#f5f5f5' ); ?></span>
-					</div>
-
-					<div class="bcg-field-group">
-						<label for="bcg-setting-content_background"><?php esc_html_e( 'Content Background', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-content_background"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="content_background"
-							value="<?php echo esc_attr( $current_settings['content_background'] ?? '#ffffff' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['content_background'] ?? '#ffffff' ); ?></span>
-					</div>
-
-					<div class="bcg-field-group">
-						<label for="bcg-setting-primary_color"><?php esc_html_e( 'Primary Colour', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-primary_color"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="primary_color"
-							value="<?php echo esc_attr( $current_settings['primary_color'] ?? '#e84040' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['primary_color'] ?? '#e84040' ); ?></span>
-					</div>
-
-					<div class="bcg-field-group">
-						<label for="bcg-setting-text_color"><?php esc_html_e( 'Text Colour', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-text_color"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="text_color"
-							value="<?php echo esc_attr( $current_settings['text_color'] ?? '#333333' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['text_color'] ?? '#333333' ); ?></span>
-					</div>
-
-					<div class="bcg-field-group">
-						<label for="bcg-setting-link_color"><?php esc_html_e( 'Link Colour', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-link_color"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="link_color"
-							value="<?php echo esc_attr( $current_settings['link_color'] ?? '#e84040' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['link_color'] ?? '#e84040' ); ?></span>
+					<div class="bcg-colour-grid">
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Page Background', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-background_color" class="bcg-template-setting bcg-color-input" data-setting="background_color" value="<?php echo esc_attr( $current_settings['background_color'] ?? '#f5f5f5' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['background_color'] ?? '#f5f5f5' ); ?></span>
+						</div>
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Content Background', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-content_background" class="bcg-template-setting bcg-color-input" data-setting="content_background" value="<?php echo esc_attr( $current_settings['content_background'] ?? '#ffffff' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['content_background'] ?? '#ffffff' ); ?></span>
+						</div>
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Primary Colour', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-primary_color" class="bcg-template-setting bcg-color-input" data-setting="primary_color" value="<?php echo esc_attr( $current_settings['primary_color'] ?? '#e84040' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['primary_color'] ?? '#e84040' ); ?></span>
+						</div>
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Text Colour', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-text_color" class="bcg-template-setting bcg-color-input" data-setting="text_color" value="<?php echo esc_attr( $current_settings['text_color'] ?? '#333333' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['text_color'] ?? '#333333' ); ?></span>
+						</div>
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Link Colour', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-link_color" class="bcg-template-setting bcg-color-input" data-setting="link_color" value="<?php echo esc_attr( $current_settings['link_color'] ?? '#e84040' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['link_color'] ?? '#e84040' ); ?></span>
+						</div>
 					</div>
 				</div>
 
 				<!-- Button Tab -->
 				<div class="bcg-template-settings-panel" data-panel="button">
 					<h3><?php esc_html_e( 'Button', 'brevo-campaign-generator' ); ?></h3>
-
-					<div class="bcg-field-group">
-						<label for="bcg-setting-button_color"><?php esc_html_e( 'Button Background', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-button_color"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="button_color"
-							value="<?php echo esc_attr( $current_settings['button_color'] ?? '#e84040' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['button_color'] ?? '#e84040' ); ?></span>
+					<div class="bcg-colour-grid">
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Background', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-button_color" class="bcg-template-setting bcg-color-input" data-setting="button_color" value="<?php echo esc_attr( $current_settings['button_color'] ?? '#e84040' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['button_color'] ?? '#e84040' ); ?></span>
+						</div>
+						<span class="bcg-colour-grid-label"><?php esc_html_e( 'Text Colour', 'brevo-campaign-generator' ); ?></span>
+						<div class="bcg-colour-grid-ctrl">
+							<input type="color" id="bcg-setting-button_text_color" class="bcg-template-setting bcg-color-input" data-setting="button_text_color" value="<?php echo esc_attr( $current_settings['button_text_color'] ?? '#ffffff' ); ?>"/>
+							<span class="bcg-color-value"><?php echo esc_html( $current_settings['button_text_color'] ?? '#ffffff' ); ?></span>
+						</div>
 					</div>
 
-					<div class="bcg-field-group">
-						<label for="bcg-setting-button_text_color"><?php esc_html_e( 'Button Text Colour', 'brevo-campaign-generator' ); ?></label>
-						<input
-							type="color"
-							id="bcg-setting-button_text_color"
-							class="bcg-template-setting bcg-color-input"
-							data-setting="button_text_color"
-							value="<?php echo esc_attr( $current_settings['button_text_color'] ?? '#ffffff' ); ?>"
-						/>
-						<span class="bcg-color-value"><?php echo esc_html( $current_settings['button_text_color'] ?? '#ffffff' ); ?></span>
-					</div>
-
-					<div class="bcg-field-group">
+					<div class="bcg-field-group bcg-field-group-inline">
 						<label for="bcg-setting-button_border_radius"><?php esc_html_e( 'Border Radius (px)', 'brevo-campaign-generator' ); ?></label>
 						<input
 							type="number"
 							id="bcg-setting-button_border_radius"
-							class="bcg-template-setting small-text"
+							class="bcg-template-setting bcg-input-medium"
 							data-setting="button_border_radius"
 							value="<?php echo esc_attr( absint( $current_settings['button_border_radius'] ?? 4 ) ); ?>"
 							min="0"
@@ -484,17 +489,11 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					</div>
 
 					<div class="bcg-field-group">
-						<label for="bcg-setting-product_button_size"><?php esc_html_e( 'Product Button Size', 'brevo-campaign-generator' ); ?></label>
-						<select id="bcg-setting-product_button_size" class="bcg-template-setting widefat" data-setting="product_button_size">
-							<option value="small" <?php selected( $current_settings['product_button_size'] ?? 'medium', 'small' ); ?>>
-								<?php esc_html_e( 'Small', 'brevo-campaign-generator' ); ?>
-							</option>
-							<option value="medium" <?php selected( $current_settings['product_button_size'] ?? 'medium', 'medium' ); ?>>
-								<?php esc_html_e( 'Medium (Default)', 'brevo-campaign-generator' ); ?>
-							</option>
-							<option value="large" <?php selected( $current_settings['product_button_size'] ?? 'medium', 'large' ); ?>>
-								<?php esc_html_e( 'Large', 'brevo-campaign-generator' ); ?>
-							</option>
+						<label for="bcg-setting-product_button_size"><?php esc_html_e( 'Button Size', 'brevo-campaign-generator' ); ?></label>
+						<select id="bcg-setting-product_button_size" class="bcg-template-setting bcg-select-styled" data-setting="product_button_size">
+							<option value="small" <?php selected( $current_settings['product_button_size'] ?? 'medium', 'small' ); ?>><?php esc_html_e( 'Small', 'brevo-campaign-generator' ); ?></option>
+							<option value="medium" <?php selected( $current_settings['product_button_size'] ?? 'medium', 'medium' ); ?>><?php esc_html_e( 'Medium (Default)', 'brevo-campaign-generator' ); ?></option>
+							<option value="large" <?php selected( $current_settings['product_button_size'] ?? 'medium', 'large' ); ?>><?php esc_html_e( 'Large', 'brevo-campaign-generator' ); ?></option>
 						</select>
 					</div>
 				</div>
@@ -505,7 +504,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 
 					<div class="bcg-field-group">
 						<label for="bcg-setting-heading_font_family"><?php esc_html_e( 'Heading Font', 'brevo-campaign-generator' ); ?></label>
-						<select id="bcg-setting-heading_font_family" class="bcg-template-setting widefat" data-setting="heading_font_family">
+						<select id="bcg-setting-heading_font_family" class="bcg-template-setting bcg-select-styled" data-setting="heading_font_family">
 							<?php foreach ( $heading_fonts as $font_value => $font_label ) : ?>
 								<option value="<?php echo esc_attr( $font_value ); ?>" <?php selected( $current_settings['heading_font_family'] ?? "Georgia, 'Times New Roman', serif", $font_value ); ?>>
 									<?php echo esc_html( $font_label ); ?>
@@ -519,7 +518,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 
 					<div class="bcg-field-group">
 						<label for="bcg-setting-font_family"><?php esc_html_e( 'Body Font', 'brevo-campaign-generator' ); ?></label>
-						<select id="bcg-setting-font_family" class="bcg-template-setting widefat" data-setting="font_family">
+						<select id="bcg-setting-font_family" class="bcg-template-setting bcg-select-styled" data-setting="font_family">
 							<?php foreach ( $font_families as $font_value => $font_label ) : ?>
 								<option value="<?php echo esc_attr( $font_value ); ?>" <?php selected( $current_settings['font_family'] ?? 'Arial, sans-serif', $font_value ); ?>>
 									<?php echo esc_html( $font_label ); ?>
@@ -537,16 +536,19 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<h3><?php esc_html_e( 'Navigation', 'brevo-campaign-generator' ); ?></h3>
 
 					<div class="bcg-field-group">
-						<label>
-							<input
-								type="checkbox"
-								id="bcg-setting-show_nav"
-								class="bcg-template-setting"
-								data-setting="show_nav"
-								<?php checked( ! empty( $current_settings['show_nav'] ) ); ?>
-							/>
-							<?php esc_html_e( 'Show Navigation Bar', 'brevo-campaign-generator' ); ?>
-						</label>
+						<div class="bcg-field-toggle">
+							<span class="bcg-toggle-switch">
+								<input
+									type="checkbox"
+									id="bcg-setting-show_nav"
+									class="bcg-template-setting"
+									data-setting="show_nav"
+									<?php checked( ! empty( $current_settings['show_nav'] ) ); ?>
+								/>
+								<span class="bcg-toggle-thumb"></span>
+							</span>
+							<label for="bcg-setting-show_nav"><?php esc_html_e( 'Show Navigation Bar', 'brevo-campaign-generator' ); ?></label>
+						</div>
 					</div>
 
 					<div class="bcg-field-group" id="bcg-nav-links-section">
@@ -566,11 +568,11 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 										value="<?php echo esc_attr( $link['url'] ?? '' ); ?>"
 										placeholder="<?php esc_attr_e( 'https://...', 'brevo-campaign-generator' ); ?>"
 									/>
-									<button type="button" class="button bcg-repeater-remove" title="<?php esc_attr_e( 'Remove', 'brevo-campaign-generator' ); ?>">&times;</button>
+									<button type="button" class="bcg-repeater-remove" title="<?php esc_attr_e( 'Remove', 'brevo-campaign-generator' ); ?>">&times;</button>
 								</div>
 							<?php endforeach; ?>
 						</div>
-						<button type="button" class="button bcg-repeater-add" data-repeater="nav-links">
+						<button type="button" class="bcg-btn-secondary bcg-repeater-add" data-repeater="nav-links">
 							<?php esc_html_e( '+ Add Link', 'brevo-campaign-generator' ); ?>
 						</button>
 					</div>
@@ -607,11 +609,11 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 										value="<?php echo esc_attr( $link['url'] ?? '' ); ?>"
 										placeholder="<?php esc_attr_e( 'https://... or {{unsubscribe_url}}', 'brevo-campaign-generator' ); ?>"
 									/>
-									<button type="button" class="button bcg-repeater-remove" title="<?php esc_attr_e( 'Remove', 'brevo-campaign-generator' ); ?>">&times;</button>
+									<button type="button" class="bcg-repeater-remove" title="<?php esc_attr_e( 'Remove', 'brevo-campaign-generator' ); ?>">&times;</button>
 								</div>
 							<?php endforeach; ?>
 						</div>
-						<button type="button" class="button bcg-repeater-add" data-repeater="footer-links">
+						<button type="button" class="bcg-btn-secondary bcg-repeater-add" data-repeater="footer-links">
 							<?php esc_html_e( '+ Add Link', 'brevo-campaign-generator' ); ?>
 						</button>
 					</div>
@@ -695,11 +697,13 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			<div class="bcg-preview-toolbar">
 				<span class="bcg-preview-label"><?php esc_html_e( 'Live Preview', 'brevo-campaign-generator' ); ?></span>
 				<div class="bcg-preview-device-toggle">
-					<button type="button" class="button bcg-preview-device active" data-device="desktop" title="<?php esc_attr_e( 'Desktop Preview', 'brevo-campaign-generator' ); ?>">
-						<span class="dashicons dashicons-desktop"></span>
+					<button type="button" class="bcg-preview-device active" data-device="desktop" title="<?php esc_attr_e( 'Desktop Preview', 'brevo-campaign-generator' ); ?>">
+						<span class="material-icons-outlined" style="font-size:14px;">desktop_windows</span>
+						<?php esc_html_e( 'Desktop', 'brevo-campaign-generator' ); ?>
 					</button>
-					<button type="button" class="button bcg-preview-device" data-device="mobile" title="<?php esc_attr_e( 'Mobile Preview', 'brevo-campaign-generator' ); ?>">
-						<span class="dashicons dashicons-smartphone"></span>
+					<button type="button" class="bcg-preview-device" data-device="mobile" title="<?php esc_attr_e( 'Mobile Preview', 'brevo-campaign-generator' ); ?>">
+						<span class="material-icons-outlined" style="font-size:14px;">smartphone</span>
+						<?php esc_html_e( 'Mobile', 'brevo-campaign-generator' ); ?>
 					</button>
 				</div>
 				<span class="bcg-preview-status" id="bcg-preview-status"></span>

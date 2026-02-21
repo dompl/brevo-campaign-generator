@@ -82,6 +82,7 @@
 			}
 
 			this.bindEvents();
+			this.initCustomSelects();
 			this.updatePreview();
 		},
 
@@ -162,6 +163,92 @@
 				if (slug && slug !== self.currentSlug) {
 					self.switchTemplate(slug);
 				}
+			});
+
+			// Tab nav dropdown: toggle open/close on trigger click.
+			$(document).on('click', '#bcg-tab-nav-btn', function (e) {
+				e.stopPropagation();
+				var $menu  = $('#bcg-tab-nav-menu');
+				var isOpen = !$menu.hasClass('bcg-dropdown-closed');
+				if (isOpen) {
+					$menu.addClass('bcg-dropdown-closed');
+					$(this).attr('aria-expanded', 'false');
+					$menu.attr('aria-hidden', 'true');
+				} else {
+					$menu.removeClass('bcg-dropdown-closed');
+					$(this).attr('aria-expanded', 'true');
+					$menu.attr('aria-hidden', 'false');
+				}
+			});
+
+			// Close tab nav dropdown and custom selects when clicking outside.
+			$(document).on('click', function (e) {
+				if (!$(e.target).closest('#bcg-tab-nav-dropdown').length) {
+					$('#bcg-tab-nav-menu').addClass('bcg-dropdown-closed');
+					$('#bcg-tab-nav-btn').attr('aria-expanded', 'false');
+				}
+				if (!$(e.target).closest('.bcg-select-wrapper').length) {
+					$('.bcg-select-menu').addClass('bcg-dropdown-closed');
+					$('.bcg-select-trigger').attr('aria-expanded', 'false');
+				}
+			});
+
+			// Custom select: toggle menu open/close.
+			$(document).on('click', '.bcg-select-trigger', function (e) {
+				e.stopPropagation();
+				var $trigger = $(this);
+				var $menu    = $trigger.closest('.bcg-select-wrapper').find('.bcg-select-menu');
+				var isOpen   = !$menu.hasClass('bcg-dropdown-closed');
+				// Close all other open menus first.
+				$('.bcg-select-menu').addClass('bcg-dropdown-closed');
+				$('.bcg-select-trigger').attr('aria-expanded', 'false');
+				if (!isOpen) {
+					// Position using fixed coords to escape overflow:hidden ancestors.
+					var rect = $trigger[0].getBoundingClientRect();
+					$menu.css({
+						position: 'fixed',
+						top:      (rect.bottom + 2) + 'px',
+						left:     rect.left + 'px',
+						width:    rect.width + 'px',
+						'z-index': 99999
+					});
+					$menu.removeClass('bcg-dropdown-closed');
+					$trigger.attr('aria-expanded', 'true');
+				}
+			});
+
+			// Custom select: option chosen.
+			$(document).on('click', '.bcg-select-option', function (e) {
+				e.stopPropagation();
+				var $opt     = $(this);
+				var $wrapper = $opt.closest('.bcg-select-wrapper');
+				var $trigger = $wrapper.find('.bcg-select-trigger');
+				var $menu    = $wrapper.find('.bcg-select-menu');
+				var value    = $opt.data('value');
+				var label    = $opt.text().trim();
+				// Update hidden select and fire change (triggers preview update).
+				$wrapper.find('select.bcg-select-styled').val(value).trigger('change');
+				// Update trigger label.
+				$trigger.find('.bcg-select-value').text(label);
+				// Update selected state.
+				$menu.find('.bcg-select-option').removeClass('is-selected').attr('aria-selected', 'false');
+				$opt.addClass('is-selected').attr('aria-selected', 'true');
+				// Close.
+				$menu.addClass('bcg-dropdown-closed');
+				$trigger.attr('aria-expanded', 'false');
+			});
+
+			// Segmented control: segment clicked.
+			$(document).on('click', '.bcg-segmented-control .bcg-segment', function (e) {
+				e.preventDefault();
+				var $btn     = $(this);
+				var $control = $btn.closest('.bcg-segmented-control');
+				var value    = $btn.data('value');
+				$control.find('.bcg-segment').removeClass('is-active');
+				$btn.addClass('is-active');
+				// Update hidden input and fire change.
+				var $hidden = $control.siblings('input[type="hidden"].bcg-template-setting');
+				$hidden.val(value).trigger('change');
 			});
 
 			// Settings tab navigation (includes code tab).
@@ -300,6 +387,59 @@
 			$('.bcg-template-tab[data-tab="' + tabName + '"]').addClass('active');
 			$('.bcg-template-settings-panel').removeClass('active');
 			$('.bcg-template-settings-panel[data-panel="' + tabName + '"]').addClass('active');
+
+			// Update dropdown trigger label and close the menu.
+			var label = $('.bcg-template-tab[data-tab="' + tabName + '"]').clone().children('span.material-icons-outlined').remove().end().text().trim();
+			$('#bcg-tab-nav-label').text(label);
+			$('#bcg-tab-nav-menu').addClass('bcg-dropdown-closed');
+			$('#bcg-tab-nav-btn').attr('aria-expanded', 'false');
+			$('#bcg-tab-nav-menu').attr('aria-hidden', 'true');
+		},
+
+		/**
+		 * Build custom dropdown UIs for all .bcg-select-styled <select> elements.
+		 */
+		initCustomSelects: function () {
+			$('.bcg-template-settings-panel .bcg-select-styled').each(function () {
+				var $select = $(this);
+				if ($select.data('custom-select-built')) {
+					return;
+				}
+				$select.data('custom-select-built', true);
+
+				var selectedVal  = $select.val();
+				var selectedText = $select.find('option:selected').text().trim();
+
+				// Build wrapper.
+				var $wrapper = $('<div class="bcg-select-wrapper"></div>');
+
+				// Build trigger.
+				var $trigger = $(
+					'<button type="button" class="bcg-select-trigger" aria-expanded="false" aria-haspopup="listbox">' +
+					'<span class="bcg-select-value"></span>' +
+					'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>' +
+					'</button>'
+				);
+				$trigger.find('.bcg-select-value').text(selectedText);
+
+				// Build dropdown menu.
+				var $menu = $('<div class="bcg-select-menu bcg-dropdown-closed" role="listbox"></div>');
+				$select.find('option').each(function () {
+					var $opt    = $(this);
+					var isChosen = ($opt.val() === selectedVal);
+					var $item   = $(
+						'<button type="button" class="bcg-select-option' + (isChosen ? ' is-selected' : '') + '" ' +
+						'data-value="' + $opt.val() + '" role="option" aria-selected="' + isChosen + '">' +
+						$opt.text().trim() +
+						'</button>'
+					);
+					$menu.append($item);
+				});
+
+				// Hide original select, insert custom UI.
+				$select.hide().wrap($wrapper);
+				$select.parent().append($trigger).append($menu);
+			});
 		},
 
 		/**
@@ -320,9 +460,9 @@
 			// Update overlay container width to match device mode.
 			var $container = $('.bcg-preview-overlay-container');
 			if (device === 'mobile') {
-				$container.css('max-width', '375px');
+				$container.css({ 'max-width': '390px', 'margin': '0 auto' });
 			} else {
-				$container.css('max-width', '660px');
+				$container.css({ 'max-width': '660px', 'margin': '0 auto' });
 			}
 
 			// Rebuild overlays after layout settles (transition is 0.3s).
@@ -712,7 +852,6 @@
 						'<div class="bcg-section-overlay-actions">' +
 							'<button type="button" class="bcg-overlay-btn bcg-overlay-move-up" title="Move Up">&uarr;</button>' +
 							'<button type="button" class="bcg-overlay-btn bcg-overlay-move-down" title="Move Down">&darr;</button>' +
-							'<button type="button" class="bcg-overlay-btn bcg-overlay-duplicate" title="Duplicate">&#x2398;</button>' +
 							'<button type="button" class="bcg-overlay-btn bcg-overlay-delete" title="Delete">&times;</button>' +
 						'</div>' +
 					'</div>'

@@ -97,6 +97,7 @@ $status_badge_classes = array(
 );
 ?>
 
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="wrap bcg-wrap">
 
 	<!-- ─── Page Header ────────────────────────────────────────────── -->
@@ -104,7 +105,7 @@ $status_badge_classes = array(
 	<div class="bcg-dashboard-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-20">
 		<h1><?php esc_html_e( 'Brevo Campaigns', 'brevo-campaign-generator' ); ?></h1>
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-new-campaign' ) ); ?>" class="bcg-btn-primary">
-			<span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span>
+			<span class="material-icons-outlined" aria-hidden="true">add</span>
 			<?php esc_html_e( 'New Campaign', 'brevo-campaign-generator' ); ?>
 		</a>
 	</div>
@@ -116,7 +117,7 @@ $status_badge_classes = array(
 		<div class="bcg-stat-card bcg-card">
 			<div class="bcg-stat-card-inner">
 				<div class="bcg-stat-icon">
-					<span class="dashicons dashicons-email-alt2"></span>
+					<span class="material-icons-outlined" aria-hidden="true">campaign</span>
 				</div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value"><?php echo esc_html( number_format( $status_counts['all'] ) ); ?></span>
@@ -128,7 +129,7 @@ $status_badge_classes = array(
 		<div class="bcg-stat-card bcg-card">
 			<div class="bcg-stat-card-inner">
 				<div class="bcg-stat-icon bcg-stat-icon-draft">
-					<span class="dashicons dashicons-edit"></span>
+					<span class="material-icons-outlined" aria-hidden="true">drafts</span>
 				</div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value"><?php echo esc_html( number_format( $status_counts['draft'] ) ); ?></span>
@@ -140,7 +141,7 @@ $status_badge_classes = array(
 		<div class="bcg-stat-card bcg-card">
 			<div class="bcg-stat-card-inner">
 				<div class="bcg-stat-icon bcg-stat-icon-sent">
-					<span class="dashicons dashicons-yes-alt"></span>
+					<span class="material-icons-outlined" aria-hidden="true">mark_email_read</span>
 				</div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value"><?php echo esc_html( number_format( $status_counts['sent'] ) ); ?></span>
@@ -152,7 +153,7 @@ $status_badge_classes = array(
 		<div class="bcg-stat-card bcg-card">
 			<div class="bcg-stat-card-inner">
 				<div class="bcg-stat-icon bcg-stat-icon-credits">
-					<span class="dashicons dashicons-money-alt"></span>
+					<span class="material-icons-outlined" aria-hidden="true">toll</span>
 				</div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value"><?php echo esc_html( number_format( $credit_balance, 0 ) ); ?></span>
@@ -185,7 +186,7 @@ $status_badge_classes = array(
 			}
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_url, esc_attr, esc_html above.
-			echo implode( ' | ', $tab_links );
+			echo implode( '', $tab_links );
 			?>
 		</ul>
 	</div>
@@ -210,13 +211,13 @@ $status_badge_classes = array(
 			/>
 			<input
 				type="submit"
-				class="button"
+				class="bcg-btn-secondary"
 				value="<?php esc_attr_e( 'Search', 'brevo-campaign-generator' ); ?>"
 			/>
 			<?php if ( ! empty( $current_search ) ) : ?>
 				<a
 					href="<?php echo esc_url( add_query_arg( 'status', $current_status, $base_url ) ); ?>"
-					class="button"
+					class="bcg-btn-secondary"
 				>
 					<?php esc_html_e( 'Clear', 'brevo-campaign-generator' ); ?>
 				</a>
@@ -246,7 +247,7 @@ $status_badge_classes = array(
 		<!-- Empty State -->
 		<div class="bcg-card bcg-empty-state">
 			<div class="bcg-empty-state-icon">
-				<span class="dashicons dashicons-email-alt2" style="font-size: 48px; width: 48px; height: 48px; color: #c3c4c7;"></span>
+				<span class="material-icons-outlined" style="font-size: 48px; color: var(--bcg-text-muted, #565c7a);" aria-hidden="true">mail_outline</span>
 			</div>
 			<?php if ( ! empty( $current_search ) ) : ?>
 				<h2><?php esc_html_e( 'No campaigns found', 'brevo-campaign-generator' ); ?></h2>
@@ -268,8 +269,8 @@ $status_badge_classes = array(
 			<?php else : ?>
 				<h2><?php esc_html_e( 'Create your first campaign', 'brevo-campaign-generator' ); ?></h2>
 				<p><?php esc_html_e( 'You have not created any email campaigns yet. Get started by creating your first AI-powered campaign.', 'brevo-campaign-generator' ); ?></p>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-new-campaign' ) ); ?>" class="bcg-btn-primary bcg-mt-8" style="display: inline-flex;">
-					<span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-new-campaign' ) ); ?>" class="bcg-btn-primary bcg-mt-8">
+					<span class="material-icons-outlined" aria-hidden="true">add</span>
 					<?php esc_html_e( 'Create Campaign', 'brevo-campaign-generator' ); ?>
 				</a>
 			<?php endif; ?>
@@ -424,20 +425,18 @@ $status_badge_classes = array(
 							<div class="bcg-action-buttons">
 								<a
 									href="<?php echo esc_url( $edit_url ); ?>"
-									class="button button-small"
+									class="bcg-btn-sm bcg-btn-secondary"
 									title="<?php esc_attr_e( 'Edit', 'brevo-campaign-generator' ); ?>"
 								>
-									<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span>
 									<?php esc_html_e( 'Edit', 'brevo-campaign-generator' ); ?>
 								</a>
 
 								<?php if ( ! empty( $campaign_row->template_html ) ) : ?>
 									<a
 										href="<?php echo esc_url( $edit_url . '&preview=1' ); ?>"
-										class="button button-small"
+										class="bcg-btn-sm bcg-btn-secondary"
 										title="<?php esc_attr_e( 'Preview', 'brevo-campaign-generator' ); ?>"
 									>
-										<span class="dashicons dashicons-visibility" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span>
 										<?php esc_html_e( 'Preview', 'brevo-campaign-generator' ); ?>
 									</a>
 								<?php endif; ?>

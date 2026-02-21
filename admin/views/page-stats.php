@@ -21,6 +21,7 @@ $cache_age     = $stats_handler ? $stats_handler->get_cache_age() : false;
 $nonce         = wp_create_nonce( 'bcg_nonce' );
 ?>
 
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="wrap bcg-wrap bcg-stats-wrap">
 
 	<h1><?php esc_html_e( 'Brevo Campaign Statistics', 'brevo-campaign-generator' ); ?></h1>
@@ -57,8 +58,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 				<?php esc_html_e( 'Stats not yet loaded', 'brevo-campaign-generator' ); ?>
 			<?php endif; ?>
 		</span>
-		<button type="button" class="button button-small" id="bcg-refresh-stats" <?php echo $has_api_key ? '' : 'disabled'; ?>>
-			<span class="dashicons dashicons-update-alt"></span>
+		<button type="button" class="bcg-btn-secondary bcg-btn-sm" id="bcg-refresh-stats" <?php echo $has_api_key ? '' : 'disabled'; ?>>
 			<?php esc_html_e( 'Refresh', 'brevo-campaign-generator' ); ?>
 		</button>
 	</div>
@@ -70,7 +70,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 
 		<div class="bcg-stat-card" id="bcg-stat-total-campaigns">
 			<div class="bcg-stat-card-inner">
-				<span class="bcg-stat-icon dashicons dashicons-email-alt"></span>
+				<div class="bcg-stat-icon"><span class="material-icons-outlined">campaign</span></div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value" id="bcg-stat-value-campaigns">
 						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
@@ -82,7 +82,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 
 		<div class="bcg-stat-card" id="bcg-stat-open-rate">
 			<div class="bcg-stat-card-inner">
-				<span class="bcg-stat-icon dashicons dashicons-visibility"></span>
+				<div class="bcg-stat-icon"><span class="material-icons-outlined">visibility</span></div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value" id="bcg-stat-value-open-rate">
 						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
@@ -94,7 +94,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 
 		<div class="bcg-stat-card" id="bcg-stat-click-rate">
 			<div class="bcg-stat-card-inner">
-				<span class="bcg-stat-icon dashicons dashicons-admin-links"></span>
+				<div class="bcg-stat-icon"><span class="material-icons-outlined">touch_app</span></div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value" id="bcg-stat-value-click-rate">
 						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
@@ -106,7 +106,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 
 		<div class="bcg-stat-card" id="bcg-stat-total-sent">
 			<div class="bcg-stat-card-inner">
-				<span class="bcg-stat-icon dashicons dashicons-megaphone"></span>
+				<div class="bcg-stat-icon"><span class="material-icons-outlined">send</span></div>
 				<div class="bcg-stat-content">
 					<span class="bcg-stat-value" id="bcg-stat-value-total-sent">
 						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
@@ -133,7 +133,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			</div>
 			<div class="bcg-filter-group">
 				<label for="bcg-filter-status"><?php esc_html_e( 'Status', 'brevo-campaign-generator' ); ?></label>
-				<select id="bcg-filter-status" class="bcg-filter-input">
+				<select id="bcg-filter-status" class="bcg-filter-input bcg-select-styled">
 					<option value="all"><?php esc_html_e( 'All', 'brevo-campaign-generator' ); ?></option>
 					<option value="sent"><?php esc_html_e( 'Sent', 'brevo-campaign-generator' ); ?></option>
 					<option value="draft"><?php esc_html_e( 'Draft', 'brevo-campaign-generator' ); ?></option>
@@ -143,10 +143,10 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 				</select>
 			</div>
 			<div class="bcg-filter-group bcg-filter-actions">
-				<button type="button" class="button bcg-btn-primary" id="bcg-apply-filters">
+				<button type="button" class="bcg-btn-primary" id="bcg-apply-filters">
 					<?php esc_html_e( 'Apply Filters', 'brevo-campaign-generator' ); ?>
 				</button>
-				<button type="button" class="button" id="bcg-clear-filters">
+				<button type="button" class="bcg-btn-secondary" id="bcg-clear-filters">
 					<?php esc_html_e( 'Clear', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
@@ -195,7 +195,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		<!-- Empty state (hidden by default) -->
 		<div class="bcg-stats-empty-state" id="bcg-stats-empty" style="display:none;">
 			<div class="bcg-empty-state">
-				<span class="dashicons dashicons-chart-bar" style="font-size:48px;width:48px;height:48px;color:#c3c4c7;"></span>
+				<div class="bcg-stat-icon" style="width:56px;height:56px;margin:0 auto 12px;"><span class="material-icons-outlined" style="font-size:28px!important;">bar_chart</span></div>
 				<p><?php esc_html_e( 'No campaign statistics found. Send your first campaign to see stats here.', 'brevo-campaign-generator' ); ?></p>
 			</div>
 		</div>
@@ -204,7 +204,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		<div class="bcg-stats-error-state" id="bcg-stats-error" style="display:none;">
 			<div class="bcg-notice bcg-notice-error">
 				<p id="bcg-stats-error-message"></p>
-				<button type="button" class="button button-small" id="bcg-stats-retry">
+				<button type="button" class="bcg-btn-secondary bcg-btn-sm" id="bcg-stats-retry">
 					<?php esc_html_e( 'Retry', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>

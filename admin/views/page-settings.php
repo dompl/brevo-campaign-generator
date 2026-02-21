@@ -29,6 +29,7 @@ $tab_option_groups = array(
 
 $option_group = $tab_option_groups[ $current_tab ] ?? 'bcg_settings_api_keys';
 ?>
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 <div class="wrap bcg-wrap bcg-settings-wrap">
 
 	<h1><?php esc_html_e( 'Brevo Campaign Generator Settings', 'brevo-campaign-generator' ); ?></h1>

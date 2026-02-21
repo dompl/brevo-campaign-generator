@@ -160,6 +160,11 @@
 
 							$select.append( $option );
 						} );
+
+						// Rebuild the custom dropdown UI after AJAX repopulation.
+						if ( typeof window.bcgRebuildCustomSelect === 'function' ) {
+							window.bcgRebuildCustomSelect( $select );
+						}
 					} else {
 						var msg = ( response.data && response.data.message ) ? response.data.message : 'Failed to load lists.';
 						BCGSettings.showInlineNotice( $select.closest( '.bcg-brevo-list-wrapper' ), msg, 'error' );
@@ -225,9 +230,157 @@
 		}
 	};
 
-	// Initialise on DOM ready.
+	// Initialise on DOM ready — only on the settings page where bcg_settings is localised.
 	$( function() {
-		BCGSettings.init();
+		if ( typeof bcg_settings !== 'undefined' ) {
+			BCGSettings.init();
+		}
+	} );
+
+} )( jQuery );
+
+// ─── Global custom select initialisation ──────────────────────────────────────
+// Runs on all BCG admin pages (outside the main IIFE so it is globally accessible).
+/* global jQuery */
+( function( $ ) {
+	'use strict';
+
+	/**
+	 * Initialise the fancy custom select UI for all .bcg-select-styled elements.
+	 *
+	 * Safe to call multiple times — a data flag prevents double-building.
+	 *
+	 * @param {jQuery} $scope Optional jQuery scope (defaults to document).
+	 */
+	window.bcgInitCustomSelects = function( $scope ) {
+		var $root = $scope || $( document );
+		$root.find( 'select.bcg-select-styled' ).each( function() {
+			var $select = $( this );
+
+			// Skip if already built.
+			if ( $select.data( 'bcg-custom-built' ) ) {
+				return;
+			}
+			$select.data( 'bcg-custom-built', true );
+
+			var selectedVal  = $select.val();
+			var selectedText = $select.find( 'option:selected' ).text().trim();
+
+			var $wrapper = $( '<div class="bcg-select-wrapper" style="display:inline-block;width:100%;position:relative;"></div>' );
+			var $trigger = $(
+				'<button type="button" class="bcg-select-trigger" aria-expanded="false" aria-haspopup="listbox">' +
+				'<span class="bcg-select-value"></span>' +
+				'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>' +
+				'</button>'
+			);
+			$trigger.find( '.bcg-select-value' ).text( selectedText );
+
+			var $menu = $( '<div class="bcg-select-menu bcg-dropdown-closed" role="listbox"></div>' );
+			$select.find( 'option' ).each( function() {
+				var $opt    = $( this );
+				var isChosen = ( $opt.val() === selectedVal );
+				var $item   = $(
+					'<button type="button" class="bcg-select-option' + ( isChosen ? ' is-selected' : '' ) + '" ' +
+					'data-value="' + $opt.val() + '" role="option" aria-selected="' + String( isChosen ) + '">' +
+					$opt.text().trim() + '</button>'
+				);
+				$menu.append( $item );
+			} );
+
+			$select.hide().wrap( $wrapper );
+			$select.parent().append( $trigger ).append( $menu );
+		} );
+	};
+
+	/**
+	 * Destroy and rebuild the custom dropdown UI for a given native select.
+	 *
+	 * Used after AJAX repopulates select options (e.g. Brevo lists / senders).
+	 *
+	 * @param {jQuery} $select The native <select> element to rebuild for.
+	 */
+	window.bcgRebuildCustomSelect = function( $select ) {
+		if ( ! $select.data( 'bcg-custom-built' ) ) {
+			// Not yet built — just initialise normally.
+			window.bcgInitCustomSelects( $select.closest( '.bcg-select-wrapper, :not(.bcg-select-wrapper)' ).parent() );
+			return;
+		}
+
+		// Tear down.
+		var $wrapper = $select.closest( '.bcg-select-wrapper' );
+		$select.show().unwrap();
+		$select.removeData( 'bcg-custom-built' );
+
+		// Rebuild.
+		window.bcgInitCustomSelects( $select.parent() );
+	};
+
+	// ── Event delegation: trigger button click ──────────────────────────────────
+	$( document ).on( 'click', '.bcg-select-trigger', function( e ) {
+		// Skip template editor selects — those are handled by bcg-template-editor.js.
+		if ( $( this ).closest( '.bcg-template-settings-panel' ).length ) {
+			return;
+		}
+		e.stopPropagation();
+		var $trigger = $( this );
+		var $menu    = $trigger.closest( '.bcg-select-wrapper' ).find( '.bcg-select-menu' );
+		var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
+
+		// Close all open menus.
+		$( '.bcg-select-menu' ).not( $menu ).addClass( 'bcg-dropdown-closed' );
+		$( '.bcg-select-trigger' ).not( $trigger ).attr( 'aria-expanded', 'false' );
+
+		if ( ! isOpen ) {
+			var rect = $trigger[ 0 ].getBoundingClientRect();
+			$menu.css( {
+				position: 'fixed',
+				top:      ( rect.bottom + 2 ) + 'px',
+				left:     rect.left + 'px',
+				width:    rect.width + 'px',
+				'z-index': 99999
+			} );
+			$menu.removeClass( 'bcg-dropdown-closed' );
+			$trigger.attr( 'aria-expanded', 'true' );
+		} else {
+			$menu.addClass( 'bcg-dropdown-closed' );
+			$trigger.attr( 'aria-expanded', 'false' );
+		}
+	} );
+
+	// ── Event delegation: option click ─────────────────────────────────────────
+	$( document ).on( 'click', '.bcg-select-option', function( e ) {
+		if ( $( this ).closest( '.bcg-template-settings-panel' ).length ) {
+			return;
+		}
+		e.stopPropagation();
+		var $opt     = $( this );
+		var $wrapper = $opt.closest( '.bcg-select-wrapper' );
+		var $trigger = $wrapper.find( '.bcg-select-trigger' );
+		var $menu    = $wrapper.find( '.bcg-select-menu' );
+		var value    = $opt.data( 'value' );
+		var label    = $opt.text().trim();
+
+		$wrapper.find( 'select.bcg-select-styled' ).val( value ).trigger( 'change' );
+		$trigger.find( '.bcg-select-value' ).text( label );
+		$menu.find( '.bcg-select-option' ).removeClass( 'is-selected' ).attr( 'aria-selected', 'false' );
+		$opt.addClass( 'is-selected' ).attr( 'aria-selected', 'true' );
+		$menu.addClass( 'bcg-dropdown-closed' );
+		$trigger.attr( 'aria-expanded', 'false' );
+	} );
+
+	// ── Close on outside click ──────────────────────────────────────────────────
+	$( document ).on( 'click', function( e ) {
+		if ( ! $( e.target ).closest( '.bcg-select-wrapper' ).length ) {
+			$( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+			$( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+		}
+	} );
+
+	// ── Initialise on DOM ready ─────────────────────────────────────────────────
+	$( function() {
+		if ( $( 'body' ).hasClass( 'bcg-admin-page' ) || $( '.bcg-wrap' ).length ) {
+			window.bcgInitCustomSelects( $( document ) );
+		}
 	} );
 
 } )( jQuery );
