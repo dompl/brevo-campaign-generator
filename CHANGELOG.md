@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.19] — 2026-02-21
+
+### Fixed
+- Section Builder palette broken — sections could not be added to the canvas. Root cause: `BCG_Section_Presets::get_all_for_js()` returned a flat array of variants, but the JS `renderPalette()` expected a grouped array of category objects (each with `label`, `icon`, and `variants[]`). Fixed by returning the grouped format directly from `get_all()`.
+
+---
+
 ## [1.5.18] — 2026-02-21
 
 ### Fixed

@@ -854,27 +854,15 @@ class BCG_Section_Presets {
 	/**
 	 * Return all presets formatted for JavaScript consumption.
 	 *
-	 * The returned structure is a flat array of variant objects, each including
-	 * the category label and icon for display purposes.
+	 * The returned structure is a grouped array of category objects, each with:
+	 *   - label  (string)  Category display name
+	 *   - icon   (string)  Category emoji / Material Icon name
+	 *   - variants (array) Array of variant objects for that category
 	 *
 	 * @return array[]
 	 */
 	public static function get_all_for_js(): array {
-		$output = [];
-
-		foreach ( self::get_all() as $category ) {
-			foreach ( $category['variants'] as $variant ) {
-				$output[] = array_merge(
-					$variant,
-					[
-						'category_label' => $category['label'],
-						'category_icon'  => $category['icon'],
-					]
-				);
-			}
-		}
-
-		return $output;
+		return array_values( self::get_all() );
 	}
 
 	/**
