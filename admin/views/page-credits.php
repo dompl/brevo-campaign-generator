@@ -58,8 +58,8 @@ $total_items  = $transactions_data['total'];
 $stripe_configured = ! empty( get_option( 'bcg_stripe_publishable_key', '' ) ) && ! empty( get_option( 'bcg_stripe_secret_key', '' ) );
 ?>
 
-<div class="wrap bcg-wrap">
 <?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
+<div class="wrap bcg-wrap">
 	<h1><?php esc_html_e( 'Credits & Billing', 'brevo-campaign-generator' ); ?></h1>
 
 	<!-- Payment Messages Container -->

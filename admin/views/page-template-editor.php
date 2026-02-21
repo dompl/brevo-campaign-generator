@@ -112,8 +112,8 @@ $font_families = array(
 $nonce = wp_create_nonce( 'bcg_nonce' );
 ?>
 
-<div class="wrap bcg-wrap bcg-template-editor-wrap">
 <?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
+<div class="wrap bcg-wrap bcg-template-editor-wrap">
 
 	<div class="bcg-template-editor-header">
 		<h1>

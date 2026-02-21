@@ -78,8 +78,8 @@ $dashboard_url = admin_url( 'admin.php?page=bcg-dashboard' );
 // Nonce for all AJAX operations.
 $nonce = wp_create_nonce( 'bcg_nonce' );
 ?>
-<div class="wrap bcg-wrap bcg-editor-wrap">
 <?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
+<div class="wrap bcg-wrap bcg-editor-wrap">
 
 	<!-- Page header -->
 	<div class="bcg-editor-page-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-16">

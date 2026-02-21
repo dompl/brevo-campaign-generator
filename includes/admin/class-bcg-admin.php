@@ -224,7 +224,15 @@ class BCG_Admin {
 		// Google Fonts for BCG custom admin design.
 		wp_enqueue_style(
 			'bcg-google-fonts',
-			'https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
+			'https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap',
+			array(),
+			null
+		);
+
+		// Google Material Icons (Outlined variant).
+		wp_enqueue_style(
+			'bcg-material-icons',
+			'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined',
 			array(),
 			null
 		);

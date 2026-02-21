@@ -21,8 +21,8 @@ $cache_age     = $stats_handler ? $stats_handler->get_cache_age() : false;
 $nonce         = wp_create_nonce( 'bcg_nonce' );
 ?>
 
-<div class="wrap bcg-wrap bcg-stats-wrap">
 <?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
+<div class="wrap bcg-wrap bcg-stats-wrap">
 
 	<h1><?php esc_html_e( 'Brevo Campaign Statistics', 'brevo-campaign-generator' ); ?></h1>
 
