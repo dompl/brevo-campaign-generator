@@ -215,13 +215,17 @@ class BCG_Section_Renderer {
 			$bg_style .= "background-image:url('{$img_url}');background-size:cover;background-position:center;";
 		}
 
+		$cta_fsize  = (int) ( $s['cta_font_size'] ?? 16 );
+		$cta_pad_h  = (int) ( $s['cta_padding_h'] ?? 32 );
+		$cta_pad_v  = (int) ( $s['cta_padding_v'] ?? 14 );
+		$s_fsize    = (int) ( $s['subtext_font_size'] ?? 16 );
 		$cta_html = '';
 		if ( $cta_text ) {
 			$cta_html = sprintf(
 				'<tr><td style="padding-top:24px;text-align:center;">
-					<a href="%s" style="display:inline-block;padding:14px 32px;background-color:%s;color:%s;font-family:%s;font-size:16px;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>
+					<a href="%s" style="display:inline-block;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>
 				</td></tr>',
-				$cta_url, $cta_bg, $cta_tc, esc_attr( $font ), $cta_text
+				$cta_url, $cta_pad_v, $cta_pad_h, $cta_bg, $cta_tc, esc_attr( $font ), $cta_fsize, $cta_text
 			);
 		}
 
@@ -237,7 +241,7 @@ class BCG_Section_Renderer {
 							</tr>
 							<tr>
 								<td style="padding-top:16px;text-align:center;">
-									<p style="font-family:%s;font-size:16px;color:%s;margin:0;padding:0;line-height:1.6;">%s</p>
+									<p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:1.6;">%s</p>
 								</td>
 							</tr>
 							%s
@@ -248,7 +252,7 @@ class BCG_Section_Renderer {
 			$mw, $mw, $mw, $bg_style,
 			$pt, $pb,
 			esc_attr( $font ), $hsize, $hcolor, $headline,
-			esc_attr( $font ), $scolor, $subtext,
+			esc_attr( $font ), $s_fsize, $scolor, $subtext,
 			$cta_html
 		);
 	}
@@ -357,6 +361,13 @@ class BCG_Section_Renderer {
 		$columns    = max( 1, min( 3, (int) $s['columns'] ) );
 		$show_price = ! empty( $s['show_price'] );
 		$show_btn   = ! empty( $s['show_button'] );
+		$title_fsize = (int) ( $s['title_font_size'] ?? 16 );
+		$desc_fsize  = (int) ( $s['desc_font_size'] ?? 14 );
+		$btn_fsize   = (int) ( $s['button_font_size'] ?? 14 );
+		$btn_pad_h   = (int) ( $s['button_padding_h'] ?? 20 );
+		$btn_pad_v   = (int) ( $s['button_padding_v'] ?? 10 );
+		$prod_gap    = (int) ( $s['product_gap'] ?? 15 );
+		$text_align  = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? $s['text_align'] : 'left';
 
 		// Parse product IDs.
 		$ids_raw = $s['product_ids'] ?? '';
@@ -389,35 +400,53 @@ class BCG_Section_Renderer {
 			$thumb_id  = $product->get_image_id();
 			$thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium' ) : wc_placeholder_img_src();
 			$name      = esc_html( $product->get_name() );
-			$price_html = $show_price ? sprintf( '<p style="font-family:%s;font-size:16px;font-weight:700;color:#333333;margin:8px 0;padding:0;">%s</p>', esc_attr( $font ), wp_strip_all_tags( $product->get_price_html() ) ) : '';
+			// For variable products, show "from £X" (min price only).
+			if ( $product->is_type( 'variable' ) ) {
+				/** @var WC_Product_Variable $product */
+				$min_price  = wc_price( $product->get_variation_price( 'min', true ) );
+				$price_disp = sprintf( /* translators: %s: minimum price */ __( 'from %s', 'brevo-campaign-generator' ), wp_strip_all_tags( $min_price ) );
+			} else {
+				$price_disp = wp_strip_all_tags( $product->get_price_html() );
+			}
+			$price_font = (int) ( $s['price_font_size'] ?? 16 );
+			$price_html = $show_price ? sprintf( '<p style="font-family:%s;font-size:%dpx;font-weight:700;color:#333333;margin:8px 0;padding:0;">%s</p>', esc_attr( $font ), $price_font, $price_disp ) : '';
 			$btn_html   = '';
 			if ( $show_btn ) {
 				$btn_html = sprintf(
-					'<a href="%s" style="display:inline-block;margin-top:12px;padding:10px 20px;background-color:%s;color:#ffffff;font-family:%s;font-size:14px;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>',
+					'<a href="%s" style="display:inline-block;margin-top:12px;padding:%dpx %dpx;background-color:%s;color:#ffffff;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>',
 					esc_url( $product->get_permalink() ),
+					$btn_pad_v,
+					$btn_pad_h,
 					$btn_color,
 					esc_attr( $font ),
+					$btn_fsize,
 					$btn_text
 				);
 			}
 
 			$cells[] = sprintf(
-				'<td style="vertical-align:top;padding:15px;width:%d%%;">
+				'<td style="vertical-align:top;padding:%dpx;width:%d%%;">
 					<table width="100%%" cellpadding="0" cellspacing="0" border="0">
-						<tr><td style="text-align:center;">
-							<img src="%s" alt="%s" width="200" style="display:block;margin:0 auto;max-width:100%%;height:auto;border:0;outline:none;" />
+						<tr><td style="text-align:%s;">
+							<img src="%s" alt="%s" width="200" style="display:block;%smax-width:100%%;height:auto;border:0;outline:none;" />
 						</td></tr>
-						<tr><td style="padding-top:12px;">
-							<h3 style="font-family:%s;font-size:16px;font-weight:700;color:#333333;margin:0;padding:0;">%s</h3>
+						<tr><td style="padding-top:12px;text-align:%s;">
+							<h3 style="font-family:%s;font-size:%dpx;font-weight:700;color:#333333;margin:0;padding:0;text-align:%s;">%s</h3>
 							%s
 							%s
 						</td></tr>
 					</table>
 				</td>',
+				$prod_gap,
 				(int) floor( 100 / $columns ),
+				$text_align,
 				esc_url( $thumb_url ),
 				$name,
+				'center' === $text_align ? 'margin:0 auto;' : '',
+				$text_align,
 				esc_attr( $font ),
+				$title_fsize,
+				$text_align,
 				$name,
 				$price_html,
 				$btn_html
@@ -461,28 +490,31 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_banner( array $s, int $mw, string $font ): string {
-		$bg      = esc_attr( $s['bg_color'] );
-		$tc      = esc_attr( $s['text_color'] );
-		$pad     = (int) $s['padding'];
-		$heading = esc_html( $s['heading'] );
-		$subtext = esc_html( $s['subtext'] );
+		$bg         = esc_attr( $s['bg_color'] );
+		$tc         = esc_attr( $s['text_color'] );
+		$pad        = (int) $s['padding'];
+		$heading    = esc_html( $s['heading'] );
+		$subtext    = esc_html( $s['subtext'] );
+		$h_fsize    = (int) ( $s['heading_font_size'] ?? 26 );
+		$s_fsize    = (int) ( $s['subtext_font_size'] ?? 15 );
+		$align      = in_array( $s['text_align'] ?? 'center', array( 'left', 'center', 'right' ), true ) ? ( $s['text_align'] ?? 'center' ) : 'center';
 
 		$subtext_html = '';
 		if ( $subtext ) {
 			$subtext_html = sprintf(
-				'<tr><td style="padding-top:10px;text-align:center;"><p style="font-family:%s;font-size:15px;color:%s;margin:0;padding:0;line-height:1.6;">%s</p></td></tr>',
-				esc_attr( $font ), $tc, $subtext
+				'<tr><td style="padding-top:10px;text-align:%s;"><p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:1.6;">%s</p></td></tr>',
+				$align, esc_attr( $font ), $s_fsize, $tc, $subtext
 			);
 		}
 
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
-					<td style="padding:%dpx 30px;text-align:center;">
+					<td style="padding:%dpx 30px;text-align:%s;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
-								<td style="text-align:center;">
-									<h2 style="font-family:%s;font-size:26px;font-weight:700;color:%s;margin:0;padding:0;">%s</h2>
+								<td style="text-align:%s;">
+									<h2 style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;padding:0;">%s</h2>
 								</td>
 							</tr>
 							%s
@@ -491,8 +523,9 @@ class BCG_Section_Renderer {
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
-			$pad,
-			esc_attr( $font ), $tc, $heading,
+			$pad, $align,
+			$align,
+			esc_attr( $font ), $h_fsize, $tc, $heading,
 			$subtext_html
 		);
 	}
@@ -507,21 +540,26 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_cta( array $s, int $mw, string $font ): string {
-		$bg      = esc_attr( $s['bg_color'] );
-		$tc      = esc_attr( $s['text_color'] );
-		$pad     = (int) $s['padding'];
-		$btn_bg  = esc_attr( $s['button_bg'] );
-		$btn_tc  = esc_attr( $s['button_text_color'] );
-		$heading = esc_html( $s['heading'] );
-		$subtext = esc_html( $s['subtext'] );
-		$btn_lbl = esc_html( $s['button_text'] );
-		$btn_url = esc_url( $s['button_url'] ?: '#' );
+		$bg         = esc_attr( $s['bg_color'] );
+		$tc         = esc_attr( $s['text_color'] );
+		$pad        = (int) $s['padding'];
+		$btn_bg     = esc_attr( $s['button_bg'] );
+		$btn_tc     = esc_attr( $s['button_text_color'] );
+		$heading    = esc_html( $s['heading'] );
+		$subtext    = esc_html( $s['subtext'] );
+		$btn_lbl    = esc_html( $s['button_text'] );
+		$btn_url    = esc_url( $s['button_url'] ?: '#' );
+		$h_fsize    = (int) ( $s['heading_font_size'] ?? 26 );
+		$s_fsize    = (int) ( $s['subtext_font_size'] ?? 15 );
+		$btn_fsize  = (int) ( $s['button_font_size'] ?? 17 );
+		$btn_pad_h  = (int) ( $s['button_padding_h'] ?? 40 );
+		$btn_pad_v  = (int) ( $s['button_padding_v'] ?? 16 );
 
 		$subtext_html = '';
 		if ( $subtext ) {
 			$subtext_html = sprintf(
-				'<tr><td style="padding-bottom:20px;text-align:center;"><p style="font-family:%s;font-size:15px;color:%s;margin:0;padding:0;line-height:1.6;">%s</p></td></tr>',
-				esc_attr( $font ), $tc, $subtext
+				'<tr><td style="padding-bottom:20px;text-align:center;"><p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:1.6;">%s</p></td></tr>',
+				esc_attr( $font ), $s_fsize, $tc, $subtext
 			);
 		}
 
@@ -532,13 +570,13 @@ class BCG_Section_Renderer {
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								<td style="padding-bottom:16px;text-align:center;">
-									<h2 style="font-family:%s;font-size:26px;font-weight:700;color:%s;margin:0;padding:0;">%s</h2>
+									<h2 style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;padding:0;">%s</h2>
 								</td>
 							</tr>
 							%s
 							<tr>
 								<td style="text-align:center;">
-									<a href="%s" style="display:inline-block;padding:16px 40px;background-color:%s;color:%s;font-family:%s;font-size:17px;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>
+									<a href="%s" style="display:inline-block;padding:%dpx %dpx;background-color:%s;color:%s;font-family:%s;font-size:%dpx;font-weight:700;text-decoration:none;border-radius:4px;">%s</a>
 								</td>
 							</tr>
 						</table>
@@ -547,9 +585,9 @@ class BCG_Section_Renderer {
 			</table>',
 			$mw, $mw, $mw, $bg,
 			$pad,
-			esc_attr( $font ), $tc, $heading,
+			esc_attr( $font ), $h_fsize, $tc, $heading,
 			$subtext_html,
-			$btn_url, $btn_bg, $btn_tc, esc_attr( $font ), $btn_lbl
+			$btn_url, $btn_pad_v, $btn_pad_h, $btn_bg, $btn_tc, esc_attr( $font ), $btn_fsize, $btn_lbl
 		);
 	}
 
@@ -789,6 +827,7 @@ class BCG_Section_Renderer {
 		$accent  = esc_attr( $s['accent_color'] );
 		$fsize   = (int) $s['font_size'];
 		$pad     = (int) $s['padding'];
+		$text_align = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? ( $s['text_align'] ?? 'left' ) : 'left';
 		$style   = $s['list_style'] ?? 'bullets';
 
 		// Decode items JSON.
@@ -801,8 +840,8 @@ class BCG_Section_Renderer {
 		$heading_html = '';
 		if ( ! empty( $s['heading'] ) ) {
 			$heading_html = sprintf(
-				'<tr><td style="padding-bottom:14px;"><h3 style="font-family:%s;font-size:18px;font-weight:700;color:%s;margin:0;padding:0;">%s</h3></td></tr>',
-				esc_attr( $font ), $tc, esc_html( $s['heading'] )
+				'<tr><td style="padding-bottom:14px;text-align:%s;"><h3 style="font-family:%s;font-size:18px;font-weight:700;color:%s;margin:0;padding:0;text-align:%s;">%s</h3></td></tr>',
+				$text_align, esc_attr( $font ), $tc, $text_align, esc_html( $s['heading'] )
 			);
 		}
 

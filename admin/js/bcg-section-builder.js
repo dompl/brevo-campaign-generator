@@ -82,7 +82,7 @@
 						.attr( 'data-variant-id', variant.id )
 						.attr( 'title', variant.description || '' )
 						.html(
-							'<span class="bcg-sb-variant-swatch" style="background:' + self.escAttr( variant.indicator_color || '#888888' ) + ';"></span>' +
+							'<span class="bcg-sb-variant-icon material-icons-outlined">' + self.escHtml( ( bcg_section_builder.section_types[ variant.type ] && bcg_section_builder.section_types[ variant.type ].icon ) || 'widgets' ) + '</span>' +
 							'<span class="bcg-sb-variant-label">' + self.escHtml( variant.label ) + '</span>'
 						);
 					$variants.append( $card );
@@ -482,6 +482,19 @@
 					input = '<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea" data-key="' + self.escAttr( key ) + '" rows="4">' + self.escHtml( String( value ) ) + '</textarea>';
 					break;
 
+				case 'range':
+					var rangeMin  = field.min  !== undefined ? field.min  : 0;
+					var rangeMax  = field.max  !== undefined ? field.max  : 100;
+					var rangeStep = field.step !== undefined ? field.step : 1;
+					html  = '<div class="bcg-sb-field bcg-sb-field--range">';
+					html += '<label class="bcg-sb-field-label">' + self.escHtml( field.label ) + '</label>';
+					html += '<div class="bcg-sb-range-wrap">';
+					html += '<input type="range" class="bcg-sb-range-input" data-key="' + self.escAttr( field.key ) + '" min="' + rangeMin + '" max="' + rangeMax + '" step="' + rangeStep + '" value="' + self.escAttr( String( val ) ) + '" />';
+					html += '<span class="bcg-sb-range-value">' + self.escHtml( String( val ) ) + '</span>';
+					html += '</div>';
+					html += '</div>';
+					break;
+
 				case 'number':
 					input = '<input type="number" id="' + id + '" class="bcg-sb-field-input bcg-input" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '" />';
 					break;
@@ -570,6 +583,15 @@
 					var picker = $body.find( 'input[type="color"][data-key="' + key + '"]' );
 					picker.val( val );
 				}
+			} );
+
+			// Range slider — live value display.
+			$( '#bcg-sb-settings-body' ).on( 'input', '.bcg-sb-range-input', function () {
+				var $input = $( this );
+				var key    = $input.data( 'key' );
+				var val    = parseFloat( $input.val() );
+				$input.closest( '.bcg-sb-range-wrap' ).find( '.bcg-sb-range-value' ).text( val );
+				self.updateSetting( sectionId, key, val );
 			} );
 
 			// Color picker → sync text input.

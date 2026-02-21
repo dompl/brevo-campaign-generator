@@ -2091,6 +2091,21 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	text-align: center;
 }
 
+/* ── Product select widget fixes ── */
+.bcg-manual-product-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 8px;
+}
+.bcg-manual-product-tag {
+	line-height: 1.3;
+	margin: 0;
+}
+.bcg-sb-product-search-input {
+	margin-top: 10px;
+}
+
 /* ── Manually selected product tags ── */
 .bcg-manual-selected-products {
 	display: flex;
@@ -4019,12 +4034,7 @@ body.bcg-admin-page .bcg-sb-variant-card:active {
 }
 
 body.bcg-admin-page .bcg-sb-variant-swatch {
-	display:       inline-block;
-	width:         20px;
-	height:        20px;
-	border-radius: 4px;
-	flex-shrink:   0;
-	border:        1px solid rgba(255,255,255,0.15);
+	display: none;
 }
 
 body.bcg-admin-page .bcg-sb-variant-label {
@@ -4597,4 +4607,34 @@ body.bcg-admin-page .bcg-spin {
 		position: static;
 		max-height: none;
 	}
+}
+
+
+/* ── Range slider field ── */
+.bcg-sb-field--range .bcg-sb-range-wrap {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.bcg-sb-field--range .bcg-sb-range-input {
+	flex: 1;
+	height: 4px;
+	accent-color: var(--bcg-accent, #e63529);
+	cursor: pointer;
+}
+.bcg-sb-field--range .bcg-sb-range-value {
+	min-width: 32px;
+	text-align: right;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--bcg-text-secondary, #666);
+	font-variant-numeric: tabular-nums;
+}
+
+/* ── Palette variant icon (replaces swatch) ── */
+.bcg-sb-variant-icon {
+	font-size: 18px;
+	color: var(--bcg-text-secondary, #888);
+	flex-shrink: 0;
+	line-height: 1;
 }

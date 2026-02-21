@@ -17,6 +17,23 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.8] — 2026-02-21
+
+### Added
+- **Font size sliders** — range slider controls for font sizes across all text-bearing sections: Hero (subtext font size, button font size + padding), Banner (heading + subtext font size), CTA (heading + subtext + button font size + button padding H/V), Products (title, description, price, button font size + button padding H/V).
+- **Text alignment** — new `text_align` select field added to Banner, Products, and List sections (left / centre / right).
+- **Product gap control** — Products section now has a `product_gap` range slider (0–40 px) to control spacing between product cells.
+- **Columns slider** — Products `columns` field changed from a dropdown to a range slider (1–3).
+- **Price range fix** — variable products in the Products section now display "from £X" (minimum variation price) instead of "£min–£max".
+- **Icons in palette cards** — colour swatches replaced with the section type's Material Icon for cleaner palette appearance.
+- **26 new preset variants** — 5 headers (Split Navigation, Minimal White, Forest Green, Luxury Gold, Ocean Blue), 3 hero banners (Forest Green, Gold Luxury, Image Background), 2 headings (Minimal, Accent Background), 2 text blocks (Warm Tint, Accent Border), 5 product layouts (3-Column Grid, Minimal Light, Warm Cream, Featured Single, Forest Grid), 3 CTA (Minimal White, Warm Gold, Forest Green), 3 coupons (Clean White, Green Success, Premium Black), 3 dividers/spacers (Thick Dark, Medium Grey, Extra Small Spacer).
+
+### Fixed
+- **Product tag gap** — selected product tags in the section settings widget now have `gap: 6px` between them and smaller line-height.
+- **Product search input gap** — added top margin above the product search input bar.
+
+---
+
 ## [1.5.7] — 2026-02-21
 
 ### Added
