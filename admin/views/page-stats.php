@@ -133,7 +133,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			</div>
 			<div class="bcg-filter-group">
 				<label for="bcg-filter-status"><?php esc_html_e( 'Status', 'brevo-campaign-generator' ); ?></label>
-				<select id="bcg-filter-status" class="bcg-filter-input">
+				<select id="bcg-filter-status" class="bcg-filter-input bcg-select-styled">
 					<option value="all"><?php esc_html_e( 'All', 'brevo-campaign-generator' ); ?></option>
 					<option value="sent"><?php esc_html_e( 'Sent', 'brevo-campaign-generator' ); ?></option>
 					<option value="draft"><?php esc_html_e( 'Draft', 'brevo-campaign-generator' ); ?></option>

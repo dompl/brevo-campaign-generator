@@ -181,6 +181,8 @@ class BCG_Template_Registry {
 			'product_gap'          => 24,
 			'product_button_size'  => 'medium',
 			'section_order'        => null,
+			'logo_alignment'       => 'left',
+			'header_bg'            => '#ffffff',
 		);
 
 		$templates = array();
@@ -320,6 +322,154 @@ class BCG_Template_Registry {
 				'product_layout'      => 'centered',
 				'heading_font_family' => "Cinzel, Georgia, 'Times New Roman', serif",
 				'font_family'         => "Georgia, serif",
+			) ),
+		);
+
+		// 11. Newsletter — Editorial newsletter with ruled lines and pull-quote.
+		$templates['newsletter'] = array(
+			'slug'        => 'newsletter',
+			'name'        => __( 'Newsletter', 'brevo-campaign-generator' ),
+			'description' => __( 'Editorial newsletter layout with serif headings, ruled-line separators, and pull-quote section.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'newsletter-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "'DM Serif Display', Georgia, 'Times New Roman', serif",
+				'font_family'         => "Georgia, serif",
+				'background_color'    => '#F5F2ED',
+			) ),
+		);
+
+		// 12. Minimal — Ultra-minimal whitespace design.
+		$templates['minimal'] = array(
+			'slug'        => 'minimal',
+			'name'        => __( 'Minimal', 'brevo-campaign-generator' ),
+			'description' => __( 'Ultra-minimal design with generous whitespace, thin divider lines, and no decorative elements.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'minimal-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+				'font_family'         => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+				'background_color'    => '#ffffff',
+				'content_background'  => '#ffffff',
+				'max_width'           => 560,
+			) ),
+		);
+
+		// 13. Bold — High-impact dark layout with Oswald headings.
+		$templates['bold'] = array(
+			'slug'        => 'bold',
+			'name'        => __( 'Bold', 'brevo-campaign-generator' ),
+			'description' => __( 'High-impact dark mode template with oversized uppercase Oswald headings.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'bold-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "Oswald, Impact, 'Arial Black', sans-serif",
+				'font_family'         => "Arial, sans-serif",
+				'background_color'    => '#111111',
+				'content_background'  => '#1c1c1c',
+				'text_color'          => '#f0f0f0',
+			) ),
+		);
+
+		// 14. Luxury — Premium brand aesthetic with Cormorant Garamond.
+		$templates['prestige'] = array(
+			'slug'        => 'prestige',
+			'name'        => __( 'Prestige', 'brevo-campaign-generator' ),
+			'description' => __( 'Luxury brand aesthetic with Cormorant Garamond serif typography and diamond ornament decorators.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'luxury-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "'Cormorant Garamond', Georgia, serif",
+				'font_family'         => "Georgia, serif",
+				'primary_color'       => '#B8960C',
+				'link_color'          => '#B8960C',
+				'button_color'        => '#B8960C',
+				'background_color'    => '#F9F7F4',
+			) ),
+		);
+
+		// 15. Promo — Promotional/sale with coupon-first layout.
+		$templates['promo'] = array(
+			'slug'        => 'promo',
+			'name'        => __( 'Promo', 'brevo-campaign-generator' ),
+			'description' => __( 'Sale-focused template with the coupon block prominently at the top for maximum impact.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'promo-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "Nunito, 'Helvetica Neue', Arial, sans-serif",
+				'font_family'         => "Nunito, 'Helvetica Neue', Arial, sans-serif",
+				'show_coupon_block'   => true,
+			) ),
+		);
+
+		// 16. Seasonal — Festive/holiday template with coloured banner header.
+		$templates['seasonal'] = array(
+			'slug'        => 'seasonal',
+			'name'        => __( 'Seasonal', 'brevo-campaign-generator' ),
+			'description' => __( 'Festive layout with full-width coloured banner header and dashed coupon block.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'seasonal-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'grid',
+				'products_per_row'    => 2,
+				'heading_font_family' => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+				'font_family'         => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+				'header_bg'           => '#e84040',
+			) ),
+		);
+
+		// 17. Spotlight — One hero product with secondary products below.
+		$templates['spotlight'] = array(
+			'slug'        => 'spotlight',
+			'name'        => __( 'Spotlight', 'brevo-campaign-generator' ),
+			'description' => __( 'First product gets maximum visual treatment with a Bebas Neue headline band; secondary products below.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'spotlight-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'feature-first',
+				'heading_font_family' => "'Bebas Neue', Impact, 'Arial Black', sans-serif",
+				'font_family'         => "Arial, sans-serif",
+			) ),
+		);
+
+		// 18. Story — Long-form narrative/editorial layout.
+		$templates['story'] = array(
+			'slug'        => 'story',
+			'name'        => __( 'Story', 'brevo-campaign-generator' ),
+			'description' => __( 'Long-form narrative template with Libre Baskerville serif typography and decorative pull-quote.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'story-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'stacked',
+				'heading_font_family' => "'Libre Baskerville', Georgia, serif",
+				'font_family'         => "'Libre Baskerville', Georgia, serif",
+				'background_color'    => '#F9F8F6',
+			) ),
+		);
+
+		// 19. Compact Grid — Dense product catalogue.
+		$templates['catalogue'] = array(
+			'slug'        => 'catalogue',
+			'name'        => __( 'Catalogue', 'brevo-campaign-generator' ),
+			'description' => __( 'Dense product catalogue with minimal header, compact grid, and inline coupon pill.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'compact-grid-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'compact',
+				'heading_font_family' => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+				'font_family'         => "'DM Sans', 'Helvetica Neue', Arial, sans-serif",
+			) ),
+		);
+
+		// 20. Announcement — Dramatic product launch/reveal template.
+		$templates['launch'] = array(
+			'slug'        => 'launch',
+			'name'        => __( 'Launch', 'brevo-campaign-generator' ),
+			'description' => __( 'Dramatic product launch template with Cinzel headings, primary-colour hero row, and full-width CTA.', 'brevo-campaign-generator' ),
+			'html_file'   => $templates_dir . 'announcement-email-template.html',
+			'settings'    => array_merge( $base_settings, array(
+				'product_layout'      => 'centered',
+				'heading_font_family' => "Cinzel, Georgia, 'Times New Roman', serif",
+				'font_family'         => "Georgia, serif",
+				'background_color'    => '#0A0A14',
+				'content_background'  => '#141422',
+				'text_color'          => '#E8E4DC',
 			) ),
 		);
 

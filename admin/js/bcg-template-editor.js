@@ -203,6 +203,15 @@
 				$('.bcg-select-menu').addClass('bcg-dropdown-closed');
 				$('.bcg-select-trigger').attr('aria-expanded', 'false');
 				if (!isOpen) {
+					// Position using fixed coords to escape overflow:hidden ancestors.
+					var rect = $trigger[0].getBoundingClientRect();
+					$menu.css({
+						position: 'fixed',
+						top:      (rect.bottom + 2) + 'px',
+						left:     rect.left + 'px',
+						width:    rect.width + 'px',
+						'z-index': 99999
+					});
 					$menu.removeClass('bcg-dropdown-closed');
 					$trigger.attr('aria-expanded', 'true');
 				}
@@ -451,9 +460,9 @@
 			// Update overlay container width to match device mode.
 			var $container = $('.bcg-preview-overlay-container');
 			if (device === 'mobile') {
-				$container.css('max-width', '375px');
+				$container.css({ 'max-width': '390px', 'margin': '0 auto' });
 			} else {
-				$container.css('max-width', '660px');
+				$container.css({ 'max-width': '660px', 'margin': '0 auto' });
 			}
 
 			// Rebuild overlays after layout settles (transition is 0.3s).

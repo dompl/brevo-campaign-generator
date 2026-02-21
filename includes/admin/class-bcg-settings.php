@@ -807,7 +807,7 @@ class BCG_Settings {
 		$models = $this->get_openai_models();
 
 		?>
-		<select id="bcg_openai_model" name="bcg_openai_model">
+		<select id="bcg_openai_model" name="bcg_openai_model" class="bcg-select-styled">
 			<?php foreach ( $models as $model_id => $label ) : ?>
 				<option value="<?php echo esc_attr( $model_id ); ?>" <?php selected( $value, $model_id ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -832,7 +832,7 @@ class BCG_Settings {
 		$models = $this->get_gemini_models();
 
 		?>
-		<select id="bcg_gemini_model" name="bcg_gemini_model">
+		<select id="bcg_gemini_model" name="bcg_gemini_model" class="bcg-select-styled">
 			<?php foreach ( $models as $model_id => $label ) : ?>
 				<option value="<?php echo esc_attr( $model_id ); ?>" <?php selected( $value, $model_id ); ?>>
 					<?php echo esc_html( $label ); ?>
@@ -968,7 +968,7 @@ class BCG_Settings {
 		<div class="bcg-brevo-sender-wrapper">
 			<select
 				id="bcg_brevo_sender_select"
-				class="bcg-brevo-sender-select regular-text"
+				class="bcg-brevo-sender-select bcg-select-styled regular-text"
 				data-current-name="<?php echo esc_attr( $current_name ); ?>"
 				data-current-email="<?php echo esc_attr( $current_email ); ?>"
 			>
@@ -1081,7 +1081,7 @@ class BCG_Settings {
 			<select
 				id="<?php echo esc_attr( $option_name ); ?>"
 				name="<?php echo esc_attr( $option_name ); ?>"
-				class="bcg-brevo-list-select"
+				class="bcg-brevo-list-select bcg-select-styled"
 				data-current="<?php echo esc_attr( $value ); ?>"
 			>
 				<option value="">
@@ -1134,7 +1134,7 @@ class BCG_Settings {
 		);
 
 		?>
-		<select id="bcg_stripe_currency" name="bcg_stripe_currency">
+		<select id="bcg_stripe_currency" name="bcg_stripe_currency" class="bcg-select-styled">
 			<?php foreach ( $currencies as $code => $label ) : ?>
 				<option value="<?php echo esc_attr( $code ); ?>" <?php selected( $value, $code ); ?>>
 					<?php echo esc_html( $label ); ?>

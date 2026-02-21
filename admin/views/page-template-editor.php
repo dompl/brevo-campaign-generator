@@ -338,7 +338,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 						<input
 							type="number"
 							id="bcg-setting-max_width"
-							class="bcg-template-setting small-text"
+							class="bcg-template-setting bcg-input-medium"
 							data-setting="max_width"
 							value="<?php echo esc_attr( absint( $current_settings['max_width'] ?? 600 ) ); ?>"
 							min="400"

@@ -157,7 +157,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						<select
 							id="bcg-mailing-list"
 							name="mailing_list_id"
-							class="bcg-brevo-list-select"
+							class="bcg-brevo-list-select bcg-select-styled"
 							data-current="<?php echo esc_attr( $default_mailing_list ); ?>"
 						>
 							<option value="">
@@ -480,7 +480,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<label for="bcg-tone" class="bcg-field-label">
 						<?php esc_html_e( 'Tone of Voice', 'brevo-campaign-generator' ); ?>
 					</label>
-					<select id="bcg-tone" name="tone" class="bcg-select-medium">
+					<select id="bcg-tone" name="tone" class="bcg-select-medium bcg-select-styled">
 						<option value="professional"><?php esc_html_e( 'Professional', 'brevo-campaign-generator' ); ?></option>
 						<option value="friendly"><?php esc_html_e( 'Friendly', 'brevo-campaign-generator' ); ?></option>
 						<option value="urgent"><?php esc_html_e( 'Urgent', 'brevo-campaign-generator' ); ?></option>
@@ -509,7 +509,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<label for="bcg-language" class="bcg-field-label">
 						<?php esc_html_e( 'Language', 'brevo-campaign-generator' ); ?>
 					</label>
-					<select id="bcg-language" name="language" class="bcg-select-medium">
+					<select id="bcg-language" name="language" class="bcg-select-medium bcg-select-styled">
 						<option value="en" <?php selected( $default_lang, 'en' ); ?>><?php esc_html_e( 'English', 'brevo-campaign-generator' ); ?></option>
 						<option value="pl" <?php selected( $default_lang, 'pl' ); ?>><?php esc_html_e( 'Polish', 'brevo-campaign-generator' ); ?></option>
 						<option value="de" <?php selected( $default_lang, 'de' ); ?>><?php esc_html_e( 'German', 'brevo-campaign-generator' ); ?></option>
@@ -550,7 +550,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<label for="bcg-image-style" class="bcg-field-label">
 						<?php esc_html_e( 'Image Style', 'brevo-campaign-generator' ); ?>
 					</label>
-					<select id="bcg-image-style" name="image_style" class="bcg-select-medium">
+					<select id="bcg-image-style" name="image_style" class="bcg-select-medium bcg-select-styled">
 						<option value="photorealistic"><?php esc_html_e( 'Photorealistic', 'brevo-campaign-generator' ); ?></option>
 						<option value="studio_product"><?php esc_html_e( 'Studio Product', 'brevo-campaign-generator' ); ?></option>
 						<option value="lifestyle"><?php esc_html_e( 'Lifestyle', 'brevo-campaign-generator' ); ?></option>

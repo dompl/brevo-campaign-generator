@@ -2297,8 +2297,9 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	flex: 1;
 	min-height: 0;
 	overflow-y: auto;
-	padding: 20px;
-	background: #dce0e8;
+	overflow-x: hidden;
+	padding: 20px 20px 0;
+	background: var(--bcg-bg-body, #1a1a1f);
 	scrollbar-width: thin;
 	scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
@@ -2306,6 +2307,8 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 .bcg-preview-overlay-container {
 	position: relative;
 	width: 100%;
+	margin: 0 auto;
+	max-width: 660px;
 }
 
 /* Section overlay buttons injected by JS sit on top of iframe */
@@ -2415,7 +2418,6 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	height: auto;
 	background: #ffffff;
 	border-radius: 6px;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0,0,0,0.2);
 	display: block;
 }
 
