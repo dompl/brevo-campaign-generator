@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$credit_balance = function_exists( 'bcg' ) ? bcg()->admin->get_current_user_credit_balance() : 0;
+$credit_balance = ( function_exists( 'bcg' ) && bcg()->get_admin() ) ? bcg()->get_admin()->get_current_user_credit_balance() : 0;
 $credits_url    = admin_url( 'admin.php?page=bcg-credits' );
 $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 ?>
