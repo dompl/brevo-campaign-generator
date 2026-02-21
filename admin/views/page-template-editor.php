@@ -695,11 +695,13 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			<div class="bcg-preview-toolbar">
 				<span class="bcg-preview-label"><?php esc_html_e( 'Live Preview', 'brevo-campaign-generator' ); ?></span>
 				<div class="bcg-preview-device-toggle">
-					<button type="button" class="bcg-btn-secondary bcg-btn-sm bcg-preview-device active" data-device="desktop" title="<?php esc_attr_e( 'Desktop Preview', 'brevo-campaign-generator' ); ?>">
-						<span class="material-icons-outlined" style="font-size:16px!important;">desktop_windows</span>
+					<button type="button" class="bcg-preview-device active" data-device="desktop" title="<?php esc_attr_e( 'Desktop Preview', 'brevo-campaign-generator' ); ?>">
+						<span class="material-icons-outlined" style="font-size:14px;">desktop_windows</span>
+						<?php esc_html_e( 'Desktop', 'brevo-campaign-generator' ); ?>
 					</button>
-					<button type="button" class="bcg-btn-secondary bcg-btn-sm bcg-preview-device" data-device="mobile" title="<?php esc_attr_e( 'Mobile Preview', 'brevo-campaign-generator' ); ?>">
-						<span class="material-icons-outlined" style="font-size:16px!important;">smartphone</span>
+					<button type="button" class="bcg-preview-device" data-device="mobile" title="<?php esc_attr_e( 'Mobile Preview', 'brevo-campaign-generator' ); ?>">
+						<span class="material-icons-outlined" style="font-size:14px;">smartphone</span>
+						<?php esc_html_e( 'Mobile', 'brevo-campaign-generator' ); ?>
 					</button>
 				</div>
 				<span class="bcg-preview-status" id="bcg-preview-status"></span>

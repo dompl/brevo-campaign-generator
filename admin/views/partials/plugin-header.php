@@ -25,7 +25,7 @@ $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 		<div class="bcg-brand-divider"></div>
 		<div class="bcg-brand-text">
 			<span class="bcg-brand-plugin-name">Brevo Campaign Generator</span>
-			<span class="bcg-brand-tagline">for WooCommerce &mdash; by <strong>Dom Kapelewski</strong></span>
+			<span class="bcg-brand-tagline">for <strong><?php echo esc_html( get_bloginfo( 'name' ) ); ?></strong></span>
 		</div>
 	</div>
 	<div class="bcg-plugin-header-actions">

@@ -2033,11 +2033,14 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	scrollbar-color: var(--bcg-border) transparent;
 }
 
-/* Preview panel — fills right column */
+/* Preview panel — sticky right column, same height as viewport */
 .bcg-template-panel-preview {
-	min-height: 600px;
+	position: sticky;
+	top: 100px;
+	height: calc(100vh - 120px);
 	display: flex;
 	flex-direction: column;
+	overflow: hidden;
 }
 
 /* Settings tab nav */
@@ -2121,19 +2124,43 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	flex-shrink: 0;
 }
 
+/* Device toggle — pill segmented control */
 .bcg-preview-device-toggle {
 	display: flex;
-	gap: 4px;
+	background: var(--bcg-bg-input);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 3px;
+	gap: 2px;
 }
 
 .bcg-preview-device {
-	padding: 5px 9px !important;
+	display: inline-flex !important;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 12px !important;
+	font-family: var(--bcg-font-body) !important;
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	color: var(--bcg-text-muted) !important;
+	background: transparent !important;
+	border: none !important;
+	border-radius: calc(var(--bcg-radius) - 2px) !important;
+	cursor: pointer;
+	transition: all var(--bcg-transition);
+	box-shadow: none !important;
+	line-height: 1 !important;
+}
+
+.bcg-preview-device:hover {
+	color: var(--bcg-text-secondary) !important;
 }
 
 .bcg-preview-device.active {
-	background: var(--bcg-accent-dim) !important;
-	border-color: rgba(230, 53, 41, 0.3) !important;
-	color: var(--bcg-accent) !important;
+	background: var(--bcg-bg-raised) !important;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.35) !important;
+	color: var(--bcg-text-primary) !important;
+	border-color: transparent !important;
 }
 
 .bcg-preview-status {
@@ -2143,12 +2170,15 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	margin-left: auto;
 }
 
-/* Preview iframe wrapper — light bg to show email content naturally */
+/* Preview iframe wrapper — scrollable, light bg shows email content */
 .bcg-preview-frame-wrapper {
 	flex: 1;
-	padding: 16px;
-	background: #e8e8e8;
-	min-height: 500px;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 20px;
+	background: #dce0e8;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
 
 .bcg-preview-overlay-container {
@@ -2156,18 +2186,34 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	width: 100%;
 }
 
+/* Section overlay buttons injected by JS sit on top of iframe */
+#bcg-section-overlays {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 10;
+}
+
+#bcg-section-overlays > * {
+	pointer-events: auto;
+}
+
 .bcg-preview-iframe {
 	width: 100%;
 	border: none;
-	min-height: 500px;
+	min-height: 600px;
+	height: auto;
 	background: #ffffff;
-	border-radius: 4px;
-	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+	border-radius: 6px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0,0,0,0.2);
 	display: block;
 }
 
 .bcg-preview-iframe.bcg-preview-mobile {
-	max-width: 380px;
+	max-width: 390px;
 	margin: 0 auto;
 }
 
