@@ -921,15 +921,20 @@ class BCG_Settings {
 		$label       = $args['label'] ?? '';
 
 		?>
-		<label for="<?php echo esc_attr( $option_name ); ?>">
-			<input
-				type="checkbox"
-				id="<?php echo esc_attr( $option_name ); ?>"
-				name="<?php echo esc_attr( $option_name ); ?>"
-				value="yes"
-				<?php checked( $value, 'yes' ); ?>
-			/>
-			<?php echo esc_html( $label ); ?>
+		<label class="bcg-settings-toggle" for="<?php echo esc_attr( $option_name ); ?>">
+			<span class="bcg-toggle-switch">
+				<input
+					type="checkbox"
+					id="<?php echo esc_attr( $option_name ); ?>"
+					name="<?php echo esc_attr( $option_name ); ?>"
+					value="yes"
+					<?php checked( $value, 'yes' ); ?>
+				/>
+				<span class="bcg-toggle-thumb"></span>
+			</span>
+			<?php if ( $label ) : ?>
+				<span class="bcg-settings-toggle-desc"><?php echo esc_html( $label ); ?></span>
+			<?php endif; ?>
 		</label>
 		<?php
 	}

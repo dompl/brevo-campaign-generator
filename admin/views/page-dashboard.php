@@ -186,7 +186,7 @@ $status_badge_classes = array(
 			}
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with esc_url, esc_attr, esc_html above.
-			echo implode( ' | ', $tab_links );
+			echo implode( '', $tab_links );
 			?>
 		</ul>
 	</div>
@@ -211,13 +211,13 @@ $status_badge_classes = array(
 			/>
 			<input
 				type="submit"
-				class="button"
+				class="bcg-btn-secondary"
 				value="<?php esc_attr_e( 'Search', 'brevo-campaign-generator' ); ?>"
 			/>
 			<?php if ( ! empty( $current_search ) ) : ?>
 				<a
 					href="<?php echo esc_url( add_query_arg( 'status', $current_status, $base_url ) ); ?>"
-					class="button"
+					class="bcg-btn-secondary"
 				>
 					<?php esc_html_e( 'Clear', 'brevo-campaign-generator' ); ?>
 				</a>
@@ -425,20 +425,18 @@ $status_badge_classes = array(
 							<div class="bcg-action-buttons">
 								<a
 									href="<?php echo esc_url( $edit_url ); ?>"
-									class="button button-small"
+									class="bcg-btn-sm bcg-btn-secondary"
 									title="<?php esc_attr_e( 'Edit', 'brevo-campaign-generator' ); ?>"
 								>
-									<span class="dashicons dashicons-edit" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span>
 									<?php esc_html_e( 'Edit', 'brevo-campaign-generator' ); ?>
 								</a>
 
 								<?php if ( ! empty( $campaign_row->template_html ) ) : ?>
 									<a
 										href="<?php echo esc_url( $edit_url . '&preview=1' ); ?>"
-										class="button button-small"
+										class="bcg-btn-sm bcg-btn-secondary"
 										title="<?php esc_attr_e( 'Preview', 'brevo-campaign-generator' ); ?>"
 									>
-										<span class="dashicons dashicons-visibility" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span>
 										<?php esc_html_e( 'Preview', 'brevo-campaign-generator' ); ?>
 									</a>
 								<?php endif; ?>
