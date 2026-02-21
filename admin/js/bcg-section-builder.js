@@ -486,13 +486,10 @@
 					var rangeMin  = field.min  !== undefined ? field.min  : 0;
 					var rangeMax  = field.max  !== undefined ? field.max  : 100;
 					var rangeStep = field.step !== undefined ? field.step : 1;
-					html  = '<div class="bcg-sb-field bcg-sb-field--range">';
-					html += '<label class="bcg-sb-field-label">' + self.escHtml( field.label ) + '</label>';
-					html += '<div class="bcg-sb-range-wrap">';
-					html += '<input type="range" class="bcg-sb-range-input" data-key="' + self.escAttr( field.key ) + '" min="' + rangeMin + '" max="' + rangeMax + '" step="' + rangeStep + '" value="' + self.escAttr( String( val ) ) + '" />';
-					html += '<span class="bcg-sb-range-value">' + self.escHtml( String( val ) ) + '</span>';
-					html += '</div>';
-					html += '</div>';
+					input  = '<div class="bcg-sb-range-wrap">';
+					input += '<input type="range" class="bcg-sb-range-input" data-key="' + self.escAttr( field.key ) + '" min="' + rangeMin + '" max="' + rangeMax + '" step="' + rangeStep + '" value="' + self.escAttr( String( value ) ) + '" />';
+					input += '<span class="bcg-sb-range-value">' + self.escHtml( String( value ) ) + '</span>';
+					input += '</div>';
 					break;
 
 				case 'number':
