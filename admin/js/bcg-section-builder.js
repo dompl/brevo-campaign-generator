@@ -39,6 +39,7 @@
 			this.bindToolbar();
 			this.bindPreviewModal();
 			this.bindLoadModal();
+			this.bindRequestModal();
 			this.renderPalette();
 			this.renderCanvas();
 		},
@@ -1477,6 +1478,88 @@
 		},
 
 		// ── Utilities ─────────────────────────────────────────────────────
+
+		/**
+		 * Bind the "Request a Section" modal.
+		 */
+		bindRequestModal: function () {
+			var self       = this;
+			var $modal     = $( '#bcg-sb-request-modal' );
+			var $nameInput  = $( '#bcg-req-name' );
+			var $emailInput = $( '#bcg-req-email' );
+
+			// Pre-fill user details if available.
+			if ( bcg_section_builder.current_user ) {
+				$nameInput.val( bcg_section_builder.current_user.name || '' );
+				$emailInput.val( bcg_section_builder.current_user.email || '' );
+			}
+
+			// Open modal.
+			$( '#bcg-sb-request-btn' ).on( 'click', function () {
+				$modal.show();
+			} );
+
+			// Close modal.
+			$( document ).on( 'click', '#bcg-sb-request-overlay, #bcg-sb-request-close, #bcg-sb-request-cancel', function () {
+				$modal.hide();
+			} );
+
+			// Submit request.
+			$( '#bcg-sb-request-submit' ).on( 'click', function () {
+				var type        = $( '#bcg-req-type' ).val();
+				var description = $.trim( $( '#bcg-req-description' ).val() );
+				var userName    = $.trim( $nameInput.val() );
+				var userEmail   = $.trim( $emailInput.val() );
+				var $status     = $( '#bcg-req-status' );
+
+				if ( ! type ) {
+					$status.removeClass( 'bcg-req-success' ).addClass( 'bcg-req-error' )
+						.text( 'Please select a section type.' ).show();
+					return;
+				}
+				if ( ! description ) {
+					$status.removeClass( 'bcg-req-success' ).addClass( 'bcg-req-error' )
+						.text( 'Please provide a description.' ).show();
+					return;
+				}
+
+				var $btn = $( this );
+				$btn.prop( 'disabled', true );
+				$status.hide();
+
+				$.post( bcg_section_builder.ajax_url, {
+					action:       'bcg_request_section',
+					nonce:        bcg_section_builder.nonce,
+					section_type: type,
+					description:  description,
+					user_name:    userName,
+					user_email:   userEmail
+				} )
+				.done( function ( response ) {
+					if ( response.success ) {
+						$status.removeClass( 'bcg-req-error' ).addClass( 'bcg-req-success' )
+							.text( response.data.message ).show();
+						setTimeout( function () {
+							$( '#bcg-req-type' ).val( '' );
+							$( '#bcg-req-description' ).val( '' );
+							$status.hide();
+							$modal.hide();
+						}, 2500 );
+					} else {
+						$status.removeClass( 'bcg-req-success' ).addClass( 'bcg-req-error' )
+							.text( response.data && response.data.message ? response.data.message : 'Error sending request.' )
+							.show();
+					}
+				} )
+				.fail( function () {
+					$status.removeClass( 'bcg-req-success' ).addClass( 'bcg-req-error' )
+						.text( 'Server error. Please try again.' ).show();
+				} )
+				.always( function () {
+					$btn.prop( 'disabled', false );
+				} );
+			} );
+		},
 
 		/**
 		 * Generate a UUID v4.

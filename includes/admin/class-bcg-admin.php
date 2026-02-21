@@ -119,6 +119,7 @@ class BCG_Admin {
 		add_action( 'wp_ajax_bcg_sb_delete_template',  array( $this, 'handle_sb_delete_template' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_all',     array( $this, 'handle_sb_generate_all' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_section', array( $this, 'handle_sb_generate_section' ) );
+		add_action( 'wp_ajax_bcg_request_section',     array( $this, 'handle_request_section' ) );
 	}
 
 	/**
@@ -505,6 +506,11 @@ class BCG_Admin {
 					'section_types'   => BCG_Section_Registry::get_all_for_js(),
 					'presets'         => BCG_Section_Presets::get_all_for_js(),
 					'currency_symbol' => $currency_symbol,
+					'current_user'    => array(
+						'name'  => wp_get_current_user()->display_name,
+						'email' => wp_get_current_user()->user_email,
+					),
+					'site_url'        => get_bloginfo( 'url' ),
 					'i18n'          => array(
 						'confirm_delete'   => __( 'Delete this section?', 'brevo-campaign-generator' ),
 						'unsaved_changes'  => __( 'You have unsaved changes. Leave anyway?', 'brevo-campaign-generator' ),
@@ -2880,6 +2886,63 @@ class BCG_Admin {
 		}
 
 		wp_send_json_success( array( 'settings' => $result ) );
+	}
+
+	/**
+	 * Handle section request submission.
+	 *
+	 * Sends an email to info@redfrogstudio.co.uk with the section details.
+	 *
+	 * @since  1.5.15
+	 * @return void
+	 */
+	public function handle_request_section(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$section_type = sanitize_text_field( wp_unslash( $_POST['section_type'] ?? '' ) );
+		$description  = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+		$user_name    = sanitize_text_field( wp_unslash( $_POST['user_name'] ?? '' ) );
+		$user_email   = sanitize_email( wp_unslash( $_POST['user_email'] ?? '' ) );
+
+		if ( empty( $section_type ) || empty( $description ) ) {
+			wp_send_json_error( array( 'message' => __( 'Section type and description are required.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$site_url   = get_bloginfo( 'url' );
+		$admin_url  = admin_url();
+		$plugin_ver = BCG_VERSION;
+		$date       = gmdate( 'Y-m-d H:i:s' ) . ' UTC';
+
+		$subject = sprintf( '[Section Request] %s — %s', $section_type, (string) wp_parse_url( $site_url, PHP_URL_HOST ) );
+
+		$body  = "A new section has been requested via the Brevo Campaign Generator plugin.\r\n\r\n";
+		$body .= "Section Type:   {$section_type}\r\n";
+		$body .= "Description:\r\n{$description}\r\n\r\n";
+		$body .= "--- Requester ---\r\n";
+		$body .= "Name:           {$user_name}\r\n";
+		$body .= "Email:          {$user_email}\r\n\r\n";
+		$body .= "--- Site Info ---\r\n";
+		$body .= "Site URL:       {$site_url}\r\n";
+		$body .= "Admin URL:      {$admin_url}\r\n";
+		$body .= "Plugin Version: {$plugin_ver}\r\n";
+		$body .= "Date:           {$date}\r\n";
+
+		$headers = array(
+			'Content-Type: text/plain; charset=UTF-8',
+			'Reply-To: ' . $user_name . ' <' . $user_email . '>',
+		);
+
+		$sent = wp_mail( 'info@redfrogstudio.co.uk', $subject, $body, $headers );
+
+		if ( $sent ) {
+			wp_send_json_success( array( 'message' => __( "Your request has been sent. We'll be in touch!", 'brevo-campaign-generator' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to send your request. Please try again.', 'brevo-campaign-generator' ) ) );
+		}
 	}
 
 	/**

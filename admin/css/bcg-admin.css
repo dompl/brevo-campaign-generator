@@ -4755,3 +4755,57 @@ body.bcg-admin-page .bcg-spin {
 	margin-top: 2px;
 	gap:        4px;
 }
+/* ── Section builder: request modal ── */
+.bcg-sb-request-content {
+	max-width: 560px;
+	width:     100%;
+}
+.bcg-sb-request-intro {
+	margin:      0 0 20px;
+	color:       var(--bcg-text-muted);
+	font-size:   13px;
+	line-height: 1.5;
+}
+.bcg-sb-request-body .bcg-form-row {
+	margin-bottom: 16px;
+}
+.bcg-sb-request-body .bcg-form-row label {
+	display:       block;
+	font-size:     12px;
+	font-weight:   600;
+	color:         var(--bcg-text);
+	margin-bottom: 6px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+.bcg-sb-request-body .bcg-required {
+	color: var(--bcg-danger, #e74c3c);
+}
+.bcg-form-row-2col {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+.bcg-sb-request-status {
+	padding:       10px 14px;
+	border-radius: 6px;
+	font-size:     13px;
+	margin-bottom: 16px;
+}
+.bcg-sb-request-status.bcg-req-success {
+	background: #ecfdf5;
+	color:      #065f46;
+	border:     1px solid #6ee7b7;
+}
+.bcg-sb-request-status.bcg-req-error {
+	background: #fef2f2;
+	color:      #991b1b;
+	border:     1px solid #fca5a5;
+}
+.bcg-sb-request-footer {
+	display:         flex;
+	justify-content: flex-end;
+	gap:             10px;
+	padding-top:     16px;
+	border-top:      1px solid var(--bcg-border);
+}

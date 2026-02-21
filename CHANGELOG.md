@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.15] — 2026-02-21
+
+### Added
+- **Request a Section** — New "Request a Section" button in the Section Builder toolbar opens a modal form where users can choose a section type, describe what they need, and send the request directly to Red Frog Studio. The email includes the site URL, admin URL, requester name/email, plugin version, and date. Name and email are pre-filled from the logged-in WordPress user.
+
+---
+
 ## [1.5.14] — 2026-02-21
 
 ### Added
