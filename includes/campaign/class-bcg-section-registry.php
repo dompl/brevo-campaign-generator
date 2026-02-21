@@ -274,6 +274,54 @@ class BCG_Section_Registry {
 				),
 			),
 
+			// ── Heading ───────────────────────────────────────────────────
+			'heading' => array(
+				'label'  => __( 'Heading', 'brevo-campaign-generator' ),
+				'icon'   => 'title',
+				'has_ai' => false,
+				'fields' => array(
+					array( 'key' => 'text',         'label' => __( 'Heading Text', 'brevo-campaign-generator' ),       'type' => 'text',     'default' => 'Section Heading' ),
+					array( 'key' => 'subtext',      'label' => __( 'Subtext', 'brevo-campaign-generator' ),            'type' => 'text',     'default' => '' ),
+					array( 'key' => 'font_size',    'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),     'type' => 'number',   'default' => 28 ),
+					array( 'key' => 'text_color',   'label' => __( 'Text Colour', 'brevo-campaign-generator' ),        'type' => 'color',    'default' => '#111111' ),
+					array( 'key' => 'bg_color',     'label' => __( 'Background Colour', 'brevo-campaign-generator' ),  'type' => 'color',    'default' => '#ffffff' ),
+					array( 'key' => 'alignment',    'label' => __( 'Alignment', 'brevo-campaign-generator' ),          'type' => 'select',   'default' => 'center',
+						'options' => array(
+							array( 'value' => 'left',   'label' => __( 'Left', 'brevo-campaign-generator' ) ),
+							array( 'value' => 'center', 'label' => __( 'Centre', 'brevo-campaign-generator' ) ),
+							array( 'value' => 'right',  'label' => __( 'Right', 'brevo-campaign-generator' ) ),
+						),
+					),
+					array( 'key' => 'accent_color', 'label' => __( 'Accent Colour', 'brevo-campaign-generator' ),     'type' => 'color',    'default' => '#e63529' ),
+					array( 'key' => 'show_accent',  'label' => __( 'Show Accent Line', 'brevo-campaign-generator' ),  'type' => 'toggle',   'default' => true ),
+					array( 'key' => 'padding',      'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),      'type' => 'number',   'default' => 30 ),
+				),
+			),
+
+			// ── List ──────────────────────────────────────────────────────
+			'list' => array(
+				'label'  => __( 'List', 'brevo-campaign-generator' ),
+				'icon'   => 'format_list_bulleted',
+				'has_ai' => false,
+				'fields' => array(
+					array( 'key' => 'heading',      'label' => __( 'Heading', 'brevo-campaign-generator' ),           'type' => 'text',   'default' => '' ),
+					array( 'key' => 'items',        'label' => __( 'List Items (JSON)', 'brevo-campaign-generator' ), 'type' => 'json',   'default' => '[{"text":"First item"},{"text":"Second item"},{"text":"Third item"}]' ),
+					array( 'key' => 'list_style',   'label' => __( 'List Style', 'brevo-campaign-generator' ),        'type' => 'select', 'default' => 'bullets',
+						'options' => array(
+							array( 'value' => 'bullets',  'label' => __( 'Bullets', 'brevo-campaign-generator' ) ),
+							array( 'value' => 'numbers',  'label' => __( 'Numbers', 'brevo-campaign-generator' ) ),
+							array( 'value' => 'checks',   'label' => __( 'Checkmarks', 'brevo-campaign-generator' ) ),
+							array( 'value' => 'none',     'label' => __( 'None', 'brevo-campaign-generator' ) ),
+						),
+					),
+					array( 'key' => 'text_color',   'label' => __( 'Text Colour', 'brevo-campaign-generator' ),       'type' => 'color',  'default' => '#333333' ),
+					array( 'key' => 'bg_color',     'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#ffffff' ),
+					array( 'key' => 'accent_color', 'label' => __( 'Accent / Icon Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#e63529' ),
+					array( 'key' => 'font_size',    'label' => __( 'Font Size (px)', 'brevo-campaign-generator' ),    'type' => 'number', 'default' => 15 ),
+					array( 'key' => 'padding',      'label' => __( 'Padding (px)', 'brevo-campaign-generator' ),      'type' => 'number', 'default' => 30 ),
+				),
+			),
+
 			// ── Footer ────────────────────────────────────────────────────
 			'footer' => array(
 				'label'  => __( 'Footer', 'brevo-campaign-generator' ),

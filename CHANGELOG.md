@@ -17,6 +17,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.1] — 2026-02-21
+
+### Added
+- **Pre-built section variant library** (`BCG_Section_Presets`) — ~30 curated section variants across 13 categories (Header, Hero, Heading, Text, Banner, Products, List, CTA, Coupon, Image, Divider, Spacer, Footer), each shipping with fully-configured settings so blocks look great the moment they land on the canvas
+- **2 new section types**: `heading` (standalone headline with accent line, configurable alignment and size) and `list` (bullet, numbered, checkmark, or plain list with AI-editable items) — both added to the registry, renderer, and presets library
+- **Categorised accordion palette** — Section Builder left panel now shows variants grouped by category with expand/collapse accordion headers; clicking any variant card adds that styled section to the canvas (replacing the previous flat list of abstract type buttons)
+- **Colour swatch per variant** — each palette card shows a small colour chip (`indicator_color`) giving an instant visual cue of the variant's background/style
+
+### Changed
+- `addSection()` now accepts an optional `presetSettings` argument; preset values are merged over type defaults so existing template load/generate flows are unaffected
+
+---
+
 ## [1.5.0] — 2026-02-21
 
 ### Added
@@ -169,7 +182,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.8...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.0...v1.5.1
+[1.5.0]: https://github.com/dompl/brevo-campaign-generator/compare/v1.4.0...v1.5.0
+[1.4.0]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.8...v1.4.0
 [1.3.8]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.7...v1.3.8
 [1.3.7]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.6...v1.3.7
 [1.3.6]: https://github.com/dompl/brevo-campaign-generator/compare/v1.3.5...v1.3.6

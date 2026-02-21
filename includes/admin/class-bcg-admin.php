@@ -497,9 +497,10 @@ class BCG_Admin {
 				'bcg-section-builder',
 				'bcg_section_builder',
 				array(
-					'ajax_url'      => admin_url( 'admin-ajax.php' ),
-					'nonce'         => wp_create_nonce( 'bcg_nonce' ),
-					'section_types' => BCG_Section_Registry::get_all_for_js(),
+					'ajax_url'        => admin_url( 'admin-ajax.php' ),
+					'nonce'           => wp_create_nonce( 'bcg_nonce' ),
+					'section_types'   => BCG_Section_Registry::get_all_for_js(),
+					'presets'         => BCG_Section_Presets::get_all_for_js(),
 					'currency_symbol' => $currency_symbol,
 					'i18n'          => array(
 						'confirm_delete'   => __( 'Delete this section?', 'brevo-campaign-generator' ),

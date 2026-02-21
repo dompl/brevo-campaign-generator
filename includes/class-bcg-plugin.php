@@ -128,6 +128,7 @@ class BCG_Plugin {
 		require_once $includes . 'campaign/class-bcg-section-registry.php';
 		require_once $includes . 'campaign/class-bcg-section-renderer.php';
 		require_once $includes . 'campaign/class-bcg-section-ai.php';
+		require_once $includes . 'campaign/class-bcg-section-presets.php';
 
 		// AI classes.
 		require_once $includes . 'ai/class-bcg-openai.php';

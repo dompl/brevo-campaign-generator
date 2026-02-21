@@ -100,6 +100,10 @@ class BCG_Section_Renderer {
 				return self::render_divider( $s, $max_width );
 			case 'spacer':
 				return self::render_spacer( $s );
+			case 'heading':
+				return self::render_heading( $s, $max_width, $font_family );
+			case 'list':
+				return self::render_list( $s, $max_width, $font_family );
 			case 'footer':
 				return self::render_footer( $s, $max_width, $font_family );
 			default:
@@ -706,6 +710,158 @@ class BCG_Section_Renderer {
 			$mw, $mw, $mw, $bg,
 			esc_attr( $font ), $tc, $text,
 			$links_html
+		);
+	}
+
+	/**
+	 * Render heading section.
+	 *
+	 * @since  1.5.0
+	 * @param  array  $s     Settings.
+	 * @param  int    $mw    Max width.
+	 * @param  string $font  Font family.
+	 * @return string
+	 */
+	private static function render_heading( array $s, int $mw, string $font ): string {
+		$bg      = esc_attr( $s['bg_color'] );
+		$tc      = esc_attr( $s['text_color'] );
+		$accent  = esc_attr( $s['accent_color'] );
+		$align   = in_array( $s['alignment'], array( 'left', 'center', 'right' ), true ) ? $s['alignment'] : 'center';
+		$fsize   = (int) $s['font_size'];
+		$pad     = (int) $s['padding'];
+		$text    = esc_html( $s['text'] );
+		$subtext = esc_html( $s['subtext'] ?? '' );
+
+		$subtext_html = '';
+		if ( $subtext ) {
+			$subtext_html = sprintf(
+				'<tr><td style="padding-top:8px;text-align:%s;"><p style="font-family:%s;font-size:15px;color:%s;margin:0;padding:0;">%s</p></td></tr>',
+				$align, esc_attr( $font ), $tc, $subtext
+			);
+		}
+
+		$accent_html = '';
+		if ( ! empty( $s['show_accent'] ) ) {
+			$margin_css = 'center' === $align ? 'margin:10px auto 0;' : ( 'right' === $align ? 'margin:10px 0 0 auto;' : 'margin:10px 0 0;' );
+			$accent_html = sprintf(
+				'<tr><td style="text-align:%s;"><div style="width:48px;height:3px;background-color:%s;border-radius:2px;%s"></div></td></tr>',
+				$align, $accent, $margin_css
+			);
+		}
+
+		return sprintf(
+			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
+				<tr>
+					<td style="padding:%dpx 30px;">
+						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td style="text-align:%s;">
+									<h2 style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;padding:0;line-height:1.2;">%s</h2>
+								</td>
+							</tr>
+							%s
+							%s
+						</table>
+					</td>
+				</tr>
+			</table>',
+			$mw, $mw, $mw, $bg,
+			$pad,
+			$align,
+			esc_attr( $font ), $fsize, $tc, $text,
+			$accent_html,
+			$subtext_html
+		);
+	}
+
+	/**
+	 * Render list section.
+	 *
+	 * @since  1.5.0
+	 * @param  array  $s     Settings.
+	 * @param  int    $mw    Max width.
+	 * @param  string $font  Font family.
+	 * @return string
+	 */
+	private static function render_list( array $s, int $mw, string $font ): string {
+		$bg      = esc_attr( $s['bg_color'] );
+		$tc      = esc_attr( $s['text_color'] );
+		$accent  = esc_attr( $s['accent_color'] );
+		$fsize   = (int) $s['font_size'];
+		$pad     = (int) $s['padding'];
+		$style   = $s['list_style'] ?? 'bullets';
+
+		// Decode items JSON.
+		$items_data = is_string( $s['items'] ) ? json_decode( $s['items'], true ) : $s['items'];
+		if ( ! is_array( $items_data ) ) {
+			$items_data = array();
+		}
+
+		// Heading.
+		$heading_html = '';
+		if ( ! empty( $s['heading'] ) ) {
+			$heading_html = sprintf(
+				'<tr><td style="padding-bottom:14px;"><h3 style="font-family:%s;font-size:18px;font-weight:700;color:%s;margin:0;padding:0;">%s</h3></td></tr>',
+				esc_attr( $font ), $tc, esc_html( $s['heading'] )
+			);
+		}
+
+		// Build list items.
+		$rows = '';
+		foreach ( $items_data as $i => $item ) {
+			$item_text = esc_html( is_array( $item ) ? ( $item['text'] ?? '' ) : (string) $item );
+
+			if ( 'checks' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:16px;line-height:1;">&#10003;</span>';
+			} elseif ( 'numbers' === $style ) {
+				$marker = '<span style="font-family:' . esc_attr( $font ) . ';font-size:' . $fsize . 'px;font-weight:700;color:' . $accent . ';">' . ( $i + 1 ) . '.</span>';
+			} elseif ( 'bullets' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:20px;line-height:1;">&#8226;</span>';
+			} else {
+				$marker = '';
+			}
+
+			$rows .= sprintf(
+				'<tr>
+					<td style="padding:5px 0;vertical-align:top;">
+						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								%s
+								<td style="padding-left:%s;font-family:%s;font-size:%dpx;color:%s;line-height:1.6;">%s</td>
+							</tr>
+						</table>
+					</td>
+				</tr>',
+				$marker ? '<td style="width:24px;vertical-align:top;padding-top:2px;">' . $marker . '</td>' : '',
+				$marker ? '0' : '0px',
+				esc_attr( $font ),
+				$fsize,
+				$tc,
+				$item_text
+			);
+		}
+
+		return sprintf(
+			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
+				<tr>
+					<td style="padding:%dpx 30px;">
+						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+							%s
+							<tr>
+								<td>
+									<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+										%s
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>',
+			$mw, $mw, $mw, $bg,
+			$pad,
+			$heading_html,
+			$rows
 		);
 	}
 

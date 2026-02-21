@@ -45,34 +45,89 @@
 		// ── Palette ─────────────────────────────────────────────────────────
 
 		/**
-		 * Render section type buttons in the palette panel.
+		 * Render pre-built section variant cards, grouped by category accordion.
 		 */
 		renderPalette: function () {
-			var self   = this;
-			var $list  = $( '#bcg-sb-palette' );
+			var self    = this;
+			var $list   = $( '#bcg-sb-palette' );
+			var presets = self.presets;
 			$list.empty();
 
-			$.each( self.types, function ( slug, type ) {
-				var $item = $( '<button>' )
+			if ( ! presets || presets.length === 0 ) {
+				$list.html( '<p class="bcg-sb-palette-empty">No sections available.</p>' );
+				return;
+			}
+
+			$.each( presets, function ( i, cat ) {
+				var $group = $( '<div>' ).addClass( 'bcg-sb-palette-group' );
+
+				var $header = $( '<button>' )
 					.attr( 'type', 'button' )
-					.addClass( 'bcg-sb-palette-item' )
-					.attr( 'data-type', slug )
+					.addClass( 'bcg-sb-palette-group-header' )
+					.attr( 'aria-expanded', 'true' )
 					.html(
-						'<span class="material-icons-outlined">' + self.escHtml( type.icon || 'widgets' ) + '</span>' +
-						'<span class="bcg-sb-palette-label">' + self.escHtml( type.label ) + '</span>'
+						'<span class="material-icons-outlined bcg-sb-palette-cat-icon">' + self.escHtml( cat.icon || 'widgets' ) + '</span>' +
+						'<span class="bcg-sb-palette-group-label">' + self.escHtml( cat.label ) + '</span>' +
+						'<span class="bcg-sb-palette-group-chevron material-icons-outlined">expand_less</span>'
 					);
-				$list.append( $item );
+
+				var $variants = $( '<div>' ).addClass( 'bcg-sb-palette-variants' );
+
+				$.each( cat.variants, function ( j, variant ) {
+					var $card = $( '<button>' )
+						.attr( 'type', 'button' )
+						.addClass( 'bcg-sb-variant-card' )
+						.attr( 'data-type', variant.type )
+						.attr( 'data-variant-id', variant.id )
+						.attr( 'title', variant.description || '' )
+						.html(
+							'<span class="bcg-sb-variant-swatch" style="background:' + self.escAttr( variant.indicator_color || '#888888' ) + ';"></span>' +
+							'<span class="bcg-sb-variant-label">' + self.escHtml( variant.label ) + '</span>'
+						);
+					$variants.append( $card );
+				} );
+
+				$group.append( $header ).append( $variants );
+				$list.append( $group );
 			} );
 		},
 
 		/**
-		 * Bind click events on the palette items.
+		 * Bind click events on palette variant cards and category accordion toggles.
 		 */
 		bindPalette: function () {
 			var self = this;
-			$( document ).on( 'click', '.bcg-sb-palette-item', function () {
-				var type = $( this ).data( 'type' );
-				self.addSection( type );
+
+			// Variant card click — add section with preset settings.
+			$( document ).on( 'click', '.bcg-sb-variant-card', function () {
+				var type      = $( this ).data( 'type' );
+				var variantId = $( this ).data( 'variant-id' );
+				var presets   = self.presets;
+				var settings  = null;
+
+				// Find preset settings by variant ID.
+				$.each( presets, function ( i, cat ) {
+					$.each( cat.variants, function ( j, v ) {
+						if ( v.id === variantId ) {
+							settings = v.settings || {};
+							return false;
+						}
+					} );
+					if ( settings !== null ) { return false; }
+				} );
+
+				self.addSection( type, settings );
+			} );
+
+			// Category header click — toggle accordion.
+			$( document ).on( 'click', '.bcg-sb-palette-group-header', function () {
+				var $btn      = $( this );
+				var $variants = $btn.next( '.bcg-sb-palette-variants' );
+				var expanded  = $btn.attr( 'aria-expanded' ) === 'true';
+
+				$btn.attr( 'aria-expanded', String( ! expanded ) );
+				$btn.find( '.bcg-sb-palette-group-chevron' ).text( expanded ? 'expand_more' : 'expand_less' );
+				$variants.toggleClass( 'bcg-sb-palette-variants-collapsed', expanded );
 			} );
 		},
 
@@ -142,7 +197,11 @@
 
 			// "Add Section" footer button — scroll palette into view on mobile.
 			$( '#bcg-sb-add-section-btn' ).on( 'click', function () {
-				$( '#bcg-sb-palette' ).find( '.bcg-sb-palette-item' ).first().focus();
+				var $palette = $( '.bcg-sb-palette' );
+				if ( $palette.length ) {
+					$palette[ 0 ].scrollIntoView( { behavior: 'smooth', block: 'start' } );
+				}
+				$( '.bcg-sb-variant-card' ).first().focus();
 			} );
 		},
 
@@ -215,18 +274,25 @@
 		// ── Section CRUD ──────────────────────────────────────────────────
 
 		/**
-		 * Add a new section of the given type with default settings.
+		 * Add a new section of the given type.
 		 *
-		 * @param {string} type Section type slug.
+		 * @param {string}      type          Section type slug.
+		 * @param {Object|null} presetSettings Optional preset settings to overlay on type defaults.
 		 */
-		addSection: function ( type ) {
+		addSection: function ( type, presetSettings ) {
 			var typeDef = this.types[ type ];
 			if ( ! typeDef ) { return; }
+
+			// Start with type defaults; overlay with preset values if provided.
+			var baseSettings = $.extend( true, {}, typeDef.defaults || {} );
+			var settings = presetSettings
+				? $.extend( true, baseSettings, presetSettings )
+				: baseSettings;
 
 			var section = {
 				id:       this.generateUUID(),
 				type:     type,
-				settings: $.extend( true, {}, typeDef.defaults || {} )
+				settings: settings
 			};
 
 			this.sections.push( section );
