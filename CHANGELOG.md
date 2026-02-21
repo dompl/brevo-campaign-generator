@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.6] — 2026-02-21
+
+### Fixed
+- **Load Template and Preview modals not rendering as popups** — `.bcg-modal` had no CSS definition; the modal divs rendered as in-flow elements at the bottom of the page rather than as fixed overlays. Added full modal base CSS: `.bcg-modal` (fixed inset, flex centre), `.bcg-modal-overlay` (semi-transparent backdrop with blur), `.bcg-modal-content` (raised surface, shadow, border-radius), `.bcg-modal-header`, `.bcg-modal-close`. Both the Load Template and Preview Email modals now open as proper centred pop-ups.
+
+### Changed
+- **Palette accordion — closed by default** — all category groups now start collapsed (`aria-expanded="false"`, `expand_more` chevron, `.bcg-sb-palette-variants-collapsed` added on render). Click a category header to expand its variants.
+- **Palette accordion — exclusive (one open at a time)** — opening any category group automatically closes the previously open group, keeping the palette compact.
+
+---
+
 ## [1.5.5] — 2026-02-21
 
 ### Changed
@@ -220,7 +231,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.5...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.6...HEAD
+[1.5.6]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.5...v1.5.6
 [1.5.5]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.2...v1.5.3
