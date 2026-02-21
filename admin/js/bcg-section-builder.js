@@ -509,6 +509,10 @@
 						'</div>';
 					break;
 
+								case 'product_select':
+					input = self.renderProductSelectField( id, key, sectionId, value );
+					break;
+
 				case 'json':
 					input = '<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea bcg-sb-json-field" data-key="' + self.escAttr( key ) + '" rows="4" spellcheck="false">' +
 						self.escHtml( typeof value === 'string' ? value : JSON.stringify( value, null, 2 ) ) +
@@ -596,6 +600,166 @@
 			$body.on( 'click', '.bcg-sb-settings-ai-btn', function () {
 				var id = $( this ).data( 'id' );
 				self.generateSection( id );
+			} );
+
+			// Product select widgets — bind each one found in the panel.
+			$body.find( '.bcg-sb-product-select' ).each( function () {
+				self.bindProductSelectWidget( $( this ), sectionId );
+			} );
+		},
+
+
+		// ── Product Select Widget ─────────────────────────────────────────
+
+		/**
+		 * Build the HTML for a product AJAX-select field.
+		 *
+		 * @param  {string} fieldId   Generated field ID prefix.
+		 * @param  {string} key       Settings key (product_ids).
+		 * @param  {string} sectionId Section UUID.
+		 * @param  {string} value     Current comma-separated product IDs.
+		 * @return {string} HTML string.
+		 */
+		renderProductSelectField: function ( fieldId, key, sectionId, value ) {
+			var self    = this;
+			var section = self.getSectionById( sectionId );
+			var meta    = ( section && section.settings._product_meta ) ? section.settings._product_meta : {};
+			var ids     = value ? String( value ).split( ',' ).map( function ( v ) { return parseInt( v, 10 ); } ).filter( Boolean ) : [];
+
+			var tagsHtml = '';
+			ids.forEach( function ( pid ) {
+				var m = meta[ pid ] || {};
+				tagsHtml += self.renderProductTag( pid, m.name || '#' + pid, m.image_url || '' );
+			} );
+
+			return '<div class="bcg-sb-product-select" data-key="' + self.escAttr( key ) + '" data-section-id="' + self.escAttr( sectionId ) + '">' +
+				'<div class="bcg-sb-product-tags" id="bcg-sb-ptags-' + fieldId + '">' + tagsHtml + '</div>' +
+				'<div class="bcg-product-search-wrapper">' +
+					'<input type="text" class="bcg-sb-product-search-input bcg-input" id="bcg-sb-ps-' + fieldId + '" ' +
+						'placeholder="Search products..." autocomplete="off" />' +
+					'<div class="bcg-product-search-results" id="bcg-sb-ps-results-' + fieldId + '" style="display:none;"></div>' +
+				'</div>' +
+				'</div>';
+		},
+
+		/**
+		 * Build HTML for a single selected-product tag chip.
+		 *
+		 * @param  {number} pid      Product ID.
+		 * @param  {string} name     Product name.
+		 * @param  {string} imageUrl Thumbnail URL.
+		 * @return {string}
+		 */
+		renderProductTag: function ( pid, name, imageUrl ) {
+			var imgHtml = imageUrl
+				? '<img src="' + this.escAttr( imageUrl ) + '" alt="" class="bcg-manual-product-thumb" />' : '';
+			return '<span class="bcg-manual-product-tag" data-product-id="' + parseInt( pid, 10 ) + '">' +
+				imgHtml +
+				'<span class="bcg-manual-product-name">' + this.escHtml( String( name ) ) + '</span>' +
+				'<button type="button" class="bcg-manual-product-remove" title="Remove">&times;</button>' +
+				'</span>';
+		},
+
+		/**
+		 * Bind interaction for a product select widget inside the settings panel.
+		 *
+		 * @param {jQuery} $widget   The .bcg-sb-product-select element.
+		 * @param {string} sectionId Section UUID.
+		 */
+		bindProductSelectWidget: function ( $widget, sectionId ) {
+			var self    = this;
+			var key     = $widget.data( 'key' );
+			var $search = $widget.find( '.bcg-sb-product-search-input' );
+			var $results = $widget.find( '.bcg-product-search-results' );
+			var $tags    = $widget.find( '.bcg-sb-product-tags' );
+			var timer    = null;
+
+			function getIds() {
+				var ids = [];
+				$tags.find( '.bcg-manual-product-tag' ).each( function () {
+					ids.push( parseInt( $( this ).data( 'product-id' ), 10 ) );
+				} );
+				return ids;
+			}
+
+			function sync() {
+				self.updateSetting( sectionId, key, getIds().join( ',' ) );
+			}
+
+			// Search on input.
+			$search.on( 'input', function () {
+				var q = $.trim( $( this ).val() );
+				clearTimeout( timer );
+				if ( q.length < 2 ) { $results.hide().empty(); return; }
+				timer = setTimeout( function () {
+					self.searchProductsForWidget( q, $results, getIds() );
+				}, 350 );
+			} );
+
+			// Close on outside click.
+			$( document ).on( 'click.bcgps-' + sectionId, function ( e ) {
+				if ( ! $( e.target ).closest( $widget ).length ) { $results.hide(); }
+			} );
+
+			// Add product from results.
+			$results.on( 'click', '.bcg-search-result-item', function () {
+				var pid    = parseInt( $( this ).data( 'product-id' ), 10 );
+				var name   = String( $( this ).data( 'product-name' ) );
+				var imgUrl = String( $( this ).data( 'product-image' ) || '' );
+				if ( getIds().indexOf( pid ) !== -1 ) { return; }
+				$tags.append( self.renderProductTag( pid, name, imgUrl ) );
+				// Store display meta so tags survive panel re-render.
+				var section = self.getSectionById( sectionId );
+				if ( section ) {
+					if ( ! section.settings._product_meta ) { section.settings._product_meta = {}; }
+					section.settings._product_meta[ pid ] = { name: name, image_url: imgUrl };
+				}
+				$search.val( '' );
+				$results.hide().empty();
+				sync();
+			} );
+
+			// Remove product tag.
+			$tags.on( 'click', '.bcg-manual-product-remove', function () {
+				$( this ).closest( '.bcg-manual-product-tag' ).remove();
+				sync();
+			} );
+		},
+
+		/**
+		 * Fire AJAX product search and populate the results dropdown.
+		 *
+		 * @param {string} query       Keyword.
+		 * @param {jQuery} $results    Dropdown container.
+		 * @param {Array}  selectedIds Already-selected product IDs.
+		 */
+		searchProductsForWidget: function ( query, $results, selectedIds ) {
+			var self = this;
+			$.ajax( {
+				url:  bcg_section_builder.ajax_url,
+				type: 'POST',
+				data: { action: 'bcg_search_products', nonce: bcg_section_builder.nonce, keyword: query },
+				success: function ( res ) {
+					if ( ! res.success || ! res.data.products ) { $results.hide().empty(); return; }
+					var html = '';
+					$.each( res.data.products, function ( i, p ) {
+						var added = selectedIds.indexOf( p.id ) !== -1;
+						html += '<div class="bcg-search-result-item' + ( added ? ' bcg-search-result-selected' : '' ) + '"' +
+							' data-product-id="' + parseInt( p.id, 10 ) + '"' +
+							' data-product-name="' + self.escAttr( p.name ) + '"' +
+							' data-product-image="' + self.escAttr( p.image_url || '' ) + '">' +
+							'<img src="' + self.escAttr( p.image_url || '' ) + '" alt="" class="bcg-search-result-img" />' +
+							'<div class="bcg-search-result-info">' +
+								'<span class="bcg-search-result-name">' + self.escHtml( p.name ) + '</span>' +
+								'<span class="bcg-search-result-meta">' + p.price_html + '</span>' +
+							'</div>' +
+							( added ? '<span class="bcg-search-result-added">Added</span>' : '' ) +
+							'</div>';
+					} );
+					if ( ! html ) { html = '<div class="bcg-search-no-results">No products found.</div>'; }
+					$results.html( html ).show();
+				},
+				error: function () { $results.hide().empty(); }
 			} );
 		},
 

@@ -189,7 +189,7 @@ class BCG_Section_Registry {
 				'icon'   => 'shopping_cart',
 				'has_ai' => true,
 				'fields' => array(
-					array( 'key' => 'product_ids',   'label' => __( 'Product IDs (comma-separated)', 'brevo-campaign-generator' ), 'type' => 'text',   'default' => '' ),
+					array( 'key' => 'product_ids',   'label' => __( 'Products', 'brevo-campaign-generator' ), 'type' => 'product_select', 'default' => '' ),
 					array( 'key' => 'columns',       'label' => __( 'Columns', 'brevo-campaign-generator' ),                       'type' => 'select', 'default' => '1',
 						'options' => array(
 							array( 'value' => '1', 'label' => '1' ),

@@ -176,6 +176,12 @@ class BCG_Plugin {
 		// Load text domain for translations.
 		$this->load_textdomain();
 
+		// Run upgrade routines when the stored version is older than current.
+		if ( version_compare( get_option( 'bcg_version', '0.0.0' ), BCG_VERSION, '<' ) ) {
+			BCG_Activator::maybe_upgrade();
+			update_option( 'bcg_version', BCG_VERSION );
+		}
+
 		// Admin-only hooks.
 		if ( is_admin() ) {
 			$this->admin    = new BCG_Admin();

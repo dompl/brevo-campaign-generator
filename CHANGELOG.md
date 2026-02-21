@@ -17,6 +17,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.4] — 2026-02-21
+
+### Fixed
+- **`bcg_section_templates` table missing on update** — the table was only created during plugin activation. Sites that updated by replacing plugin files without re-activating never had the table, causing a fatal DB error in the Section Builder. `maybe_upgrade()` now runs a `dbDelta` for the table when the stored version is older than 1.5.3, and `BCG_Plugin::run()` triggers `maybe_upgrade()` on every page load whenever the stored `bcg_version` option is behind the current `BCG_VERSION` constant.
+
+### Changed
+- **Products field — AJAX product picker** — the `product_ids` field in the Section Builder Products section settings panel is now a full AJAX product search widget (same UI pattern as the campaign builder) instead of a plain text input. Searching for a product by name shows a dropdown of results with thumbnail and price; selected products appear as removable tag chips. Product display metadata (name, image URL) is stored in `_product_meta` alongside the comma-separated `product_ids` value so tags survive panel re-renders.
+
+---
+
 ## [1.5.3] — 2026-02-21
 
 ### Fixed
@@ -202,7 +212,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.2...HEAD
+[Unreleased]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.4...HEAD
+[1.5.4]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.3...v1.5.4
+[1.5.3]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/dompl/brevo-campaign-generator/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/dompl/brevo-campaign-generator/compare/v1.4.0...v1.5.0

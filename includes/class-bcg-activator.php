@@ -341,6 +341,29 @@ class BCG_Activator {
 				$wpdb->query( "ALTER TABLE {$table} ADD COLUMN section_template_id BIGINT UNSIGNED NULL AFTER sections_json" );
 			}
 		}
+
+		// Ensure bcg_section_templates table exists (may be missing on sites
+		// that updated without re-activating — introduced in 1.5.0).
+		if ( version_compare( $installed_version, '1.5.3', '<' ) ) {
+			global $wpdb;
+
+			$charset_collate      = $wpdb->get_charset_collate();
+			$section_tpl_table    = $wpdb->prefix . 'bcg_section_templates';
+
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+			$sql_section_templates = "CREATE TABLE {$section_tpl_table} (
+				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+				name VARCHAR(255) NOT NULL,
+				description TEXT,
+				sections LONGTEXT NOT NULL,
+				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+				updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				PRIMARY KEY  (id)
+			) {$charset_collate};";
+
+			dbDelta( $sql_section_templates );
+		}
 	}
 
 	/**
