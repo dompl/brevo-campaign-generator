@@ -2938,6 +2938,7 @@ class BCG_Admin {
 		$context['tone']     = sanitize_text_field( $context['tone'] ?? 'Professional' );
 		$context['language'] = sanitize_text_field( $context['language'] ?? 'English' );
 		$context['theme']    = sanitize_text_field( $context['theme'] ?? '' );
+		$context['prompt']   = sanitize_textarea_field( $context['prompt'] ?? '' );
 
 		$updated_sections = BCG_Section_AI::generate_all( $sections, $context );
 
@@ -2978,6 +2979,7 @@ class BCG_Admin {
 		$context['tone']     = sanitize_text_field( $context['tone'] ?? 'Professional' );
 		$context['language'] = sanitize_text_field( $context['language'] ?? 'English' );
 		$context['theme']    = sanitize_text_field( $context['theme'] ?? '' );
+		$context['prompt']   = sanitize_textarea_field( $context['prompt'] ?? '' );
 
 		$result = BCG_Section_AI::generate( $type, $settings, $context );
 

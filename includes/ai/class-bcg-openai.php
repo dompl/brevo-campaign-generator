@@ -85,6 +85,14 @@ class BCG_OpenAI {
 	public int $last_tokens_used = 0;
 
 	/**
+	 * Optional campaign-level AI prompt set by the Section Builder.
+	 * Injected into the system prompt for all generation calls on this instance.
+	 *
+	 * @var string
+	 */
+	private string $campaign_prompt = '';
+
+	/**
 	 * Constructor.
 	 *
 	 * Retrieves the API key and model from WordPress options.
@@ -97,6 +105,18 @@ class BCG_OpenAI {
 	public function __construct( string $api_key = '', string $model = '' ) {
 		$this->api_key = ! empty( $api_key ) ? $api_key : get_option( 'bcg_openai_api_key', '' );
 		$this->model   = ! empty( $model ) ? $model : get_option( 'bcg_openai_model', 'gpt-4o-mini' );
+	}
+
+	/**
+	 * Set a campaign-level AI prompt to inject into all generation calls.
+	 *
+	 * @since 1.5.32
+	 *
+	 * @param string $prompt The free-form campaign prompt from the Section Builder.
+	 * @return void
+	 */
+	public function set_campaign_prompt( string $prompt ): void {
+		$this->campaign_prompt = sanitize_textarea_field( $prompt );
 	}
 
 	// ─── Public Generation Methods ─────────────────────────────────────
@@ -606,6 +626,9 @@ class BCG_OpenAI {
 		}
 		if ( ! empty( $products_context ) ) {
 			$prompt .= "\n\nProduct context: " . $products_context;
+		}
+		if ( ! empty( $this->campaign_prompt ) ) {
+			$prompt .= "\n\nCampaign brief from the user: " . $this->campaign_prompt;
 		}
 
 		return $prompt;

@@ -17,6 +17,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.32] — 2026-02-23
+
+### Added
+- **Section Builder: AI Prompt modal** — new "AI Prompt" button next to Generate with AI opens a popup where you describe the full email brief: visual feel, purpose, key offer, number of sections, tone. This prompt is injected into every generation call for this session alongside AI Trainer context
+- **Section Builder: mandatory AI prompt** — clicking "Generate with AI" when no prompt has been entered opens the prompt modal automatically instead of generating with a blank brief; the prompt field is required to proceed
+
+### Fixed
+- **Section Builder: tone and language dropdowns not working** — root cause was jQuery delegated document click handlers interfering with each other; trigger is now bound directly on the static elements so `stopPropagation()` correctly prevents the close-all handler from firing
+
+### Changed
+- **AI generation now uses full context stack** — system prompt for every Section Builder generation call now includes: AI Trainer store context + AI Trainer product context + user-supplied AI prompt brief, all injected through `BCG_OpenAI::build_system_prompt()`
+
+---
+
 ## [1.5.31] — 2026-02-23
 
 ### Added

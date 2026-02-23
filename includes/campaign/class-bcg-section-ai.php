@@ -40,6 +40,11 @@ class BCG_Section_AI {
 	public static function generate( string $type, array $settings, array $context ): array|\WP_Error {
 		$openai = new BCG_OpenAI();
 
+		// Inject campaign-level AI prompt if provided.
+		if ( ! empty( $context['prompt'] ) ) {
+			$openai->set_campaign_prompt( $context['prompt'] );
+		}
+
 		$tone     = sanitize_text_field( $context['tone'] ?? 'Professional' );
 		$language = sanitize_text_field( $context['language'] ?? 'English' );
 

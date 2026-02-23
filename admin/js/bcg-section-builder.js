@@ -26,6 +26,7 @@
 		previewTimer: null,   // Debounce handle for live preview.
 		currentTemplateId: 0, // ID of the loaded/saved template (0 = new).
 		mediaFrame:   null,   // WP media frame instance.
+		aiPrompt:     '',     // Free-form AI prompt describing the email theme.
 
 		i18n:    bcg_section_builder.i18n          || {},
 		types:   bcg_section_builder.section_types || {},
@@ -41,6 +42,7 @@
 			this.bindPreviewModal();
 			this.bindLoadModal();
 			this.bindRequestModal();
+			this.bindPromptModal();
 			this.renderPalette();
 			this.renderCanvas();
 
@@ -1076,15 +1078,21 @@
 				self.openLoadModal();
 			} );
 
+			$( '#bcg-sb-prompt-btn' ).on( 'click', function () {
+				self.openPromptModal( false );
+			} );
+
 			$( '#bcg-sb-generate-btn' ).on( 'click', function () {
 				self.generateAll();
 			} );
 
 			// ── Toolbar custom dropdowns (tone + language) ─────────────
-			$( document ).on( 'click', '.bcg-sb-toolbar-select .bcg-select-trigger', function ( e ) {
+			// Direct binding (not delegated) so stopPropagation() works correctly.
+			$( '.bcg-sb-toolbar-select .bcg-select-trigger' ).on( 'click', function ( e ) {
 				e.stopPropagation();
 				var $trigger = $( this );
-				var $menu    = $trigger.next( '.bcg-select-menu' );
+				var $wrapper = $trigger.closest( '.bcg-sb-toolbar-select' );
+				var $menu    = $wrapper.find( '.bcg-select-menu' );
 				var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
 				// Close all toolbar menus.
 				$( '.bcg-sb-toolbar-select .bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
@@ -1097,6 +1105,7 @@
 				}
 			} );
 
+			// Options are inside fixed-position menus — use document delegation.
 			$( document ).on( 'click', '.bcg-sb-toolbar-select .bcg-select-option', function ( e ) {
 				e.stopPropagation();
 				var $opt     = $( this );
@@ -1461,6 +1470,12 @@
 			var self    = this;
 			var $btn    = $( '#bcg-sb-generate-btn' );
 
+			// Require AI prompt before generating.
+			if ( ! self.aiPrompt.trim() ) {
+				self.openPromptModal( true ); // true = trigger generate after save
+				return;
+			}
+
 			// If canvas is empty, build a sensible default layout first.
 			if ( self.sections.length === 0 ) {
 				self.showStatus( 'Building template structure…', 'loading' );
@@ -1561,9 +1576,10 @@
 		 */
 		buildContext: function () {
 			return {
-				theme:    $( '#bcg-sb-context-theme' ).val()            || '',
+				theme:    $( '#bcg-sb-context-theme' ).val()                   || '',
 				tone:     $( '#bcg-sb-context-tone' ).attr( 'data-value' )     || 'Professional',
 				language: $( '#bcg-sb-context-language' ).attr( 'data-value' ) || 'English',
+				prompt:   this.aiPrompt || '',
 				products: []  // Products are resolved server-side from section settings.
 			};
 		},
@@ -1602,6 +1618,70 @@
 		},
 
 		// ── Utilities ─────────────────────────────────────────────────────
+
+		/**
+		 * Bind the AI Prompt modal.
+		 */
+		bindPromptModal: function () {
+			var self = this;
+
+			// Close on overlay or cancel.
+			$( document ).on( 'click', '#bcg-sb-prompt-overlay, #bcg-sb-prompt-close, #bcg-sb-prompt-cancel', function () {
+				$( '#bcg-sb-prompt-modal' ).hide();
+				$( '#bcg-sb-prompt-modal' ).removeData( 'triggerGenerate' );
+			} );
+
+			// Save prompt only.
+			$( '#bcg-sb-prompt-save' ).on( 'click', function () {
+				var val = $.trim( $( '#bcg-sb-ai-prompt' ).val() );
+				if ( ! val ) {
+					self.showPromptError( 'Please enter a prompt before saving.' );
+					return;
+				}
+				self.aiPrompt = val;
+				$( '#bcg-sb-prompt-modal' ).hide().removeData( 'triggerGenerate' );
+				self.showStatus( 'AI prompt saved.', 'success' );
+			} );
+
+			// Save & Generate.
+			$( '#bcg-sb-prompt-generate' ).on( 'click', function () {
+				var val = $.trim( $( '#bcg-sb-ai-prompt' ).val() );
+				if ( ! val ) {
+					self.showPromptError( 'Please describe the email theme before generating.' );
+					return;
+				}
+				self.aiPrompt = val;
+				$( '#bcg-sb-prompt-modal' ).hide().removeData( 'triggerGenerate' );
+				self.generateAll();
+			} );
+		},
+
+		/**
+		 * Open the AI Prompt modal.
+		 *
+		 * @param {boolean} triggerGenerateAfter If true, "Save & Generate" fires generateAll after save.
+		 */
+		openPromptModal: function ( triggerGenerateAfter ) {
+			var $modal = $( '#bcg-sb-prompt-modal' );
+			// Restore any previously saved prompt into the textarea.
+			if ( this.aiPrompt ) {
+				$( '#bcg-sb-ai-prompt' ).val( this.aiPrompt );
+			}
+			$( '#bcg-sb-prompt-status' ).hide();
+			$modal.data( 'triggerGenerate', !! triggerGenerateAfter ).show();
+			setTimeout( function () { $( '#bcg-sb-ai-prompt' ).trigger( 'focus' ); }, 100 );
+		},
+
+		/**
+		 * Show an error in the prompt modal.
+		 *
+		 * @param {string} msg
+		 */
+		showPromptError: function ( msg ) {
+			var $status = $( '#bcg-sb-prompt-status' );
+			$status.removeClass( 'bcg-req-success' ).addClass( 'bcg-req-error' )
+				.text( msg ).show();
+		},
 
 		/**
 		 * Bind the "Request a Section" modal.
