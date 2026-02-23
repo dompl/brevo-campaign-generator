@@ -17,6 +17,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.31] — 2026-02-23
+
+### Added
+- **Section Builder: Generate from empty canvas** — clicking "Generate All with AI" on an empty canvas now auto-builds a sensible default layout (Header → Hero → Products → Text → CTA → Footer) before running AI generation; previously nothing happened
+- **Section Builder: custom tone/language dropdowns** — the toolbar Tone and Language selectors are now styled custom dropdowns (matching the rest of the plugin UI) instead of native browser selects
+
+### Changed
+- **Section Builder: Generate button repositioned** — the "Generate All with AI" button moved next to the Theme/Tone/Language context controls so its purpose is immediately clear
+
+### Fixed
+- **AI Trainer critical error** — page was calling a non-existent `bcg_plugin_header()` function; replaced with correct `require` for the plugin header partial
+- **Campaign count + Generate button on one row** — "Number of Campaigns" dropdown and Generate button are now on the same line in the wizard actions area
+- **Mailing list subscriber count** — suppressed "(0 subscribers)" label when Brevo bulk API returns no count data; lists now display name only when count is unavailable
+
+---
+
 ## [1.5.30] — 2026-02-23
 
 ### Added

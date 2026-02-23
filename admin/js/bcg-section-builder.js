@@ -1080,6 +1080,43 @@
 				self.generateAll();
 			} );
 
+			// ── Toolbar custom dropdowns (tone + language) ─────────────
+			$( document ).on( 'click', '.bcg-sb-toolbar-select .bcg-select-trigger', function ( e ) {
+				e.stopPropagation();
+				var $trigger = $( this );
+				var $menu    = $trigger.next( '.bcg-select-menu' );
+				var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
+				// Close all toolbar menus.
+				$( '.bcg-sb-toolbar-select .bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$( '.bcg-sb-toolbar-select .bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+				if ( ! isOpen ) {
+					var rect = $trigger[0].getBoundingClientRect();
+					$menu.css( { position: 'fixed', top: ( rect.bottom + 2 ) + 'px', left: rect.left + 'px', width: Math.max( rect.width, 140 ) + 'px', 'z-index': 999999 } );
+					$menu.removeClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'true' );
+				}
+			} );
+
+			$( document ).on( 'click', '.bcg-sb-toolbar-select .bcg-select-option', function ( e ) {
+				e.stopPropagation();
+				var $opt     = $( this );
+				var $wrapper = $opt.closest( '.bcg-sb-toolbar-select' );
+				var val      = String( $opt.data( 'value' ) );
+				$wrapper.attr( 'data-value', val );
+				$wrapper.find( '.bcg-select-value' ).text( $opt.text() );
+				$wrapper.find( '.bcg-select-option' ).removeClass( 'is-selected' ).attr( 'aria-selected', 'false' );
+				$opt.addClass( 'is-selected' ).attr( 'aria-selected', 'true' );
+				$wrapper.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$wrapper.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+			} );
+
+			$( document ).on( 'click', function ( e ) {
+				if ( ! $( e.target ).closest( '.bcg-sb-toolbar-select' ).length ) {
+					$( '.bcg-sb-toolbar-select .bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+					$( '.bcg-sb-toolbar-select .bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+				}
+			} );
+
 			$( '#bcg-sb-preview-btn' ).on( 'click', function () {
 				self.openPreviewModal();
 			} );
@@ -1402,11 +1439,35 @@
 		/**
 		 * Generate AI content for all has_ai sections.
 		 */
+		/**
+		 * Build a default sensible section layout when the canvas is empty.
+		 * Adds sections silently (no per-section re-render) then renders once.
+		 */
+		buildDefaultTemplate: function () {
+			var self         = this;
+			var defaultTypes = [ 'header', 'hero', 'products', 'text', 'cta', 'footer' ];
+			for ( var i = 0; i < defaultTypes.length; i++ ) {
+				var type    = defaultTypes[ i ];
+				var typeDef = self.types[ type ];
+				if ( ! typeDef ) { continue; }
+				var settings = $.extend( true, {}, typeDef.defaults || {} );
+				self.sections.push( { id: self.generateUUID(), type: type, settings: settings } );
+			}
+			self.renderCanvas();
+			self.markDirty();
+		},
+
 		generateAll: function () {
 			var self    = this;
-			var context = self.buildContext();
 			var $btn    = $( '#bcg-sb-generate-btn' );
 
+			// If canvas is empty, build a sensible default layout first.
+			if ( self.sections.length === 0 ) {
+				self.showStatus( 'Building template structure…', 'loading' );
+				self.buildDefaultTemplate();
+			}
+
+			var context = self.buildContext();
 			$btn.prop( 'disabled', true );
 			self.showStatus( self.i18n.generating || 'Generating AI content…', 'loading' );
 
@@ -1500,9 +1561,9 @@
 		 */
 		buildContext: function () {
 			return {
-				theme:    $( '#bcg-sb-context-theme' ).val()    || '',
-				tone:     $( '#bcg-sb-context-tone' ).val()     || 'Professional',
-				language: $( '#bcg-sb-context-language' ).val() || 'English',
+				theme:    $( '#bcg-sb-context-theme' ).val()            || '',
+				tone:     $( '#bcg-sb-context-tone' ).attr( 'data-value' )     || 'Professional',
+				language: $( '#bcg-sb-context-language' ).attr( 'data-value' ) || 'English',
 				products: []  // Products are resolved server-side from section settings.
 			};
 		},

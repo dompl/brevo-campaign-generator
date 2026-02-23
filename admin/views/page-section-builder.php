@@ -35,21 +35,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 					class="bcg-input-sm"
 					placeholder="<?php esc_attr_e( 'Campaign theme (e.g. Summer Sale)', 'brevo-campaign-generator' ); ?>"
 				/>
-				<select id="bcg-sb-context-tone" class="bcg-select-sm">
-					<option value="Professional"><?php esc_html_e( 'Professional', 'brevo-campaign-generator' ); ?></option>
-					<option value="Friendly"><?php esc_html_e( 'Friendly', 'brevo-campaign-generator' ); ?></option>
-					<option value="Urgent"><?php esc_html_e( 'Urgent', 'brevo-campaign-generator' ); ?></option>
-					<option value="Playful"><?php esc_html_e( 'Playful', 'brevo-campaign-generator' ); ?></option>
-					<option value="Luxury"><?php esc_html_e( 'Luxury', 'brevo-campaign-generator' ); ?></option>
-				</select>
-				<select id="bcg-sb-context-language" class="bcg-select-sm">
-					<option value="English"><?php esc_html_e( 'English', 'brevo-campaign-generator' ); ?></option>
-					<option value="Polish"><?php esc_html_e( 'Polish', 'brevo-campaign-generator' ); ?></option>
-					<option value="French"><?php esc_html_e( 'French', 'brevo-campaign-generator' ); ?></option>
-					<option value="German"><?php esc_html_e( 'German', 'brevo-campaign-generator' ); ?></option>
-					<option value="Spanish"><?php esc_html_e( 'Spanish', 'brevo-campaign-generator' ); ?></option>
-					<option value="Italian"><?php esc_html_e( 'Italian', 'brevo-campaign-generator' ); ?></option>
-				</select>
+
+				<!-- Tone — custom dropdown -->
+				<div class="bcg-select-wrapper bcg-sb-toolbar-select" id="bcg-sb-context-tone" data-value="Professional">
+					<button type="button" class="bcg-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+						<span class="bcg-select-value"><?php esc_html_e( 'Professional', 'brevo-campaign-generator' ); ?></span>
+						<span class="material-icons-outlined" style="font-size:16px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>
+					</button>
+					<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">
+						<div class="bcg-select-option is-selected" data-value="Professional"><?php esc_html_e( 'Professional', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Friendly"><?php esc_html_e( 'Friendly', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Urgent"><?php esc_html_e( 'Urgent', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Playful"><?php esc_html_e( 'Playful', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Luxury"><?php esc_html_e( 'Luxury', 'brevo-campaign-generator' ); ?></div>
+					</div>
+				</div>
+
+				<!-- Language — custom dropdown -->
+				<div class="bcg-select-wrapper bcg-sb-toolbar-select" id="bcg-sb-context-language" data-value="English">
+					<button type="button" class="bcg-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+						<span class="bcg-select-value"><?php esc_html_e( 'English', 'brevo-campaign-generator' ); ?></span>
+						<span class="material-icons-outlined" style="font-size:16px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>
+					</button>
+					<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">
+						<div class="bcg-select-option is-selected" data-value="English"><?php esc_html_e( 'English', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Polish"><?php esc_html_e( 'Polish', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="French"><?php esc_html_e( 'French', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="German"><?php esc_html_e( 'German', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Spanish"><?php esc_html_e( 'Spanish', 'brevo-campaign-generator' ); ?></div>
+						<div class="bcg-select-option" data-value="Italian"><?php esc_html_e( 'Italian', 'brevo-campaign-generator' ); ?></div>
+					</div>
+				</div>
+
+				<button type="button" id="bcg-sb-generate-btn" class="bcg-btn-ai bcg-btn-sm">
+					<span class="material-icons-outlined">auto_awesome</span>
+					<?php esc_html_e( 'Generate with AI', 'brevo-campaign-generator' ); ?>
+				</button>
 			</div>
 		</div>
 
@@ -60,11 +81,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php esc_html_e( 'Load Template', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
-
-			<button type="button" id="bcg-sb-generate-btn" class="bcg-btn-ai bcg-btn-sm">
-				<span class="material-icons-outlined">auto_awesome</span>
-				<?php esc_html_e( 'Generate All with AI', 'brevo-campaign-generator' ); ?>
-			</button>
 
 			<button type="button" id="bcg-sb-preview-btn" class="bcg-btn-secondary bcg-btn-sm">
 				<span class="material-icons-outlined">preview</span>

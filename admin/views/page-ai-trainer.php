@@ -28,7 +28,7 @@ if ( isset( $_POST['bcg_ai_trainer_save'] ) ) {
 $company  = get_option( 'bcg_ai_trainer_company', '' );
 $products = get_option( 'bcg_ai_trainer_products', '' );
 ?>
-<?php bcg_plugin_header(); ?>
+<?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 
 <div class="bcg-wrap">
 
