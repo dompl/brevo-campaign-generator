@@ -294,10 +294,13 @@ class BCG_Admin {
 		$settings_obj   = new BCG_Settings();
 		$credit_balance = $this->get_current_user_credit_balance();
 
+		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
+		// Each entry shows in the "What's New" modal so users see real release notes.
 		$whats_new_items = array(
-			array( 'icon' => 'check_circle',   'text' => __( 'All modals (Preview, Load Template, AI Prompt, What\'s New) now open correctly in front of the blur overlay', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'linear_scale',   'text' => __( 'Wizard step indicator is now fully visible — no longer hidden behind the sticky plugin header', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'title',          'text' => __( 'Step titles are now white and the connector line sits centred between the step circles', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'view_column',    'text' => __( 'New section type: Hero Split — image on one side, text on the other, with switchable left/right placement and a dedicated text panel background colour', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'auto_awesome',   'text' => __( 'AI layout builder now includes Hero Split as an option — it can appear automatically in AI-generated email layouts', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'record_voice_over', 'text' => __( 'AI Prompt modal: voice input, Save Prompt, and Save & Generate with AI buttons added', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'dashboard_customize', 'text' => __( 'AI now redesigns the layout structure (not just the text) when you generate with a custom prompt', 'brevo-campaign-generator' ) ),
 		);
 
 		$bcg_data = array(
