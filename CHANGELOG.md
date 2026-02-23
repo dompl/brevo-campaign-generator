@@ -17,6 +17,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.33] — 2026-02-23
+
+### Added
+- **Version badge in plugin header** — version number shown next to the Brevo logo on every plugin page; click it to reopen the What's New popup at any time
+- **What's New popup** — automatically shows once when you first visit after a plugin update, listing plain-language release notes for the current version; dismissed with "Got it" and never shown again until the next update
+- **AI Prompt modal redesign** — better padding, organised hint list in a styled box, info note using consistent CSS classes, removed confusing "Save Prompt" button; only "Cancel" and "Generate with AI" remain
+
+### Fixed
+- **Section Builder modals rendering behind blurred overlay** — AI Prompt and Preview Email modals were appearing under the backdrop because the Section Builder page was missing from the `is_bcg_page()` check, preventing the required `bcg-admin-page` body class from being added; all modal CSS is now applied correctly
+- **Documentation updated** — `docs/architecture.md` rewritten to accurately reflect the current feature set including all section types, Section Builder, AI Trainer, What's New system, and admin page inventory
+
+---
+
 ## [1.5.32] — 2026-02-23
 
 ### Added

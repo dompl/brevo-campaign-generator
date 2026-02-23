@@ -27,6 +27,9 @@ $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 			<span class="bcg-brand-plugin-name">Brevo Campaign Generator</span>
 			<span class="bcg-brand-tagline">for <strong><?php echo esc_html( get_bloginfo( 'name' ) ); ?></strong></span>
 		</div>
+		<button type="button" class="bcg-version-badge" id="bcg-version-badge" title="<?php esc_attr_e( "Click to see what's new", 'brevo-campaign-generator' ); ?>">
+			v<?php echo esc_html( BCG_VERSION ); ?>
+		</button>
 	</div>
 	<div class="bcg-plugin-header-actions">
 		<a href="<?php echo esc_url( $credits_url ); ?>" class="bcg-header-credits">
@@ -38,3 +41,4 @@ $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-settings' ) ); ?>" class="bcg-header-nav-link <?php echo ( isset( $_GET['page'] ) && $_GET['page'] === 'bcg-settings' ) ? 'is-active' : ''; // phpcs:ignore ?>">Settings</a>
 	</div>
 </div>
+<?php require_once BCG_PLUGIN_DIR . 'admin/views/partials/whats-new-modal.php'; ?>

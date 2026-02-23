@@ -283,57 +283,54 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 
 	<!-- ── AI Prompt Modal ───────────────────────────────────────────── -->
-	<div id="bcg-sb-prompt-modal" class="bcg-modal" style="display:none;">
+	<div id="bcg-sb-prompt-modal" class="bcg-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="bcg-sb-prompt-title">
 		<div class="bcg-modal-overlay" id="bcg-sb-prompt-overlay"></div>
 		<div class="bcg-modal-content bcg-sb-prompt-content">
 
 			<div class="bcg-modal-header">
 				<span class="material-icons-outlined" style="color:var(--bcg-accent);font-size:20px;flex-shrink:0;">edit_note</span>
-				<h3><?php esc_html_e( 'AI Prompt — Describe Your Email', 'brevo-campaign-generator' ); ?></h3>
-				<button type="button" class="bcg-modal-close" id="bcg-sb-prompt-close">
+				<h3 id="bcg-sb-prompt-title"><?php esc_html_e( 'AI Prompt', 'brevo-campaign-generator' ); ?></h3>
+				<button type="button" class="bcg-modal-close" id="bcg-sb-prompt-close" aria-label="<?php esc_attr_e( 'Close', 'brevo-campaign-generator' ); ?>">
 					<span class="material-icons-outlined">close</span>
 				</button>
 			</div>
 
 			<div class="bcg-sb-prompt-body">
-				<p class="description" style="margin-bottom:14px;">
-					<?php esc_html_e( 'Tell the AI exactly what kind of email you want. The more detail you provide, the better the result. Describe:', 'brevo-campaign-generator' ); ?>
-				</p>
-				<ul class="bcg-sb-prompt-hints" style="margin:0 0 16px 18px;color:var(--bcg-text-muted);font-size:13px;line-height:1.8;">
-					<li><?php esc_html_e( 'The purpose or occasion (e.g. Black Friday sale, new product launch, seasonal promotion)', 'brevo-campaign-generator' ); ?></li>
-					<li><?php esc_html_e( 'The visual feel (e.g. dark and bold, clean and minimal, bright and energetic)', 'brevo-campaign-generator' ); ?></li>
-					<li><?php esc_html_e( 'Key message or offer (e.g. 25% off all drill bits, free shipping this week)', 'brevo-campaign-generator' ); ?></li>
-					<li><?php esc_html_e( 'How many sections and what types (e.g. hero banner, 3 products, a coupon, and a footer)', 'brevo-campaign-generator' ); ?></li>
-					<li><?php esc_html_e( 'Tone or personality (e.g. authoritative and expert, friendly and casual)', 'brevo-campaign-generator' ); ?></li>
-				</ul>
+
+				<div class="bcg-sb-prompt-hint-box">
+					<p class="bcg-sb-prompt-hint-title"><?php esc_html_e( 'What to include in your prompt:', 'brevo-campaign-generator' ); ?></p>
+					<ul class="bcg-sb-prompt-hints">
+						<li><?php esc_html_e( 'Purpose or occasion — e.g. Black Friday, product launch, seasonal sale', 'brevo-campaign-generator' ); ?></li>
+						<li><?php esc_html_e( 'Visual feel — e.g. dark and bold, clean and minimal, bright and energetic', 'brevo-campaign-generator' ); ?></li>
+						<li><?php esc_html_e( 'Key message or offer — e.g. 25% off drill bits, free shipping this week', 'brevo-campaign-generator' ); ?></li>
+						<li><?php esc_html_e( 'Layout — e.g. hero banner, 3 products, a coupon, and a footer', 'brevo-campaign-generator' ); ?></li>
+						<li><?php esc_html_e( 'Tone — e.g. authoritative and expert, friendly and casual', 'brevo-campaign-generator' ); ?></li>
+					</ul>
+				</div>
 
 				<textarea
 					id="bcg-sb-ai-prompt"
-					class="bcg-textarea"
+					class="bcg-textarea bcg-sb-prompt-textarea"
 					rows="7"
-					placeholder="<?php esc_attr_e( 'e.g. Create a bold summer sale email for our diamond tools range. Dark background with bright orange accents. Feature 3 best-selling products with short punchy descriptions. Include a 20% discount coupon. Tone should be confident and direct — we\'re speaking to trade professionals who value quality and efficiency.', 'brevo-campaign-generator' ); ?>"
-					style="width:100%;box-sizing:border-box;"
+					placeholder="<?php esc_attr_e( 'e.g. Create a bold summer sale email for our diamond tools range. Dark background with bright orange accents. Feature 3 best-selling products with short punchy descriptions. Include a 20% discount coupon. Tone: confident and direct — speaking to trade professionals who value quality.', 'brevo-campaign-generator' ); ?>"
 				></textarea>
 
-				<p class="description" style="margin-top:8px;font-size:11px;">
-					<span class="material-icons-outlined" style="font-size:13px;vertical-align:middle;color:var(--bcg-accent);">info</span>
-					<?php esc_html_e( 'This prompt is also combined with your AI Trainer context (store and product descriptions) for the most relevant results.', 'brevo-campaign-generator' ); ?>
-				</p>
+				<div class="bcg-sb-prompt-info-note">
+					<span class="material-icons-outlined">info</span>
+					<span><?php esc_html_e( 'Combined with your AI Trainer store and product context for fully on-brand results.', 'brevo-campaign-generator' ); ?></span>
+				</div>
 
-				<div id="bcg-sb-prompt-status" style="display:none;margin-top:10px;"></div>
-			</div>
+				<div id="bcg-sb-prompt-status" style="display:none;margin-top:12px;"></div>
 
-			<div class="bcg-modal-footer" style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--bcg-border);">
+			</div><!-- /.bcg-sb-prompt-body -->
+
+			<div class="bcg-whats-new-footer">
 				<button type="button" id="bcg-sb-prompt-cancel" class="bcg-btn-secondary">
 					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
 				</button>
-				<button type="button" id="bcg-sb-prompt-save" class="bcg-btn-secondary">
-					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">save</span>
-					<?php esc_html_e( 'Save Prompt', 'brevo-campaign-generator' ); ?>
-				</button>
 				<button type="button" id="bcg-sb-prompt-generate" class="bcg-btn-ai">
 					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">auto_awesome</span>
-					<?php esc_html_e( 'Save & Generate', 'brevo-campaign-generator' ); ?>
+					<?php esc_html_e( 'Generate with AI', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
 
