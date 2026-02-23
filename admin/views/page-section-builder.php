@@ -126,38 +126,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span class="material-icons-outlined">text_fields</span>
 					<?php esc_html_e( 'Default Font', 'brevo-campaign-generator' ); ?>
 				</label>
-				<div class="bcg-custom-select bcg-sb-font-select" style="min-width:170px;">
-					<select id="bcg-sb-default-font" class="bcg-custom-select-hidden">
-						<option value="Georgia, serif">Georgia</option>
-						<option value="'Times New Roman', Times, serif">Times New Roman</option>
-						<option value="'Playfair Display', Georgia, serif">Playfair Display</option>
-						<option value="Arial, Helvetica, sans-serif">Arial</option>
-						<option value="Verdana, Geneva, Tahoma, sans-serif">Verdana</option>
-						<option value="'Trebuchet MS', Tahoma, Geneva, sans-serif">Trebuchet MS</option>
-						<option value="'Roboto', Arial, sans-serif">Roboto</option>
-						<option value="'Open Sans', Arial, sans-serif">Open Sans</option>
-						<option value="'Lato', Arial, sans-serif">Lato</option>
-						<option value="'Montserrat', Arial, sans-serif">Montserrat</option>
-						<option value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</option>
-						<option value="Courier New, Courier, monospace">Courier New</option>
-					</select>
-					<div class="bcg-custom-select-trigger">
-						<span>Georgia</span>
-						<span class="material-icons-outlined">expand_more</span>
-					</div>
-					<div class="bcg-custom-select-options">
-						<div class="bcg-custom-select-option" data-value="Georgia, serif">Georgia</div>
-						<div class="bcg-custom-select-option" data-value="'Times New Roman', Times, serif">Times New Roman</div>
-						<div class="bcg-custom-select-option" data-value="'Playfair Display', Georgia, serif">Playfair Display</div>
-						<div class="bcg-custom-select-option" data-value="Arial, Helvetica, sans-serif">Arial</div>
-						<div class="bcg-custom-select-option" data-value="Verdana, Geneva, Tahoma, sans-serif">Verdana</div>
-						<div class="bcg-custom-select-option" data-value="'Trebuchet MS', Tahoma, Geneva, sans-serif">Trebuchet MS</div>
-						<div class="bcg-custom-select-option" data-value="'Roboto', Arial, sans-serif">Roboto</div>
-						<div class="bcg-custom-select-option" data-value="'Open Sans', Arial, sans-serif">Open Sans</div>
-						<div class="bcg-custom-select-option" data-value="'Lato', Arial, sans-serif">Lato</div>
-						<div class="bcg-custom-select-option" data-value="'Montserrat', Arial, sans-serif">Montserrat</div>
-						<div class="bcg-custom-select-option" data-value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</div>
-						<div class="bcg-custom-select-option" data-value="Courier New, Courier, monospace">Courier New</div>
+				<div class="bcg-select-wrapper bcg-sb-custom-select" id="bcg-sb-font-wrapper" style="min-width:170px;">
+					<button type="button" class="bcg-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+						<span class="bcg-select-value" id="bcg-sb-font-label">Georgia</span>
+						<span class="material-icons-outlined" style="font-size:18px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>
+					</button>
+					<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">
+						<div class="bcg-select-option is-selected" data-value="Georgia, serif">Georgia</div>
+						<div class="bcg-select-option" data-value="'Times New Roman', Times, serif">Times New Roman</div>
+						<div class="bcg-select-option" data-value="'Playfair Display', Georgia, serif">Playfair Display</div>
+						<div class="bcg-select-option" data-value="Arial, Helvetica, sans-serif">Arial</div>
+						<div class="bcg-select-option" data-value="Verdana, Geneva, Tahoma, sans-serif">Verdana</div>
+						<div class="bcg-select-option" data-value="'Trebuchet MS', Tahoma, Geneva, sans-serif">Trebuchet MS</div>
+						<div class="bcg-select-option" data-value="'Roboto', Arial, sans-serif">Roboto</div>
+						<div class="bcg-select-option" data-value="'Open Sans', Arial, sans-serif">Open Sans</div>
+						<div class="bcg-select-option" data-value="'Lato', Arial, sans-serif">Lato</div>
+						<div class="bcg-select-option" data-value="'Montserrat', Arial, sans-serif">Montserrat</div>
+						<div class="bcg-select-option" data-value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</div>
+						<div class="bcg-select-option" data-value="Courier New, Courier, monospace">Courier New</div>
 					</div>
 				</div>
 			</div>

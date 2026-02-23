@@ -54,19 +54,17 @@
 				this.globalDefaults.font_family = "Georgia, serif";
 			}
 			// Populate font dropdown initial value.
-			var $fontSelect = $( '#bcg-sb-default-font' );
-			if ( $fontSelect.length ) {
-				$fontSelect.val( this.globalDefaults.font_family );
-				// Update the custom select display label.
+			var savedFont = this.globalDefaults.font_family;
+			var $fontWrapper = $( '#bcg-sb-font-wrapper' );
+			if ( $fontWrapper.length && savedFont ) {
 				var fontLabel = '';
 				$.each( self.fonts, function ( i, f ) {
-					if ( f.value === self.globalDefaults.font_family ) {
-						fontLabel = f.label;
-						return false;
-					}
+					if ( f.value === savedFont ) { fontLabel = f.label; return false; }
 				} );
 				if ( fontLabel ) {
-					$fontSelect.closest( '.bcg-custom-select' ).find( '.bcg-custom-select-trigger span' ).text( fontLabel );
+					$fontWrapper.find( '.bcg-select-value' ).text( fontLabel );
+					$fontWrapper.find( '.bcg-select-option' ).removeClass( 'is-selected' );
+					$fontWrapper.find( '.bcg-select-option[data-value="' + savedFont.replace( /"/g, '\\"' ) + '"]' ).addClass( 'is-selected' );
 				}
 			}
 
@@ -1210,9 +1208,43 @@
 				self.applyPrimaryColour();
 			} );
 
-			// Default font change.
-			$( document ).on( 'change', '#bcg-sb-default-font', function () {
-				self.updateGlobalDefault( 'font_family', $( this ).val() );
+			// Default font — custom select trigger.
+			$( document ).on( 'click', '#bcg-sb-font-wrapper .bcg-select-trigger', function ( e ) {
+				e.stopPropagation();
+				var $trigger = $( this );
+				var $menu    = $trigger.next( '.bcg-select-menu' );
+				var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
+				// Close any other open menus.
+				$( '.bcg-select-menu' ).not( $menu ).addClass( 'bcg-dropdown-closed' );
+				$( '.bcg-select-trigger' ).not( $trigger ).attr( 'aria-expanded', 'false' );
+				if ( isOpen ) {
+					$menu.addClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'false' );
+				} else {
+					var rect = $trigger[0].getBoundingClientRect();
+					$menu.css( {
+						position: 'fixed',
+						top:      ( rect.bottom + 4 ) + 'px',
+						left:     rect.left + 'px',
+						width:    rect.width + 'px',
+						zIndex:   99999,
+					} ).removeClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'true' );
+				}
+			} );
+
+			// Default font — option selected.
+			$( document ).on( 'click', '#bcg-sb-font-wrapper .bcg-select-option', function ( e ) {
+				e.stopPropagation();
+				var $opt     = $( this );
+				var $wrapper = $( '#bcg-sb-font-wrapper' );
+				var val      = String( $opt.data( 'value' ) );
+				$wrapper.find( '.bcg-select-value' ).text( $opt.text() );
+				$wrapper.find( '.bcg-select-option' ).removeClass( 'is-selected' ).attr( 'aria-selected', 'false' );
+				$opt.addClass( 'is-selected' ).attr( 'aria-selected', 'true' );
+				$wrapper.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$wrapper.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+				self.updateGlobalDefault( 'font_family', val );
 			} );
 		},
 
