@@ -1518,19 +1518,19 @@ class BCG_Settings {
 			wp_send_json_error( array( 'message' => $error_msg ) );
 		}
 
-		\$lists = array();
+		$lists = array();
 
-		if ( isset( \$body['lists'] ) && is_array( \$body['lists'] ) ) {
-			foreach ( \$body['lists'] as \$list ) {
-				\$lists[] = array(
-					'id'               => \$list['id'],
-					'name'             => \$list['name'],
-					'totalSubscribers' => (int) ( \$list['totalSubscribers'] ?? 0 ),
+		if ( isset( $body['lists'] ) && is_array( $body['lists'] ) ) {
+			foreach ( $body['lists'] as $list ) {
+				$lists[] = array(
+					'id'               => $list['id'],
+					'name'             => $list['name'],
+					'totalSubscribers' => (int) ( $list['totalSubscribers'] ?? 0 ),
 				);
 			}
 		}
 
-		wp_send_json_success( array( 'lists' => \$lists ) );
+		wp_send_json_success( array( 'lists' => $lists ) );
 	}
 
 	// ─── API Connection Tests ───────────────────────────────────────────
