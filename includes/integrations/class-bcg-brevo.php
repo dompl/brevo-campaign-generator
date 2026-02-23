@@ -87,7 +87,7 @@ class BCG_Brevo {
 	 * @param string|null $api_key Optional. Override the stored API key.
 	 */
 	public function __construct( ?string $api_key = null ) {
-		$this->api_key = $api_key ?? (string) get_option( 'bcg_brevo_api_key', '' );
+		$this->api_key = $api_key ?? bcg_get_api_key( 'bcg_brevo_api_key' );
 	}
 
 	// -------------------------------------------------------------------------

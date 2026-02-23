@@ -69,6 +69,48 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 
 	<?php settings_errors( 'bcg_campaign' ); ?>
 
+	<div class="bcg-wizard-steps" id="bcg-wizard-steps" role="progressbar">
+		<div class="bcg-wizard-step active" data-step="1">
+			<div class="bcg-wizard-step-circle">1</div>
+			<div class="bcg-wizard-step-info">
+				<span class="bcg-wizard-step-title"><?php esc_html_e( 'Email Template', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-wizard-step-desc"><?php esc_html_e( 'Choose your email layout', 'brevo-campaign-generator' ); ?></span>
+			</div>
+		</div>
+		<div class="bcg-wizard-step-connector"></div>
+		<div class="bcg-wizard-step" data-step="2">
+			<div class="bcg-wizard-step-circle">2</div>
+			<div class="bcg-wizard-step-info">
+				<span class="bcg-wizard-step-title"><?php esc_html_e( 'Campaign Basics', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-wizard-step-desc"><?php esc_html_e( 'Title, subject & mailing list', 'brevo-campaign-generator' ); ?></span>
+			</div>
+		</div>
+		<div class="bcg-wizard-step-connector"></div>
+		<div class="bcg-wizard-step" data-step="3">
+			<div class="bcg-wizard-step-circle">3</div>
+			<div class="bcg-wizard-step-info">
+				<span class="bcg-wizard-step-title"><?php esc_html_e( 'Products', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-wizard-step-desc"><?php esc_html_e( 'Which products to feature', 'brevo-campaign-generator' ); ?></span>
+			</div>
+		</div>
+		<div class="bcg-wizard-step-connector"></div>
+		<div class="bcg-wizard-step" data-step="4">
+			<div class="bcg-wizard-step-circle">4</div>
+			<div class="bcg-wizard-step-info">
+				<span class="bcg-wizard-step-title"><?php esc_html_e( 'Coupon', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-wizard-step-desc"><?php esc_html_e( 'Optional discount code', 'brevo-campaign-generator' ); ?></span>
+			</div>
+		</div>
+		<div class="bcg-wizard-step-connector"></div>
+		<div class="bcg-wizard-step" data-step="5">
+			<div class="bcg-wizard-step-circle">5</div>
+			<div class="bcg-wizard-step-info">
+				<span class="bcg-wizard-step-title"><?php esc_html_e( 'AI & Generate', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-wizard-step-desc"><?php esc_html_e( 'Tone, language & generation', 'brevo-campaign-generator' ); ?></span>
+			</div>
+		</div>
+	</div>
+
 	<!-- Notices container for JS-driven messages -->
 	<div id="bcg-wizard-notices"></div>
 
@@ -78,7 +120,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		<!-- ============================================================
 		     Section 1: Email Template
 		     ============================================================ -->
-		<div class="bcg-card bcg-wizard-section" id="bcg-section-template">
+		<div class="bcg-card bcg-wizard-section" id="bcg-section-template" data-step="1">
 			<div class="bcg-card-header">
 				<h2><?php esc_html_e( '1. Email Template', 'brevo-campaign-generator' ); ?></h2>
 			</div>
@@ -86,6 +128,24 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				<p class="description bcg-mb-12">
 					<?php esc_html_e( 'Choose the email template layout for your campaign. You can customise colours and styles later in the template editor.', 'brevo-campaign-generator' ); ?>
 				</p>
+
+				<div class="bcg-my-templates-section">
+					<h3 class="bcg-my-templates-heading">
+						<span class="material-icons-outlined">dashboard_customize</span>
+						<?php esc_html_e( 'My Templates', 'brevo-campaign-generator' ); ?>
+						<span class="bcg-badge"><?php esc_html_e( 'Template Builder', 'brevo-campaign-generator' ); ?></span>
+					</h3>
+					<p class="description bcg-my-templates-desc">
+						<?php esc_html_e( 'Templates you\'ve built in the Template Builder. Selecting one will use your custom section layout and populate content with AI.', 'brevo-campaign-generator' ); ?>
+					</p>
+					<div class="bcg-my-templates-grid" id="bcg-my-templates-grid">
+						<div class="bcg-my-templates-loading" id="bcg-my-templates-loading">
+							<span class="material-icons-outlined bcg-spin">refresh</span>
+							<?php esc_html_e( 'Loading your templates…', 'brevo-campaign-generator' ); ?>
+						</div>
+					</div>
+				</div>
+
 				<?php
 				$template_registry = BCG_Template_Registry::get_instance();
 				$all_templates     = $template_registry->get_templates();
@@ -103,6 +163,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					'feature-first' => '<rect x="2" y="1" width="42" height="10" rx="1" fill="#ccc"/><rect x="2" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="2" y="18" width="6" height="6" rx="1" fill="#ccc"/><rect x="10" y="18" width="20" height="3" rx="1" fill="#bbb"/>',
 				);
 				?>
+				<h3 class="bcg-section-divider-heading"><?php esc_html_e( 'Standard Templates', 'brevo-campaign-generator' ); ?></h3>
 				<div class="bcg-template-picker" id="bcg-template-picker">
 					<?php foreach ( $all_templates as $tpl_slug => $tpl ) :
 						$is_default      = ( 'classic' === $tpl_slug );
@@ -132,31 +193,21 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					<?php endforeach; ?>
 				</div>
 				<input type="hidden" id="bcg-template-slug" name="template_slug" value="classic" />
-			<input type="hidden" id="bcg-section-template-id" name="section_template_id" value="0" />
-
-			<div class="bcg-my-templates-section">
-				<h3 class="bcg-my-templates-heading">
-					<span class="material-icons-outlined">dashboard_customize</span>
-					<?php esc_html_e( 'My Templates', 'brevo-campaign-generator' ); ?>
-					<span class="bcg-badge"><?php esc_html_e( 'Template Builder', 'brevo-campaign-generator' ); ?></span>
-				</h3>
-				<p class="description bcg-my-templates-desc">
-					<?php esc_html_e( 'Templates you\'ve built in the Template Builder. Selecting one will use your custom section layout and populate content with AI.', 'brevo-campaign-generator' ); ?>
-				</p>
-				<div class="bcg-my-templates-grid" id="bcg-my-templates-grid">
-					<div class="bcg-my-templates-loading" id="bcg-my-templates-loading">
-						<span class="material-icons-outlined bcg-spin">refresh</span>
-						<?php esc_html_e( 'Loading your templates…', 'brevo-campaign-generator' ); ?>
-					</div>
-				</div>
+				<input type="hidden" id="bcg-section-template-id" name="section_template_id" value="0" />
 			</div>
+			<div class="bcg-wizard-nav">
+				<div></div><!-- spacer -->
+				<button type="button" class="bcg-btn-primary bcg-wizard-next" data-next="2">
+					<?php esc_html_e( 'Next Step', 'brevo-campaign-generator' ); ?>
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-left:4px;">arrow_forward</span>
+				</button>
 			</div>
 		</div>
 
 		<!-- ============================================================
 		     Section 2: Campaign Basics
 		     ============================================================ -->
-		<div class="bcg-card bcg-wizard-section" id="bcg-section-basics">
+		<div class="bcg-card bcg-wizard-section" id="bcg-section-basics" data-step="2">
 			<div class="bcg-card-header">
 				<h2><?php esc_html_e( '2. Campaign Basics', 'brevo-campaign-generator' ); ?></h2>
 			</div>
@@ -296,12 +347,22 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				</div>
 
 			</div>
+			<div class="bcg-wizard-nav">
+				<button type="button" class="bcg-btn-secondary bcg-wizard-prev" data-prev="1">
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">arrow_back</span>
+					<?php esc_html_e( 'Previous', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button" class="bcg-btn-primary bcg-wizard-next" data-next="3">
+					<?php esc_html_e( 'Next Step', 'brevo-campaign-generator' ); ?>
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-left:4px;">arrow_forward</span>
+				</button>
+			</div>
 		</div>
 
 		<!-- ============================================================
 		     Section 3: Product Selection
 		     ============================================================ -->
-		<div class="bcg-card bcg-wizard-section" id="bcg-section-products">
+		<div class="bcg-card bcg-wizard-section" id="bcg-section-products" data-step="3">
 			<div class="bcg-card-header">
 				<h2><?php esc_html_e( '3. Product Selection', 'brevo-campaign-generator' ); ?></h2>
 			</div>
@@ -447,12 +508,22 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				</div>
 
 			</div>
+			<div class="bcg-wizard-nav">
+				<button type="button" class="bcg-btn-secondary bcg-wizard-prev" data-prev="2">
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">arrow_back</span>
+					<?php esc_html_e( 'Previous', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button" class="bcg-btn-primary bcg-wizard-next" data-next="4">
+					<?php esc_html_e( 'Next Step', 'brevo-campaign-generator' ); ?>
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-left:4px;">arrow_forward</span>
+				</button>
+			</div>
 		</div>
 
 		<!-- ============================================================
 		     Section 4: Coupon
 		     ============================================================ -->
-		<div class="bcg-card bcg-wizard-section" id="bcg-section-coupon">
+		<div class="bcg-card bcg-wizard-section" id="bcg-section-coupon" data-step="4">
 			<div class="bcg-card-header">
 				<h2><?php esc_html_e( '4. Coupon', 'brevo-campaign-generator' ); ?></h2>
 			</div>
@@ -574,12 +645,22 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				</div>
 
 			</div>
+			<div class="bcg-wizard-nav">
+				<button type="button" class="bcg-btn-secondary bcg-wizard-prev" data-prev="3">
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">arrow_back</span>
+					<?php esc_html_e( 'Previous', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button" class="bcg-btn-primary bcg-wizard-next" data-next="5">
+					<?php esc_html_e( 'Next Step', 'brevo-campaign-generator' ); ?>
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-left:4px;">arrow_forward</span>
+				</button>
+			</div>
 		</div>
 
 		<!-- ============================================================
 		     Section 5: AI Generation Options
 		     ============================================================ -->
-		<div class="bcg-card bcg-wizard-section" id="bcg-section-ai">
+		<div class="bcg-card bcg-wizard-section" id="bcg-section-ai" data-step="5">
 			<div class="bcg-card-header">
 				<h2><?php esc_html_e( '5. AI Generation Options', 'brevo-campaign-generator' ); ?></h2>
 			</div>
@@ -669,6 +750,37 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					</select>
 				</div>
 
+				<!-- Campaign count + Generate button -->
+				<div class="bcg-wizard-actions" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+					<div style="display:flex;align-items:center;gap:8px;">
+						<label for="bcg-campaign-count" style="font-size:13px;color:var(--bcg-text-muted,#8892b0);white-space:nowrap;">
+							<?php esc_html_e( 'Number of campaigns:', 'brevo-campaign-generator' ); ?>
+						</label>
+						<select id="bcg-campaign-count" name="campaign_count" class="bcg-select-styled" style="min-width:130px;">
+							<option value="1">1 campaign</option>
+							<option value="2">2 campaigns</option>
+							<option value="3">3 campaigns</option>
+							<option value="4">4 campaigns</option>
+							<option value="5">5 campaigns</option>
+						</select>
+					</div>
+					<button
+						type="submit"
+						class="bcg-btn-primary bcg-btn-large"
+						id="bcg-generate-campaign-btn"
+					>
+						<span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px;">auto_awesome</span>
+						<?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?>
+					</button>
+				</div>
+
+			</div>
+			<div class="bcg-wizard-nav">
+				<button type="button" class="bcg-btn-secondary bcg-wizard-prev" data-prev="4">
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">arrow_back</span>
+					<?php esc_html_e( 'Previous', 'brevo-campaign-generator' ); ?>
+				</button>
+				<div></div>
 			</div>
 		</div>
 
@@ -724,32 +836,6 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					</button>
 				</div>
 			</div>
-		</div>
-
-		<!-- ============================================================
-		     Submit Button
-		     ============================================================ -->
-		<div class="bcg-wizard-actions" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-			<div style="display:flex;align-items:center;gap:8px;">
-				<label for="bcg-campaign-count" style="font-size:13px;color:var(--bcg-text-muted,#8892b0);white-space:nowrap;">
-					<?php esc_html_e( 'Number of campaigns:', 'brevo-campaign-generator' ); ?>
-				</label>
-				<select id="bcg-campaign-count" name="campaign_count" class="bcg-custom-select" style="min-width:130px;">
-					<option value="1">1 campaign</option>
-					<option value="2">2 campaigns</option>
-					<option value="3">3 campaigns</option>
-					<option value="4">4 campaigns</option>
-					<option value="5">5 campaigns</option>
-				</select>
-			</div>
-			<button
-				type="submit"
-				class="bcg-btn-primary bcg-btn-large"
-				id="bcg-generate-campaign-btn"
-			>
-				<span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px;">auto_awesome</span>
-				<?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?>
-			</button>
 		</div>
 
 	</form>

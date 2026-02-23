@@ -86,7 +86,7 @@ class BCG_Gemini {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		$this->api_key = (string) get_option( 'bcg_gemini_api_key', '' );
+		$this->api_key = bcg_get_api_key( 'bcg_gemini_api_key' );
 		$model         = (string) get_option( 'bcg_gemini_model', 'gemini-2.5-flash' );
 
 		// Migrate deprecated model names to current equivalents.

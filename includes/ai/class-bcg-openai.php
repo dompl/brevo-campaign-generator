@@ -103,7 +103,7 @@ class BCG_OpenAI {
 	 * @param string $model   Optional. Override the stored model.
 	 */
 	public function __construct( string $api_key = '', string $model = '' ) {
-		$this->api_key = ! empty( $api_key ) ? $api_key : get_option( 'bcg_openai_api_key', '' );
+		$this->api_key = ! empty( $api_key ) ? $api_key : bcg_get_api_key( 'bcg_openai_api_key' );
 		$this->model   = ! empty( $model ) ? $model : get_option( 'bcg_openai_model', 'gpt-4o-mini' );
 	}
 

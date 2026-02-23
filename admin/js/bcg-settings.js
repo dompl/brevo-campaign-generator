@@ -302,13 +302,16 @@
 	window.bcgRebuildCustomSelect = function( $select ) {
 		if ( ! $select.data( 'bcg-custom-built' ) ) {
 			// Not yet built — just initialise normally.
-			window.bcgInitCustomSelects( $select.closest( '.bcg-select-wrapper, :not(.bcg-select-wrapper)' ).parent() );
+			window.bcgInitCustomSelects( $select.parent() );
 			return;
 		}
 
-		// Tear down.
+		// Tear down: move select out of its wrapper, then remove the entire wrapper
+		// (including the orphaned .bcg-select-trigger and .bcg-select-menu inside it).
 		var $wrapper = $select.closest( '.bcg-select-wrapper' );
-		$select.show().unwrap();
+		$wrapper.before( $select );
+		$select.show();
+		$wrapper.remove();
 		$select.removeData( 'bcg-custom-built' );
 
 		// Rebuild.
@@ -386,56 +389,58 @@
 } )( jQuery );
 
 // ── What's New popup ──────────────────────────────────────────────────────
-$( function () {
-	if ( typeof bcgData === 'undefined' || ! bcgData.whats_new ) { return; }
+( function ( $ ) {
+	$( function () {
+		if ( typeof bcgData === 'undefined' || ! bcgData.whats_new ) { return; }
 
-	var version    = bcgData.version || '';
-	var whatsNew   = bcgData.whats_new;
-	var $modal     = $( '#bcg-whats-new-modal' );
-	var $list      = $( '#bcg-whats-new-list' );
-	var STORAGE_KEY = 'bcg_dismissed_version';
+		var version    = bcgData.version || '';
+		var whatsNew   = bcgData.whats_new;
+		var $modal     = $( '#bcg-whats-new-modal' );
+		var $list      = $( '#bcg-whats-new-list' );
+		var STORAGE_KEY = 'bcg_dismissed_version';
 
-	// Build list items from bcgData.whats_new.items.
-	function populateList() {
-		$list.empty();
-		if ( whatsNew.items && whatsNew.items.length ) {
-			$.each( whatsNew.items, function ( i, item ) {
-				var icon = item.icon || 'check_circle';
-				var text = item.text || '';
-				$list.append(
-					'<li class="bcg-whats-new-item">' +
-					'<span class="material-icons-outlined bcg-whats-new-item-icon">' + icon + '</span>' +
-					'<span class="bcg-whats-new-item-text">' + $( '<span>' ).text( text ).html() + '</span>' +
-					'</li>'
-				);
-			} );
+		// Build list items from bcgData.whats_new.items.
+		function populateList() {
+			$list.empty();
+			if ( whatsNew.items && whatsNew.items.length ) {
+				$.each( whatsNew.items, function ( i, item ) {
+					var icon = item.icon || 'check_circle';
+					var text = item.text || '';
+					$list.append(
+						'<li class="bcg-whats-new-item">' +
+						'<span class="material-icons-outlined bcg-whats-new-item-icon">' + icon + '</span>' +
+						'<span class="bcg-whats-new-item-text">' + $( '<span>' ).text( text ).html() + '</span>' +
+						'</li>'
+					);
+				} );
+			}
 		}
-	}
 
-	function dismissModal() {
-		try { localStorage.setItem( STORAGE_KEY, version ); } catch ( e ) {}
-		$modal.hide();
-	}
+		function dismissModal() {
+			try { localStorage.setItem( STORAGE_KEY, version ); } catch ( e ) {}
+			$modal.hide();
+		}
 
-	function showModal() {
-		populateList();
-		$modal.show();
-	}
+		function showModal() {
+			populateList();
+			$modal.show();
+		}
 
-	// Show automatically if this version hasn't been dismissed yet.
-	var dismissed;
-	try { dismissed = localStorage.getItem( STORAGE_KEY ); } catch ( e ) { dismissed = null; }
-	if ( dismissed !== version && $modal.length ) {
-		showModal();
-	}
+		// Show automatically if this version hasn't been dismissed yet.
+		var dismissed;
+		try { dismissed = localStorage.getItem( STORAGE_KEY ); } catch ( e ) { dismissed = null; }
+		if ( dismissed !== version && $modal.length ) {
+			showModal();
+		}
 
-	// Dismiss handlers.
-	$( document ).on( 'click', '#bcg-whats-new-close, #bcg-whats-new-dismiss, #bcg-whats-new-overlay', function () {
-		dismissModal();
+		// Dismiss handlers.
+		$( document ).on( 'click', '#bcg-whats-new-close, #bcg-whats-new-dismiss, #bcg-whats-new-overlay', function () {
+			dismissModal();
+		} );
+
+		// Version badge: always re-open.
+		$( document ).on( 'click', '#bcg-version-badge', function () {
+			showModal();
+		} );
 	} );
-
-	// Version badge: always re-open.
-	$( document ).on( 'click', '#bcg-version-badge', function () {
-		showModal();
-	} );
-} );
+} )( jQuery );

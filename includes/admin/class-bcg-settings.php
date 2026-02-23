@@ -49,12 +49,11 @@ class BCG_Settings {
 	 */
 	public function __construct() {
 		$this->tabs = array(
-			'api-keys'   => __( 'API Keys', 'brevo-campaign-generator' ),
-			'ai-models'  => __( 'AI Models', 'brevo-campaign-generator' ),
-			'brevo'      => __( 'Brevo', 'brevo-campaign-generator' ),
-			'stripe'     => __( 'Stripe', 'brevo-campaign-generator' ),
-			'defaults'   => __( 'Defaults', 'brevo-campaign-generator' ),
-			'ai-trainer' => __( 'AI Trainer', 'brevo-campaign-generator' ),
+			'api-keys'  => __( 'API Keys', 'brevo-campaign-generator' ),
+			'ai-models' => __( 'AI Models', 'brevo-campaign-generator' ),
+			'brevo'     => __( 'Brevo', 'brevo-campaign-generator' ),
+			'stripe'    => __( 'Stripe', 'brevo-campaign-generator' ),
+			'defaults'  => __( 'Defaults', 'brevo-campaign-generator' ),
 		);
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -803,10 +802,53 @@ class BCG_Settings {
 	public function render_api_key_field( array $args ): void {
 		$option_name = $args['option_name'];
 		$service     = $args['service'];
-		$value       = get_option( $option_name, '' );
+		$value       = bcg_get_api_key( $option_name );
 		$masked      = $this->mask_api_key( $value );
 		$description = $args['description'] ?? '';
 
+		// Check if key is defined via wp-config.php constant.
+		static $constant_map = array(
+			'bcg_openai_api_key'         => 'BCG_OPENAI_API_KEY',
+			'bcg_gemini_api_key'         => 'BCG_GEMINI_API_KEY',
+			'bcg_brevo_api_key'          => 'BCG_BREVO_API_KEY',
+			'bcg_stripe_publishable_key' => 'BCG_STRIPE_PUB_KEY',
+			'bcg_stripe_secret_key'      => 'BCG_STRIPE_SECRET_KEY',
+		);
+		$constant         = $constant_map[ $option_name ] ?? null;
+		$is_from_constant = $constant && defined( $constant );
+
+		if ( $is_from_constant ) {
+			?>
+			<div class="bcg-api-key-wrapper">
+				<div class="bcg-api-key-from-constant">
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;color:var(--bcg-success,#2ecc71);margin-right:6px;">lock</span>
+					<?php
+					printf(
+						/* translators: %s: constant name */
+						esc_html__( 'Defined in wp-config.php via %s — stored key: %s', 'brevo-campaign-generator' ),
+						'<code>' . esc_html( $constant ) . '</code>',
+						'<code>' . esc_html( $masked ) . '</code>'
+					);
+					?>
+				</div>
+				<button
+					type="button"
+					class="button bcg-test-connection"
+					data-service="<?php echo esc_attr( $service ); ?>"
+					data-option="<?php echo esc_attr( $option_name ); ?>"
+				>
+					<?php esc_html_e( 'Test Connection', 'brevo-campaign-generator' ); ?>
+				</button>
+				<span class="bcg-test-result" data-service="<?php echo esc_attr( $service ); ?>"></span>
+			</div>
+			<?php if ( $description ) : ?>
+				<p class="description"><?php echo esc_html( $description ); ?></p>
+			<?php endif; ?>
+			<?php
+			return;
+		}
+
+		// Normal field rendering (not from constant).
 		?>
 		<div class="bcg-api-key-wrapper">
 			<input
@@ -1003,7 +1045,7 @@ class BCG_Settings {
 		$option_name = $args['option_name'];
 		$raw_value   = get_option( $option_name, '' );
 		$sender_data = is_string( $raw_value ) ? json_decode( $raw_value, true ) : null;
-		$has_api_key = ! empty( get_option( 'bcg_brevo_api_key', '' ) );
+		$has_api_key = ! empty( bcg_get_api_key( 'bcg_brevo_api_key' ) );
 
 		$current_name  = ( is_array( $sender_data ) && ! empty( $sender_data['name'] ) ) ? $sender_data['name'] : '';
 		$current_email = ( is_array( $sender_data ) && ! empty( $sender_data['email'] ) ) ? $sender_data['email'] : '';
@@ -1085,6 +1127,11 @@ class BCG_Settings {
 						$select.append('<option value=""><?php echo esc_js( __( 'Failed to load senders', 'brevo-campaign-generator' ) ); ?></option>');
 					}
 
+					// Rebuild custom dropdown UI to show new senders.
+					if ( typeof window.bcgRebuildCustomSelect === 'function' ) {
+						window.bcgRebuildCustomSelect( $select );
+					}
+
 					$select.prop('disabled', false);
 				}).fail(function() {
 					$select.html('<option value=""><?php echo esc_js( __( 'Error loading senders', 'brevo-campaign-generator' ) ); ?></option>');
@@ -1124,7 +1171,7 @@ class BCG_Settings {
 	public function render_brevo_list_field( array $args ): void {
 		$option_name = $args['option_name'];
 		$value       = get_option( $option_name, '' );
-		$has_api_key = ! empty( get_option( 'bcg_brevo_api_key', '' ) );
+		$has_api_key = ! empty( bcg_get_api_key( 'bcg_brevo_api_key' ) );
 
 		?>
 		<div class="bcg-brevo-list-wrapper">

@@ -17,6 +17,27 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.34] — 2026-02-23
+
+### Added
+- **New Campaign multi-step wizard** — the single-page form is now split into 5 clear steps (Email Template → Campaign Basics → Products → Coupon → AI & Generate) with a step indicator, Next/Previous navigation, and a description under each step
+- **My Templates at the top** — Section Builder templates now appear above the standard flat templates in step 1, with a "Standard Templates" heading separating the two groups
+- **API keys from wp-config.php** — define `BCG_OPENAI_API_KEY`, `BCG_GEMINI_API_KEY`, `BCG_BREVO_API_KEY`, `BCG_STRIPE_PUB_KEY`, or `BCG_STRIPE_SECRET_KEY` as PHP constants and the settings field is replaced with a confirmation notice; all API consumers read the constant automatically
+
+### Fixed
+- **Brevo dropdown duplicate bug** — refreshing the mailing list or sender dropdown no longer leaves orphaned trigger/menu elements; the teardown now moves the select out and removes the entire wrapper before rebuilding
+- **Brevo sender "Loading senders" stuck** — sender dropdown now rebuilds its custom UI after the AJAX call completes, so the correct senders appear in the dropdown
+- **What's New popup not showing** — the popup JavaScript was using `$` outside a jQuery IIFE; WordPress runs in `noConflict` mode so `$` was undefined; now correctly wrapped in `(function($){...})(jQuery)`
+- **Section Builder palette emojis** — all category icons replaced with Google Material Icon names (`panorama`, `article`, `ads_click`, etc.); they now render as proper icons instead of emoji characters
+- **Edit Campaign section icons** — same fix applied to section type labels in the campaign editor
+
+### Changed
+- **AI Trainer removed from Settings tabs** — AI Trainer is only accessible from its dedicated page in the main navigation; duplicate entry in Settings removed
+- **Campaign count select** — uses the same custom dropdown style as all other selects in the plugin
+- **AI Trainer page header** — reduced excessive top gap above the page title
+
+---
+
 ## [1.5.33] — 2026-02-23
 
 ### Added

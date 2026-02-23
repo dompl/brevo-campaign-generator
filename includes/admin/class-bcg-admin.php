@@ -294,12 +294,12 @@ class BCG_Admin {
 		$credit_balance = $this->get_current_user_credit_balance();
 
 		$whats_new_items = array(
-			array( 'icon' => 'new_releases',  'text' => __( 'Version number now shows in the header — click it any time to reopen this panel', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'auto_awesome',  'text' => __( 'AI Prompt modal redesigned — better layout, clearer hints, and a single "Generate with AI" action', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'check_circle',  'text' => __( 'Section Builder modals now display correctly — Preview Email and AI Prompt no longer appear behind the blurred overlay', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'auto_awesome',  'text' => __( 'AI Prompt — describe your email brief before generating for fully tailored, on-brand results every time', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'tune',          'text' => __( 'Section Builder tone and language dropdowns now work reliably', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'school',        'text' => __( 'AI now uses your AI Trainer store and product context in every Section Builder generation', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'linear_scale',        'text' => __( 'New Campaign is now a 5-step wizard — Email Template, Basics, Products, Coupon, AI & Generate', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'dashboard_customize', 'text' => __( 'Your Section Builder templates now appear at the top of the template picker', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'check_circle',        'text' => __( 'Brevo mailing list and sender dropdowns no longer duplicate on refresh', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'lock',                'text' => __( 'API keys can now be defined in wp-config.php — the settings field hides automatically', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'widgets',             'text' => __( 'Section Builder palette icons updated — no more emoji, all Material Icons', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'school',              'text' => __( 'AI Trainer removed from Settings tabs — use the dedicated AI Trainer page in the main menu', 'brevo-campaign-generator' ) ),
 		);
 
 		$bcg_data = array(

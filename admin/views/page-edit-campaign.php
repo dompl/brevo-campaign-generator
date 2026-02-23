@@ -381,17 +381,17 @@ if ( 'sections' === $builder_type && ! empty( $campaign->sections_json ) ) {
 
 				<?php
 				$section_labels = array(
-					'header'   => array( 'label' => 'Header', 'icon' => '⬛' ),
-					'hero'     => array( 'label' => 'Hero / Banner', 'icon' => '🖼️' ),
-					'text'     => array( 'label' => 'Text Block', 'icon' => '📝' ),
-					'image'    => array( 'label' => 'Image', 'icon' => '🖼️' ),
-					'products' => array( 'label' => 'Products', 'icon' => '🛍️' ),
-					'banner'   => array( 'label' => 'Banner', 'icon' => '📢' ),
-					'cta'      => array( 'label' => 'Call to Action', 'icon' => '🎯' ),
-					'coupon'   => array( 'label' => 'Coupon', 'icon' => '🏷️' ),
-					'divider'  => array( 'label' => 'Divider', 'icon' => '—' ),
-					'spacer'   => array( 'label' => 'Spacer', 'icon' => '□' ),
-					'footer'   => array( 'label' => 'Footer', 'icon' => '📄' ),
+					'header'   => array( 'label' => 'Header', 'icon' => 'web_asset' ),
+					'hero'     => array( 'label' => 'Hero / Banner', 'icon' => 'panorama' ),
+					'text'     => array( 'label' => 'Text Block', 'icon' => 'article' ),
+					'image'    => array( 'label' => 'Image', 'icon' => 'image' ),
+					'products' => array( 'label' => 'Products', 'icon' => 'shopping_cart' ),
+					'banner'   => array( 'label' => 'Banner', 'icon' => 'campaign' ),
+					'cta'      => array( 'label' => 'Call to Action', 'icon' => 'ads_click' ),
+					'coupon'   => array( 'label' => 'Coupon', 'icon' => 'local_offer' ),
+					'divider'  => array( 'label' => 'Divider', 'icon' => 'horizontal_rule' ),
+					'spacer'   => array( 'label' => 'Spacer', 'icon' => 'space_bar' ),
+					'footer'   => array( 'label' => 'Footer', 'icon' => 'web_asset_off' ),
 				);
 
 				$ai_fields = array(
@@ -419,14 +419,14 @@ if ( 'sections' === $builder_type && ! empty( $campaign->sections_json ) ) {
 					$sec_type     = $section['type'] ?? 'text';
 					$sec_id       = esc_attr( $section['id'] ?? $sec_index );
 					$sec_settings = $section['settings'] ?? array();
-					$sec_info     = $section_labels[ $sec_type ] ?? array( 'label' => ucfirst( $sec_type ), 'icon' => '■' );
+					$sec_info     = $section_labels[ $sec_type ] ?? array( 'label' => ucfirst( $sec_type ), 'icon' => 'widgets' );
 					$sec_ai_fields = $ai_fields[ $sec_type ] ?? array();
 					$has_ai       = ! empty( $sec_ai_fields );
 					?>
 					<div class="bcg-section-edit-card" data-section-id="<?php echo $sec_id; ?>" data-section-type="<?php echo esc_attr( $sec_type ); ?>" data-section-index="<?php echo absint( $sec_index ); ?>">
 						<input type="hidden" class="bcg-section-full-settings" value="<?php echo esc_attr( wp_json_encode( $sec_settings ) ); ?>" />
 						<div class="bcg-section-edit-header">
-							<span class="bcg-section-edit-icon"><?php echo esc_html( $sec_info['icon'] ); ?></span>
+							<span class="bcg-section-edit-icon"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;"><?php echo esc_html( $sec_info['icon'] ); ?></span></span>
 							<span class="bcg-section-edit-label"><?php echo esc_html( $sec_info['label'] ); ?></span>
 							<?php if ( $has_ai ) : ?>
 							<button type="button"

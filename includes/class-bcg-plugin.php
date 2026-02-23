@@ -274,3 +274,34 @@ class BCG_Plugin {
 		);
 	}
 }
+
+/**
+ * Get an API key value, checking for a wp-config.php constant override first.
+ *
+ * Allows site owners to define API keys in wp-config.php for security.
+ * Constant names: BCG_OPENAI_API_KEY, BCG_GEMINI_API_KEY, BCG_BREVO_API_KEY,
+ *                 BCG_STRIPE_PUB_KEY, BCG_STRIPE_SECRET_KEY.
+ *
+ * @since  1.5.33
+ * @param  string $option_name The option name (e.g. 'bcg_openai_api_key').
+ * @return string The API key value.
+ */
+if ( ! function_exists( 'bcg_get_api_key' ) ) {
+	function bcg_get_api_key( string $option_name ): string {
+		static $constant_map = null;
+		if ( null === $constant_map ) {
+			$constant_map = array(
+				'bcg_openai_api_key'         => 'BCG_OPENAI_API_KEY',
+				'bcg_gemini_api_key'         => 'BCG_GEMINI_API_KEY',
+				'bcg_brevo_api_key'          => 'BCG_BREVO_API_KEY',
+				'bcg_stripe_publishable_key' => 'BCG_STRIPE_PUB_KEY',
+				'bcg_stripe_secret_key'      => 'BCG_STRIPE_SECRET_KEY',
+			);
+		}
+		$constant = $constant_map[ $option_name ] ?? null;
+		if ( $constant && defined( $constant ) ) {
+			return (string) constant( $constant );
+		}
+		return (string) get_option( $option_name, '' );
+	}
+}

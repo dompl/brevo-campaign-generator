@@ -6376,26 +6376,23 @@ body.bcg-admin-page .bcg-modal-box {
 /* ── What's New modal ───────────────────────────────────────────────────── */
 
 .bcg-version-badge {
-	display:          inline-flex;
-	align-items:      center;
-	padding:          2px 9px;
-	background:       var(--bcg-accent-alpha, rgba(var(--bcg-accent-rgb, 232,100,41), 0.12));
-	color:            var(--bcg-accent);
-	border:           1px solid var(--bcg-accent);
-	border-radius:    20px;
-	font-size:        11px;
-	font-weight:      600;
-	letter-spacing:   0.04em;
-	cursor:           pointer;
-	transition:       background 0.15s, color 0.15s;
-	margin-left:      6px;
-	flex-shrink:      0;
-	vertical-align:   middle;
+	display:        inline-flex;
+	align-items:    center;
+	font-size:      11px;
+	font-weight:    500;
+	color:          var(--bcg-text-muted, #8892b0);
+	cursor:         pointer;
+	margin-left:    8px;
+	letter-spacing: 0.02em;
+	background:     none;
+	border:         none;
+	padding:        0;
+	transition:     color 0.15s;
 }
 
 .bcg-version-badge:hover {
-	background: var(--bcg-accent);
-	color:      #fff;
+	color:      var(--bcg-accent);
+	background: none;
 }
 
 body.bcg-admin-page .bcg-whats-new-content {
@@ -6542,4 +6539,139 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 	border-radius: var(--bcg-radius, 6px);
 	color:         #1e8449;
 	font-size:     13px;
+}
+
+/* ── New Campaign Multi-Step Wizard ────────────────────────────────────── */
+
+.bcg-wizard-steps {
+	display:         flex;
+	align-items:     flex-start;
+	gap:             0;
+	margin:          0 0 28px;
+	padding:         20px 24px;
+	background:      var(--bcg-card-bg, #fff);
+	border:          1px solid var(--bcg-border, #e2e8f0);
+	border-radius:   10px;
+	overflow-x:      auto;
+}
+
+.bcg-wizard-step {
+	display:         flex;
+	align-items:     center;
+	gap:             10px;
+	flex-shrink:     0;
+	cursor:          default;
+	opacity:         0.45;
+	transition:      opacity 0.2s;
+}
+
+.bcg-wizard-step.active,
+.bcg-wizard-step.completed {
+	opacity: 1;
+	cursor:  pointer;
+}
+
+.bcg-wizard-step-circle {
+	width:           32px;
+	height:          32px;
+	border-radius:   50%;
+	display:         flex;
+	align-items:     center;
+	justify-content: center;
+	font-size:       13px;
+	font-weight:     700;
+	background:      var(--bcg-border, #e2e8f0);
+	color:           var(--bcg-text-muted, #8892b0);
+	flex-shrink:     0;
+	transition:      background 0.2s, color 0.2s;
+}
+
+.bcg-wizard-step.active .bcg-wizard-step-circle {
+	background: var(--bcg-accent, #e86429);
+	color:      #fff;
+}
+
+.bcg-wizard-step.completed .bcg-wizard-step-circle {
+	background: var(--bcg-success, #2ecc71);
+	color:      #fff;
+}
+
+.bcg-wizard-step.completed .bcg-wizard-step-circle::before {
+	content: '✓';
+}
+
+.bcg-wizard-step.completed .bcg-wizard-step-circle {
+	font-size: 0;
+}
+
+.bcg-wizard-step.completed .bcg-wizard-step-circle::before {
+	font-size: 14px;
+}
+
+.bcg-wizard-step-info {
+	display:        flex;
+	flex-direction: column;
+	gap:            2px;
+}
+
+.bcg-wizard-step-title {
+	font-size:   12px;
+	font-weight: 600;
+	color:       var(--bcg-text, #2d3748);
+	white-space: nowrap;
+}
+
+.bcg-wizard-step-desc {
+	font-size:   11px;
+	color:       var(--bcg-text-muted, #8892b0);
+	white-space: nowrap;
+}
+
+.bcg-wizard-step-connector {
+	flex:             1;
+	min-width:        20px;
+	height:           2px;
+	background:       var(--bcg-border, #e2e8f0);
+	margin:           0 4px;
+	align-self:       center;
+	margin-top:       -20px; /* offset for the info text below circle */
+}
+
+.bcg-wizard-nav {
+	display:         flex;
+	align-items:     center;
+	justify-content: space-between;
+	padding-top:     20px;
+	margin-top:      20px;
+	border-top:      1px solid var(--bcg-border, #e2e8f0);
+}
+
+.bcg-wizard-nav > div:empty {
+	flex: 1;
+}
+
+.bcg-section-divider-heading {
+	font-size:     12px;
+	font-weight:   600;
+	color:         var(--bcg-text-muted, #8892b0);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	margin:        20px 0 10px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--bcg-border, #e2e8f0);
+}
+
+/* wp-config API key info notice */
+.bcg-api-key-from-constant {
+	display:     flex;
+	align-items: center;
+	padding:     8px 12px;
+	background:  rgba(46, 204, 113, 0.08);
+	border:      1px solid rgba(46, 204, 113, 0.3);
+	border-radius: 6px;
+	font-size:   13px;
+	color:       var(--bcg-text, #2d3748);
+	margin-bottom: 8px;
+	flex-wrap:   wrap;
+	gap:         4px;
 }

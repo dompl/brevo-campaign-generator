@@ -89,6 +89,9 @@
 
 			// Load section templates on page load.
 			this.loadSectionTemplates();
+
+			// Initialise multi-step wizard navigation.
+			this.initWizard();
 		},
 
 		// ─── Product Source Radio Toggle ────────────────────────────
@@ -974,6 +977,78 @@
 					// Select this card.
 					$card.addClass( 'bcg-section-template-card-active' );
 					$( '#bcg-section-template-id' ).val( id );
+				}
+			} );
+		},
+
+		// ─── Multi-Step Wizard ────────────────────────────────────
+
+		/**
+		 * Initialise the multi-step wizard navigation.
+		 *
+		 * Shows only the first step on page load. Next/Previous buttons update
+		 * the active step indicator and reveal the correct section.
+		 */
+		initWizard: function() {
+			var self = this;
+
+			// Show only step 1, hide all others.
+			function showStep( n ) {
+				$( '.bcg-wizard-section' ).hide();
+				$( '.bcg-wizard-section[data-step="' + n + '"]' ).show();
+
+				// Update step indicator.
+				$( '.bcg-wizard-step' ).removeClass( 'active completed' );
+				$( '.bcg-wizard-step' ).each( function() {
+					var stepNum = parseInt( $( this ).data( 'step' ), 10 );
+					if ( stepNum < n ) {
+						$( this ).addClass( 'completed' );
+					} else if ( stepNum === n ) {
+						$( this ).addClass( 'active' );
+					}
+				} );
+
+				// Scroll to top of the wizard steps.
+				var $steps = $( '#bcg-wizard-steps' );
+				if ( $steps.length ) {
+					$( 'html, body' ).animate( { scrollTop: $steps.offset().top - 40 }, 200 );
+				}
+
+				// Re-init custom selects on the newly visible step (in case any were hidden).
+				if ( typeof window.bcgInitCustomSelects === 'function' ) {
+					window.bcgInitCustomSelects( $( '.bcg-wizard-section[data-step="' + n + '"]' ) );
+				}
+			}
+
+			// Only run if wizard steps exist (i.e. we're on the new campaign page).
+			if ( ! $( '.bcg-wizard-section[data-step]' ).length ) {
+				return;
+			}
+
+			// Start on step 1.
+			showStep( 1 );
+
+			// Next button.
+			$( document ).on( 'click', '.bcg-wizard-next', function() {
+				var next = parseInt( $( this ).data( 'next' ), 10 );
+				if ( next ) {
+					showStep( next );
+				}
+			} );
+
+			// Previous button.
+			$( document ).on( 'click', '.bcg-wizard-prev', function() {
+				var prev = parseInt( $( this ).data( 'prev' ), 10 );
+				if ( prev ) {
+					showStep( prev );
+				}
+			} );
+
+			// Clicking a completed step indicator navigates to it.
+			$( document ).on( 'click', '.bcg-wizard-step.completed, .bcg-wizard-step.active', function() {
+				var n = parseInt( $( this ).data( 'step' ), 10 );
+				if ( n ) {
+					showStep( n );
 				}
 			} );
 		},

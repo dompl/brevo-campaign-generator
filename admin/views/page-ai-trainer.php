@@ -30,9 +30,9 @@ $products = get_option( 'bcg_ai_trainer_products', '' );
 ?>
 <?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
 
-<div class="bcg-wrap">
+<div class="wrap bcg-wrap">
 
-	<div class="bcg-page-header">
+	<div class="bcg-page-header" style="padding-top:0;margin-top:0;">
 		<h1><?php esc_html_e( 'AI Trainer', 'brevo-campaign-generator' ); ?></h1>
 		<p class="bcg-page-subtitle">
 			<?php esc_html_e( 'Teach the AI about your business. This context is automatically injected into every AI generation call to make copy more relevant and on-brand.', 'brevo-campaign-generator' ); ?>

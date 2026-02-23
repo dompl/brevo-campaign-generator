@@ -33,7 +33,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'header',
 				'label'    => 'Header',
-				'icon'     => '🔝',
+				'icon'     => 'web_asset',
 				'variants' => [
 					[
 						'id'              => 'header-logo-only',
@@ -68,7 +68,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'hero',
 				'label'    => 'Hero Banner',
-				'icon'     => '🖼️',
+				'icon'     => 'panorama',
 				'variants' => [
 					[
 						'id'              => 'hero-standard',
@@ -149,7 +149,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'heading',
 				'label'    => 'Section Heading',
-				'icon'     => '📌',
+				'icon'     => 'campaign',
 				'variants' => [
 					[
 						'id'              => 'heading-centered-accent',
@@ -230,7 +230,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'text',
 				'label'    => 'Text Block',
-				'icon'     => '📝',
+				'icon'     => 'article',
 				'variants' => [
 					[
 						'id'              => 'text-heading-body',
@@ -315,7 +315,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'banner',
 				'label'    => 'Promotional Banner',
-				'icon'     => '📣',
+				'icon'     => 'campaign',
 				'variants' => [
 					[
 						'id'              => 'banner-centered',
@@ -378,7 +378,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'products',
 				'label'    => 'Products',
-				'icon'     => '🛍️',
+				'icon'     => 'shopping_cart',
 				'variants' => [
 					[
 						'id'              => 'products-single',
@@ -472,7 +472,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'list',
 				'label'    => 'Feature List',
-				'icon'     => '📋',
+				'icon'     => 'inventory_2',
 				'variants' => [
 					[
 						'id'              => 'list-bullets',
@@ -535,7 +535,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'cta',
 				'label'    => 'Call to Action',
-				'icon'     => '🎯',
+				'icon'     => 'ads_click',
 				'variants' => [
 					[
 						'id'              => 'cta-full',
@@ -618,7 +618,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'coupon',
 				'label'    => 'Coupon Block',
-				'icon'     => '🎟️',
+				'icon'     => 'confirmation_number',
 				'variants' => [
 					[
 						'id'              => 'coupon-full',
@@ -655,7 +655,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'image',
 				'label'    => 'Image',
-				'icon'     => '🖼️',
+				'icon'     => 'image',
 				'variants' => [
 					[
 						'id'              => 'image-full',
@@ -724,7 +724,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'divider',
 				'label'    => 'Divider / Spacer',
-				'icon'     => '➖',
+				'icon'     => 'horizontal_rule',
 				'variants' => [
 					[
 						'id'              => 'divider-thin',
@@ -783,7 +783,7 @@ class BCG_Section_Presets {
 			[
 				'category' => 'footer',
 				'label'    => 'Footer',
-				'icon'     => '🔻',
+				'icon'     => 'space_bar',
 				'variants' => [
 					[
 						'id'              => 'footer-text-only',
