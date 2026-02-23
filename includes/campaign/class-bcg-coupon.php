@@ -311,7 +311,7 @@ class BCG_Coupon {
 	 * @param int    $expiry_days    Days until expiry.
 	 * @return true|WP_Error True if valid, WP_Error otherwise.
 	 */
-	private function validate_coupon_inputs( float $discount_value, string $discount_type, int $expiry_days ): true|\WP_Error {
+	private function validate_coupon_inputs( float $discount_value, string $discount_type, int $expiry_days ): bool|\WP_Error {
 		if ( $discount_value <= 0 ) {
 			return new WP_Error(
 				'bcg_coupon_invalid_value',

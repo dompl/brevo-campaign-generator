@@ -122,7 +122,7 @@ class BCG_Section_Templates_Table {
 	 * @param  int $id Template ID.
 	 * @return true|\WP_Error True on success, WP_Error on failure.
 	 */
-	public static function delete( int $id ): true|\WP_Error {
+	public static function delete( int $id ): bool|\WP_Error {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$result = $wpdb->delete( self::table(), array( 'id' => $id ), array( '%d' ) );

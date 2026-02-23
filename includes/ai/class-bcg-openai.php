@@ -1205,7 +1205,7 @@ class BCG_OpenAI {
 
 	// ─── Test Connection ─────────────────────────────────────────────
 
-	public function test_connection(): true|\WP_Error {
+	public function test_connection(): bool|\WP_Error {
 		if ( empty( $this->api_key ) ) {
 			return new \WP_Error(
 				'bcg_openai_no_key',

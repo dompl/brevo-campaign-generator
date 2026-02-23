@@ -805,6 +805,10 @@ class BCG_AI_Manager {
 	 * @return float|\WP_Error The new balance on success, WP_Error on failure.
 	 */
 	public function refund_credits( float $amount, string $description = '' ): float|\WP_Error {
+		if ( 'yes' === get_option( 'bcg_test_mode', 'no' ) ) {
+			return 0.0;
+		}
+
 		return $this->credits->refund_credits( $this->user_id, $amount, $description );
 	}
 

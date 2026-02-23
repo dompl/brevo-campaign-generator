@@ -116,7 +116,7 @@ class BCG_Gemini {
 	 * @since  1.0.0
 	 * @return true|\WP_Error True on success, WP_Error on failure.
 	 */
-	public function test_connection(): true|\WP_Error {
+	public function test_connection(): bool|\WP_Error {
 		if ( empty( $this->api_key ) ) {
 			return new \WP_Error(
 				'bcg_gemini_no_key',

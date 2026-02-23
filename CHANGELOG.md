@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.26] — 2026-02-23
+
+### Fixed
+- **Credits bug** — `BCG_AI_Manager::refund_credits()` now checks test mode before executing, matching the guard already present in `deduct_credits()`. Previously, when test mode was enabled, deductions were skipped (no-op) but refunds still ran, causing credits to increase on every failed AI generation call (e.g. Gemini geo-restriction).
+- **PHP 8.1 compatibility** — replaced all `true|\WP_Error` return type declarations with `bool|\WP_Error` across `class-bcg-campaign.php`, `class-bcg-coupon.php`, `class-bcg-gemini.php`, `class-bcg-openai.php`, and `class-bcg-section-templates-table.php`. The standalone `true` type was introduced in PHP 8.2 and caused a fatal error on PHP 8.1 hosts.
+
+---
+
 ## [1.5.25] — 2026-02-23
 
 ### Fixed

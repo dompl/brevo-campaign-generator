@@ -259,7 +259,7 @@ class BCG_Campaign {
 	 * @param array $data        Associative array of fields to update.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function update( int $campaign_id, array $data ): true|\WP_Error {
+	public function update( int $campaign_id, array $data ): bool|\WP_Error {
 		global $wpdb;
 
 		if ( $campaign_id <= 0 ) {
@@ -531,7 +531,7 @@ class BCG_Campaign {
 	 * @param int $campaign_id The campaign ID to delete.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function delete( int $campaign_id ): true|\WP_Error {
+	public function delete( int $campaign_id ): bool|\WP_Error {
 		global $wpdb;
 
 		if ( $campaign_id <= 0 ) {
@@ -714,7 +714,7 @@ class BCG_Campaign {
 	 * @param array $data           Associative array of fields to update.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function update_product( int $product_row_id, array $data ): true|\WP_Error {
+	public function update_product( int $product_row_id, array $data ): bool|\WP_Error {
 		global $wpdb;
 
 		if ( $product_row_id <= 0 ) {
@@ -800,7 +800,7 @@ class BCG_Campaign {
 	 * @param int $product_row_id The bcg_campaign_products row ID.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function remove_product( int $product_row_id ): true|\WP_Error {
+	public function remove_product( int $product_row_id ): bool|\WP_Error {
 		global $wpdb;
 
 		if ( $product_row_id <= 0 ) {
@@ -866,7 +866,7 @@ class BCG_Campaign {
 	 * @param array $ordered_ids Ordered array of bcg_campaign_products row IDs.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function reorder_products( int $campaign_id, array $ordered_ids ): true|\WP_Error {
+	public function reorder_products( int $campaign_id, array $ordered_ids ): bool|\WP_Error {
 		global $wpdb;
 
 		if ( $campaign_id <= 0 ) {
@@ -947,7 +947,7 @@ class BCG_Campaign {
 	 * @param string|array $settings_json The template settings as a JSON string or array.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function save_template( int $campaign_id, string $html, string|array $settings_json ): true|\WP_Error {
+	public function save_template( int $campaign_id, string $html, string|array $settings_json ): bool|\WP_Error {
 		global $wpdb;
 
 		if ( $campaign_id <= 0 ) {
@@ -1027,7 +1027,7 @@ class BCG_Campaign {
 	 * @param string $status      The new status.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function set_status( int $campaign_id, string $status ): true|\WP_Error {
+	public function set_status( int $campaign_id, string $status ): bool|\WP_Error {
 		if ( ! in_array( $status, self::VALID_STATUSES, true ) ) {
 			return new WP_Error(
 				'bcg_campaign_invalid_status',
