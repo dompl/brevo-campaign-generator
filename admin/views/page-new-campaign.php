@@ -269,7 +269,14 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 								$bcg_list_selected = ( (string) ( $bcg_list_item['id'] ?? '' ) === (string) $default_mailing_list ) ? ' selected' : '';
 							?>
 								<option value="<?php echo esc_attr( $bcg_list_item['id'] ?? '' ); ?>"<?php echo $bcg_list_selected; // phpcs:ignore ?>>
-									<?php echo esc_html( ( $bcg_list_item['name'] ?? '' ) . ' (' . ( (int) ( $bcg_list_item['totalSubscribers'] ?? 0 ) ) . ' subscribers)' ); ?>
+									<?php
+									$bcg_subs = (int) ( $bcg_list_item['totalSubscribers'] ?? $bcg_list_item['uniqueSubscribers'] ?? 0 );
+									$bcg_label = $bcg_list_item['name'] ?? '';
+									if ( $bcg_subs > 0 ) {
+										$bcg_label .= ' (' . $bcg_subs . ' subscribers)';
+									}
+									echo esc_html( $bcg_label );
+									?>
 								</option>
 							<?php endforeach; ?>
 							<?php if ( empty( $bcg_cached_lists ) && $default_mailing_list ) : ?>
@@ -722,31 +729,25 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		<!-- ============================================================
 		     Submit Button
 		     ============================================================ -->
-		<!-- Number of campaigns -->
-		<div class="bcg-field-row bcg-campaign-count-row">
-			<label class="bcg-field-label" for="bcg-campaign-count">
-				<?php esc_html_e( 'Number of Campaigns', 'brevo-campaign-generator' ); ?>
-			</label>
-			<div class="bcg-field-with-action">
-				<select id="bcg-campaign-count" name="campaign_count" class="bcg-custom-select" style="min-width:140px;">
+		<div class="bcg-wizard-actions" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+			<div style="display:flex;align-items:center;gap:8px;">
+				<label for="bcg-campaign-count" style="font-size:13px;color:var(--bcg-text-muted,#8892b0);white-space:nowrap;">
+					<?php esc_html_e( 'Number of campaigns:', 'brevo-campaign-generator' ); ?>
+				</label>
+				<select id="bcg-campaign-count" name="campaign_count" class="bcg-custom-select" style="min-width:130px;">
 					<option value="1">1 campaign</option>
 					<option value="2">2 campaigns</option>
 					<option value="3">3 campaigns</option>
 					<option value="4">4 campaigns</option>
 					<option value="5">5 campaigns</option>
 				</select>
-				<span class="description" style="margin-left:8px;">
-					<?php esc_html_e( 'Generate multiple campaign drafts in one go.', 'brevo-campaign-generator' ); ?>
-				</span>
 			</div>
-		</div>
-
-		<div class="bcg-wizard-actions">
 			<button
 				type="submit"
 				class="bcg-btn-primary bcg-btn-large"
 				id="bcg-generate-campaign-btn"
 			>
+				<span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px;">auto_awesome</span>
 				<?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?>
 			</button>
 		</div>

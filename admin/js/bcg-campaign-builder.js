@@ -696,10 +696,12 @@
 
 						$.each( response.data.lists, function( i, list ) {
 							var selected = String( list.id ) === String( current ) ? ' selected' : '';
-							html += '<option value="' + parseInt( list.id, 10 ) + '"' + selected + '>';
-							html += list.name + ' (' + list.totalSubscribers + ' ' +
-								bcg_campaign_builder.i18n.subscribers + ')';
-							html += '</option>';
+							var subs     = parseInt( list.totalSubscribers || list.uniqueSubscribers || 0, 10 );
+							var label    = list.name;
+							if ( subs > 0 ) {
+								label += ' (' + subs + ' ' + ( bcg_campaign_builder.i18n.subscribers || 'subscribers' ) + ')';
+							}
+							html += '<option value="' + parseInt( list.id, 10 ) + '"' + selected + '>' + label + '</option>';
 						} );
 
 						$select.html( html );
