@@ -166,15 +166,14 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				<div class="bcg-field-row">
 					<label for="bcg-campaign-title" class="bcg-field-label">
 						<?php esc_html_e( 'Campaign Title', 'brevo-campaign-generator' ); ?>
-						<span class="bcg-required">*</span>
+						<span class="description" style="font-weight:400;margin-left:4px;"><?php esc_html_e( '(optional)', 'brevo-campaign-generator' ); ?></span>
 					</label>
 					<input
 						type="text"
 						id="bcg-campaign-title"
 						name="campaign_title"
 						class="regular-text bcg-full-width"
-						required
-						placeholder="<?php esc_attr_e( 'e.g. Summer Sale 2026', 'brevo-campaign-generator' ); ?>"
+						placeholder="<?php esc_attr_e( 'Leave blank to auto-generate', 'brevo-campaign-generator' ); ?>"
 					/>
 				</div>
 
@@ -232,24 +231,50 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						<?php esc_html_e( 'Mailing List', 'brevo-campaign-generator' ); ?>
 					</label>
 					<div class="bcg-field-with-action">
+<?php
+						// Fetch mailing lists server-side with 15-minute transient cache.
+						$bcg_cached_lists = get_transient( 'bcg_brevo_lists_cache' );
+						if ( false === $bcg_cached_lists ) {
+							$bcg_api_key = get_option( 'bcg_brevo_api_key', '' );
+							$bcg_cached_lists = array();
+							if ( ! empty( $bcg_api_key ) ) {
+								$bcg_list_resp = wp_remote_get(
+									'https://api.brevo.com/v3/contacts/lists?limit=50&offset=0',
+									array(
+										'headers' => array(
+											'api-key'      => $bcg_api_key,
+											'Content-Type' => 'application/json',
+										),
+										'timeout' => 10,
+									)
+								);
+								if ( ! is_wp_error( $bcg_list_resp ) && 200 === wp_remote_retrieve_response_code( $bcg_list_resp ) ) {
+									$bcg_list_body = json_decode( wp_remote_retrieve_body( $bcg_list_resp ), true );
+									if ( isset( $bcg_list_body['lists'] ) && is_array( $bcg_list_body['lists'] ) ) {
+										$bcg_cached_lists = $bcg_list_body['lists'];
+										set_transient( 'bcg_brevo_lists_cache', $bcg_cached_lists, 15 * MINUTE_IN_SECONDS );
+									}
+								}
+							}
+						}
+						?>
 						<select
 							id="bcg-mailing-list"
 							name="mailing_list_id"
 							class="bcg-brevo-list-select bcg-select-styled"
 							data-current="<?php echo esc_attr( $default_mailing_list ); ?>"
 						>
-							<option value="">
-								<?php esc_html_e( '-- Select a mailing list --', 'brevo-campaign-generator' ); ?>
-							</option>
-							<?php if ( $default_mailing_list ) : ?>
+							<option value=""><?php esc_html_e( '-- Select a mailing list --', 'brevo-campaign-generator' ); ?></option>
+							<?php foreach ( $bcg_cached_lists as $bcg_list_item ) :
+								$bcg_list_selected = ( (string) ( $bcg_list_item['id'] ?? '' ) === (string) $default_mailing_list ) ? ' selected' : '';
+							?>
+								<option value="<?php echo esc_attr( $bcg_list_item['id'] ?? '' ); ?>"<?php echo $bcg_list_selected; // phpcs:ignore ?>>
+									<?php echo esc_html( ( $bcg_list_item['name'] ?? '' ) . ' (' . ( (int) ( $bcg_list_item['totalSubscribers'] ?? 0 ) ) . ' subscribers)' ); ?>
+								</option>
+							<?php endforeach; ?>
+							<?php if ( empty( $bcg_cached_lists ) && $default_mailing_list ) : ?>
 								<option value="<?php echo esc_attr( $default_mailing_list ); ?>" selected>
-									<?php
-									printf(
-										/* translators: %s: mailing list ID */
-										esc_html__( 'List ID: %s (loading...)', 'brevo-campaign-generator' ),
-										esc_html( $default_mailing_list )
-									);
-									?>
+									<?php printf( esc_html__( 'List ID: %s (click Refresh to load)', 'brevo-campaign-generator' ), esc_html( $default_mailing_list ) ); ?>
 								</option>
 							<?php endif; ?>
 						</select>
@@ -697,6 +722,25 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		<!-- ============================================================
 		     Submit Button
 		     ============================================================ -->
+		<!-- Number of campaigns -->
+		<div class="bcg-field-row bcg-campaign-count-row">
+			<label class="bcg-field-label" for="bcg-campaign-count">
+				<?php esc_html_e( 'Number of Campaigns', 'brevo-campaign-generator' ); ?>
+			</label>
+			<div class="bcg-field-with-action">
+				<select id="bcg-campaign-count" name="campaign_count" class="bcg-custom-select" style="min-width:140px;">
+					<option value="1">1 campaign</option>
+					<option value="2">2 campaigns</option>
+					<option value="3">3 campaigns</option>
+					<option value="4">4 campaigns</option>
+					<option value="5">5 campaigns</option>
+				</select>
+				<span class="description" style="margin-left:8px;">
+					<?php esc_html_e( 'Generate multiple campaign drafts in one go.', 'brevo-campaign-generator' ); ?>
+				</span>
+			</div>
+		</div>
+
 		<div class="bcg-wizard-actions">
 			<button
 				type="submit"

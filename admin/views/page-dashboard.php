@@ -441,6 +441,19 @@ $status_badge_classes = array(
 									</a>
 								<?php endif; ?>
 
+								<?php if ( in_array( $campaign_row->status, array( 'draft', 'ready' ), true ) ) : ?>
+									<button
+										type="button"
+										class="bcg-btn-sm bcg-btn-secondary bcg-schedule-campaign"
+										data-campaign-id="<?php echo absint( $campaign_row->id ); ?>"
+										data-campaign-title="<?php echo esc_attr( $campaign_row->title ); ?>"
+										title="<?php esc_attr_e( 'Schedule', 'brevo-campaign-generator' ); ?>"
+									>
+										<span class="dashicons dashicons-calendar-alt"></span>
+										<?php esc_html_e( 'Schedule', 'brevo-campaign-generator' ); ?>
+									</button>
+								<?php endif; ?>
+
 								<button
 									type="button"
 									class="bcg-btn-sm bcg-btn-secondary bcg-duplicate-campaign"
@@ -562,5 +575,42 @@ $status_badge_classes = array(
 		<?php endif; ?>
 
 	<?php endif; ?>
+
+<!-- ── Schedule Campaign Modal ─────────────────────────────────── -->
+<div id="bcg-schedule-modal" class="bcg-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="bcg-schedule-modal-title">
+	<div class="bcg-modal-box" style="max-width:420px;">
+		<div class="bcg-modal-header">
+			<h2 id="bcg-schedule-modal-title">
+				<span class="material-icons-outlined">schedule</span>
+				<?php esc_html_e( 'Schedule Campaign', 'brevo-campaign-generator' ); ?>
+			</h2>
+			<button type="button" class="bcg-modal-close" id="bcg-schedule-modal-close" aria-label="<?php esc_attr_e( 'Close', 'brevo-campaign-generator' ); ?>">
+				<span class="material-icons-outlined">close</span>
+			</button>
+		</div>
+		<div class="bcg-modal-body">
+			<p id="bcg-schedule-campaign-name" style="font-weight:600;margin-bottom:16px;"></p>
+			<div class="bcg-field-row">
+				<label class="bcg-field-label" for="bcg-schedule-date"><?php esc_html_e( 'Date', 'brevo-campaign-generator' ); ?></label>
+				<input type="date" id="bcg-schedule-date" class="bcg-input" style="color-scheme:dark;" />
+			</div>
+			<div class="bcg-field-row" style="margin-top:12px;">
+				<label class="bcg-field-label" for="bcg-schedule-time"><?php esc_html_e( 'Time', 'brevo-campaign-generator' ); ?></label>
+				<input type="time" id="bcg-schedule-time" class="bcg-input" value="09:00" style="color-scheme:dark;" />
+			</div>
+			<p id="bcg-schedule-error" class="bcg-notice bcg-notice-error" style="display:none;margin-top:12px;"></p>
+		</div>
+		<div class="bcg-modal-footer">
+			<button type="button" class="bcg-btn bcg-btn-secondary" id="bcg-schedule-modal-cancel">
+				<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
+			</button>
+			<button type="button" class="bcg-btn bcg-btn-primary" id="bcg-schedule-modal-confirm">
+				<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">schedule</span>
+				<?php esc_html_e( 'Schedule Campaign', 'brevo-campaign-generator' ); ?>
+			</button>
+		</div>
+		<input type="hidden" id="bcg-schedule-campaign-id" value="" />
+	</div>
+</div>
 
 </div>

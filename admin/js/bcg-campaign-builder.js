@@ -1013,13 +1013,6 @@
 			$( '.bcg-field-error' ).removeClass( 'bcg-field-error' );
 			this.clearNotices();
 
-			// Campaign title is required.
-			var title = $.trim( $( '#bcg-campaign-title' ).val() );
-			if ( ! title ) {
-				errors.push( bcg_campaign_builder.i18n.title_required );
-				$( '#bcg-campaign-title' ).addClass( 'bcg-field-error' ).focus();
-			}
-
 			// Manual source requires at least one product.
 			var source = $( 'input[name="product_source"]:checked' ).val();
 			if ( 'manual' === source && this.manualProductIds.length < 1 ) {
@@ -1046,43 +1039,17 @@
 		// ─── Generation Pipeline ───────────────────────────────────
 
 		/**
-		 * Start the full campaign generation pipeline.
+		 * Build the form data payload for one campaign generation request.
 		 *
-		 * Shows the progress overlay and fires the AJAX request.
-		 * Server-side handles the full pipeline (products, copy,
-		 * images, finalise). Client-side animates the progress steps
-		 * with estimated timings.
+		 * Centralises all form-field reads so startGeneration can call
+		 * it once per iteration without duplicating code.
 		 *
-		 * @return {void}
+		 * @return {Object} Data object suitable for passing to $.ajax data.
 		 */
-		startGeneration: function() {
+		buildPayload: function() {
 			var self = this;
 
-			self.isGenerating = true;
-
-			var $overlay = $( '#bcg-generation-overlay' );
-			var $btn     = $( '#bcg-generate-campaign-btn' );
-
-			// Reset all steps to pending state.
-			$( '.bcg-generation-step' ).each( function() {
-				$( this )
-					.removeClass( 'bcg-step-active bcg-step-complete bcg-step-error' )
-					.find( '.bcg-step-spinner' ).hide();
-				$( this ).find( '.bcg-step-check' ).hide();
-				$( this ).find( '.bcg-step-number' ).show();
-			} );
-
-			$( '#bcg-generation-error' ).hide();
-			$( '#bcg-generation-actions' ).hide();
-
-			$btn.prop( 'disabled', true );
-			$overlay.fadeIn( 200 );
-
-			// Animate through steps with estimated timings.
-			self.activateStep( 'products' );
-
-			// Collect all form data.
-			var formData = {
+			return {
 				action:              'bcg_generate_campaign',
 				nonce:               bcg_campaign_builder.nonce,
 				campaign_title:      $( '#bcg-campaign-title' ).val(),
@@ -1106,68 +1073,156 @@
 				template_slug:       $( '#bcg-template-slug' ).val() || 'classic',
 				section_template_id: parseInt( $( '#bcg-section-template-id' ).val() || 0, 10 )
 			};
+		},
 
-			// Calculate expected duration for step animations.
-			var hasImages      = formData.generate_images === '1';
-			var stepDelay1     = 2000;   // Products fetching.
-			var stepDelay2     = 8000;   // Copy generation.
-			var stepDelay3     = hasImages ? 15000 : 1000; // Image generation.
+		/**
+		 * Start the full campaign generation pipeline.
+		 *
+		 * Shows the progress overlay and fires the AJAX request one or
+		 * more times sequentially, based on the value of
+		 * #bcg-campaign-count (1-5, defaults to 1).  After all
+		 * generations complete the user is redirected to the dashboard.
+		 *
+		 * @return {void}
+		 */
+		startGeneration: function() {
+			var self = this;
 
-			// Simulate step progress (actual completion handled by AJAX response).
-			setTimeout( function() {
-				if ( self.isGenerating ) {
-					self.completeStep( 'products' );
-					self.activateStep( 'copy' );
-				}
-			}, stepDelay1 );
+			self.isGenerating       = true;
+			self.generatedCampaigns = [];
 
-			setTimeout( function() {
-				if ( self.isGenerating ) {
-					self.completeStep( 'copy' );
-					self.activateStep( 'images' );
-				}
-			}, stepDelay1 + stepDelay2 );
+			var count = parseInt( $( '#bcg-campaign-count' ).val() || '1', 10 );
+			count = Math.min( Math.max( count, 1 ), 5 );
 
-			setTimeout( function() {
-				if ( self.isGenerating ) {
-					self.completeStep( 'images' );
-					self.activateStep( 'finalise' );
-				}
-			}, stepDelay1 + stepDelay2 + stepDelay3 );
+			var $overlay = $( '#bcg-generation-overlay' );
+			var $btn     = $( '#bcg-generate-campaign-btn' );
 
-			// Fire the AJAX request.
-			$.ajax( {
-				url:     bcg_campaign_builder.ajax_url,
-				type:    'POST',
-				data:    formData,
-				timeout: 120000, // 2-minute timeout.
-				success: function( response ) {
-					if ( response.success && response.data.campaign_id ) {
-						// Complete all steps.
-						self.completeStep( 'products' );
-						self.completeStep( 'copy' );
-						self.completeStep( 'images' );
-						self.completeStep( 'finalise' );
-
-						// Redirect to the edit page after a brief delay.
-						setTimeout( function() {
-							window.location.href = response.data.redirect_url ||
-								bcg_campaign_builder.edit_url + '&campaign_id=' + response.data.campaign_id;
-						}, 800 );
-					} else {
-						self.handleGenerationError( response );
-					}
-				},
-				error: function( jqXHR, textStatus ) {
-					var msg = bcg_campaign_builder.i18n.generation_failed;
-
-					if ( 'timeout' === textStatus ) {
-						msg = bcg_campaign_builder.i18n.generation_timeout;
-					}
-
-					self.handleGenerationError( { data: { message: msg } } );
-				}
+			// Reset all steps to pending state.
+			$( '.bcg-generation-step' ).each( function() {
+				$( this )
+					.removeClass( 'bcg-step-active bcg-step-complete bcg-step-error' )
+					.find( '.bcg-step-spinner' ).hide();
+				$( this ).find( '.bcg-step-check' ).hide();
+				$( this ).find( '.bcg-step-number' ).show();
 			} );
+
+			$( '#bcg-generation-error' ).hide();
+			$( '#bcg-generation-actions' ).hide();
+
+			$btn.prop( 'disabled', true );
+			$overlay.fadeIn( 200 );
+
+			/**
+			 * Run a single generation iteration.
+			 *
+			 * @param {number} index 1-based iteration counter.
+			 */
+			function runNext( index ) {
+				if ( ! self.isGenerating ) {
+					// User cancelled via the overlay close button.
+					return;
+				}
+
+				if ( index > count ) {
+					// All campaigns generated — go to the dashboard.
+					window.location.href = bcg_campaign_builder.dashboard_url ||
+						( bcg_campaign_builder.admin_url + 'admin.php?page=bcg-dashboard' );
+					return;
+				}
+
+				// Update progress label for bulk runs.
+				if ( count > 1 ) {
+					var $label = $( '#bcg-generation-overlay .bcg-progress-label' );
+					if ( $label.length ) {
+						$label.text( 'Generating campaign ' + index + ' of ' + count + '...' );
+					}
+				}
+
+				// Reset step indicators for each iteration.
+				$( '.bcg-generation-step' ).each( function() {
+					$( this )
+						.removeClass( 'bcg-step-active bcg-step-complete bcg-step-error' )
+						.find( '.bcg-step-spinner' ).hide();
+					$( this ).find( '.bcg-step-check' ).hide();
+					$( this ).find( '.bcg-step-number' ).show();
+				} );
+
+				self.activateStep( 'products' );
+
+				var data = self.buildPayload();
+				data.campaign_index = index;
+
+				// Calculate expected duration for step animations.
+				var hasImages  = data.generate_images === '1';
+				var stepDelay1 = 2000;
+				var stepDelay2 = 8000;
+				var stepDelay3 = hasImages ? 15000 : 1000;
+
+				var t1 = setTimeout( function() {
+					if ( self.isGenerating ) {
+						self.completeStep( 'products' );
+						self.activateStep( 'copy' );
+					}
+				}, stepDelay1 );
+
+				var t2 = setTimeout( function() {
+					if ( self.isGenerating ) {
+						self.completeStep( 'copy' );
+						self.activateStep( 'images' );
+					}
+				}, stepDelay1 + stepDelay2 );
+
+				var t3 = setTimeout( function() {
+					if ( self.isGenerating ) {
+						self.completeStep( 'images' );
+						self.activateStep( 'finalise' );
+					}
+				}, stepDelay1 + stepDelay2 + stepDelay3 );
+
+				$.ajax( {
+					url:     bcg_campaign_builder.ajax_url,
+					type:    'POST',
+					data:    data,
+					timeout: 120000,
+					success: function( response ) {
+						clearTimeout( t1 );
+						clearTimeout( t2 );
+						clearTimeout( t3 );
+
+						if ( response.success && response.data.campaign_id ) {
+							self.completeStep( 'products' );
+							self.completeStep( 'copy' );
+							self.completeStep( 'images' );
+							self.completeStep( 'finalise' );
+
+							self.generatedCampaigns.push( response.data );
+
+							// Brief pause so the user sees the completed steps
+							// before moving to the next iteration (or redirecting).
+							setTimeout( function() {
+								runNext( index + 1 );
+							}, count > 1 ? 400 : 800 );
+						} else {
+							self.handleGenerationError( response );
+						}
+					},
+					error: function( jqXHR, textStatus ) {
+						clearTimeout( t1 );
+						clearTimeout( t2 );
+						clearTimeout( t3 );
+
+						var msg = bcg_campaign_builder.i18n.generation_failed;
+
+						if ( 'timeout' === textStatus ) {
+							msg = bcg_campaign_builder.i18n.generation_timeout;
+						}
+
+						self.handleGenerationError( { data: { message: msg } } );
+					}
+				} );
+			}
+
+			runNext( 1 );
 		},
 
 		/**

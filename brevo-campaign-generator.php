@@ -3,7 +3,7 @@
  * Plugin Name: Brevo Campaign Generator for WooCommerce
  * Plugin URI: https://github.com/red-frog-studio/brevo-campaign-generator
  * Description: Automatically generate and send Brevo email campaigns from WooCommerce using AI.
- * Version: 1.5.29
+ * Version: 1.5.30
  * Author: Red Frog Studio
  * Author URI: https://redfrogstudio.co.uk
  * License: Proprietary
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @var string
  */
-define( 'BCG_VERSION', '1.5.29' );
+define( 'BCG_VERSION', '1.5.30' );
 
 /**
  * Plugin directory path (with trailing slash).

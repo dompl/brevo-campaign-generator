@@ -216,6 +216,16 @@ class BCG_Admin {
 		);
 		add_action( 'load-' . $sb_hook, array( $this, 'add_section_builder_help_tabs' ) );
 
+		// AI Trainer.
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'AI Trainer', 'brevo-campaign-generator' ),
+			__( 'AI Trainer', 'brevo-campaign-generator' ),
+			self::CAPABILITY,
+			'bcg-ai-trainer',
+			array( $this, 'render_ai_trainer_page' )
+		);
+
 		// Help & Documentation.
 		add_submenu_page(
 			self::MENU_SLUG,
@@ -633,6 +643,7 @@ class BCG_Admin {
 			'brevo-campaigns_page_bcg-settings',
 			'brevo-campaigns_page_bcg-edit-campaign',
 			'admin_page_bcg-edit-campaign',
+			'brevo-campaigns_page_bcg-ai-trainer',
 			'brevo-campaigns_page_bcg-help',
 		);
 
@@ -673,7 +684,12 @@ class BCG_Admin {
 		}
 
 		if ( empty( $title ) ) {
-			wp_send_json_error( array( 'message' => __( 'Campaign title is required.', 'brevo-campaign-generator' ) ) );
+			// Auto-generate a title based on current date.
+			$title = sprintf(
+				/* translators: %s: formatted date */
+				__( 'Campaign — %s', 'brevo-campaign-generator' ),
+				date_i18n( 'j M Y' )
+			);
 		}
 
 		// Accept both 'subject' and 'subject_line'.
@@ -2701,6 +2717,16 @@ class BCG_Admin {
 	 */
 	public function render_section_builder_page(): void {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-section-builder.php';
+	}
+
+	/**
+	 * Render the AI Trainer page.
+	 *
+	 * @since 1.5.29
+	 * @return void
+	 */
+	public function render_ai_trainer_page(): void {
+		require_once BCG_PLUGIN_DIR . 'admin/views/page-ai-trainer.php';
 	}
 
 	/**

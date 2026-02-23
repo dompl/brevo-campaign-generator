@@ -17,6 +17,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.30] — 2026-02-23
+
+### Added
+- **Schedule button on campaign list** — draft and ready campaigns now have a Schedule button in the dashboard action row; clicking opens a modal with date + time pickers; submits to the existing `bcg_schedule_campaign` AJAX handler and updates the row badge in place
+- **AI Trainer in main nav** — AI Trainer moved from Settings tabs to its own submenu entry ("AI Trainer") directly under Brevo Campaigns; now a first-class page with full-width editing
+- **Bulk campaign generation** — New Campaign wizard gains a "Number of Campaigns" dropdown (1–5); generates N sequential campaign drafts in one click with "Generating campaign X of N…" progress label
+- **Server-side mailing list loading** — mailing lists now fetched and rendered server-side on page load (15-minute transient cache) instead of relying on JS AJAX; eliminates the "List ID: 2 (loading...)" placeholder issue; Refresh button still works as a fallback
+
+### Changed
+- **Campaign title optional** — the Campaign Title field is no longer required; if left blank, the campaign is auto-titled "Campaign — {date}" by the server
+
+---
+
 ## [1.5.29] — 2026-02-23
 
 ### Added

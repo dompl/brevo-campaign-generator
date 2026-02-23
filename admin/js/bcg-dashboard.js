@@ -28,6 +28,94 @@
 		bindEvents: function () {
 			$( document ).on( 'click', '.bcg-delete-campaign', this.onDeleteCampaign );
 			$( document ).on( 'click', '.bcg-duplicate-campaign', this.onDuplicateCampaign );
+			this.bindScheduleModal();
+		},
+
+		/**
+		 * Bind the schedule campaign modal handlers.
+		 *
+		 * Opens the schedule modal when a .bcg-schedule-campaign button is
+		 * clicked, handles close/cancel actions, backdrop clicks, and
+		 * fires the bcg_schedule_campaign AJAX call on confirm.
+		 *
+		 * @return {void}
+		 */
+		bindScheduleModal: function () {
+			// ── Schedule Campaign ──────────────────────────────────────────
+			$( document ).on( 'click', '.bcg-schedule-campaign', function() {
+				var $btn          = $( this );
+				var campaignId    = $btn.data( 'campaign-id' );
+				var campaignTitle = $btn.data( 'campaign-title' ) || 'Campaign #' + campaignId;
+
+				// Set tomorrow as default date.
+				var tomorrow = new Date();
+				tomorrow.setDate( tomorrow.getDate() + 1 );
+				var tomorrowStr = tomorrow.toISOString().split( 'T' )[0];
+
+				$( '#bcg-schedule-campaign-id' ).val( campaignId );
+				$( '#bcg-schedule-campaign-name' ).text( campaignTitle );
+				$( '#bcg-schedule-date' ).val( tomorrowStr ).attr( 'min', tomorrowStr );
+				$( '#bcg-schedule-error' ).hide();
+				$( '#bcg-schedule-modal' ).fadeIn( 150 );
+			} );
+
+			$( '#bcg-schedule-modal-close, #bcg-schedule-modal-cancel' ).on( 'click', function() {
+				$( '#bcg-schedule-modal' ).fadeOut( 150 );
+			} );
+
+			$( document ).on( 'click', '#bcg-schedule-modal', function( e ) {
+				if ( $( e.target ).is( '#bcg-schedule-modal' ) ) {
+					$( '#bcg-schedule-modal' ).fadeOut( 150 );
+				}
+			} );
+
+			$( '#bcg-schedule-modal-confirm' ).on( 'click', function() {
+				var campaignId = $( '#bcg-schedule-campaign-id' ).val();
+				var date       = $( '#bcg-schedule-date' ).val();
+				var time       = $( '#bcg-schedule-time' ).val() || '09:00';
+				var $btn       = $( this );
+				var $error     = $( '#bcg-schedule-error' );
+
+				if ( ! date ) {
+					$error.text( 'Please select a date.' ).show();
+					return;
+				}
+
+				// Combine date + time → ISO 8601 string.
+				var scheduledAt = date + 'T' + time + ':00';
+
+				$btn.prop( 'disabled', true ).text( 'Scheduling\u2026' );
+				$error.hide();
+
+				$.ajax( {
+					url:  bcgData.ajax_url,
+					type: 'POST',
+					data: {
+						action:       'bcg_schedule_campaign',
+						nonce:        bcgData.nonce,
+						campaign_id:  campaignId,
+						scheduled_at: scheduledAt
+					},
+					success: function( response ) {
+						if ( response.success ) {
+							$( '#bcg-schedule-modal' ).fadeOut( 150 );
+							// Update the status badge on the row.
+							var $row = $( '[data-campaign-id="' + campaignId + '"]' ).closest( 'tr' );
+							$row.find( '.bcg-status-badge' ).removeClass().addClass( 'bcg-status-badge bcg-status-scheduled' ).text( 'Scheduled' );
+							$row.find( '.bcg-schedule-campaign' ).remove();
+						} else {
+							var msg = ( response.data && response.data.message ) ? response.data.message : 'Scheduling failed.';
+							$error.text( msg ).show();
+						}
+					},
+					error: function() {
+						$error.text( 'Request failed. Please try again.' ).show();
+					},
+					complete: function() {
+						$btn.prop( 'disabled', false ).html( '<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">schedule</span>Schedule Campaign' );
+					}
+				} );
+			} );
 		},
 
 		/**
