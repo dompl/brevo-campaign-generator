@@ -6686,53 +6686,41 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 	font-size:     13px;
 }
 
-/* ── Section Builder: defaults bar (primary colour + font) ────────────── */
+/* ── Section Builder: Default Settings modal ───────────────────────────── */
 
-body.bcg-admin-page .bcg-sb-defaults-bar {
-	display:       flex;
-	align-items:   center;
-	gap:           20px;
-	padding:       10px 16px;
-	background:    var(--bcg-bg-surface);
-	border:        1px solid var(--bcg-border);
-	border-radius: var(--bcg-radius);
-	margin-bottom: var(--bcg-space-4);
-	flex-wrap:     wrap;
+body.bcg-admin-page .bcg-sb-defaults-content {
+	width:     460px;
+	max-width: calc(100vw - 40px);
 }
 
-body.bcg-admin-page .bcg-sb-defaults-item {
-	display:     flex;
-	align-items: center;
-	gap:         8px;
-	flex-wrap:   wrap;
+body.bcg-admin-page .bcg-sb-defaults-modal-body {
+	padding:        24px 24px 0;
+	display:        flex;
+	flex-direction: column;
+	gap:            24px;
 }
 
-body.bcg-admin-page .bcg-sb-defaults-label {
-	display:     flex;
-	align-items: center;
-	gap:         4px;
-	font-size:   12px;
+body.bcg-admin-page .bcg-sb-defaults-modal-body .bcg-form-row {
+	display:        flex;
+	flex-direction: column;
+	gap:            4px;
+}
+
+body.bcg-admin-page .bcg-sb-defaults-modal-body .bcg-form-label {
+	font-size:   13px;
 	font-weight: 600;
-	color:       var(--bcg-text-muted);
-	white-space: nowrap;
+	color:       var(--bcg-text-primary);
 }
 
-body.bcg-admin-page .bcg-sb-defaults-label .material-icons-outlined {
-	font-size: 15px !important;
-	opacity:   0.7;
-}
-
-body.bcg-admin-page .bcg-sb-defaults-divider {
-	display:       block;
-	width:         1px;
-	height:        24px;
-	background:    var(--bcg-border);
-	flex-shrink:   0;
+body.bcg-admin-page .bcg-sb-defaults-modal-body .bcg-form-hint {
+	font-size: 12px;
+	color:     var(--bcg-text-muted);
+	margin:    0;
 }
 
 body.bcg-admin-page .bcg-sb-primary-color-input {
-	width:         32px;
-	height:        26px;
+	width:         36px;
+	height:        30px;
 	padding:       2px;
 	border:        1px solid var(--bcg-border);
 	border-radius: 4px;
@@ -6740,8 +6728,12 @@ body.bcg-admin-page .bcg-sb-primary-color-input {
 	background:    none;
 }
 
-body.bcg-admin-page .bcg-sb-font-select {
-	min-width: 160px;
+body.bcg-admin-page .bcg-sb-defaults-modal-footer {
+	padding:         16px 24px;
+	display:         flex;
+	justify-content: flex-end;
+	border-top:      1px solid var(--bcg-border);
+	margin-top:      24px;
 }
 
 /* ── New Campaign Multi-Step Wizard ────────────────────────────────────── */

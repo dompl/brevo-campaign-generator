@@ -45,6 +45,7 @@
 			this.bindLoadModal();
 			this.bindRequestModal();
 			this.bindPromptModal();
+			this.bindDefaultSettingsModal();
 			this.renderPalette();
 			this.renderCanvas();
 
@@ -1866,6 +1867,31 @@
 			var $status = $( '#bcg-sb-prompt-status' );
 			$status.removeClass( 'bcg-req-success' ).addClass( 'bcg-req-error' )
 				.text( msg ).show();
+		},
+
+		/**
+		 * Bind the Default Settings modal (primary colour + default font).
+		 */
+		bindDefaultSettingsModal: function () {
+			var self   = this;
+			var $modal = $( '#bcg-sb-defaults-modal' );
+
+			function openModal() {
+				$modal.fadeIn( 150 );
+			}
+			function closeModal() {
+				$modal.fadeOut( 150 );
+				// Close any open font dropdowns inside the modal.
+				$modal.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$modal.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+			}
+
+			$( '#bcg-sb-defaults-btn' ).on( 'click', openModal );
+			$( '#bcg-sb-defaults-close, #bcg-sb-defaults-done' ).on( 'click', closeModal );
+			$( '#bcg-sb-defaults-overlay' ).on( 'click', closeModal );
+			$( document ).on( 'keydown.defaultsModal', function ( e ) {
+				if ( e.key === 'Escape' && $modal.is( ':visible' ) ) { closeModal(); }
+			} );
 		},
 
 		/**

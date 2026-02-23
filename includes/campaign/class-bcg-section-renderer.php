@@ -1284,34 +1284,33 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_social_icon_html( string $href, string $platform, string $icon_bg, string $icon_tc, int $size, string $abbr ): string {
-		$svg_inner = self::get_social_svg( $platform, $icon_tc );
-		$padding   = max( 4, (int) round( $size * 0.2 ) );
-		$inner_size = $size - ( $padding * 2 );
-		if ( $inner_size < 1 ) { $inner_size = $size; $padding = 0; }
+		$svg_inner  = self::get_social_svg( $platform, $icon_tc );
+		// SVG is slightly inset — 70% of the circle diameter gives good visual balance.
+		$inner_size = max( 12, (int) round( $size * 0.7 ) );
+		// Top margin to vertically centre the SVG inside the circle.
+		$svg_mt     = (int) round( ( $size - $inner_size ) / 2 );
 
 		if ( $svg_inner ) {
-			// Clients that support inline SVG (Gmail post-2024, Apple Mail, etc.)
+			// Inline SVG, centred via block + margin. Works in Gmail (post-2024), Apple Mail, etc.
 			$icon_content = '<!--[if !mso]><!-->' .
-				'<svg xmlns="http://www.w3.org/2000/svg" width="' . $inner_size . '" height="' . $inner_size . '" viewBox="0 0 24 24" role="img" aria-label="' . esc_attr( ucfirst( $platform ) ) . '" style="display:block;width:' . $inner_size . 'px;height:' . $inner_size . 'px;">' .
+				'<svg xmlns="http://www.w3.org/2000/svg" width="' . $inner_size . '" height="' . $inner_size . '" viewBox="0 0 24 24" role="img" aria-label="' . esc_attr( ucfirst( $platform ) ) . '" style="display:block;width:' . $inner_size . 'px;height:' . $inner_size . 'px;margin:' . $svg_mt . 'px auto 0;">' .
 				$svg_inner .
 				'</svg>' .
 				'<!--<![endif]-->' .
-				// MSO fallback: plain text abbr
-				'<!--[if mso]><span style="font-family:Arial,sans-serif;font-size:' . (int) round( $inner_size * 0.5 ) . 'px;font-weight:700;color:' . esc_attr( $icon_tc ) . ';text-transform:uppercase;">' . esc_html( $abbr ) . '</span><![endif]-->';
+				// Outlook fallback: abbreviated text.
+				'<!--[if mso]><span style="display:block;text-align:center;font-family:Arial,sans-serif;font-size:' . (int) round( $size * 0.35 ) . 'px;font-weight:700;color:' . esc_attr( $icon_tc ) . ';line-height:' . $size . 'px;text-transform:uppercase;">' . esc_html( $abbr ) . '</span><![endif]-->';
 		} else {
-			$icon_content = '<span style="font-family:Arial,sans-serif;font-size:' . (int) round( $inner_size * 0.5 ) . 'px;font-weight:700;color:' . esc_attr( $icon_tc ) . ';text-transform:uppercase;">' . esc_html( $abbr ) . '</span>';
+			$icon_content = '<span style="display:block;text-align:center;font-family:Arial,sans-serif;font-size:' . (int) round( $size * 0.35 ) . 'px;font-weight:700;color:' . esc_attr( $icon_tc ) . ';line-height:' . $size . 'px;text-transform:uppercase;">' . esc_html( $abbr ) . '</span>';
 		}
 
+		// Use display:inline-block + overflow:hidden + font-size:0 so the circle is always
+		// exactly $size × $size regardless of inner content height.
 		return sprintf(
-			'<a href="%s" target="_blank" style="display:inline-table;width:%dpx;height:%dpx;border-radius:50%%;background-color:%s;text-decoration:none;margin:0 5px;vertical-align:middle;" title="%s">' .
-			'<span style="display:table-cell;width:%dpx;height:%dpx;text-align:center;vertical-align:middle;padding:%dpx;">%s</span>' .
-			'</a>',
+			'<a href="%s" target="_blank" style="display:inline-block;width:%dpx;height:%dpx;min-width:%dpx;border-radius:50%%;background-color:%s;overflow:hidden;text-decoration:none;margin:0 5px;vertical-align:middle;font-size:0;line-height:0;" title="%s">%s</a>',
 			esc_url( $href ),
-			$size, $size,
+			$size, $size, $size,
 			esc_attr( $icon_bg ),
 			esc_attr( ucfirst( $platform ) ),
-			$size, $size,
-			$padding,
 			$icon_content
 		);
 	}

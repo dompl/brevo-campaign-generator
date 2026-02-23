@@ -102,53 +102,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="material-icons-outlined">lightbulb</span>
 				<?php esc_html_e( 'Request a Section', 'brevo-campaign-generator' ); ?>
 			</button>
+
+			<button type="button" id="bcg-sb-defaults-btn" class="bcg-btn-secondary bcg-btn-sm">
+				<span class="material-icons-outlined">tune</span>
+				<?php esc_html_e( 'Default Settings', 'brevo-campaign-generator' ); ?>
+			</button>
 		</div>
-		<div class="bcg-sb-defaults-bar">
-
-			<!-- Primary Colour -->
-			<div class="bcg-sb-defaults-item">
-				<label class="bcg-sb-defaults-label" for="bcg-sb-primary-color">
-					<span class="material-icons-outlined">palette</span>
-					<?php esc_html_e( 'Primary Colour', 'brevo-campaign-generator' ); ?>
-				</label>
-				<input type="color" id="bcg-sb-primary-color" class="bcg-sb-primary-color-input" value="#e63529" title="<?php esc_attr_e( 'Replaces accent colour in all sections', 'brevo-campaign-generator' ); ?>" />
-				<button type="button" id="bcg-sb-apply-primary-color" class="bcg-btn bcg-btn-secondary bcg-btn-sm">
-					<?php esc_html_e( 'Apply to All', 'brevo-campaign-generator' ); ?>
-				</button>
-			</div>
-
-			<!-- Divider -->
-			<span class="bcg-sb-defaults-divider"></span>
-
-			<!-- Default Font -->
-			<div class="bcg-sb-defaults-item">
-				<label class="bcg-sb-defaults-label">
-					<span class="material-icons-outlined">text_fields</span>
-					<?php esc_html_e( 'Default Font', 'brevo-campaign-generator' ); ?>
-				</label>
-				<div class="bcg-select-wrapper bcg-sb-custom-select" id="bcg-sb-font-wrapper" style="min-width:170px;">
-					<button type="button" class="bcg-select-trigger" aria-haspopup="listbox" aria-expanded="false">
-						<span class="bcg-select-value" id="bcg-sb-font-label">Georgia</span>
-						<span class="material-icons-outlined" style="font-size:18px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>
-					</button>
-					<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">
-						<div class="bcg-select-option is-selected" data-value="Georgia, serif">Georgia</div>
-						<div class="bcg-select-option" data-value="'Times New Roman', Times, serif">Times New Roman</div>
-						<div class="bcg-select-option" data-value="'Playfair Display', Georgia, serif">Playfair Display</div>
-						<div class="bcg-select-option" data-value="Arial, Helvetica, sans-serif">Arial</div>
-						<div class="bcg-select-option" data-value="Verdana, Geneva, Tahoma, sans-serif">Verdana</div>
-						<div class="bcg-select-option" data-value="'Trebuchet MS', Tahoma, Geneva, sans-serif">Trebuchet MS</div>
-						<div class="bcg-select-option" data-value="'Roboto', Arial, sans-serif">Roboto</div>
-						<div class="bcg-select-option" data-value="'Open Sans', Arial, sans-serif">Open Sans</div>
-						<div class="bcg-select-option" data-value="'Lato', Arial, sans-serif">Lato</div>
-						<div class="bcg-select-option" data-value="'Montserrat', Arial, sans-serif">Montserrat</div>
-						<div class="bcg-select-option" data-value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</div>
-						<div class="bcg-select-option" data-value="Courier New, Courier, monospace">Courier New</div>
-					</div>
-				</div>
-			</div>
-
-		</div><!-- /.bcg-sb-defaults-bar -->
 	</div><!-- /.bcg-sb-toolbar -->
 
 	<!-- ── Status bar ────────────────────────────────────────────────── -->
@@ -249,6 +208,73 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</p>
 			</div>
 		</div>
+	</div>
+
+	<!-- ── Default Settings Modal ───────────────────────────────────────── -->
+	<div id="bcg-sb-defaults-modal" class="bcg-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="bcg-sb-defaults-title">
+		<div class="bcg-modal-overlay" id="bcg-sb-defaults-overlay"></div>
+		<div class="bcg-modal-content bcg-sb-defaults-content">
+
+			<div class="bcg-modal-header">
+				<span class="material-icons-outlined" style="color:var(--bcg-accent);font-size:20px;flex-shrink:0;">tune</span>
+				<h3 id="bcg-sb-defaults-title"><?php esc_html_e( 'Default Settings', 'brevo-campaign-generator' ); ?></h3>
+				<button type="button" class="bcg-modal-close" id="bcg-sb-defaults-close" aria-label="<?php esc_attr_e( 'Close', 'brevo-campaign-generator' ); ?>">
+					<span class="material-icons-outlined">close</span>
+				</button>
+			</div>
+
+			<div class="bcg-sb-defaults-modal-body">
+
+				<div class="bcg-form-row">
+					<label class="bcg-form-label">
+						<?php esc_html_e( 'Default Font', 'brevo-campaign-generator' ); ?>
+					</label>
+					<p class="bcg-form-hint"><?php esc_html_e( 'Applied to all text sections in the email.', 'brevo-campaign-generator' ); ?></p>
+					<div class="bcg-select-wrapper bcg-sb-custom-select" id="bcg-sb-font-wrapper">
+						<button type="button" class="bcg-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+							<span class="bcg-select-value" id="bcg-sb-font-label">Georgia</span>
+							<span class="material-icons-outlined" style="font-size:18px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>
+						</button>
+						<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">
+							<div class="bcg-select-option is-selected" data-value="Georgia, serif">Georgia</div>
+							<div class="bcg-select-option" data-value="'Times New Roman', Times, serif">Times New Roman</div>
+							<div class="bcg-select-option" data-value="'Playfair Display', Georgia, serif">Playfair Display</div>
+							<div class="bcg-select-option" data-value="Arial, Helvetica, sans-serif">Arial</div>
+							<div class="bcg-select-option" data-value="Verdana, Geneva, Tahoma, sans-serif">Verdana</div>
+							<div class="bcg-select-option" data-value="'Trebuchet MS', Tahoma, Geneva, sans-serif">Trebuchet MS</div>
+							<div class="bcg-select-option" data-value="'Roboto', Arial, sans-serif">Roboto</div>
+							<div class="bcg-select-option" data-value="'Open Sans', Arial, sans-serif">Open Sans</div>
+							<div class="bcg-select-option" data-value="'Lato', Arial, sans-serif">Lato</div>
+							<div class="bcg-select-option" data-value="'Montserrat', Arial, sans-serif">Montserrat</div>
+							<div class="bcg-select-option" data-value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</div>
+							<div class="bcg-select-option" data-value="Courier New, Courier, monospace">Courier New</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="bcg-form-row">
+					<label class="bcg-form-label" for="bcg-sb-primary-color">
+						<?php esc_html_e( 'Primary Colour', 'brevo-campaign-generator' ); ?>
+					</label>
+					<p class="bcg-form-hint"><?php esc_html_e( 'Replaces the accent/button colour across all sections when you click Apply.', 'brevo-campaign-generator' ); ?></p>
+					<div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+						<input type="color" id="bcg-sb-primary-color" class="bcg-sb-primary-color-input" value="#e63529" />
+						<button type="button" id="bcg-sb-apply-primary-color" class="bcg-btn bcg-btn-secondary bcg-btn-sm">
+							<span class="material-icons-outlined">format_paint</span>
+							<?php esc_html_e( 'Apply to All Sections', 'brevo-campaign-generator' ); ?>
+						</button>
+					</div>
+				</div>
+
+			</div><!-- /.bcg-sb-defaults-modal-body -->
+
+			<div class="bcg-sb-defaults-modal-footer">
+				<button type="button" id="bcg-sb-defaults-done" class="bcg-btn-primary">
+					<?php esc_html_e( 'Done', 'brevo-campaign-generator' ); ?>
+				</button>
+			</div>
+
+		</div><!-- /.bcg-modal-content -->
 	</div>
 
 	<!-- ── Request a Section Modal ────────────────────────── -->
