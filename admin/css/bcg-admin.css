@@ -4792,3 +4792,756 @@ body.bcg-admin-page .bcg-spin {
 	padding-top:     16px;
 	border-top:      1px solid var(--bcg-border);
 }
+
+/* ============================================================
+   HELP & DOCUMENTATION PAGE  (v1.5.20)
+   ============================================================ */
+
+/* ── Page Header ─────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-page-header {
+	background: var(--bcg-bg-surface);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-lg);
+	margin-bottom: 24px;
+}
+body.bcg-admin-page .bcg-help-page-header-inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	padding: 24px 28px;
+	flex-wrap: wrap;
+}
+body.bcg-admin-page .bcg-help-page-title {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+body.bcg-admin-page .bcg-help-page-title > .material-icons-outlined {
+	font-size: 36px;
+	color: var(--bcg-accent);
+	flex-shrink: 0;
+}
+body.bcg-admin-page .bcg-help-page-title h1 {
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	margin: 0 0 4px;
+	line-height: 1.2;
+}
+body.bcg-admin-page .bcg-help-page-title p {
+	font-size: 14px;
+	color: var(--bcg-text-secondary);
+	margin: 0;
+}
+body.bcg-admin-page .bcg-help-search-wrap {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: var(--bcg-bg-input);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 0 14px;
+	flex-shrink: 0;
+	min-width: 260px;
+	transition: border-color var(--bcg-transition);
+}
+body.bcg-admin-page .bcg-help-search-wrap:focus-within {
+	border-color: var(--bcg-accent);
+}
+body.bcg-admin-page .bcg-help-search-wrap .material-icons-outlined {
+	font-size: 18px;
+	color: var(--bcg-text-muted);
+	flex-shrink: 0;
+}
+body.bcg-admin-page #bcg-help-search {
+	background: transparent;
+	border: none;
+	outline: none;
+	color: var(--bcg-text-primary);
+	font-size: 14px;
+	padding: 10px 0;
+	width: 100%;
+	font-family: var(--bcg-font-body);
+}
+body.bcg-admin-page #bcg-help-search::placeholder {
+	color: var(--bcg-text-muted);
+}
+
+/* ── Two-Column Layout ───────────────────────────────────── */
+body.bcg-admin-page .bcg-help-layout {
+	display: grid;
+	grid-template-columns: 230px 1fr;
+	gap: 24px;
+	align-items: start;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-sidebar {
+	position: sticky;
+	top: calc(32px + 64px + 16px); /* WP toolbar + plugin header + gap */
+	max-height: calc(100vh - 32px - 64px - 48px);
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	scrollbar-width: thin;
+	scrollbar-color: var(--bcg-border) transparent;
+}
+body.bcg-admin-page .bcg-help-nav {
+	background: var(--bcg-bg-surface);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-lg);
+	padding: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+body.bcg-admin-page .bcg-help-nav-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 12px;
+	border-radius: var(--bcg-radius);
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--bcg-text-secondary);
+	text-decoration: none;
+	transition: background var(--bcg-transition), color var(--bcg-transition);
+	line-height: 1.3;
+}
+body.bcg-admin-page .bcg-help-nav-item .material-icons-outlined {
+	font-size: 17px;
+	flex-shrink: 0;
+}
+body.bcg-admin-page .bcg-help-nav-item:hover {
+	background: var(--bcg-bg-hover);
+	color: var(--bcg-text-primary);
+}
+body.bcg-admin-page .bcg-help-nav-item.is-active {
+	background: rgba(230, 53, 41, 0.12);
+	color: var(--bcg-accent);
+	font-weight: 600;
+}
+body.bcg-admin-page .bcg-help-nav-sub {
+	padding-left: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+body.bcg-admin-page .bcg-help-nav-child {
+	font-size: 12px;
+	padding: 7px 10px;
+	color: var(--bcg-text-muted);
+}
+body.bcg-admin-page .bcg-help-nav-child.is-active {
+	background: rgba(230, 53, 41, 0.08);
+	color: var(--bcg-accent);
+}
+body.bcg-admin-page .bcg-help-sidebar-footer {
+	background: var(--bcg-bg-surface);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-lg);
+	padding: 14px 16px;
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+}
+body.bcg-admin-page .bcg-help-sidebar-footer .material-icons-outlined {
+	font-size: 20px;
+	color: var(--bcg-warning);
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+body.bcg-admin-page .bcg-help-sidebar-footer div {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+body.bcg-admin-page .bcg-help-sidebar-footer strong {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+body.bcg-admin-page .bcg-help-sidebar-footer span {
+	font-size: 11.5px;
+	color: var(--bcg-text-muted);
+	line-height: 1.5;
+}
+
+/* ── Content Area ────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+/* ── Sections ────────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-section {
+	scroll-margin-top: calc(32px + 64px + 24px);
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--bcg-border);
+	margin-bottom: 32px;
+}
+body.bcg-admin-page .bcg-help-section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+body.bcg-admin-page .bcg-help-section-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+body.bcg-admin-page .bcg-help-section-header > .material-icons-outlined {
+	font-size: 32px;
+	color: var(--bcg-accent);
+	flex-shrink: 0;
+	margin-top: 3px;
+}
+body.bcg-admin-page .bcg-help-section-header h2 {
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	margin: 0 0 6px;
+	line-height: 1.2;
+	font-family: var(--bcg-font-display);
+}
+body.bcg-admin-page .bcg-help-section-header p {
+	font-size: 14px;
+	color: var(--bcg-text-secondary);
+	margin: 0;
+	line-height: 1.6;
+}
+
+/* ── Cards ───────────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-card {
+	background: var(--bcg-bg-surface);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-lg);
+	padding: 24px;
+	margin-bottom: 16px;
+	scroll-margin-top: calc(32px + 64px + 24px);
+}
+body.bcg-admin-page .bcg-help-card:last-child {
+	margin-bottom: 0;
+}
+body.bcg-admin-page .bcg-help-card h3 {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	margin: 0 0 14px;
+	font-family: var(--bcg-font-display);
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--bcg-border);
+}
+body.bcg-admin-page .bcg-help-card h4 {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	margin: 0 0 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+body.bcg-admin-page .bcg-help-card p {
+	font-size: 14px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.7;
+	margin: 0 0 12px;
+}
+body.bcg-admin-page .bcg-help-card p:last-child {
+	margin-bottom: 0;
+}
+body.bcg-admin-page .bcg-help-card-label {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+body.bcg-admin-page .bcg-help-card-label h3 {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+/* ── Step Pill ───────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-step-pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 12px;
+	background: var(--bcg-accent);
+	color: #fff;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	border-radius: 20px;
+	flex-shrink: 0;
+}
+
+/* ── Steps List ──────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-steps {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+body.bcg-admin-page .bcg-help-step {
+	display: flex;
+	gap: 16px;
+	align-items: flex-start;
+}
+body.bcg-admin-page .bcg-help-step-number {
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	border-radius: 50%;
+	background: rgba(230, 53, 41, 0.15);
+	border: 2px solid var(--bcg-accent);
+	color: var(--bcg-accent);
+	font-size: 14px;
+	font-weight: 800;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--bcg-font-display);
+}
+body.bcg-admin-page .bcg-help-step-body {
+	padding-top: 4px;
+}
+body.bcg-admin-page .bcg-help-step-body strong {
+	display: block;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	margin-bottom: 4px;
+}
+body.bcg-admin-page .bcg-help-step-body p {
+	font-size: 13.5px;
+	color: var(--bcg-text-secondary);
+	margin: 0;
+	line-height: 1.6;
+}
+
+/* ── Feature Grid ────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-feature-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+	margin-top: 16px;
+}
+body.bcg-admin-page .bcg-help-feature-item {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 14px;
+}
+body.bcg-admin-page .bcg-help-feature-icon {
+	font-size: 22px;
+	color: var(--bcg-accent);
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+body.bcg-admin-page .bcg-help-feature-item div {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+body.bcg-admin-page .bcg-help-feature-item strong {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+}
+body.bcg-admin-page .bcg-help-feature-item span {
+	font-size: 12.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.5;
+}
+
+/* ── Tip box ─────────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-tip {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	background: rgba(59, 130, 246, 0.08);
+	border: 1px solid rgba(59, 130, 246, 0.25);
+	border-radius: var(--bcg-radius);
+	padding: 14px 16px;
+	margin-top: 16px;
+	font-size: 13.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.6;
+}
+body.bcg-admin-page .bcg-help-section > .bcg-help-tip {
+	margin-top: 0;
+	margin-bottom: 16px;
+}
+body.bcg-admin-page .bcg-help-tip .material-icons-outlined {
+	font-size: 20px;
+	color: var(--bcg-info);
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+body.bcg-admin-page .bcg-help-tip strong {
+	color: var(--bcg-text-primary);
+}
+
+/* ── Definition List ─────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-def-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	overflow: hidden;
+}
+body.bcg-admin-page .bcg-help-def-item {
+	display: grid;
+	grid-template-columns: 220px 1fr;
+	gap: 0;
+	border-bottom: 1px solid var(--bcg-border);
+}
+body.bcg-admin-page .bcg-help-def-item:last-child {
+	border-bottom: none;
+}
+body.bcg-admin-page .bcg-help-def-term {
+	padding: 12px 16px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	background: var(--bcg-bg-raised);
+	border-right: 1px solid var(--bcg-border);
+	line-height: 1.5;
+	display: flex;
+	align-items: center;
+}
+body.bcg-admin-page .bcg-help-def-desc {
+	padding: 12px 16px;
+	font-size: 13px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.6;
+	display: flex;
+	align-items: center;
+}
+
+/* ── Badge Grid ──────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-badge-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 12px;
+}
+body.bcg-admin-page .bcg-help-badge-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 10px 14px;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+}
+body.bcg-admin-page .bcg-help-badge-item .bcg-badge {
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+body.bcg-admin-page .bcg-help-badge-item span:last-child {
+	font-size: 13px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.6;
+}
+
+/* ── Option Grid ─────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-option-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+	margin-top: 12px;
+}
+body.bcg-admin-page .bcg-help-option {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 12px;
+}
+body.bcg-admin-page .bcg-help-option .material-icons-outlined {
+	font-size: 20px;
+	color: var(--bcg-accent);
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+body.bcg-admin-page .bcg-help-option div {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+body.bcg-admin-page .bcg-help-option strong {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+}
+body.bcg-admin-page .bcg-help-option span {
+	font-size: 12.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.5;
+}
+
+/* ── Actions Grid ────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-actions-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+	margin-top: 12px;
+}
+body.bcg-admin-page .bcg-help-action-item {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 12px 14px;
+}
+body.bcg-admin-page .bcg-help-action-item .material-icons-outlined {
+	font-size: 22px;
+	color: var(--bcg-accent);
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+body.bcg-admin-page .bcg-help-action-item div {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+body.bcg-admin-page .bcg-help-action-item strong {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+}
+body.bcg-admin-page .bcg-help-action-item span {
+	font-size: 12.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.5;
+}
+
+/* ── Help List ───────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-list {
+	list-style: none;
+	padding: 0;
+	margin: 10px 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+body.bcg-admin-page .bcg-help-list li {
+	padding-left: 20px;
+	position: relative;
+	font-size: 13.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.6;
+}
+body.bcg-admin-page .bcg-help-list li::before {
+	content: '';
+	position: absolute;
+	left: 4px;
+	top: 8px;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--bcg-accent);
+}
+body.bcg-admin-page .bcg-help-list li strong {
+	color: var(--bcg-text-primary);
+}
+
+/* ── Builder Layout Diagram ──────────────────────────────── */
+body.bcg-admin-page .bcg-help-layout-diagram {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 16px;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+body.bcg-admin-page .bcg-help-layout-panel {
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-lg);
+	padding: 16px 20px;
+	text-align: center;
+	flex: 1;
+	min-width: 120px;
+}
+body.bcg-admin-page .bcg-help-layout-panel-center {
+	border-color: var(--bcg-accent);
+	background: rgba(230, 53, 41, 0.06);
+}
+body.bcg-admin-page .bcg-help-layout-panel-label {
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	color: var(--bcg-text-muted);
+	text-transform: uppercase;
+	margin-bottom: 8px;
+}
+body.bcg-admin-page .bcg-help-layout-panel-center .bcg-help-layout-panel-label {
+	color: var(--bcg-accent);
+}
+body.bcg-admin-page .bcg-help-layout-panel-icon .material-icons-outlined {
+	font-size: 28px;
+	color: var(--bcg-text-secondary);
+}
+body.bcg-admin-page .bcg-help-layout-panel-center .bcg-help-layout-panel-icon .material-icons-outlined {
+	color: var(--bcg-accent);
+}
+body.bcg-admin-page .bcg-help-layout-panel-desc {
+	font-size: 12px;
+	color: var(--bcg-text-muted);
+	margin-top: 6px;
+	line-height: 1.5;
+}
+body.bcg-admin-page .bcg-help-layout-arrow .material-icons-outlined {
+	font-size: 20px;
+	color: var(--bcg-border);
+}
+
+/* ── Section Type Grid ───────────────────────────────────── */
+body.bcg-admin-page .bcg-help-section-type-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+	margin-top: 4px;
+}
+body.bcg-admin-page .bcg-help-section-type {
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 14px 16px;
+}
+body.bcg-admin-page .bcg-help-section-type-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+body.bcg-admin-page .bcg-help-section-type-header span:first-child {
+	font-size: 18px;
+}
+body.bcg-admin-page .bcg-help-section-type-header strong {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+	flex: 1;
+}
+body.bcg-admin-page .bcg-help-section-type-badge {
+	font-size: 10px;
+	font-weight: 600;
+	padding: 2px 8px;
+	border-radius: 10px;
+	background: var(--bcg-bg-hover);
+	border: 1px solid var(--bcg-border);
+	color: var(--bcg-text-muted);
+	white-space: nowrap;
+	letter-spacing: 0.03em;
+}
+body.bcg-admin-page .bcg-ai-badge {
+	background: rgba(230, 53, 41, 0.12);
+	border-color: rgba(230, 53, 41, 0.3);
+	color: var(--bcg-accent);
+}
+body.bcg-admin-page .bcg-help-section-type > p {
+	font-size: 12.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.5;
+	margin: 0 0 8px;
+}
+body.bcg-admin-page .bcg-help-variants {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+body.bcg-admin-page .bcg-help-variants li {
+	font-size: 12px;
+	color: var(--bcg-text-muted);
+	padding-left: 14px;
+	position: relative;
+	line-height: 1.5;
+}
+body.bcg-admin-page .bcg-help-variants li::before {
+	content: '—';
+	position: absolute;
+	left: 0;
+	color: var(--bcg-border);
+}
+
+/* ── Three-col ───────────────────────────────────────────── */
+body.bcg-admin-page .bcg-help-three-col {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+	margin-top: 12px;
+}
+body.bcg-admin-page .bcg-help-col-item {
+	background: var(--bcg-bg-raised);
+	border: 1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+body.bcg-admin-page .bcg-help-col-item strong {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--bcg-text-primary);
+}
+body.bcg-admin-page .bcg-help-col-item span {
+	font-size: 12.5px;
+	color: var(--bcg-text-secondary);
+	line-height: 1.5;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media ( max-width: 1200px ) {
+	body.bcg-admin-page .bcg-help-layout {
+		grid-template-columns: 200px 1fr;
+	}
+	body.bcg-admin-page .bcg-help-section-type-grid {
+		grid-template-columns: 1fr;
+	}
+	body.bcg-admin-page .bcg-help-feature-grid {
+		grid-template-columns: 1fr;
+	}
+}
+@media ( max-width: 960px ) {
+	body.bcg-admin-page .bcg-help-layout {
+		grid-template-columns: 1fr;
+	}
+	body.bcg-admin-page .bcg-help-sidebar {
+		position: static;
+		max-height: none;
+	}
+	body.bcg-admin-page .bcg-help-actions-grid,
+	body.bcg-admin-page .bcg-help-option-grid {
+		grid-template-columns: 1fr;
+	}
+	body.bcg-admin-page .bcg-help-three-col {
+		grid-template-columns: 1fr;
+	}
+	body.bcg-admin-page .bcg-help-def-item {
+		grid-template-columns: 1fr;
+	}
+	body.bcg-admin-page .bcg-help-def-term {
+		border-right: none;
+		border-bottom: 1px solid var(--bcg-border);
+	}
+}

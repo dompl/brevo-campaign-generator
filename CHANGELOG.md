@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.20] — 2026-02-23
+
+### Added
+- **Help & Documentation page** — new "Help & Docs" menu item under Brevo Campaigns. Two-column layout with sticky sidebar navigation and comprehensive documentation covering every user-facing feature: Dashboard, Creating Campaigns (Step 1 & 2), Template Builder (palette, canvas, settings, all 12 section types), Template Editor, AI & Credits, and Brevo Stats. Includes live search, smooth-scroll sidebar navigation with IntersectionObserver active-state tracking, and a fully styled design matching the existing admin UI.
+
+---
+
 ## [1.5.19] — 2026-02-21
 
 ### Fixed

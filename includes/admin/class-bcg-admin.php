@@ -213,6 +213,16 @@ class BCG_Admin {
 		);
 		add_action( 'load-' . $sb_hook, array( $this, 'add_section_builder_help_tabs' ) );
 
+		// Help & Documentation.
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Help & Docs', 'brevo-campaign-generator' ),
+			__( 'Help & Docs', 'brevo-campaign-generator' ),
+			self::CAPABILITY,
+			'bcg-help',
+			array( $this, 'render_help_page' )
+		);
+
 		// Edit Campaign (hidden — not shown in the nav menu).
 		add_submenu_page(
 			null,
@@ -619,6 +629,7 @@ class BCG_Admin {
 			'brevo-campaigns_page_bcg-settings',
 			'brevo-campaigns_page_bcg-edit-campaign',
 			'admin_page_bcg-edit-campaign',
+			'brevo-campaigns_page_bcg-help',
 		);
 
 		return in_array( $hook_suffix, $bcg_pages, true );
@@ -2656,6 +2667,16 @@ class BCG_Admin {
 	 */
 	public function render_section_builder_page(): void {
 		require_once BCG_PLUGIN_DIR . 'admin/views/page-section-builder.php';
+	}
+
+	/**
+	 * Render the Help & Documentation page.
+	 *
+	 * @since  1.5.20
+	 * @return void
+	 */
+	public function render_help_page(): void {
+		require BCG_PLUGIN_DIR . 'admin/views/page-help.php';
 	}
 
 	// ─── Template Builder AJAX Handlers ─────────────────────────────────
