@@ -17,6 +17,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.25] — 2026-02-23
+
+### Fixed
+- **Product card image toggle** — replaced radio buttons with a compact two-button toggle group ([Product] [AI]); hidden radio inputs preserved for JS compatibility.
+- **Remove product button** — styled as a red circle icon with no underline (class `bcg-remove-circle`).
+- **Campaign editor layout** — full CSS added for `.bcg-editor-columns` (two-column grid), `.bcg-editor-preview` (sticky), `.bcg-preview-panel`, `.bcg-preview-header`, and `.bcg-actions-bar` (fixed bottom, box-shadow, gap from content).
+- **AI image error message** — Gemini "Image generation is not available in your country" error now returns a human-readable message explaining it's a regional restriction with an alternative action.
+- **Dashboard action buttons** — Duplicate and Delete buttons now use `bcg-btn-sm bcg-btn-secondary` matching the Edit/Preview buttons so all actions are the same height and style.
+- **Mailing list** — AJAX success handler now handles `response.success = false` (e.g. API key not configured) by showing the error message in the dropdown instead of leaving it stuck on "Loading…".
+- **Scroll to top on notice** — `showNotice()` now scrolls to the top of the page for success and error notices so the message is always visible.
+
+---
+
 ## [1.5.24] — 2026-02-23
 
 ### Fixed

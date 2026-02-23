@@ -316,8 +316,10 @@
 							$img.data( 'ai-image', content );
 							$img.attr( 'data-ai-image', content );
 
-							// Switch to AI image source.
+							// Switch to AI image source — update hidden radio + visible buttons.
 							$card.find( '.bcg-image-source-radio[value="ai"]' ).prop( 'checked', true ).trigger( 'change' );
+							$card.find( '.bcg-img-src-btn' ).removeClass( 'is-active' );
+							$card.find( '.bcg-img-src-btn[data-source="ai"]' ).addClass( 'is-active' );
 						}
 						break;
 				}
@@ -388,6 +390,21 @@
 	 * @return {void}
 	 */
 	function bindImageSourceRadios() {
+		// Button group: clicking a button toggles the hidden radio + triggers change.
+		$( document ).on( 'click', '.bcg-img-src-btn', function() {
+			var $btn         = $( this );
+			var source       = $btn.data( 'source' );
+			var productRowId = $btn.data( 'product-row-id' );
+			var $card        = $( '.bcg-product-card[data-product-row-id="' + productRowId + '"]' );
+
+			$card.find( '.bcg-img-src-btn' ).removeClass( 'is-active' );
+			$btn.addClass( 'is-active' );
+
+			$card.find( '.bcg-image-source-radio[value="' + source + '"]' )
+				.prop( 'checked', true )
+				.trigger( 'change' );
+		} );
+
 		$( document ).on( 'change', '.bcg-image-source-radio', function() {
 			var $radio = $( this );
 			var source = $radio.val();
@@ -1171,12 +1188,17 @@
 
 		$container.prepend( $notice );
 
-		// Auto-dismiss after 5 seconds.
+		// Scroll to top so notices are visible.
+		if ( type === 'success' || type === 'error' ) {
+			$( 'html, body' ).animate( { scrollTop: 0 }, 250 );
+		}
+
+		// Auto-dismiss after 6 seconds.
 		setTimeout( function() {
 			$notice.fadeOut( 300, function() {
 				$notice.remove();
-			});
-		}, 5000 );
+			} );
+		}, 6000 );
 	}
 
 	/**

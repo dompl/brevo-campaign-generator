@@ -443,23 +443,24 @@ $status_badge_classes = array(
 
 								<button
 									type="button"
-									class="button button-small bcg-duplicate-campaign"
+									class="bcg-btn-sm bcg-btn-secondary bcg-duplicate-campaign"
 									data-campaign-id="<?php echo absint( $campaign_row->id ); ?>"
 									title="<?php esc_attr_e( 'Duplicate', 'brevo-campaign-generator' ); ?>"
 								>
-									<span class="dashicons dashicons-admin-page" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span>
+									<span class="dashicons dashicons-admin-page"></span>
 									<?php esc_html_e( 'Duplicate', 'brevo-campaign-generator' ); ?>
 								</button>
 
 								<button
 									type="button"
-									class="button button-small bcg-delete-campaign"
+									class="bcg-btn-sm bcg-btn-secondary bcg-delete-campaign"
 									data-campaign-id="<?php echo absint( $campaign_row->id ); ?>"
 									data-campaign-title="<?php echo esc_attr( $campaign_row->title ); ?>"
 									title="<?php esc_attr_e( 'Delete', 'brevo-campaign-generator' ); ?>"
+									style="color:#d63638;border-color:rgba(214,54,56,0.3);"
 								>
-									<span class="dashicons dashicons-trash" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top; color: #d63638;"></span>
-									<span style="color: #d63638;"><?php esc_html_e( 'Delete', 'brevo-campaign-generator' ); ?></span>
+									<span class="dashicons dashicons-trash" style="color:#d63638;"></span>
+									<?php esc_html_e( 'Delete', 'brevo-campaign-generator' ); ?>
 								</button>
 							</div>
 						</td>

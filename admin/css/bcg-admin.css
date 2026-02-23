@@ -5846,3 +5846,188 @@ body.bcg-admin-page .bcg-modal-footer {
 	background: var(--bcg-border);
 	flex-shrink: 0;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CAMPAIGN EDITOR — v1.5.25 additions
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Editor two-column layout ────────────────────────────────────────── */
+
+.bcg-editor-wrap {
+	padding-bottom: 90px;
+}
+
+.bcg-editor-columns {
+	display:     grid;
+	grid-template-columns: 1fr 400px;
+	gap:         20px;
+	align-items: flex-start;
+}
+
+.bcg-editor-main {
+	min-width: 0;
+}
+
+.bcg-editor-preview {
+	position: sticky;
+	top:      32px;
+}
+
+/* ── Preview panel ───────────────────────────────────────────────────── */
+
+.bcg-preview-panel {
+	background:    var(--bcg-bg-raised);
+	border:        1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius);
+	overflow:      hidden;
+}
+
+.bcg-preview-header {
+	display:         flex;
+	align-items:     center;
+	justify-content: space-between;
+	padding:         10px 14px;
+	border-bottom:   1px solid var(--bcg-border);
+	background:      var(--bcg-bg-surface);
+}
+
+.bcg-preview-header h3 {
+	font-size:   13px;
+	font-weight: 600;
+	color:       var(--bcg-text-secondary);
+	margin:      0;
+}
+
+.bcg-preview-iframe-wrapper {
+	position:   relative;
+	background: #f5f5f5;
+	min-height: 300px;
+}
+
+/* ── Sticky actions bar ──────────────────────────────────────────────── */
+
+.bcg-actions-bar {
+	position:   fixed;
+	bottom:     0;
+	left:       160px;  /* WP admin sidebar default width */
+	right:      0;
+	background: var(--bcg-bg-surface);
+	border-top: 2px solid var(--bcg-border);
+	box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+	z-index:    9999;
+}
+
+/* Folded sidebar: WordPress adds .folded to body */
+body.folded .bcg-actions-bar {
+	left: 36px;
+}
+
+.bcg-actions-bar-inner {
+	padding: 10px 20px;
+}
+
+/* ── Image source button toggle ──────────────────────────────────────── */
+
+.bcg-image-source-btn-group {
+	display:       flex;
+	border:        1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-sm);
+	overflow:      hidden;
+	width:         100%;
+}
+
+.bcg-img-src-btn {
+	flex:       1;
+	padding:    5px 8px;
+	background: var(--bcg-bg-raised);
+	border:     none;
+	border-right: 1px solid var(--bcg-border);
+	font-size:  11px;
+	font-weight: 600;
+	color:      var(--bcg-text-muted);
+	cursor:     pointer;
+	transition: background 0.15s, color 0.15s;
+	text-align: center;
+	font-family: var(--bcg-font-body);
+}
+
+.bcg-img-src-btn:last-child {
+	border-right: none;
+}
+
+.bcg-img-src-btn:hover {
+	background: var(--bcg-bg-hover);
+	color:      var(--bcg-text-primary);
+}
+
+.bcg-img-src-btn.is-active {
+	background: var(--bcg-accent);
+	color:      #fff;
+}
+
+/* Hide the legacy radio fieldset now replaced by button group */
+.bcg-product-image-source {
+	display: none;
+}
+
+/* ── Remove product — red circle ─────────────────────────────────────── */
+
+.bcg-remove-circle {
+	width:         28px;
+	height:        28px;
+	border-radius: 50%;
+	background:    rgba(214, 54, 56, 0.08);
+	border:        1.5px solid rgba(214, 54, 56, 0.25);
+	color:         #d63638;
+	display:       inline-flex;
+	align-items:   center;
+	justify-content: center;
+	padding:       0;
+	cursor:        pointer;
+	transition:    background 0.15s, border-color 0.15s, color 0.15s;
+	text-decoration: none;
+	flex-shrink:   0;
+}
+
+.bcg-remove-circle:hover {
+	background:    #d63638;
+	border-color:  #d63638;
+	color:         #fff;
+}
+
+.bcg-remove-circle .dashicons {
+	font-size:   14px;
+	width:       14px;
+	height:      14px;
+	line-height: 14px;
+}
+
+/* ── Dashboard action buttons — uniform sizing ───────────────────────── */
+
+.bcg-action-buttons {
+	display:     flex;
+	align-items: center;
+	gap:         6px;
+	flex-wrap:   wrap;
+}
+
+.bcg-action-buttons .bcg-btn-sm,
+.bcg-action-buttons .button.button-small {
+	display:       inline-flex;
+	align-items:   center;
+	gap:           4px;
+	padding:       5px 10px !important;
+	font-size:     12px !important;
+	font-weight:   500;
+	border-radius: var(--bcg-radius-sm) !important;
+	white-space:   nowrap;
+	height:        auto !important;
+	line-height:   1.4 !important;
+}
+
+.bcg-action-buttons .dashicons {
+	font-size:   13px !important;
+	width:       13px !important;
+	height:      13px !important;
+	line-height: 13px !important;
+}

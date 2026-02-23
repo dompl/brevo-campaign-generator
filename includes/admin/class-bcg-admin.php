@@ -1085,7 +1085,12 @@ class BCG_Admin {
 		$result     = $ai_manager->regenerate_field( $campaign_id, $field, $context );
 
 		if ( is_wp_error( $result ) ) {
-			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+			$err_msg = $result->get_error_message();
+			// Gemini image generation is geo-restricted. Provide a clear explanation.
+			if ( false !== strpos( $err_msg, 'not available in your country' ) || false !== strpos( $err_msg, 'Image generation' ) ) {
+				$err_msg = __( 'AI image generation is not available in your region. Please use the "Use Custom Image" button to upload an image from your media library instead.', 'brevo-campaign-generator' );
+			}
+			wp_send_json_error( array( 'message' => $err_msg ) );
 		}
 
 		// Auto-save the regenerated content to the DB (only if campaign exists).

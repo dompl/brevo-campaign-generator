@@ -77,7 +77,7 @@ if ( empty( $display_image ) ) {
 			</h4>
 		</div>
 		<button type="button"
-			class="bcg-remove-product button-link bcg-text-error"
+			class="bcg-remove-product bcg-remove-circle"
 			data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
 			title="<?php esc_attr_e( 'Remove product', 'brevo-campaign-generator' ); ?>">
 			<span class="dashicons dashicons-no-alt"></span>
@@ -98,27 +98,35 @@ if ( empty( $display_image ) ) {
 				/>
 			</div>
 
-			<!-- Image source controls -->
-			<fieldset class="bcg-product-image-source bcg-mt-8">
-				<legend class="screen-reader-text"><?php esc_html_e( 'Image source', 'brevo-campaign-generator' ); ?></legend>
-				<label class="bcg-radio-label">
-					<input type="radio"
-						name="bcg_image_source_<?php echo esc_attr( $product_row_id ); ?>"
-						value="product"
-						class="bcg-image-source-radio"
-						data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
-						<?php checked( $use_product_image, 1 ); ?> />
-					<?php esc_html_e( 'Product image', 'brevo-campaign-generator' ); ?>
-				</label>
-				<label class="bcg-radio-label">
-					<input type="radio"
-						name="bcg_image_source_<?php echo esc_attr( $product_row_id ); ?>"
-						value="ai"
-						class="bcg-image-source-radio"
-						data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
-						<?php checked( $use_product_image, 0 ); ?> />
-					<?php esc_html_e( 'AI image', 'brevo-campaign-generator' ); ?>
-				</label>
+			<!-- Image source button toggle -->
+			<div class="bcg-image-source-btn-group bcg-mt-8">
+				<button type="button"
+					class="bcg-img-src-btn<?php echo $use_product_image ? ' is-active' : ''; ?>"
+					data-source="product"
+					data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>">
+					<?php esc_html_e( 'Product', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button"
+					class="bcg-img-src-btn<?php echo ! $use_product_image ? ' is-active' : ''; ?>"
+					data-source="ai"
+					data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>">
+					<?php esc_html_e( 'AI', 'brevo-campaign-generator' ); ?>
+				</button>
+			</div>
+			<!-- Hidden radios kept for JS compatibility -->
+			<fieldset class="bcg-product-image-source" style="display:none;">
+				<input type="radio"
+					name="bcg_image_source_<?php echo esc_attr( $product_row_id ); ?>"
+					value="product"
+					class="bcg-image-source-radio"
+					data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
+					<?php checked( $use_product_image, 1 ); ?> />
+				<input type="radio"
+					name="bcg_image_source_<?php echo esc_attr( $product_row_id ); ?>"
+					value="ai"
+					class="bcg-image-source-radio"
+					data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
+					<?php checked( $use_product_image, 0 ); ?> />
 			</fieldset>
 
 			<div class="bcg-product-image-actions bcg-mt-8">

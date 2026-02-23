@@ -689,7 +689,7 @@
 					nonce:  bcg_campaign_builder.nonce
 				},
 				success: function( response ) {
-					if ( response.success && response.data.lists ) {
+					if ( response.success && response.data && response.data.lists ) {
 						var html = '<option value="">' +
 							bcg_campaign_builder.i18n.select_list +
 							'</option>';
@@ -703,6 +703,8 @@
 						} );
 
 						$select.html( html );
+					} else if ( ! response.success && response.data && response.data.message ) {
+						$select.html( '<option value="">' + response.data.message + '</option>' );
 					}
 				},
 				error: function() {
