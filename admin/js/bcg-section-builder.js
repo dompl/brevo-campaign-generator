@@ -1466,18 +1466,60 @@
 			self.markDirty();
 		},
 
+		/**
+		 * Generate a full email: first ask AI to design the layout, then fill content.
+		 *
+		 * Step 1 — bcg_sb_build_layout: AI returns an ordered list of section types that
+		 * match the user's prompt (different each call, based on brief).
+		 * Step 2 — bcg_sb_generate_all: AI fills copywriting for every AI-capable section.
+		 */
 		generateAll: function () {
 			var self    = this;
 			var $btn    = $( '#bcg-sb-generate-btn' );
-
-			// If canvas is empty, build a sensible default layout first.
-			if ( self.sections.length === 0 ) {
-				self.showStatus( 'Building template structure…', 'loading' );
-				self.buildDefaultTemplate();
-			}
-
 			var context = self.buildContext();
+
 			$btn.prop( 'disabled', true );
+			self.showStatus( 'Designing layout with AI…', 'loading' );
+
+			// Step 1: Ask AI to design a layout based on the prompt.
+			$.ajax( {
+				url:     bcg_section_builder.ajax_url,
+				type:    'POST',
+				timeout: 60000,
+				data: {
+					action:  'bcg_sb_build_layout',
+					nonce:   bcg_section_builder.nonce,
+					context: JSON.stringify( context )
+				},
+				success: function ( res ) {
+					if ( res.success && res.data.sections && res.data.sections.length ) {
+						// Replace canvas with the AI-designed layout.
+						self.sections = res.data.sections;
+						self.selectedId = null;
+						self.renderCanvas();
+						self.renderSettingsPanel( null );
+					}
+					// Step 2: Fill AI content into the new layout.
+					self.doGenerateContent( context, $btn );
+				},
+				error: function () {
+					// Layout step failed — fall back to existing or default sections.
+					if ( self.sections.length === 0 ) {
+						self.buildDefaultTemplate();
+					}
+					self.doGenerateContent( context, $btn );
+				}
+			} );
+		},
+
+		/**
+		 * Step 2 of generation: fill AI copywriting into an already-laid-out canvas.
+		 *
+		 * @param {Object} context Campaign context (tone, language, prompt, products).
+		 * @param {jQuery} $btn    The generate button — re-enabled on completion.
+		 */
+		doGenerateContent: function ( context, $btn ) {
+			var self = this;
 			self.showStatus( self.i18n.generating || 'Generating AI content…', 'loading' );
 
 			$.ajax( {
@@ -1492,17 +1534,13 @@
 				},
 				success: function ( res ) {
 					$btn.prop( 'disabled', false );
-
 					if ( res.success ) {
 						self.sections = res.data.sections || self.sections;
 						self.renderCanvas();
-
-						// Re-render settings if a section is selected.
 						if ( self.selectedId ) {
 							var updated = self.getSectionById( self.selectedId );
-							self.renderSettingsPanel( updated );
+							if ( updated ) { self.renderSettingsPanel( updated ); }
 						}
-
 						self.markDirty();
 						self.debouncePreview();
 						self.showStatus( 'AI content generated.', 'success' );
@@ -1653,15 +1691,38 @@
 				self.generateAll();
 			} );
 
-			// Saved prompts dropdown — load selected prompt into textarea.
-			$( document ).on( 'change', '#bcg-sb-saved-prompts-select', function () {
-				var idx = $( this ).val();
-				if ( idx === '' ) { return; }
+			// Custom saved prompts dropdown — open/close trigger.
+			$( document ).on( 'click', '#bcg-saved-prompts-trigger', function ( e ) {
+				e.stopPropagation();
+				var $trigger = $( this );
+				var $menu    = $( '#bcg-saved-prompts-menu' );
+				var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
+				if ( isOpen ) {
+					$menu.addClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'false' );
+				} else {
+					$menu.removeClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'true' );
+				}
+			} );
+
+			// Custom saved prompts dropdown — select option.
+			$( document ).on( 'click', '#bcg-saved-prompts-menu .bcg-saved-prompt-option', function ( e ) {
+				e.stopPropagation();
+				var idx     = $( this ).data( 'idx' );
 				var prompts = self.getSavedPrompts();
 				if ( prompts[ idx ] ) {
 					$( '#bcg-sb-ai-prompt' ).val( prompts[ idx ].text ).trigger( 'focus' );
 				}
-				$( this ).val( '' ); // Reset to placeholder after loading.
+				// Close dropdown.
+				$( '#bcg-saved-prompts-menu' ).addClass( 'bcg-dropdown-closed' );
+				$( '#bcg-saved-prompts-trigger' ).attr( 'aria-expanded', 'false' );
+			} );
+
+			// Close saved prompts dropdown on outside click.
+			$( document ).on( 'click.bcgSavedPrompts', function () {
+				$( '#bcg-saved-prompts-menu' ).addClass( 'bcg-dropdown-closed' );
+				$( '#bcg-saved-prompts-trigger' ).attr( 'aria-expanded', 'false' );
 			} );
 
 			// Initialise voice input.
@@ -1859,17 +1920,27 @@
 		refreshSavedPromptsDropdown: function () {
 			var prompts  = this.getSavedPrompts();
 			var $wrap    = $( '#bcg-sb-saved-prompts-wrap' );
-			var $select  = $( '#bcg-sb-saved-prompts-select' );
+			var $menu    = $( '#bcg-saved-prompts-menu' );
+			var $trigger = $( '#bcg-saved-prompts-trigger' );
 
 			if ( ! prompts.length ) {
 				$wrap.hide();
 				return;
 			}
 
-			$select.empty().append( $( '<option>' ).val( '' ).text( '— Load a saved prompt —' ) );
+			$menu.empty();
 			$.each( prompts, function ( i, p ) {
-				$select.append( $( '<option>' ).val( i ).text( p.label ) );
+				var $opt = $( '<li>' )
+					.addClass( 'bcg-select-option bcg-saved-prompt-option' )
+					.attr( { role: 'option', 'data-idx': i } )
+					.text( p.label );
+				$menu.append( $opt );
 			} );
+
+			// Update trigger placeholder.
+			$trigger.find( '.bcg-select-value' ).text( '— Load a saved prompt —' );
+			$menu.addClass( 'bcg-dropdown-closed' );
+			$trigger.attr( 'aria-expanded', 'false' );
 			$wrap.show();
 		},
 

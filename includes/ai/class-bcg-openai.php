@@ -1239,6 +1239,75 @@ class BCG_OpenAI {
 		);
 	}
 
+	// ─── Layout Generation ─────────────────────────────────────────────────
+
+	/**
+	 * Ask GPT to suggest an email section layout based on a campaign brief.
+	 *
+	 * Returns an ordered array of section type slugs (e.g. ['header','hero','products','footer'])
+	 * that best match the user's campaign brief and context.
+	 *
+	 * @since  1.5.38
+	 *
+	 * @param string $prompt  The user's campaign brief.
+	 * @param array  $context Campaign context — tone, language, etc.
+	 * @return array|\WP_Error Ordered array of section-type slugs, or WP_Error on failure.
+	 */
+	public function generate_section_layout( string $prompt, array $context ): array|\WP_Error {
+		$tone     = sanitize_text_field( $context['tone'] ?? 'Professional' );
+		$language = sanitize_text_field( $context['language'] ?? 'English' );
+
+		$system_prompt = $this->build_system_prompt( $tone, $language );
+
+		$user_prompt = sprintf(
+			"Based on this email campaign brief:\n\"\"%s\"\n\n" .
+			"Return a JSON array of email section types for this campaign layout.\n" .
+			"Available types: header, hero, text, products, banner, cta, coupon, divider, spacer, footer\n\n" .
+			"Rules:\n" .
+			"- First element must be \"header\", last must be \"footer\"\n" .
+			"- Use 4–8 sections total\n" .
+			"- Match the brief (e.g. Black Friday → hero + products + coupon + cta)\n" .
+			"- You may repeat types (e.g. two text blocks)\n" .
+			"- Return ONLY valid JSON — no explanation, no markdown fences\n\n" .
+			"Example: [\"header\",\"hero\",\"products\",\"coupon\",\"cta\",\"footer\"]",
+			$prompt
+		);
+
+		$result = $this->make_completion_request(
+			$system_prompt,
+			$user_prompt,
+			self::TEMPERATURE_STRUCTURED,
+			150
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		// Extract JSON array from response (may be wrapped in markdown).
+		preg_match( '/\\[[\\s\\S]*?\\]/', $result, $matches );
+		$json  = $matches[0] ?? '[]';
+		$types = json_decode( $json, true );
+
+		if ( ! is_array( $types ) ) {
+			return new \WP_Error( 'layout_parse', __( 'Could not parse layout from AI response.', 'brevo-campaign-generator' ) );
+		}
+
+		// Whitelist valid section types.
+		$valid = array( 'header', 'hero', 'text', 'products', 'banner', 'cta', 'coupon', 'divider', 'spacer', 'footer' );
+		$types = array_values( array_filter( $types, static fn( string $t ) => in_array( $t, $valid, true ) ) );
+
+		// Guarantee header first and footer last.
+		if ( empty( $types ) || $types[0] !== 'header' ) {
+			array_unshift( $types, 'header' );
+		}
+		if ( end( $types ) !== 'footer' ) {
+			$types[] = 'footer';
+		}
+
+		return $types;
+	}
+
 	// ─── Test Connection ─────────────────────────────────────────────
 
 	public function test_connection(): bool|\WP_Error {

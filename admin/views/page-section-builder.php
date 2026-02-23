@@ -318,9 +318,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<div class="bcg-sb-textarea-toolbar">
 						<div class="bcg-sb-saved-prompts-wrap" id="bcg-sb-saved-prompts-wrap" style="display:none;">
-							<select id="bcg-sb-saved-prompts-select" aria-label="<?php esc_attr_e( 'Load a saved prompt', 'brevo-campaign-generator' ); ?>">
-								<option value=""><?php esc_html_e( '— Load a saved prompt —', 'brevo-campaign-generator' ); ?></option>
-							</select>
+							<div class="bcg-custom-select" id="bcg-saved-prompts-wrapper">
+								<button type="button" class="bcg-select-trigger" id="bcg-saved-prompts-trigger" aria-haspopup="listbox" aria-expanded="false">
+									<span class="bcg-select-value"><?php esc_html_e( '— Load a saved prompt —', 'brevo-campaign-generator' ); ?></span>
+									<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+								</button>
+								<ul class="bcg-select-menu bcg-dropdown-closed" role="listbox" id="bcg-saved-prompts-menu">
+									<!-- Options populated by JS via refreshSavedPromptsDropdown() -->
+								</ul>
+							</div>
 						</div>
 						<button type="button" id="bcg-sb-voice-btn" class="bcg-sb-voice-btn" title="<?php esc_attr_e( 'Speak your prompt', 'brevo-campaign-generator' ); ?>">
 							<span class="material-icons-outlined">mic</span>

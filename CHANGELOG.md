@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.38] — 2026-02-23
+
+### Added
+- **AI layout generation** — the "Generate with AI" flow now runs in two steps: (1) AI designs the email layout (which section types to use and in what order) based on the user's prompt, then (2) AI fills copywriting into each section; prompt "Black Friday" now produces a structurally different email every time, not just the same template with different text
+- **Layout builder AJAX handler** (`bcg_sb_build_layout`) — new PHP endpoint that calls OpenAI to return an ordered list of section type slugs matched to the campaign brief, then builds section objects using registry defaults
+
+### Changed
+- **Saved prompts — custom dropdown** — replaced the native browser `<select>` with the plugin's custom dropdown component (same design as all other selects in the plugin)
+
+---
+
 ## [1.5.37] — 2026-02-23
 
 ### Fixed

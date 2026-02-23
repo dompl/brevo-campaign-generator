@@ -119,6 +119,7 @@ class BCG_Admin {
 		add_action( 'wp_ajax_bcg_sb_delete_template',  array( $this, 'handle_sb_delete_template' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_all',     array( $this, 'handle_sb_generate_all' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_section', array( $this, 'handle_sb_generate_section' ) );
+		add_action( 'wp_ajax_bcg_sb_build_layout',     array( $this, 'handle_sb_build_layout' ) );
 		add_action( 'wp_ajax_bcg_request_section',     array( $this, 'handle_request_section' ) );
 
 		// Section campaign editor.
@@ -3000,6 +3001,61 @@ class BCG_Admin {
 		}
 
 		wp_send_json_success( array( 'settings' => $result ) );
+	}
+
+	/**
+	 * Handle bcg_sb_build_layout — use AI to design an email section layout.
+	 *
+	 * Takes a user prompt and returns an ordered array of section objects
+	 * (with default settings) that represent an AI-designed layout for that brief.
+	 *
+	 * @since  1.5.38
+	 * @return void
+	 */
+	public function handle_sb_build_layout(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$context_raw = isset( $_POST['context'] ) ? wp_unslash( $_POST['context'] ) : '{}';
+		$context     = json_decode( $context_raw, true );
+		if ( ! is_array( $context ) ) {
+			$context = array();
+		}
+
+		$context['tone']     = sanitize_text_field( $context['tone'] ?? 'Professional' );
+		$context['language'] = sanitize_text_field( $context['language'] ?? 'English' );
+		$context['prompt']   = sanitize_textarea_field( $context['prompt'] ?? '' );
+
+		if ( empty( $context['prompt'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'A prompt is required to build a layout.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$openai = new BCG_OpenAI();
+		$openai->set_campaign_prompt( $context['prompt'] );
+
+		$types = $openai->generate_section_layout( $context['prompt'], $context );
+		if ( is_wp_error( $types ) ) {
+			wp_send_json_error( array( 'message' => $types->get_error_message() ) );
+		}
+
+		// Build a sections array from the type slugs using registry defaults.
+		$sections = array();
+		foreach ( $types as $type ) {
+			$type_def = BCG_Section_Registry::get( $type );
+			if ( ! $type_def ) {
+				continue;
+			}
+			$sections[] = array(
+				'id'       => bin2hex( random_bytes( 8 ) ),
+				'type'     => $type,
+				'settings' => $type_def['defaults'] ?? array(),
+			);
+		}
+
+		wp_send_json_success( array( 'sections' => $sections ) );
 	}
 
 	/**
