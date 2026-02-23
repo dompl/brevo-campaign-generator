@@ -1801,8 +1801,8 @@ class BCG_Template {
 			'current_year'         => gmdate( 'Y' ),
 			'subject'              => __( 'Our Top Picks Just for You', 'brevo-campaign-generator' ),
 			'preview_text'         => __( 'Discover handpicked products and exclusive discounts.', 'brevo-campaign-generator' ),
-			'show_coupon_block'    => true,
-			'show_nav'             => true,
+			'show_coupon_block'    => ! empty( $settings['show_coupon_block'] ),
+			'show_nav'             => ! empty( $settings['show_nav'] ),
 			'products'             => array(
 				array(
 					'name'            => __( 'Premium Diamond Blade', 'brevo-campaign-generator' ),

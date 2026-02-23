@@ -1083,7 +1083,7 @@
 			} );
 
 			$( '#bcg-sb-generate-btn' ).on( 'click', function () {
-				self.generateAll();
+				self.openPromptModal( true );
 			} );
 
 			// ── Toolbar custom dropdowns (tone + language) ─────────────
@@ -1469,12 +1469,6 @@
 		generateAll: function () {
 			var self    = this;
 			var $btn    = $( '#bcg-sb-generate-btn' );
-
-			// Require AI prompt before generating.
-			if ( ! self.aiPrompt.trim() ) {
-				self.openPromptModal( true ); // true = trigger generate after save
-				return;
-			}
 
 			// If canvas is empty, build a sensible default layout first.
 			if ( self.sections.length === 0 ) {

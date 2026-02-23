@@ -707,6 +707,42 @@ a.bcg-btn-ghost:hover {
 	text-decoration: none !important;
 }
 
+/* AI (gradient) */
+.bcg-btn-ai,
+a.bcg-btn-ai {
+	display:         inline-flex !important;
+	align-items:     center !important;
+	justify-content: center;
+	gap:             6px;
+	padding:         9px 18px;
+	font-family:     var(--bcg-font-body) !important;
+	font-size:       13px !important;
+	font-weight:     600 !important;
+	line-height:     1 !important;
+	color:           #ffffff !important;
+	background:      linear-gradient(135deg, #7c3aed, #e63529) !important;
+	border:          none !important;
+	border-radius:   var(--bcg-radius-sm) !important;
+	text-decoration: none !important;
+	cursor:          pointer;
+	transition:      opacity var(--bcg-transition);
+	white-space:     nowrap;
+	vertical-align:  middle;
+}
+
+.bcg-btn-ai:hover,
+a.bcg-btn-ai:hover {
+	opacity:         0.88 !important;
+	color:           #ffffff !important;
+	text-decoration: none !important;
+}
+
+.bcg-btn-ai:disabled,
+.bcg-btn-ai[disabled] {
+	opacity: 0.45;
+	cursor:  not-allowed;
+}
+
 /* Danger */
 .bcg-btn-danger,
 a.bcg-btn-danger {
@@ -3829,8 +3865,9 @@ body.bcg-admin-page .bcg-btn-secondary:hover {
 }
 
 body.bcg-admin-page .bcg-btn-ai {
-	background:    linear-gradient(135deg, #7c3aed, #e63529);
-	color:         #fff;
+	background: linear-gradient(135deg, #7c3aed, #e63529) !important;
+	color:      #fff !important;
+	border:     none !important;
 }
 body.bcg-admin-page .bcg-btn-ai:hover { opacity: 0.88; }
 
@@ -6550,14 +6587,27 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 }
 
 .bcg-sb-saved-prompts-wrap select {
-	width:         100%;
-	padding:       6px 10px;
-	border:        1px solid var(--bcg-border);
-	border-radius: var(--bcg-radius, 6px);
-	background:    var(--bcg-bg-raised);
-	color:         var(--bcg-text-secondary);
-	font-size:     12px;
-	cursor:        pointer;
+	width:               100%;
+	height:              34px;
+	padding:             0 30px 0 10px;
+	border:              1px solid var(--bcg-border);
+	border-radius:       var(--bcg-radius, 6px);
+	background-color:    var(--bcg-bg-raised);
+	background-image:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238892b0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+	background-repeat:   no-repeat;
+	background-position: right 8px center;
+	appearance:          none;
+	-webkit-appearance:  none;
+	color:               var(--bcg-text-secondary);
+	font-size:           12px;
+	font-family:         var(--bcg-font-body);
+	cursor:              pointer;
+	box-sizing:          border-box;
+	transition:          border-color var(--bcg-transition);
+}
+
+.bcg-sb-saved-prompts-wrap select:hover {
+	border-color: var(--bcg-accent);
 }
 
 .bcg-sb-voice-btn {

@@ -17,6 +17,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.37] — 2026-02-23
+
+### Fixed
+- **Logo alignment in Template Editor** — left/right/centre selection now correctly controls logo position; the email template `<td>` was hardcoded to `align="center"` and the `<img>` had `margin: 0 auto` which overrode the setting; both now use the `{{setting_logo_alignment}}` token
+- **Show Coupon Block toggle** — unchecking "Show Coupon Block" in the template editor now actually hides the coupon section in the preview; the sample data used during preview was hardcoding `show_coupon_block: true` regardless of the setting; fixed to read from actual settings
+- **Show Navigation toggle** — same fix applied to `show_nav` sample data
+- **AI Prompt ignored on repeat generations** — the "Generate with AI" toolbar button was bypassing the prompt modal on subsequent clicks (using cached prompt silently); it now always opens the AI Prompt modal first so the user can review/edit the prompt before each generation
+
+### Changed
+- **`bcg-btn-ai` button styling** — added proper base CSS rule (inline-flex, padding, border: none, gradient background) to prevent WordPress admin default button styles from adding unwanted borders
+- **Saved prompts dropdown** — replaced basic `<select>` style with `appearance: none`, custom SVG chevron, 34px height, and hover accent border to match plugin design language
+
+---
+
 ## [1.5.36] — 2026-02-23
 
 ### Added
