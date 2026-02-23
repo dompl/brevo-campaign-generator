@@ -187,35 +187,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div id="bcg-sb-request-modal" class="bcg-modal" style="display:none;">
 		<div class="bcg-modal-overlay" id="bcg-sb-request-overlay"></div>
 		<div class="bcg-modal-content bcg-sb-request-content">
+
 			<div class="bcg-modal-header">
+				<span class="material-icons-outlined" style="color:var(--bcg-accent);font-size:20px;flex-shrink:0;">lightbulb</span>
 				<h3><?php esc_html_e( 'Request a New Section Type', 'brevo-campaign-generator' ); ?></h3>
 				<button type="button" class="bcg-modal-close" id="bcg-sb-request-close">
 					<span class="material-icons-outlined">close</span>
 				</button>
 			</div>
+
 			<div class="bcg-sb-request-body">
 				<p class="bcg-sb-request-intro">
 					<?php esc_html_e( "Tell us what kind of section you need and we'll build it for you. We'll get back to you once it's ready.", 'brevo-campaign-generator' ); ?>
 				</p>
+
 				<div class="bcg-form-row">
-					<label for="bcg-req-type">
-						<?php esc_html_e( 'Section Type', 'brevo-campaign-generator' ); ?>
-						<span class="bcg-required">*</span>
-					</label>
-					<select id="bcg-req-type" class="bcg-select">
-						<option value=""><?php esc_html_e( '— Choose a type —', 'brevo-campaign-generator' ); ?></option>
-						<option value="Header"><?php esc_html_e( 'Header', 'brevo-campaign-generator' ); ?></option>
-						<option value="Hero / Banner"><?php esc_html_e( 'Hero / Banner', 'brevo-campaign-generator' ); ?></option>
-						<option value="Text Block"><?php esc_html_e( 'Text Block', 'brevo-campaign-generator' ); ?></option>
-						<option value="Image"><?php esc_html_e( 'Image', 'brevo-campaign-generator' ); ?></option>
-						<option value="Products"><?php esc_html_e( 'Products', 'brevo-campaign-generator' ); ?></option>
-						<option value="Banner"><?php esc_html_e( 'Banner', 'brevo-campaign-generator' ); ?></option>
-						<option value="Call to Action"><?php esc_html_e( 'Call to Action', 'brevo-campaign-generator' ); ?></option>
-						<option value="Coupon"><?php esc_html_e( 'Coupon', 'brevo-campaign-generator' ); ?></option>
-						<option value="Footer"><?php esc_html_e( 'Footer', 'brevo-campaign-generator' ); ?></option>
-						<option value="Other"><?php esc_html_e( 'Other / Custom', 'brevo-campaign-generator' ); ?></option>
-					</select>
+					<label><?php esc_html_e( 'Section Type', 'brevo-campaign-generator' ); ?> <span class="bcg-required">*</span></label>
+					<div class="bcg-select-wrapper bcg-req-custom-select" id="bcg-req-type-wrapper">
+						<button type="button" class="bcg-select-trigger" id="bcg-req-type-trigger" aria-haspopup="listbox" aria-expanded="false">
+							<span class="bcg-select-value bcg-req-placeholder"><?php esc_html_e( '— Choose a type —', 'brevo-campaign-generator' ); ?></span>
+							<span class="material-icons-outlined" style="font-size:18px;flex-shrink:0;pointer-events:none;color:var(--bcg-text-muted);">expand_more</span>
+						</button>
+						<div class="bcg-select-menu bcg-dropdown-closed" role="listbox">
+							<div class="bcg-select-option" data-value="Header" role="option"><?php esc_html_e( 'Header', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Hero / Banner" role="option"><?php esc_html_e( 'Hero / Banner', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Text Block" role="option"><?php esc_html_e( 'Text Block', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Image" role="option"><?php esc_html_e( 'Image', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Products" role="option"><?php esc_html_e( 'Products', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Banner" role="option"><?php esc_html_e( 'Banner', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Call to Action" role="option"><?php esc_html_e( 'Call to Action', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Coupon" role="option"><?php esc_html_e( 'Coupon', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Footer" role="option"><?php esc_html_e( 'Footer', 'brevo-campaign-generator' ); ?></div>
+							<div class="bcg-select-option" data-value="Other" role="option"><?php esc_html_e( 'Other / Custom', 'brevo-campaign-generator' ); ?></div>
+						</div>
+					</div>
+					<input type="hidden" id="bcg-req-type" value="" />
 				</div>
+
 				<div class="bcg-form-row">
 					<label for="bcg-req-description">
 						<?php esc_html_e( 'Detailed Description', 'brevo-campaign-generator' ); ?>
@@ -224,6 +232,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<textarea id="bcg-req-description" class="bcg-textarea" rows="5"
 						placeholder="<?php esc_attr_e( 'Describe the layout, content, and any specific requirements…', 'brevo-campaign-generator' ); ?>"></textarea>
 				</div>
+
 				<div class="bcg-form-row bcg-form-row-2col">
 					<div>
 						<label for="bcg-req-name"><?php esc_html_e( 'Your Name', 'brevo-campaign-generator' ); ?></label>
@@ -234,18 +243,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<input type="email" id="bcg-req-email" class="bcg-input" />
 					</div>
 				</div>
+
 				<div id="bcg-req-status" class="bcg-sb-request-status" style="display:none;"></div>
-				<div class="bcg-sb-request-footer">
-					<button type="button" id="bcg-sb-request-cancel" class="bcg-btn-secondary">
-						<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
-					</button>
-					<button type="button" id="bcg-sb-request-submit" class="bcg-btn-primary">
-						<span class="material-icons-outlined">send</span>
-						<?php esc_html_e( 'Send Request', 'brevo-campaign-generator' ); ?>
-					</button>
-				</div>
+			</div><!-- /.bcg-sb-request-body -->
+
+			<div class="bcg-sb-request-footer">
+				<button type="button" id="bcg-sb-request-cancel" class="bcg-btn-secondary">
+					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button" id="bcg-sb-request-submit" class="bcg-btn-primary">
+					<span class="material-icons-outlined">send</span>
+					<?php esc_html_e( 'Send Request', 'brevo-campaign-generator' ); ?>
+				</button>
 			</div>
-		</div>
+
+		</div><!-- /.bcg-modal-content -->
 	</div>
 
 </div><!-- /.bcg-wrap.bcg-section-builder-page -->

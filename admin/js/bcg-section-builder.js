@@ -1461,10 +1461,11 @@
 		 * Bind the "Request a Section" modal.
 		 */
 		bindRequestModal: function () {
-			var self       = this;
-			var $modal     = $( '#bcg-sb-request-modal' );
+			var self        = this;
+			var $modal      = $( '#bcg-sb-request-modal' );
 			var $nameInput  = $( '#bcg-req-name' );
 			var $emailInput = $( '#bcg-req-email' );
+			var PLACEHOLDER = '— Choose a type —';
 
 			// Pre-fill user details if available.
 			if ( bcg_section_builder.current_user ) {
@@ -1472,17 +1473,54 @@
 				$emailInput.val( bcg_section_builder.current_user.email || '' );
 			}
 
-			// Open modal.
+			// ── Custom dropdown: toggle open/close ──────────────────
+			$modal.on( 'click', '#bcg-req-type-trigger', function ( e ) {
+				e.stopPropagation();
+				var $trigger = $( this );
+				var $menu    = $trigger.next( '.bcg-select-menu' );
+				var isOpen   = ! $menu.hasClass( 'bcg-dropdown-closed' );
+				if ( isOpen ) {
+					$menu.addClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'false' );
+				} else {
+					$menu.removeClass( 'bcg-dropdown-closed' );
+					$trigger.attr( 'aria-expanded', 'true' );
+				}
+			} );
+
+			// ── Custom dropdown: select an option ───────────────────
+			$modal.on( 'click', '#bcg-req-type-wrapper .bcg-select-option', function ( e ) {
+				e.stopPropagation();
+				var $opt     = $( this );
+				var $wrapper = $opt.closest( '#bcg-req-type-wrapper' );
+				var val      = $opt.data( 'value' );
+				$wrapper.find( '.bcg-select-value' )
+					.text( $opt.text() )
+					.removeClass( 'bcg-req-placeholder' );
+				$wrapper.find( '.bcg-select-option' ).removeClass( 'is-selected' ).attr( 'aria-selected', 'false' );
+				$opt.addClass( 'is-selected' ).attr( 'aria-selected', 'true' );
+				$wrapper.find( '.bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$wrapper.find( '.bcg-select-trigger' ).attr( 'aria-expanded', 'false' );
+				$( '#bcg-req-type' ).val( val );
+			} );
+
+			// ── Close dropdown when clicking outside ────────────────
+			$( document ).on( 'click.bcgReqModal', function () {
+				$( '#bcg-req-type-wrapper .bcg-select-menu' ).addClass( 'bcg-dropdown-closed' );
+				$( '#bcg-req-type-trigger' ).attr( 'aria-expanded', 'false' );
+			} );
+
+			// ── Open modal ──────────────────────────────────────────
 			$( '#bcg-sb-request-btn' ).on( 'click', function () {
 				$modal.show();
 			} );
 
-			// Close modal.
+			// ── Close modal ─────────────────────────────────────────
 			$( document ).on( 'click', '#bcg-sb-request-overlay, #bcg-sb-request-close, #bcg-sb-request-cancel', function () {
 				$modal.hide();
 			} );
 
-			// Submit request.
+			// ── Submit request ──────────────────────────────────────
 			$( '#bcg-sb-request-submit' ).on( 'click', function () {
 				var type        = $( '#bcg-req-type' ).val();
 				var description = $.trim( $( '#bcg-req-description' ).val() );
@@ -1518,7 +1556,10 @@
 						$status.removeClass( 'bcg-req-error' ).addClass( 'bcg-req-success' )
 							.text( response.data.message ).show();
 						setTimeout( function () {
+							// Reset form.
 							$( '#bcg-req-type' ).val( '' );
+							$( '#bcg-req-type-wrapper .bcg-select-value' ).text( PLACEHOLDER ).addClass( 'bcg-req-placeholder' );
+							$( '#bcg-req-type-wrapper .bcg-select-option' ).removeClass( 'is-selected' ).attr( 'aria-selected', 'false' );
 							$( '#bcg-req-description' ).val( '' );
 							$status.hide();
 							$modal.hide();

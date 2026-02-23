@@ -17,6 +17,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.21] — 2026-02-23
+
+### Fixed
+- **Request a Section modal** — replaced native `<select>` with the plugin's custom dropdown component; added proper 24px body padding; footer moved outside scroll area with raised background; intro styled as an accent-bordered info strip; labels tightened; status messages respect border-radius token; fully functional AJAX submit with reset on success
+
+---
+
 ## [1.5.20] — 2026-02-23
 
 ### Added
