@@ -6256,20 +6256,24 @@ body.folded .bcg-actions-bar {
 /* ── Section Builder — AI field toggles ──────────────────────────────────── */
 
 .bcg-sb-field-ai-wrap {
-	position: relative;
-	display:  flex;
-	align-items: flex-start;
-	gap: 6px;
+	position:    relative;
+	display:     flex;
+	align-items: center;
+	gap:         6px;
 }
 
 .bcg-sb-field-ai-wrap .bcg-sb-field-input {
-	flex: 1;
+	flex:      1;
 	min-width: 0;
 }
 
-.bcg-sb-field-ai-wrap .bcg-sb-field-input.bcg-ai-field-active {
-	border-color: var(--bcg-accent);
-	background:   rgba(230, 53, 41, 0.06);
+.bcg-sb-ai-hint {
+	flex:        1;
+	font-size:   11px;
+	font-style:  italic;
+	color:       var(--bcg-text-muted);
+	padding:     4px 2px;
+	line-height: 1.4;
 }
 
 .bcg-sb-ai-toggle {

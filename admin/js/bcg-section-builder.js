@@ -497,8 +497,9 @@
 				case 'text':
 					if ( canAi ) {
 						input = '<div class="bcg-sb-field-ai-wrap">' +
-							'<input type="text" id="' + id + '" class="bcg-sb-field-input bcg-input' + ( aiOn ? ' bcg-ai-field-active' : '' ) + '" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '"' + ( aiOn ? ' placeholder="AI will generate this field"' : '' ) + ' />' +
-							'<label class="bcg-sb-ai-toggle" title="Generate with AI">' +
+							'<input type="text" id="' + id + '" class="bcg-sb-field-input bcg-input" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '"' + ( aiOn ? ' style="display:none"' : '' ) + ' />' +
+							'<span class="bcg-sb-ai-hint"' + ( aiOn ? '' : ' style="display:none"' ) + '>AI will generate this field</span>' +
+							'<label class="bcg-sb-ai-toggle" title="Toggle AI generation">' +
 							'<input type="checkbox" class="bcg-sb-ai-checkbox" data-ai-key="' + self.escAttr( '_ai_' + key ) + '" data-text-key="' + self.escAttr( key ) + '"' + ( aiOn ? ' checked' : '' ) + ' />' +
 							'<span class="bcg-sb-ai-badge">AI</span>' +
 							'</label>' +
@@ -511,8 +512,9 @@
 				case 'textarea':
 					if ( canAi ) {
 						input = '<div class="bcg-sb-field-ai-wrap">' +
-							'<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea' + ( aiOn ? ' bcg-ai-field-active' : '' ) + '" data-key="' + self.escAttr( key ) + '" rows="4"' + ( aiOn ? ' placeholder="AI will generate this field"' : '' ) + '>' + self.escHtml( String( value ) ) + '</textarea>' +
-							'<label class="bcg-sb-ai-toggle" title="Generate with AI">' +
+							'<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea" data-key="' + self.escAttr( key ) + '" rows="4"' + ( aiOn ? ' style="display:none"' : '' ) + '>' + self.escHtml( String( value ) ) + '</textarea>' +
+							'<span class="bcg-sb-ai-hint"' + ( aiOn ? '' : ' style="display:none"' ) + '>AI will generate this field</span>' +
+							'<label class="bcg-sb-ai-toggle" title="Toggle AI generation">' +
 							'<input type="checkbox" class="bcg-sb-ai-checkbox" data-ai-key="' + self.escAttr( '_ai_' + key ) + '" data-text-key="' + self.escAttr( key ) + '"' + ( aiOn ? ' checked' : '' ) + ' />' +
 							'<span class="bcg-sb-ai-badge">AI</span>' +
 							'</label>' +
@@ -768,18 +770,22 @@
 
 			// AI toggle checkbox.
 			$body.on( 'change.bcgFields', '.bcg-sb-ai-checkbox', function () {
-				var $cb      = $( this );
-				var aiKey    = $cb.data( 'ai-key' );
-				var textKey  = $cb.data( 'text-key' );
-				var isOn     = $cb.is( ':checked' );
-				var $input   = $body.find( '.bcg-sb-field-input[data-key="' + textKey + '"]' );
+				var $cb     = $( this );
+				var aiKey   = $cb.data( 'ai-key' );
+				var textKey = $cb.data( 'text-key' );
+				var isOn    = $cb.is( ':checked' );
+				var $wrap   = $cb.closest( '.bcg-sb-field-ai-wrap' );
+				var $input  = $wrap.find( '.bcg-sb-field-input[data-key="' + textKey + '"]' );
+				var $hint   = $wrap.find( '.bcg-sb-ai-hint' );
 
 				self.updateSetting( sectionId, aiKey, isOn );
 
 				if ( isOn ) {
-					$input.addClass( 'bcg-ai-field-active' ).attr( 'placeholder', 'AI will generate this field' );
+					$input.hide();
+					$hint.show();
 				} else {
-					$input.removeClass( 'bcg-ai-field-active' ).removeAttr( 'placeholder' );
+					$input.show();
+					$hint.hide();
 				}
 
 				self.markDirty();
