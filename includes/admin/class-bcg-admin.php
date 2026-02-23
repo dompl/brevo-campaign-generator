@@ -353,6 +353,7 @@ class BCG_Admin {
 						'preview_error'           => __( 'Failed to load product preview. Please try again.', 'brevo-campaign-generator' ),
 						'no_products_found'       => __( 'No products found.', 'brevo-campaign-generator' ),
 						'select_list'             => __( '-- Select a mailing list --', 'brevo-campaign-generator' ),
+						'error_loading_lists'     => __( 'Error loading lists — click Refresh to retry', 'brevo-campaign-generator' ),
 						'subscribers'             => __( 'subscribers', 'brevo-campaign-generator' ),
 						'sales'                   => __( 'sales', 'brevo-campaign-generator' ),
 						'remove'                  => __( 'Remove', 'brevo-campaign-generator' ),

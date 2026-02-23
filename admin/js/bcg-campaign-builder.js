@@ -706,7 +706,7 @@
 					}
 				},
 				error: function() {
-					// Silently fail on load; user can try Refresh.
+					$select.html( '<option value=>' + ( bcg_campaign_builder.i18n.error_loading_lists || 'Error loading lists — click Refresh to retry' ) + '</option>' );
 				},
 				complete: function() {
 					$btn.prop( 'disabled', false ).removeClass( 'is-loading' );

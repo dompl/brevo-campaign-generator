@@ -17,6 +17,21 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.24] — 2026-02-23
+
+### Fixed
+- **Field layout** — all `bcg-field-with-regen` groups now lay out as a flex row; input/textarea fills remaining space and the Regenerate button sits flush to its right. Affects Subject Line, Preview Text, Main Headline, Main Description, Coupon Code, Discount Display Text, and all product Headline / Description fields.
+- **Device preview toggle** — desktop/mobile toggle in the campaign editor now correctly adds/removes class `bcg-preview-mobile` (was `bcg-preview-mobile-size`) so the existing CSS rule that constrains the iframe to 390 px actually fires.
+- **Template mini-cards** — campaign editor template strip now has full CSS; mini-cards render with correct swatch, name, hover, and active states instead of plain square boxes.
+- **Product card image** — constrained to 96 × 96 px with `object-fit: cover`; no longer fills its column with an oversized image.
+- **Show Buy Button** — replaced plain checkbox with the inline custom toggle component to match the rest of the plugin UI.
+- **Remove product button** — now icon-only; "Remove" text label hidden.
+- **Date pickers** — coupon expiry and schedule modal date inputs changed to `type="date"` (native browser date picker); resolves the "does nothing on click" bug caused by jQuery UI datepicker initialising on hidden modal elements.
+- **Schedule modal** — body and footer now have proper padding (20 px) via the new `.bcg-modal-body` / `.bcg-modal-footer` CSS rules.
+- **Mailing list load error** — AJAX error handler now populates the list dropdown with a human-readable error message instead of leaving the user stuck on "Loading…".
+
+---
+
 ## [1.5.23] — 2026-02-23
 
 ### Fixed

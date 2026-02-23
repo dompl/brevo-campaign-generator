@@ -341,11 +341,10 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 						<label class="bcg-field-label" for="bcg-coupon-expiry">
 							<?php esc_html_e( 'Coupon Expiry Date', 'brevo-campaign-generator' ); ?>
 						</label>
-						<input type="text"
+						<input type="date"
 							id="bcg-coupon-expiry"
-							class="regular-text bcg-datepicker"
-							placeholder="<?php esc_attr_e( 'Select expiry date...', 'brevo-campaign-generator' ); ?>"
-							autocomplete="off"
+							class="regular-text"
+							min="<?php echo esc_attr( gmdate( 'Y-m-d', strtotime( '+1 day' ) ) ); ?>"
 						/>
 					</div>
 
@@ -575,14 +574,13 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					<label class="bcg-field-label" for="bcg-schedule-date">
 						<?php esc_html_e( 'Date', 'brevo-campaign-generator' ); ?>
 					</label>
-					<input type="text"
+					<input type="date"
 						id="bcg-schedule-date"
-						class="regular-text bcg-datepicker"
-						placeholder="<?php esc_attr_e( 'Select date...', 'brevo-campaign-generator' ); ?>"
-						autocomplete="off"
+						class="regular-text"
+						min="<?php echo esc_attr( gmdate( 'Y-m-d', strtotime( '+1 day' ) ) ); ?>"
 					/>
 				</div>
-				<div class="bcg-field-group bcg-mb-16">
+				<div class="bcg-field-group">
 					<label class="bcg-field-label" for="bcg-schedule-time">
 						<?php esc_html_e( 'Time', 'brevo-campaign-generator' ); ?>
 					</label>
@@ -593,11 +591,11 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 					/>
 				</div>
 			</div>
-			<div class="bcg-modal-footer bcg-flex bcg-justify-between">
+			<div class="bcg-modal-footer">
 				<button type="button" class="button bcg-modal-close">
 					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
 				</button>
-				<button type="button" class="button button-primary" id="bcg-confirm-schedule">
+				<button type="button" class="button button-primary" id="bcg-confirm-schedule" style="margin-left:auto;">
 					<?php esc_html_e( 'Schedule Campaign', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>

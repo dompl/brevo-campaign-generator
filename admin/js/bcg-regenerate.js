@@ -861,21 +861,19 @@
 	 */
 	function bindDeviceToggle() {
 		$( '.bcg-preview-device-btn' ).on( 'click', function() {
-			var $btn = $( this );
-			var device = $btn.data( 'device' );
+			var $btn    = $( this );
+			var device  = $btn.data( 'device' );
 			var $iframe = $( '#bcg-preview-iframe' );
 
 			$( '.bcg-preview-device-btn' ).removeClass( 'active' );
 			$btn.addClass( 'active' );
 
-			$iframe.removeClass( 'bcg-preview-desktop-size bcg-preview-mobile-size' );
-
 			if ( device === 'mobile' ) {
-				$iframe.addClass( 'bcg-preview-mobile-size' );
+				$iframe.addClass( 'bcg-preview-mobile' );
 			} else {
-				$iframe.addClass( 'bcg-preview-desktop-size' );
+				$iframe.removeClass( 'bcg-preview-mobile' );
 			}
-		});
+		} );
 	}
 
 	/* =====================================================================

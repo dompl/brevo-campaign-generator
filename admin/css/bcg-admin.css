@@ -5594,3 +5594,255 @@ body.bcg-admin-page .bcg-help-col-item span {
 		border-bottom: 1px solid var(--bcg-border);
 	}
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CAMPAIGN EDITOR — v1.5.3 additions
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Field + regenerate button — side-by-side flex row */
+.bcg-field-with-regen {
+	display:     flex;
+	align-items: flex-start;
+	gap:         8px;
+}
+
+.bcg-field-with-regen input,
+.bcg-field-with-regen textarea {
+	flex:      1;
+	min-width: 0;
+}
+
+.bcg-field-with-regen .bcg-regen-btn {
+	flex-shrink: 0;
+	margin-top:  1px;
+}
+
+/* Modal body + footer — add padding where missing */
+body.bcg-admin-page .bcg-modal-body {
+	padding:    20px 20px 16px;
+	overflow-y: auto;
+	flex:       1;
+}
+
+body.bcg-admin-page .bcg-modal-body.bcg-p-0 {
+	padding: 0;
+}
+
+body.bcg-admin-page .bcg-modal-footer {
+	display:       flex;
+	align-items:   center;
+	padding:       14px 20px;
+	border-top:    1px solid var(--bcg-border);
+	background:    var(--bcg-bg-raised);
+	flex-shrink:   0;
+}
+
+/* ── Template mini-cards (editor template strip) ─────────────────────── */
+
+.bcg-editor-template-strip {
+	margin-bottom: 10px;
+}
+
+.bcg-template-strip-header {
+	display:     flex;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.bcg-template-strip-label {
+	font-size:      11px;
+	font-weight:    600;
+	color:          var(--bcg-text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.bcg-template-strip-cards {
+	display:    flex;
+	gap:        7px;
+	overflow-x: auto;
+	padding-bottom: 4px;
+}
+
+.bcg-template-strip-cards::-webkit-scrollbar {
+	height: 4px;
+}
+
+.bcg-template-strip-cards::-webkit-scrollbar-track {
+	background: var(--bcg-bg-raised);
+	border-radius: 2px;
+}
+
+.bcg-template-strip-cards::-webkit-scrollbar-thumb {
+	background:    var(--bcg-border);
+	border-radius: 2px;
+}
+
+.bcg-template-mini-card {
+	display:        flex;
+	flex-direction: column;
+	align-items:    center;
+	gap:            5px;
+	padding:        6px 6px 7px;
+	background:     var(--bcg-bg-raised);
+	border:         1.5px solid var(--bcg-border);
+	border-radius:  var(--bcg-radius);
+	cursor:         pointer;
+	transition:     border-color 0.15s, background 0.15s, box-shadow 0.15s;
+	min-width:      62px;
+	flex-shrink:    0;
+	text-align:     center;
+	font-family:    var(--bcg-font-body);
+}
+
+.bcg-template-mini-card:hover {
+	border-color: rgba(232, 64, 64, 0.45);
+	background:   var(--bcg-bg-hover);
+}
+
+.bcg-template-mini-card.bcg-template-card-active {
+	border-color: var(--bcg-accent) !important;
+	background:   var(--bcg-accent-dim) !important;
+}
+
+.bcg-template-mini-swatch {
+	width:      56px;
+	height:     38px;
+	border-radius: 3px;
+	overflow:   hidden;
+	flex-shrink: 0;
+	background: #f5f5f5;
+}
+
+.bcg-template-mini-swatch-inner {
+	width:      100%;
+	height:     100%;
+	border-radius: 2px;
+	overflow:   hidden;
+	padding:    3px;
+	box-sizing: border-box;
+}
+
+.bcg-template-mini-name {
+	font-size:   10px;
+	font-weight: 600;
+	color:       var(--bcg-text-secondary);
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+.bcg-template-mini-card:hover .bcg-template-mini-name {
+	color: var(--bcg-text-primary);
+}
+
+/* ── Product card image ──────────────────────────────────────────────── */
+
+.bcg-product-card-image-col {
+	width:       96px;
+	flex-shrink: 0;
+}
+
+.bcg-product-card-img {
+	width:         100%;
+	height:        96px;
+	display:       block;
+	border-radius: 4px;
+	object-fit:    cover;
+	border:        1px solid var(--bcg-border);
+}
+
+/* ── Product card remove button — icon only ─────────────────────────── */
+
+.bcg-remove-product .bcg-remove-label {
+	display: none;
+}
+
+/* ── Inline compact toggle — Show Buy Button in product card ────────── */
+
+.bcg-inline-toggle {
+	display:     inline-flex;
+	align-items: center;
+	gap:         8px;
+	cursor:      pointer;
+	user-select: none;
+}
+
+.bcg-inline-toggle-switch {
+	position:    relative;
+	width:       36px;
+	height:      20px;
+	flex-shrink: 0;
+}
+
+.bcg-inline-toggle-switch input[type="checkbox"] {
+	position: absolute;
+	inset:    0;
+	opacity:  0;
+	width:    100%;
+	height:   100%;
+	margin:   0;
+	cursor:   pointer;
+	z-index:  1;
+}
+
+.bcg-inline-toggle-thumb {
+	position:     absolute;
+	inset:        0;
+	background:   var(--bcg-bg-input);
+	border:       1px solid var(--bcg-border);
+	border-radius: 999px;
+	transition:   background 0.22s ease, border-color 0.22s ease;
+	pointer-events: none;
+}
+
+.bcg-inline-toggle-thumb::after {
+	content:       '';
+	position:      absolute;
+	top:           2px;
+	left:          2px;
+	width:         14px;
+	height:        14px;
+	background:    var(--bcg-text-muted);
+	border-radius: 50%;
+	transition:    left 0.22s ease, background 0.22s ease;
+}
+
+.bcg-inline-toggle-switch input:checked ~ .bcg-inline-toggle-thumb {
+	background:   var(--bcg-accent);
+	border-color: var(--bcg-accent);
+}
+
+.bcg-inline-toggle-switch input:checked ~ .bcg-inline-toggle-thumb::after {
+	left:       18px;
+	background: #ffffff;
+}
+
+.bcg-inline-toggle-label {
+	font-size: 12px;
+	font-weight: 500;
+	color:     var(--bcg-text-secondary);
+}
+
+/* ── Device preview toggle — fix mobile class ───────────────────────── */
+
+.bcg-preview-iframe.bcg-preview-mobile {
+	max-width:  390px !important;
+	margin:     0 auto !important;
+}
+
+/* ── Schedule modal date/time inputs ────────────────────────────────── */
+
+#bcg-schedule-date,
+#bcg-schedule-time {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* ── Actions bar button separator ──────────────────────────────────── */
+
+.bcg-actions-bar-sep {
+	width:      1px;
+	height:     20px;
+	background: var(--bcg-border);
+	flex-shrink: 0;
+}

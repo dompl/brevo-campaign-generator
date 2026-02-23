@@ -81,7 +81,6 @@ if ( empty( $display_image ) ) {
 			data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
 			title="<?php esc_attr_e( 'Remove product', 'brevo-campaign-generator' ); ?>">
 			<span class="dashicons dashicons-no-alt"></span>
-			<?php esc_html_e( 'Remove', 'brevo-campaign-generator' ); ?>
 		</button>
 	</div>
 
@@ -184,12 +183,15 @@ if ( empty( $display_image ) ) {
 
 			<!-- Show Buy Button -->
 			<div class="bcg-field-group">
-				<label class="bcg-checkbox-label">
-					<input type="checkbox"
-						class="bcg-product-show-buy-btn"
-						data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
-						<?php checked( $show_buy_button, 1 ); ?> />
-					<?php esc_html_e( 'Show Buy Button', 'brevo-campaign-generator' ); ?>
+				<label class="bcg-inline-toggle">
+					<span class="bcg-inline-toggle-switch">
+						<input type="checkbox"
+							class="bcg-product-show-buy-btn"
+							data-product-row-id="<?php echo esc_attr( $product_row_id ); ?>"
+							<?php checked( $show_buy_button, 1 ); ?> />
+						<span class="bcg-inline-toggle-thumb"></span>
+					</span>
+					<span class="bcg-inline-toggle-label"><?php esc_html_e( 'Show Buy Button', 'brevo-campaign-generator' ); ?></span>
 				</label>
 			</div>
 
