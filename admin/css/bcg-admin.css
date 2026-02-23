@@ -4833,9 +4833,11 @@ body.bcg-admin-page .bcg-spin {
 	border:     1px solid #6ee7b7;
 }
 .bcg-sb-request-status.bcg-req-error {
-	background: #fef2f2;
-	color:      #991b1b;
-	border:     1px solid #fca5a5;
+	background:    transparent;
+	color:         var(--bcg-error, #c0392b);
+	border:        none;
+	padding:       4px 0;
+	margin-bottom: 8px;
 }
 .bcg-sb-request-footer {
 	display:         flex;
@@ -5635,12 +5637,14 @@ body.bcg-admin-page .bcg-modal-body.bcg-p-0 {
 }
 
 body.bcg-admin-page .bcg-modal-footer {
-	display:       flex;
-	align-items:   center;
-	padding:       14px 20px;
-	border-top:    1px solid var(--bcg-border);
-	background:    var(--bcg-bg-raised);
-	flex-shrink:   0;
+	display:         flex;
+	align-items:     center;
+	justify-content: flex-end;
+	gap:             10px;
+	padding:         14px 20px;
+	border-top:      1px solid var(--bcg-border);
+	background:      var(--bcg-bg-raised);
+	flex-shrink:     0;
 }
 
 /* ── Template mini-cards (editor template strip) ─────────────────────── */
@@ -6526,6 +6530,85 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 	margin-top:  1px;
 }
 
+/* ── AI Prompt — textarea toolbar (voice + saved prompts) ───────────────── */
+
+.bcg-sb-textarea-wrap {
+	position: relative;
+}
+
+.bcg-sb-textarea-toolbar {
+	display:         flex;
+	align-items:     center;
+	justify-content: space-between;
+	gap:             8px;
+	margin-top:      8px;
+}
+
+.bcg-sb-saved-prompts-wrap {
+	flex: 1;
+	min-width: 0;
+}
+
+.bcg-sb-saved-prompts-wrap select {
+	width:         100%;
+	padding:       6px 10px;
+	border:        1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius, 6px);
+	background:    var(--bcg-bg-raised);
+	color:         var(--bcg-text-secondary);
+	font-size:     12px;
+	cursor:        pointer;
+}
+
+.bcg-sb-voice-btn {
+	display:         flex;
+	align-items:     center;
+	justify-content: center;
+	width:           34px;
+	height:          34px;
+	flex-shrink:     0;
+	background:      var(--bcg-bg-raised);
+	border:          1px solid var(--bcg-border);
+	border-radius:   var(--bcg-radius, 6px);
+	color:           var(--bcg-text-secondary);
+	cursor:          pointer;
+	transition:      background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.bcg-sb-voice-btn:hover {
+	background:   rgba(230, 53, 41, 0.07);
+	border-color: var(--bcg-accent);
+	color:        var(--bcg-accent);
+}
+
+.bcg-sb-voice-btn .material-icons-outlined {
+	font-size:   18px;
+	line-height: 1;
+}
+
+.bcg-sb-voice-btn.bcg-voice-active {
+	background:   rgba(230, 53, 41, 0.12);
+	border-color: var(--bcg-accent);
+	color:        var(--bcg-accent);
+	animation:    bcg-pulse-ring 1.2s ease-out infinite;
+}
+
+@keyframes bcg-pulse-ring {
+	0%   { box-shadow: 0 0 0 0 rgba(230, 53, 41, 0.35); }
+	70%  { box-shadow: 0 0 0 6px rgba(230, 53, 41, 0); }
+	100% { box-shadow: 0 0 0 0 rgba(230, 53, 41, 0); }
+}
+
+/* ── Prompt modal footer spacer ─────────────────────────────────────────── */
+
+#bcg-sb-prompt-modal .bcg-modal-footer {
+	gap: 10px;
+}
+
+#bcg-sb-prompt-modal .bcg-modal-footer .bcg-prompt-footer-cancel {
+	margin-right: auto;
+}
+
 .bcg-req-error {
 	padding:       10px 14px;
 	background:    rgba(220, 53, 69, 0.08);
@@ -6657,7 +6740,7 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 	color:         var(--bcg-text-muted, #8892b0);
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	margin:        20px 0 10px;
+	margin:        36px 0 10px;
 	padding-bottom: 8px;
 	border-bottom: 1px solid var(--bcg-border, #e2e8f0);
 }

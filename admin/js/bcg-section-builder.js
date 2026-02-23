@@ -1631,7 +1631,7 @@
 				$( '#bcg-sb-prompt-modal' ).removeData( 'triggerGenerate' );
 			} );
 
-			// Save prompt only.
+			// Save prompt only — persists to localStorage, closes modal.
 			$( '#bcg-sb-prompt-save' ).on( 'click', function () {
 				var val = $.trim( $( '#bcg-sb-ai-prompt' ).val() );
 				if ( ! val ) {
@@ -1639,11 +1639,13 @@
 					return;
 				}
 				self.aiPrompt = val;
+				self.savePromptToStorage( val );
+				self.refreshSavedPromptsDropdown();
 				$( '#bcg-sb-prompt-modal' ).hide().removeData( 'triggerGenerate' );
 				self.showStatus( 'AI prompt saved.', 'success' );
 			} );
 
-			// Save & Generate.
+			// Save & Generate — persists to localStorage then triggers AI generation.
 			$( '#bcg-sb-prompt-generate' ).on( 'click', function () {
 				var val = $.trim( $( '#bcg-sb-ai-prompt' ).val() );
 				if ( ! val ) {
@@ -1651,9 +1653,25 @@
 					return;
 				}
 				self.aiPrompt = val;
+				self.savePromptToStorage( val );
+				self.refreshSavedPromptsDropdown();
 				$( '#bcg-sb-prompt-modal' ).hide().removeData( 'triggerGenerate' );
 				self.generateAll();
 			} );
+
+			// Saved prompts dropdown — load selected prompt into textarea.
+			$( document ).on( 'change', '#bcg-sb-saved-prompts-select', function () {
+				var idx = $( this ).val();
+				if ( idx === '' ) { return; }
+				var prompts = self.getSavedPrompts();
+				if ( prompts[ idx ] ) {
+					$( '#bcg-sb-ai-prompt' ).val( prompts[ idx ].text ).trigger( 'focus' );
+				}
+				$( this ).val( '' ); // Reset to placeholder after loading.
+			} );
+
+			// Initialise voice input.
+			self.bindVoiceInput();
 		},
 
 		/**
@@ -1668,6 +1686,7 @@
 				$( '#bcg-sb-ai-prompt' ).val( this.aiPrompt );
 			}
 			$( '#bcg-sb-prompt-status' ).hide();
+			this.refreshSavedPromptsDropdown();
 			$modal.data( 'triggerGenerate', !! triggerGenerateAfter ).show();
 			setTimeout( function () { $( '#bcg-sb-ai-prompt' ).trigger( 'focus' ); }, 100 );
 		},
@@ -1804,6 +1823,130 @@
 					$btn.prop( 'disabled', false );
 				} );
 			} );
+		},
+
+		// ── Saved Prompts (localStorage) ─────────────────────────────────────────────────────────────────────────
+
+		/**
+		 * Return saved prompts array from localStorage.
+		 *
+		 * @return {Array}
+		 */
+		getSavedPrompts: function () {
+			try {
+				return JSON.parse( localStorage.getItem( 'bcg_saved_prompts' ) || '[]' );
+			} catch ( e ) {
+				return [];
+			}
+		},
+
+		/**
+		 * Persist a prompt string to localStorage (deduped, max 10).
+		 *
+		 * @param {string} text
+		 */
+		savePromptToStorage: function ( text ) {
+			var prompts = this.getSavedPrompts();
+			var label   = text.substring( 0, 60 ).trim() + ( text.length > 60 ? '…' : '' );
+			// Remove duplicate if exact text already exists.
+			prompts = prompts.filter( function ( p ) { return p.text !== text; } );
+			prompts.unshift( { label: label, text: text } );
+			if ( prompts.length > 10 ) {
+				prompts = prompts.slice( 0, 10 );
+			}
+			try {
+				localStorage.setItem( 'bcg_saved_prompts', JSON.stringify( prompts ) );
+			} catch ( e ) { /* quota exceeded — silently ignore */ }
+		},
+
+		/**
+		 * Rebuild the saved-prompts dropdown from localStorage.
+		 */
+		refreshSavedPromptsDropdown: function () {
+			var prompts  = this.getSavedPrompts();
+			var $wrap    = $( '#bcg-sb-saved-prompts-wrap' );
+			var $select  = $( '#bcg-sb-saved-prompts-select' );
+
+			if ( ! prompts.length ) {
+				$wrap.hide();
+				return;
+			}
+
+			$select.empty().append( $( '<option>' ).val( '' ).text( '— Load a saved prompt —' ) );
+			$.each( prompts, function ( i, p ) {
+				$select.append( $( '<option>' ).val( i ).text( p.label ) );
+			} );
+			$wrap.show();
+		},
+
+		// ── Voice Input ───────────────────────────────────────────────────────────────────────────────────
+
+		/**
+		 * Bind voice/speech recognition to the AI prompt textarea.
+		 * Uses the Web Speech API (webkitSpeechRecognition / SpeechRecognition).
+		 * Hides the mic button if the browser has no support.
+		 */
+		bindVoiceInput: function () {
+			var self = this;
+			var $btn  = $( '#bcg-sb-voice-btn' );
+
+			var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+			if ( ! SpeechRecognition ) {
+				$btn.hide();
+				return;
+			}
+
+			var recognition       = new SpeechRecognition();
+			recognition.continuous       = true;
+			recognition.interimResults   = true;
+			recognition.lang             = navigator.language || 'en-US';
+
+			var isRecording    = false;
+			var baseText       = ''; // text in textarea before recording started
+
+			$btn.on( 'click', function () {
+				if ( isRecording ) {
+					recognition.stop();
+				} else {
+					baseText = $.trim( $( '#bcg-sb-ai-prompt' ).val() );
+					if ( baseText ) { baseText += ' '; }
+					try {
+						recognition.start();
+					} catch ( e ) { /* already started — ignore */ }
+				}
+			} );
+
+			recognition.onstart = function () {
+				isRecording = true;
+				$btn.addClass( 'bcg-voice-active' ).attr( 'title', 'Stop speaking' );
+			};
+
+			recognition.onend = function () {
+				isRecording = false;
+				$btn.removeClass( 'bcg-voice-active' ).attr( 'title', 'Speak your prompt' );
+			};
+
+			recognition.onresult = function ( event ) {
+				var interim = '';
+				var final   = baseText;
+				for ( var i = event.resultIndex; i < event.results.length; i++ ) {
+					if ( event.results[ i ].isFinal ) {
+						final += event.results[ i ][ 0 ].transcript;
+					} else {
+						interim += event.results[ i ][ 0 ].transcript;
+					}
+				}
+				$( '#bcg-sb-ai-prompt' ).val( final + interim );
+				baseText = final; // keep committed final text as new base
+			};
+
+			recognition.onerror = function ( event ) {
+				isRecording = false;
+				$btn.removeClass( 'bcg-voice-active' ).attr( 'title', 'Speak your prompt' );
+				if ( event.error !== 'no-speech' && event.error !== 'aborted' ) {
+					self.showPromptError( 'Voice input error: ' + event.error );
+				}
+			};
 		},
 
 		/**

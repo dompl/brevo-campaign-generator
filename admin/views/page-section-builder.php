@@ -308,12 +308,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</ul>
 				</div>
 
-				<textarea
-					id="bcg-sb-ai-prompt"
-					class="bcg-textarea bcg-sb-prompt-textarea"
-					rows="7"
-					placeholder="<?php esc_attr_e( 'e.g. Create a bold summer sale email for our diamond tools range. Dark background with bright orange accents. Feature 3 best-selling products with short punchy descriptions. Include a 20% discount coupon. Tone: confident and direct — speaking to trade professionals who value quality.', 'brevo-campaign-generator' ); ?>"
-				></textarea>
+				<div class="bcg-sb-textarea-wrap">
+					<textarea
+						id="bcg-sb-ai-prompt"
+						class="bcg-textarea bcg-sb-prompt-textarea"
+						rows="7"
+						placeholder="<?php esc_attr_e( 'e.g. Create a bold summer sale email for our diamond tools range. Dark background with bright orange accents. Feature 3 best-selling products with short punchy descriptions. Include a 20% discount coupon. Tone: confident and direct — speaking to trade professionals who value quality.', 'brevo-campaign-generator' ); ?>"
+					></textarea>
+
+					<div class="bcg-sb-textarea-toolbar">
+						<div class="bcg-sb-saved-prompts-wrap" id="bcg-sb-saved-prompts-wrap" style="display:none;">
+							<select id="bcg-sb-saved-prompts-select" aria-label="<?php esc_attr_e( 'Load a saved prompt', 'brevo-campaign-generator' ); ?>">
+								<option value=""><?php esc_html_e( '— Load a saved prompt —', 'brevo-campaign-generator' ); ?></option>
+							</select>
+						</div>
+						<button type="button" id="bcg-sb-voice-btn" class="bcg-sb-voice-btn" title="<?php esc_attr_e( 'Speak your prompt', 'brevo-campaign-generator' ); ?>">
+							<span class="material-icons-outlined">mic</span>
+						</button>
+					</div>
+				</div>
 
 				<div class="bcg-sb-prompt-info-note">
 					<span class="material-icons-outlined">info</span>
@@ -324,13 +337,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			</div><!-- /.bcg-sb-prompt-body -->
 
-			<div class="bcg-whats-new-footer">
-				<button type="button" id="bcg-sb-prompt-cancel" class="bcg-btn-secondary">
+			<div class="bcg-modal-footer">
+				<button type="button" id="bcg-sb-prompt-cancel" class="bcg-btn-secondary bcg-prompt-footer-cancel">
 					<?php esc_html_e( 'Cancel', 'brevo-campaign-generator' ); ?>
+				</button>
+				<button type="button" id="bcg-sb-prompt-save" class="bcg-btn-secondary">
+					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">bookmark_add</span>
+					<?php esc_html_e( 'Save Prompt', 'brevo-campaign-generator' ); ?>
 				</button>
 				<button type="button" id="bcg-sb-prompt-generate" class="bcg-btn-ai">
 					<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">auto_awesome</span>
-					<?php esc_html_e( 'Generate with AI', 'brevo-campaign-generator' ); ?>
+					<?php esc_html_e( 'Save & Generate with AI', 'brevo-campaign-generator' ); ?>
 				</button>
 			</div>
 

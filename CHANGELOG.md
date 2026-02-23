@@ -17,6 +17,23 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.36] — 2026-02-23
+
+### Added
+- **Voice input in AI Prompt modal** — microphone button below the textarea uses the Web Speech API (continuous, interim results); button hidden automatically on unsupported browsers; pulsing ring animation while recording
+- **Save Prompt button** — new "Save Prompt" footer button persists the prompt text to `localStorage` (`bcg_saved_prompts`, max 10, deduplicated) and closes the modal
+- **Saved prompts dropdown** — select below the textarea auto-populates from `localStorage`; selecting a saved prompt loads it into the textarea; hidden until at least one prompt is saved
+
+### Changed
+- **"Generate with AI" renamed** to "Save & Generate with AI" — always saves the prompt before triggering generation
+- **AI Prompt modal footer** — changed class from `bcg-whats-new-footer` to `bcg-modal-footer`; Cancel button pushed to the left via `margin-right: auto`; proper `gap: 10px` between buttons
+- **Section Builder palette "Standard Templates" heading** — increased `margin-top` from 20px to 36px for a clear visual separation from the icons above
+
+### Fixed
+- **Request a Section error message** — "Failed to send your request" no longer renders as a red box; changed to borderless plain text using the theme error colour with `margin-bottom` spacing
+
+---
+
 ## [1.5.35] — 2026-02-23
 
 ### Fixed
