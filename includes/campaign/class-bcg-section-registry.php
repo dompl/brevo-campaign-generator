@@ -344,7 +344,7 @@ class BCG_Section_Registry {
 				'has_ai' => false,
 				'fields' => array(
 					array( 'key' => 'heading',      'label' => __( 'Heading', 'brevo-campaign-generator' ),           'type' => 'text',   'default' => '' ),
-					array( 'key' => 'items',        'label' => __( 'List Items (JSON)', 'brevo-campaign-generator' ), 'type' => 'json',   'default' => '[{"text":"First item"},{"text":"Second item"},{"text":"Third item"}]' ),
+					array( 'key' => 'items',        'label' => __( 'List Items (one per line)', 'brevo-campaign-generator' ), 'type' => 'textarea', 'default' => "First item\nSecond item\nThird item" ),
 					array( 'key' => 'list_style',   'label' => __( 'List Style', 'brevo-campaign-generator' ),        'type' => 'select', 'default' => 'bullets',
 						'options' => array(
 							array( 'value' => 'bullets',  'label' => __( 'Bullets', 'brevo-campaign-generator' ) ),
@@ -376,7 +376,7 @@ class BCG_Section_Registry {
 				'has_ai' => false,
 				'fields' => array(
 					array( 'key' => 'footer_text',        'label' => __( 'Footer Text', 'brevo-campaign-generator' ),       'type' => 'textarea', 'default' => 'You received this email because you subscribed to our newsletter.' ),
-					array( 'key' => 'footer_links',       'label' => __( 'Footer Links (JSON)', 'brevo-campaign-generator' ),'type' => 'json',     'default' => '[{"label":"Unsubscribe","url":"{{unsubscribe_url}}"}]' ),
+					array( 'key' => 'footer_links',       'label' => __( 'Footer Links', 'brevo-campaign-generator' ),        'type' => 'links',    'default' => '[{"label":"Unsubscribe","url":"{{unsubscribe_url}}"}]' ),
 					array( 'key' => 'text_color',         'label' => __( 'Text Colour', 'brevo-campaign-generator' ),        'type' => 'color',    'default' => '#999999' ),
 					array( 'key' => 'bg_color',           'label' => __( 'Background Colour', 'brevo-campaign-generator' ),  'type' => 'color',    'default' => '#f5f5f5' ),
 					array( 'key' => 'show_unsubscribe',   'label' => __( 'Show Unsubscribe', 'brevo-campaign-generator' ),   'type' => 'toggle',   'default' => true ),

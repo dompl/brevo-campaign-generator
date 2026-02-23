@@ -1097,13 +1097,26 @@
 				$( '.bcg-preview-toggle' ).removeClass( 'active' );
 				$( this ).addClass( 'active' );
 
-				var mode = $( this ).data( 'mode' );
+				var mode   = $( this ).data( 'mode' );
+				var $wrap  = $( '#bcg-sb-preview-frame-wrap' );
 				var $frame = $( '#bcg-sb-preview-iframe' );
 
 				if ( mode === 'mobile' ) {
-					$frame.css( { width: '375px', margin: '0 auto', display: 'block' } );
+					// Scale the 600 px email down to a 375 px mobile viewport.
+					// transform: scale() shrinks the visual size without reflowing
+					// the iframe content, avoiding horizontal scroll.
+					var emailW  = 600;
+					var targetW = 375;
+					var scale   = ( targetW / emailW ).toFixed( 5 );
+					$frame.css( {
+						width:               emailW + 'px',
+						transform:           'scale(' + scale + ')',
+						'transform-origin':  'top center',
+					} );
+					$wrap.addClass( 'bcg-preview-mobile' );
 				} else {
-					$frame.css( { width: '100%', margin: '', display: '' } );
+					$frame.css( { width: '', transform: '', 'transform-origin': '' } );
+					$wrap.removeClass( 'bcg-preview-mobile' );
 				}
 			} );
 		},

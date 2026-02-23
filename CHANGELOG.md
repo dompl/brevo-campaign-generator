@@ -17,6 +17,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.22] — 2026-02-23
+
+### Fixed
+- **List section items** — replaced raw JSON textarea with a plain multiline textarea; each line is one list item. Renderer updated to parse by newline with legacy JSON fallback.
+- **Footer links** — replaced raw JSON textarea with the standard label + URL repeater (same UX as nav links)
+- **Mobile email preview** — instead of resizing the iframe to 375 px and causing horizontal scroll, the 600 px email is now scaled down via `transform: scale(0.625)` so content fits without overflowing. Mobile wrap gets a dark background and the iframe gets a subtle shadow.
+
+---
+
 ## [1.5.21] — 2026-02-23
 
 ### Fixed

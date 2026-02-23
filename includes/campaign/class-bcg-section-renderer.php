@@ -857,10 +857,19 @@ class BCG_Section_Renderer {
 		$text_align = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? ( $s['text_align'] ?? 'left' ) : 'left';
 		$style   = $s['list_style'] ?? 'bullets';
 
-		// Decode items JSON.
-		$items_data = is_string( $s['items'] ) ? json_decode( $s['items'], true ) : $s['items'];
-		if ( ! is_array( $items_data ) ) {
-			$items_data = array();
+		// Parse items: one plain-text line per item (new format).
+		// Also handles legacy JSON array format for backwards compatibility.
+		$raw = $s['items'] ?? '';
+		if ( is_array( $raw ) ) {
+			// Already an array (legacy or pre-parsed).
+			$items_data = $raw;
+		} elseif ( is_string( $raw ) && str_starts_with( ltrim( $raw ), '[' ) ) {
+			// Legacy JSON format: [{"text":"..."}] or ["..."].
+			$decoded = json_decode( $raw, true );
+			$items_data = is_array( $decoded ) ? $decoded : array_filter( array_map( 'trim', explode( "\n", $raw ) ) );
+		} else {
+			// New format: plain newline-separated text.
+			$items_data = array_values( array_filter( array_map( 'trim', explode( "\n", (string) $raw ) ) ) );
 		}
 
 		// Heading.

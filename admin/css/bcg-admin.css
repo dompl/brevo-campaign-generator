@@ -4484,6 +4484,9 @@ body.bcg-admin-page .bcg-sb-preview-frame-wrap {
 	overflow:   hidden;
 	background: #f5f5f5;
 	padding:    var(--bcg-space-4);
+	display:    flex;
+	justify-content: center;
+	align-items: flex-start;
 }
 
 body.bcg-admin-page .bcg-sb-preview-iframe {
@@ -4491,6 +4494,19 @@ body.bcg-admin-page .bcg-sb-preview-iframe {
 	height:  600px;
 	border:  none;
 	background: #fff;
+	flex-shrink: 0;
+}
+
+/* Mobile preview: scale 600 px email down to 375 px viewport */
+body.bcg-admin-page .bcg-sb-preview-frame-wrap.bcg-preview-mobile {
+	background: #1e1e22;
+	padding:    32px var(--bcg-space-4) var(--bcg-space-4);
+}
+
+body.bcg-admin-page .bcg-preview-mobile .bcg-sb-preview-iframe {
+	box-shadow:    0 8px 40px rgba(0, 0, 0, 0.5);
+	border-radius: 4px;
+	/* transform + transform-origin are applied inline via JS */
 }
 
 body.bcg-admin-page .bcg-sb-preview-controls {
