@@ -1173,7 +1173,7 @@ class BCG_Section_Renderer {
 		);
 	}
 
-		/**
+	/**
 	 * Render divider section.
 	 *
 	 * @since  1.5.0
@@ -1182,29 +1182,48 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_divider( array $s, int $mw ): string {
-		$color  = esc_attr( $s['color'] );
-		$thick  = (int) $s['thickness'];
-		$mt     = (int) $s['margin_top'];
-		$mb     = (int) $s['margin_bottom'];
+		$color      = esc_attr( $s['color'] );
+		$thick      = (int) $s['thickness'];
+		$mt         = (int) $s['margin_top'];
+		$mb         = (int) $s['margin_bottom'];
+		$line_style = in_array( $s['line_style'] ?? 'solid', array( 'solid', 'dashed', 'dotted', 'double' ), true )
+			? ( $s['line_style'] ?? 'solid' )
+			: 'solid';
+
+		if ( 'solid' === $line_style ) {
+			// Original solid background approach (most compatible).
+			$line_html = sprintf(
+				'<td style="height:%dpx;background-color:%s;font-size:0;line-height:0;">&nbsp;</td>',
+				$thick, $color
+			);
+		} else {
+			// Dashed / dotted / double — use border-top CSS (works in all major email clients except Outlook).
+			// MSO fallback: solid line via VML-like background.
+			$border_style = sprintf( '%dpx %s %s', $thick, $line_style, $color );
+			$line_html = sprintf(
+				'<!--[if !mso]><!----><td style="height:0;border-top:%s;font-size:0;line-height:0;">&nbsp;</td><!--<![endif]-->' .
+				'<!--[if mso]><td style="height:%dpx;background-color:%s;font-size:0;line-height:0;">&nbsp;</td><![endif]-->',
+				$border_style,
+				max( 1, $thick ),
+				$color
+			);
+		}
 
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;">
 				<tr>
 					<td style="padding:%dpx 0 %dpx;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td style="height:%dpx;background-color:%s;font-size:0;line-height:0;">&nbsp;</td>
-							</tr>
+							<tr>%s</tr>
 						</table>
 					</td>
 				</tr>
 			</table>',
 			$mw, $mw, $mw,
 			$mt, $mb,
-			$thick, $color
+			$line_html
 		);
 	}
-
 	/**
 	 * Render spacer section.
 	 *
@@ -1221,31 +1240,124 @@ class BCG_Section_Renderer {
 	}
 
 	/**
+	 * Get SVG path markup for a social media platform.
+	 *
+	 * Returns the inner SVG content (path/polygon elements) for embedding
+	 * in an inline SVG element. Falls back to empty string for unknown platforms.
+	 *
+	 * @since  1.5.5
+	 * @param  string $platform  Lowercase platform name (e.g. 'facebook', 'instagram').
+	 * @param  string $color     Fill colour (hex or named).
+	 * @return string            Inner SVG path markup, or empty string.
+	 */
+	private static function get_social_svg( string $platform, string $color ): string {
+		$c = esc_attr( $color );
+		$paths = array(
+			'facebook'  => '<path fill="' . $c . '" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>',
+			'instagram' => '<path fill="' . $c . '" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>',
+			'twitter'   => '<path fill="' . $c . '" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>',
+			'x'         => '<path fill="' . $c . '" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>',
+			'linkedin'  => '<path fill="' . $c . '" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>',
+			'youtube'   => '<path fill="' . $c . '" d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>',
+			'tiktok'    => '<path fill="' . $c . '" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>',
+			'pinterest' => '<path fill="' . $c . '" d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>',
+			'snapchat'  => '<path fill="' . $c . '" d="M12 .5C5.65.5.5 5.65.5 12S5.65 23.5 12 23.5 23.5 18.35 23.5 12 18.35.5 12 .5zm5.28 15.72c-.26.06-.52.06-.78.06-1.08 0-2.16-.28-3.08-.83-.24.83-.92 1.47-1.78 1.67v.83c0 .5-.42.92-.92.92s-.92-.42-.92-.92v-.83c-.86-.2-1.54-.84-1.78-1.67-.92.55-2 .83-3.08.83-.26 0-.52 0-.78-.06-.34-.07-.56-.41-.49-.75.07-.34.41-.56.75-.49.18.04.36.05.52.05.75 0 1.5-.2 2.13-.58.1-.06.22-.09.34-.08.34.03.63.28.68.63.11.79.77 1.39 1.56 1.39h2.1c.79 0 1.45-.6 1.56-1.39.05-.35.34-.6.68-.63.12-.01.24.02.34.08.63.38 1.38.58 2.13.58.16 0 .34-.01.52-.05.34-.07.68.15.75.49.07.34-.15.68-.49.75zm-5.28-9.22c-2.1 0-3.82 1.72-3.82 3.82s1.72 3.82 3.82 3.82 3.82-1.72 3.82-3.82S14.1 7 12 7z"/>',
+			'whatsapp'  => '<path fill="' . $c . '" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>',
+			'threads'   => '<path fill="' . $c . '" d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.5 12.068V12c0-3.463.856-6.306 2.554-8.436C5.868 1.212 8.647.022 12.261.022c3.489 0 6.199 1.176 8.051 3.498C21.988 5.493 22.74 8.28 22.74 12v.113c0 3.466-.797 6.271-2.37 8.34-1.648 2.17-4.175 3.44-7.522 3.54l-.662.007zm-.234-4.007c1.56-.094 2.823-.661 3.853-1.733 1.07-1.113 1.587-2.526 1.536-4.199-.046-1.517-.746-2.74-2.023-3.537-.747-.47-1.603-.714-2.524-.714-.158 0-.317.007-.476.022-.953.092-1.748.497-2.363 1.205-.703.812-.987 1.86-.843 3.115.226 1.949 1.586 3.052 3.84 3.052zm.39-4.961c.582 0 1.086.16 1.498.476.437.336.683.813.717 1.38.049.822-.286 1.484-.944 1.862-.383.221-.818.333-1.27.333-1.232 0-1.962-.671-2.032-1.839-.046-.763.249-1.38.832-1.733.325-.198.712-.479 1.199-.479z"/>',
+		);
+		return $paths[ $platform ] ?? '';
+	}
+
+	/**
+	 * Render a single social icon as a table cell with inline SVG.
+	 *
+	 * Uses <!--[if !mso]> conditional to hide SVG from Outlook and fall back
+	 * to a coloured circle with text initial.
+	 *
+	 * @since  1.5.5
+	 * @param  string $href      Link URL.
+	 * @param  string $platform  Platform key (lowercase).
+	 * @param  string $icon_bg   Icon background colour.
+	 * @param  string $icon_tc   Icon foreground / SVG fill colour.
+	 * @param  int    $size      Icon circle diameter in px.
+	 * @param  string $abbr      Text fallback (1-2 chars).
+	 * @return string
+	 */
+	private static function render_social_icon_html( string $href, string $platform, string $icon_bg, string $icon_tc, int $size, string $abbr ): string {
+		$svg_inner = self::get_social_svg( $platform, $icon_tc );
+		$padding   = max( 4, (int) round( $size * 0.2 ) );
+		$inner_size = $size - ( $padding * 2 );
+		if ( $inner_size < 1 ) { $inner_size = $size; $padding = 0; }
+
+		if ( $svg_inner ) {
+			// Clients that support inline SVG (Gmail post-2024, Apple Mail, etc.)
+			$icon_content = '<!--[if !mso]><!-->' .
+				'<svg xmlns="http://www.w3.org/2000/svg" width="' . $inner_size . '" height="' . $inner_size . '" viewBox="0 0 24 24" role="img" aria-label="' . esc_attr( ucfirst( $platform ) ) . '" style="display:block;width:' . $inner_size . 'px;height:' . $inner_size . 'px;">' .
+				$svg_inner .
+				'</svg>' .
+				'<!--<![endif]-->' .
+				// MSO fallback: plain text abbr
+				'<!--[if mso]><span style="font-family:Arial,sans-serif;font-size:' . (int) round( $inner_size * 0.5 ) . 'px;font-weight:700;color:' . esc_attr( $icon_tc ) . ';text-transform:uppercase;">' . esc_html( $abbr ) . '</span><![endif]-->';
+		} else {
+			$icon_content = '<span style="font-family:Arial,sans-serif;font-size:' . (int) round( $inner_size * 0.5 ) . 'px;font-weight:700;color:' . esc_attr( $icon_tc ) . ';text-transform:uppercase;">' . esc_html( $abbr ) . '</span>';
+		}
+
+		return sprintf(
+			'<a href="%s" target="_blank" style="display:inline-table;width:%dpx;height:%dpx;border-radius:50%%;background-color:%s;text-decoration:none;margin:0 5px;vertical-align:middle;" title="%s">' .
+			'<span style="display:table-cell;width:%dpx;height:%dpx;text-align:center;vertical-align:middle;padding:%dpx;">%s</span>' .
+			'</a>',
+			esc_url( $href ),
+			$size, $size,
+			esc_attr( $icon_bg ),
+			esc_attr( ucfirst( $platform ) ),
+			$size, $size,
+			$padding,
+			$icon_content
+		);
+	}
+
+	/**
 	 * Render social media section.
 	 *
-	 * @since  1.5.41
+	 * @since  1.5.5
 	 * @param  array  $s     Settings.
 	 * @param  int    $mw    Max width.
 	 * @param  string $font  Font family.
 	 * @return string
 	 */
 	private static function render_social( array $s, int $mw, string $font ): string {
-		$bg       = esc_attr( $s['bg_color'] ?? '#ffffff' );
-		$tc       = esc_attr( $s['text_color'] ?? '#333333' );
-		$icon_bg  = esc_attr( $s['icon_bg'] ?? '#e63529' );
-		$icon_tc  = esc_attr( $s['icon_color'] ?? '#ffffff' );
-		$heading  = esc_html( $s['heading'] ?? '' );
-		$pt       = (int) ( $s['padding_top'] ?? 24 );
-		$pb       = (int) ( $s['padding_bottom'] ?? 24 );
+		$bg        = esc_attr( $s['bg_color']    ?? '#ffffff' );
+		$tc        = esc_attr( $s['text_color']  ?? '#333333' );
+		$icon_bg   = $s['icon_bg']    ?? '#e63529';
+		$icon_tc   = $s['icon_color'] ?? '#ffffff';
+		$heading   = esc_html( $s['heading']     ?? '' );
+		$pt        = (int) ( $s['padding_top']    ?? 24 );
+		$pb        = (int) ( $s['padding_bottom'] ?? 24 );
+		$font_size = (int) ( $s['font_size']      ?? 13 );
+		$icon_size = (int) ( $s['icon_size']      ?? 40 );
+		$icon_side = $s['icon_side']  ?? 'centre';
+		$logo_side = $s['logo_side']  ?? 'none';
+		$logo_url  = esc_url( $s['logo_url']  ?? '' );
+		$logo_link = esc_url( $s['logo_link'] ?? '' );
 
+		// Map icon_side to CSS text-align.
+		$align_map = array( 'left' => 'left', 'centre' => 'center', 'right' => 'right' );
+		$icons_align = $align_map[ $icon_side ] ?? 'center';
+
+		// Build heading row.
 		$heading_html = '';
 		if ( $heading ) {
 			$heading_html = sprintf(
-				'<tr><td style="text-align:center;padding-bottom:16px;"><p style="font-family:%s;font-size:13px;font-weight:700;color:%s;margin:0;text-transform:uppercase;letter-spacing:2px;">%s</p></td></tr>',
-				esc_attr( $font ), $tc, $heading
+				'<tr><td style="text-align:%s;padding-bottom:12px;"><p style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;text-transform:uppercase;letter-spacing:2px;">%s</p></td></tr>',
+				$icons_align,
+				esc_attr( $font ),
+				$font_size,
+				$tc,
+				$heading
 			);
 		}
 
+		// Build social icon cells.
 		$social_data = is_string( $s['social_links'] ) ? json_decode( $s['social_links'], true ) : ( $s['social_links'] ?? array() );
 		$abbrevs = array(
 			'facebook'  => 'f',  'fb'        => 'f',
@@ -1254,22 +1366,48 @@ class BCG_Section_Renderer {
 			'tiktok'    => 'tt', 'youtube'   => 'yt',
 			'pinterest' => 'p',  'linkedin'  => 'li',
 			'snapchat'  => 'sc', 'threads'   => 'th',
+			'whatsapp'  => 'wa',
 		);
-		$icons = array();
+		$icons_html_parts = array();
 		if ( is_array( $social_data ) ) {
 			foreach ( $social_data as $item ) {
-				if ( empty( $item['label'] ) ) continue;
+				if ( empty( $item['label'] ) ) { continue; }
 				$key   = strtolower( trim( $item['label'] ) );
 				$abbr  = $abbrevs[ $key ] ?? strtoupper( substr( $key, 0, 2 ) );
-				$href  = ! empty( $item['url'] ) ? esc_url( $item['url'] ) : '#';
-				$icons[] = sprintf(
-					'<a href="%s" target="_blank" style="display:inline-block;width:40px;height:40px;line-height:40px;border-radius:50%%;background-color:%s;color:%s;font-family:Arial,sans-serif;font-size:13px;font-weight:700;text-align:center;text-decoration:none;margin:0 6px;text-transform:uppercase;vertical-align:middle;">%s</a>',
-					$href, $icon_bg, $icon_tc, esc_html( $abbr )
-				);
+				$href  = ! empty( $item['url'] ) ? $item['url'] : '#';
+				$icons_html_parts[] = self::render_social_icon_html( $href, $key, $icon_bg, $icon_tc, $icon_size, $abbr );
+			}
+		}
+		$icons_html = '';
+		if ( $icons_html_parts ) {
+			$icons_html = '<tr><td style="text-align:' . $icons_align . ';padding:4px 0;">' . implode( '', $icons_html_parts ) . '</td></tr>';
+		}
+
+		// Build logo HTML (if logo_side is not 'none' and we have a URL).
+		$logo_html = '';
+		if ( 'none' !== $logo_side && $logo_url ) {
+			$img_tag = sprintf(
+				'<img src="%s" alt="Logo" style="display:block;max-height:50px;width:auto;border:0;" />',
+				$logo_url
+			);
+			$logo_inner = $logo_link
+				? '<a href="' . $logo_link . '" style="display:block;text-decoration:none;">' . $img_tag . '</a>'
+				: $img_tag;
+
+			// Logo left: logo in left column, icons in right column.
+			// Logo right: icons in left column, logo in right column.
+			// Each in a side-by-side table row.
+			if ( in_array( $logo_side, array( 'left', 'right' ), true ) ) {
+				$logo_td   = '<td style="vertical-align:middle;width:auto;padding-right:16px;">' . $logo_inner . '</td>';
+				$icons_td  = '<td style="vertical-align:middle;text-align:' . $icons_align . ';">' . implode( '', $icons_html_parts ) . '</td>';
+				$row_cells = ( 'left' === $logo_side ) ? $logo_td . $icons_td : $icons_td . $logo_td;
+				$logo_html = '<tr>' . $row_cells . '</tr>';
+				// Override single-column icons_html since we used side-by-side.
+				$icons_html = '';
 			}
 		}
 
-		$icons_html = $icons ? '<tr><td style="text-align:center;">' . implode( ' ', $icons ) . '</td></tr>' : '';
+		$inner = $heading_html . $logo_html . $icons_html;
 
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
@@ -1277,18 +1415,16 @@ class BCG_Section_Renderer {
 					<td style="padding:%dpx 30px %dpx;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							%s
-							%s
 						</table>
 					</td>
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
 			$pt, $pb,
-			$heading_html,
-			$icons_html
+			$inner
 		);
 	}
-	/**
+		/**
 	 * Render footer section.
 	 *
 	 * @since  1.5.0
@@ -1324,35 +1460,31 @@ class BCG_Section_Renderer {
 
 		$social_html = '';
 		if ( ! empty( $s['show_social'] ) ) {
-			$social_data = is_string( $s['social_links'] ) ? json_decode( $s['social_links'], true ) : $s['social_links'];
+			$social_data    = is_string( $s['social_links'] ) ? json_decode( $s['social_links'], true ) : $s['social_links'];
+			$social_abbrevs = array(
+				'facebook'  => 'f',  'fb'        => 'f',
+				'instagram' => 'in', 'ig'        => 'in',
+				'twitter'   => 'x',  'x'         => 'x',
+				'tiktok'    => 'tt', 'youtube'   => 'yt',
+				'pinterest' => 'p',  'linkedin'  => 'li',
+				'snapchat'  => 'sc', 'threads'   => 'th',
+				'whatsapp'  => 'wa',
+			);
+			$icon_bg            = $s['icon_bg']    ?? '#444444';
+			$icon_tc            = $s['icon_color'] ?? '#ffffff';
+			$social_icon_parts  = array();
 			if ( is_array( $social_data ) ) {
-				$icon_bg  = esc_attr( $s['icon_bg'] ?? '#444444' );
-				$icon_tc  = esc_attr( $s['icon_tc'] ?? '#ffffff' );
-				$icons    = array();
-				$abbrevs  = array(
-					'facebook'  => 'f',  'fb'        => 'f',
-					'instagram' => 'in', 'ig'        => 'in',
-					'twitter'   => 'x',  'x'         => 'x',
-					'tiktok'    => 'tt', 'youtube'   => 'yt',
-					'pinterest' => 'p',  'linkedin'  => 'li',
-					'snapchat'  => 'sc', 'threads'   => 'th',
-				);
 				foreach ( $social_data as $item ) {
-					if ( empty( $item['label'] ) || empty( $item['url'] ) ) {
-						continue;
-					}
-					$key   = strtolower( trim( $item['label'] ) );
-					$abbr  = $abbrevs[ $key ] ?? strtoupper( substr( $key, 0, 2 ) );
-					$href  = esc_url( $item['url'] );
-					$icons[] = sprintf(
-						'<a href="%s" target="_blank" style="display:inline-block;width:32px;height:32px;line-height:32px;border-radius:50%%;background-color:%s;color:%s;font-family:Arial,sans-serif;font-size:11px;font-weight:700;text-align:center;text-decoration:none;margin:0 4px;text-transform:uppercase;vertical-align:middle;">%s</a>',
-						$href, $icon_bg, $icon_tc, esc_html( $abbr )
-					);
-				}
-				if ( $icons ) {
-					$social_html = '<tr><td style="padding-top:14px;text-align:center;">' . implode( ' ', $icons ) . '</td></tr>';
+					if ( empty( $item['label'] ) ) { continue; }
+					$skey  = strtolower( trim( $item['label'] ) );
+					$sabb  = $social_abbrevs[ $skey ] ?? strtoupper( substr( $skey, 0, 2 ) );
+					$surl  = ! empty( $item['url'] ) ? $item['url'] : '#';
+					$social_icon_parts[] = self::render_social_icon_html( $surl, $skey, $icon_bg, $icon_tc, 36, $sabb );
 				}
 			}
+			$social_html = $social_icon_parts
+				? '<tr><td style="text-align:center;padding-top:16px;">' . implode( '', $social_icon_parts ) . '</td></tr>'
+				: '';
 		}
 
 		return sprintf(

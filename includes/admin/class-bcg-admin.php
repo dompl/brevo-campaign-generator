@@ -119,8 +119,9 @@ class BCG_Admin {
 		add_action( 'wp_ajax_bcg_sb_delete_template',  array( $this, 'handle_sb_delete_template' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_all',     array( $this, 'handle_sb_generate_all' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_section', array( $this, 'handle_sb_generate_section' ) );
-		add_action( 'wp_ajax_bcg_sb_build_layout',     array( $this, 'handle_sb_build_layout' ) );
-		add_action( 'wp_ajax_bcg_request_section',     array( $this, 'handle_request_section' ) );
+		add_action( 'wp_ajax_bcg_sb_build_layout',          array( $this, 'handle_sb_build_layout' ) );
+		add_action( 'wp_ajax_bcg_sb_save_global_defaults',  array( $this, 'handle_sb_save_global_defaults' ) );
+		add_action( 'wp_ajax_bcg_request_section',          array( $this, 'handle_request_section' ) );
 
 		// Section campaign editor.
 		add_action( 'wp_ajax_bcg_regen_campaign_section', array( $this, 'handle_regen_campaign_section' ) );
@@ -539,6 +540,11 @@ class BCG_Admin {
 			$currency_code   = get_option( 'bcg_stripe_currency', 'GBP' );
 			$currency_symbol = $settings_obj->get_currency_symbol( $currency_code );
 
+			$sb_global_defaults = json_decode( get_option( 'bcg_sb_global_defaults', '{}' ), true );
+			if ( ! is_array( $sb_global_defaults ) ) {
+				$sb_global_defaults = array();
+			}
+
 			wp_localize_script(
 				'bcg-section-builder',
 				'bcg_section_builder',
@@ -547,6 +553,21 @@ class BCG_Admin {
 					'nonce'           => wp_create_nonce( 'bcg_nonce' ),
 					'section_types'   => BCG_Section_Registry::get_all_for_js(),
 					'presets'         => BCG_Section_Presets::get_all_for_js(),
+					'global_defaults' => $sb_global_defaults,
+					'fonts'           => array(
+						array( 'value' => 'Georgia, serif',                          'label' => 'Georgia' ),
+						array( 'value' => "'Times New Roman', Times, serif",          'label' => 'Times New Roman' ),
+						array( 'value' => "'Playfair Display', Georgia, serif",       'label' => 'Playfair Display' ),
+						array( 'value' => 'Arial, Helvetica, sans-serif',             'label' => 'Arial' ),
+						array( 'value' => 'Verdana, Geneva, Tahoma, sans-serif',      'label' => 'Verdana' ),
+						array( 'value' => "'Trebuchet MS', Tahoma, Geneva, sans-serif", 'label' => 'Trebuchet MS' ),
+						array( 'value' => "'Roboto', Arial, sans-serif",              'label' => 'Roboto' ),
+						array( 'value' => "'Open Sans', Arial, sans-serif",           'label' => 'Open Sans' ),
+						array( 'value' => "'Lato', Arial, sans-serif",                'label' => 'Lato' ),
+						array( 'value' => "'Montserrat', Arial, sans-serif",          'label' => 'Montserrat' ),
+						array( 'value' => "'Source Sans Pro', Arial, sans-serif",     'label' => 'Source Sans Pro' ),
+						array( 'value' => 'Courier New, Courier, monospace',          'label' => 'Courier New' ),
+					),
 					'currency_symbol' => $currency_symbol,
 					'current_user'    => array(
 						'name'  => wp_get_current_user()->display_name,
@@ -2778,7 +2799,21 @@ class BCG_Admin {
 			wp_send_json_error( array( 'message' => __( 'Invalid sections data.', 'brevo-campaign-generator' ) ) );
 		}
 
-		$html = BCG_Section_Renderer::render_sections( $sections );
+		// Load saved global defaults and merge with any preview overrides from the client.
+		$global_settings = json_decode( get_option( 'bcg_sb_global_defaults', '{}' ), true );
+		if ( ! is_array( $global_settings ) ) {
+			$global_settings = array();
+		}
+
+		$raw_defaults    = isset( $_POST['global_defaults'] ) ? wp_unslash( $_POST['global_defaults'] ) : '{}';
+		$preview_globals = json_decode( $raw_defaults, true );
+		if ( ! is_array( $preview_globals ) ) {
+			$preview_globals = array();
+		}
+		// Merge with saved defaults (preview values take precedence).
+		$global_settings = array_merge( $global_settings, $preview_globals );
+
+		$html = BCG_Section_Renderer::render_sections( $sections, $global_settings );
 
 		wp_send_json_success( array( 'html' => $html ) );
 	}
@@ -3233,6 +3268,33 @@ class BCG_Admin {
 			'section'  => $updated_section,
 			'settings' => $updated_section['settings'],
 		) );
+	}
+
+	/**
+	 * AJAX: Save global section builder defaults (font, etc.) to a WP option.
+	 *
+	 * @since 1.5.5
+	 */
+	public function handle_sb_save_global_defaults(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'brevo-campaign-generator' ) ), 403 );
+		}
+
+		$raw     = isset( $_POST['defaults'] ) ? wp_unslash( $_POST['defaults'] ) : '{}';
+		$decoded = json_decode( $raw, true );
+		if ( ! is_array( $decoded ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid data.' ), 400 );
+		}
+
+		// Sanitise.
+		$clean = array();
+		if ( isset( $decoded['font_family'] ) ) {
+			$clean['font_family'] = sanitize_text_field( $decoded['font_family'] );
+		}
+
+		update_option( 'bcg_sb_global_defaults', wp_json_encode( $clean ) );
+		wp_send_json_success( array( 'message' => 'Saved.' ) );
 	}
 
 	public function add_bcg_body_class( string $classes ): string {

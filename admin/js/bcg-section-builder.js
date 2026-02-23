@@ -27,10 +27,12 @@
 		currentTemplateId: 0, // ID of the loaded/saved template (0 = new).
 		mediaFrame:   null,   // WP media frame instance.
 		aiPrompt:     '',     // Free-form AI prompt describing the email theme.
+		globalDefaults: {},     // Global defaults: font_family, etc.
 
 		i18n:    bcg_section_builder.i18n          || {},
 		types:   bcg_section_builder.section_types || {},
 		presets: bcg_section_builder.presets       || [],
+		fonts:   bcg_section_builder.fonts          || [],
 
 		// ── Initialisation ─────────────────────────────────────────────────
 
@@ -45,6 +47,28 @@
 			this.bindPromptModal();
 			this.renderPalette();
 			this.renderCanvas();
+
+			// Initialise global defaults from localized data.
+			this.globalDefaults = $.extend( {}, bcg_section_builder.global_defaults || {} );
+			if ( ! this.globalDefaults.font_family ) {
+				this.globalDefaults.font_family = "Georgia, serif";
+			}
+			// Populate font dropdown initial value.
+			var $fontSelect = $( '#bcg-sb-default-font' );
+			if ( $fontSelect.length ) {
+				$fontSelect.val( this.globalDefaults.font_family );
+				// Update the custom select display label.
+				var fontLabel = '';
+				$.each( self.fonts, function ( i, f ) {
+					if ( f.value === self.globalDefaults.font_family ) {
+						fontLabel = f.label;
+						return false;
+					}
+				} );
+				if ( fontLabel ) {
+					$fontSelect.closest( '.bcg-custom-select' ).find( '.bcg-custom-select-trigger span' ).text( fontLabel );
+				}
+			}
 
 			// Auto-save every 60 seconds when dirty.
 			setInterval( function () {
@@ -118,23 +142,25 @@
 
 			// Variant card click — add section with preset settings.
 			$( document ).on( 'click', '.bcg-sb-variant-card', function () {
-				var type      = $( this ).data( 'type' );
-				var variantId = $( this ).data( 'variant-id' );
-				var presets   = self.presets;
-				var settings  = null;
+				var type        = $( this ).data( 'type' );
+				var variantId   = $( this ).data( 'variant-id' );
+				var presets     = self.presets;
+				var settings    = null;
+				var presetLabel = '';
 
 				// Find preset settings by variant ID.
 				$.each( presets, function ( i, cat ) {
 					$.each( cat.variants, function ( j, v ) {
 						if ( v.id === variantId ) {
-							settings = v.settings || {};
+							settings    = v.settings || {};
+							presetLabel = v.label    || '';
 							return false;
 						}
 					} );
 					if ( settings !== null ) { return false; }
 				} );
 
-				self.addSection( type, settings );
+				self.addSection( type, settings, presetLabel );
 			} );
 
 			// Palette group header accordion toggle.
@@ -305,7 +331,7 @@
 		buildSectionCard: function ( section ) {
 			var self    = this;
 			var typeDef = self.types[ section.type ] || {};
-			var label   = typeDef.label || section.type;
+			var label   = section.preset_label || typeDef.label || section.type;
 			var icon    = typeDef.icon  || 'widgets';
 			var hasAi   = !! typeDef.has_ai;
 
@@ -352,7 +378,7 @@
 		 * @param {string}      type          Section type slug.
 		 * @param {Object|null} presetSettings Optional preset settings to overlay on type defaults.
 		 */
-		addSection: function ( type, presetSettings ) {
+		addSection: function ( type, presetSettings, presetLabel ) {
 			var typeDef = this.types[ type ];
 			if ( ! typeDef ) { return; }
 
@@ -363,9 +389,10 @@
 				: baseSettings;
 
 			var section = {
-				id:       this.generateUUID(),
-				type:     type,
-				settings: settings
+				id:           this.generateUUID(),
+				type:         type,
+				settings:     settings,
+				preset_label: presetLabel || ''
 			};
 
 			this.sections.push( section );
@@ -1182,6 +1209,11 @@
 			$( '#bcg-sb-apply-primary-color' ).on( 'click', function () {
 				self.applyPrimaryColour();
 			} );
+
+			// Default font change.
+			$( document ).on( 'change', '#bcg-sb-default-font', function () {
+				self.updateGlobalDefault( 'font_family', $( this ).val() );
+			} );
 		},
 
 		// ── Preview ───────────────────────────────────────────────────────
@@ -1219,9 +1251,10 @@
 				url:  bcg_section_builder.ajax_url,
 				type: 'POST',
 				data: {
-					action:   'bcg_sb_preview',
-					nonce:    bcg_section_builder.nonce,
-					sections: JSON.stringify( self.sections )
+					action:          'bcg_sb_preview',
+					nonce:           bcg_section_builder.nonce,
+					sections:        JSON.stringify( self.sections ),
+					global_defaults: JSON.stringify( self.globalDefaults ),
 				},
 				success: function ( res ) {
 					if ( res.success && res.data.html ) {
@@ -2070,6 +2103,26 @@
 				var r = Math.random() * 16 | 0;
 				var v = c === 'x' ? r : ( r & 0x3 | 0x8 );
 				return v.toString( 16 );
+			} );
+		},
+
+		/**
+		 * Update a global default setting, persist to server, and refresh preview.
+		 *
+		 * @param {string} key   Setting key (e.g. 'font_family').
+		 * @param {*}      val   New value.
+		 */
+		updateGlobalDefault: function ( key, val ) {
+			var self = this;
+			self.globalDefaults[ key ] = val;
+			self.markDirty();
+			self.debouncePreview();
+
+			// Persist via AJAX.
+			$.post( bcg_section_builder.ajax_url, {
+				action:   'bcg_sb_save_global_defaults',
+				nonce:    bcg_section_builder.nonce,
+				defaults: JSON.stringify( self.globalDefaults ),
 			} );
 		},
 

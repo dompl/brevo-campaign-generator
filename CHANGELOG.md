@@ -17,6 +17,25 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.42] — 2026-02-23
+
+### Added
+- **Real social media icons**: SVG icons for 10 platforms (Facebook, Instagram, Twitter/X, LinkedIn, YouTube, TikTok, Pinterest, Snapchat, WhatsApp, Threads) in all Social Media sections and footer social blocks; MSO conditional fallback for Outlook
+- **Social section — logo support**: optional logo image with linkable URL and left/right position control
+- **Social section — icon alignment**: independent left/centred/right alignment for icons regardless of logo position
+- **Social section — new fields**: heading font size and icon size range sliders
+- **Default Font selector** in Section Builder toolbar — global font dropdown (12 options) persisted per site; applies to all email section rendering
+- **Defaults bar**: primary colour picker and font selector now live in a styled defaults bar below the main toolbar
+- **Canvas variant labels**: section cards on the canvas now show the preset/variant name (e.g. "Logo Only", "Logo + Navigation") instead of the generic type name
+- **Divider line styles**: solid, dashed, dotted, and double options on all divider sections
+- **4 new divider presets**: Dashed Line, Dotted Line, Double Line, Brand Dashed
+
+### Changed
+- Defaults bar replaces the standalone primary colour picker row — background now correctly matches the dark admin theme (was white)
+- Footer social icons use inline SVG icons (same as standalone Social Media section)
+
+---
+
 ## [1.5.41] — 2026-02-23
 
 ### Added
