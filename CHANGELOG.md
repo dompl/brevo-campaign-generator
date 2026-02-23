@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.40] — 2026-02-23
+
+### Fixed
+- **Hero Split** was not appearing in the Section Builder palette — it was missing from the presets file that powers the palette (was only in the registry)
+
+### Added
+- **Hero Split** now has 4 palette variants: Image Right — Dark, Image Left — Dark, Image Right — Light, Image Left — Bold Red
+- **Coupon Block** expanded from 2 to 7 palette variants: Classic, Banner, Card, Split Panel, Minimal, Ribbon, Code Only
+
+---
+
 ## [1.5.39] — 2026-02-23
 
 ### Added

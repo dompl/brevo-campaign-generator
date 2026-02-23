@@ -296,11 +296,12 @@ class BCG_Admin {
 
 		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
 		// Each entry shows in the "What's New" modal so users see real release notes.
+		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
+		// Each entry shows in the "What's New" modal so users see real release notes.
 		$whats_new_items = array(
-			array( 'icon' => 'view_column',    'text' => __( 'New section type: Hero Split — image on one side, text on the other, with switchable left/right placement and a dedicated text panel background colour', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'auto_awesome',   'text' => __( 'AI layout builder now includes Hero Split as an option — it can appear automatically in AI-generated email layouts', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'record_voice_over', 'text' => __( 'AI Prompt modal: voice input, Save Prompt, and Save & Generate with AI buttons added', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'dashboard_customize', 'text' => __( 'AI now redesigns the layout structure (not just the text) when you generate with a custom prompt', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'view_column',         'text' => __( 'Hero Split is now in the palette — image on one side, text on the other, with switchable left/right placement and 4 colour variants', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'confirmation_number', 'text' => __( 'Coupon Block now has 7 designs: Classic, Banner, Card, Split Panel, Minimal, Ribbon, and Code Only', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'auto_awesome',        'text' => __( 'AI layout builder can now choose Hero Split automatically when generating layouts from a prompt', 'brevo-campaign-generator' ) ),
 		);
 
 		$bcg_data = array(
