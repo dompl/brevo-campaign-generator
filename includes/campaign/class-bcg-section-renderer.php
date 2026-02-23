@@ -84,6 +84,8 @@ class BCG_Section_Renderer {
 				return self::render_header( $s, $max_width, $font_family );
 			case 'hero':
 				return self::render_hero( $s, $max_width, $font_family );
+			case 'hero_split':
+				return self::render_hero_split( $s, $max_width, $font_family );
 			case 'text':
 				return self::render_text( $s, $max_width, $font_family );
 			case 'image':
@@ -268,6 +270,81 @@ class BCG_Section_Renderer {
 			esc_attr( $font ), $hsize, $hcolor, $headline,
 			esc_attr( $font ), $s_fsize, $scolor, $subtext,
 			$cta_html
+		);
+	}
+
+	/**
+	 * Render hero split section — image on one side, text on the other.
+	 *
+	 * @since  1.5.39
+	 * @param  array  $s     Settings.
+	 * @param  int    $mw    Max width.
+	 * @param  string $font  Font family.
+	 * @return string
+	 */
+	private static function render_hero_split( array $s, int $mw, string $font ): string {
+		$img_url    = esc_url( $s['image_url'] ?? '' );
+		$img_side   = in_array( $s['image_side'] ?? 'right', array( 'left', 'right' ), true ) ? $s['image_side'] : 'right';
+		$text_bg    = esc_attr( $s['text_bg_color'] ?? '#1a1a2e' );
+		$headline   = esc_html( $s['headline'] ?? '' );
+		$hsize      = (int) ( $s['headline_size'] ?? 32 );
+		$hcolor     = esc_attr( $s['headline_color'] ?? '#ffffff' );
+		$subtext    = esc_html( $s['subtext'] ?? '' );
+		$scolor     = esc_attr( $s['subtext_color'] ?? '#cccccc' );
+		$sfsize     = (int) ( $s['subtext_font_size'] ?? 15 );
+		$cta_text   = esc_html( $s['cta_text'] ?? '' );
+		$cta_url    = esc_url( $s['cta_url'] ?: '#' );
+		$cta_bg     = esc_attr( $s['cta_bg_color'] ?? '#e63529' );
+		$cta_tc     = esc_attr( $s['cta_text_color'] ?? '#ffffff' );
+		$cta_radius = (int) ( $s['cta_border_radius'] ?? 4 );
+		$pt         = (int) ( $s['padding_top'] ?? 40 );
+		$pb         = (int) ( $s['padding_bottom'] ?? 40 );
+		$half_w     = (int) round( $mw / 2 );
+
+		$cta_html = '';
+		if ( $cta_text ) {
+			$cta_html = sprintf(
+				'<tr><td style="padding-top:22px;"><a href="%s" style="display:inline-block;padding:12px 28px;background-color:%s;color:%s;font-family:%s;font-size:14px;font-weight:700;text-decoration:none;border-radius:%dpx;">%s</a></td></tr>',
+				$cta_url, $cta_bg, $cta_tc, esc_attr( $font ), $cta_radius, $cta_text
+			);
+		}
+
+		$text_td = sprintf(
+			'<td width="%d" valign="middle" bgcolor="%s" style="background-color:%s;padding:%dpx 28px %dpx;width:%dpx;">
+				<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+					<tr><td><h2 style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;padding:0;line-height:1.2;">%s</h2></td></tr>
+					<tr><td style="padding-top:14px;"><p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:1.65;">%s</p></td></tr>
+					%s
+				</table>
+			</td>',
+			$half_w, $text_bg, $text_bg, $pt, $pb, $half_w,
+			esc_attr( $font ), $hsize, $hcolor, $headline,
+			esc_attr( $font ), $sfsize, $scolor, $subtext,
+			$cta_html
+		);
+
+		if ( $img_url ) {
+			$image_td = sprintf(
+				'<td width="%d" valign="middle" style="padding:0;line-height:0;font-size:0;width:%dpx;overflow:hidden;">
+					<img src="%s" width="%d" alt="" style="display:block;width:%dpx;height:auto;max-height:400px;object-fit:cover;border:0;outline:none;text-decoration:none;" />
+				</td>',
+				$half_w, $half_w, $img_url, $half_w, $half_w
+			);
+		} else {
+			$image_td = sprintf(
+				'<td width="%d" valign="middle" bgcolor="%s" style="background-color:%s;width:%dpx;">&nbsp;</td>',
+				$half_w, $text_bg, $text_bg, $half_w
+			);
+		}
+
+		$cells = ( 'left' === $img_side ) ? $image_td . $text_td : $text_td . $image_td;
+
+		return sprintf(
+			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;">
+				<tr>%s</tr>
+			</table>',
+			$mw, $mw, $mw,
+			$cells
 		);
 	}
 

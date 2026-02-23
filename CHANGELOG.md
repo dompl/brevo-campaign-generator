@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.39] — 2026-02-23
+
+### Added
+- New **Hero Split** section type in Section Builder: image on one side, text (heading + description + button) on the other, with user-switchable left/right image placement, configurable text panel background colour, and vertical centring of text with the image
+- `hero_split` added to AI layout generator whitelist — AI can now choose it when generating layouts
+
+---
+
 ## [1.5.38] — 2026-02-23
 
 ### Added

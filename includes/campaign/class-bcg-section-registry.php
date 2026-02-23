@@ -146,6 +146,36 @@ class BCG_Section_Registry {
 				),
 			),
 
+			// ── Hero Split ────────────────────────────────────────────────
+			'hero_split' => array(
+				'label'  => __( 'Hero Split', 'brevo-campaign-generator' ),
+				'icon'   => 'view_column',
+				'has_ai' => true,
+				'fields' => array(
+					array( 'key' => 'image_url',       'label' => __( 'Image URL', 'brevo-campaign-generator' ),             'type' => 'image',  'default' => '' ),
+					array( 'key' => 'image_side',      'label' => __( 'Image Side', 'brevo-campaign-generator' ),            'type' => 'select', 'default' => 'right',
+						'options' => array(
+							array( 'value' => 'right', 'label' => __( 'Right', 'brevo-campaign-generator' ) ),
+							array( 'value' => 'left',  'label' => __( 'Left', 'brevo-campaign-generator' ) ),
+						),
+					),
+					array( 'key' => 'text_bg_color',   'label' => __( 'Text Panel Background', 'brevo-campaign-generator' ), 'type' => 'color',  'default' => '#1a1a2e' ),
+					array( 'key' => 'headline',        'label' => __( 'Headline', 'brevo-campaign-generator' ),              'type' => 'text',   'default' => 'Your Campaign Headline' ),
+					array( 'key' => 'headline_size',   'label' => __( 'Headline Size (px)', 'brevo-campaign-generator' ),    'type' => 'range',  'default' => 32, 'min' => 16, 'max' => 60, 'step' => 1 ),
+					array( 'key' => 'headline_color',  'label' => __( 'Headline Colour', 'brevo-campaign-generator' ),       'type' => 'color',  'default' => '#ffffff' ),
+					array( 'key' => 'subtext',         'label' => __( 'Subtext', 'brevo-campaign-generator' ),               'type' => 'textarea', 'default' => 'Discover our latest collection' ),
+					array( 'key' => 'subtext_color',   'label' => __( 'Subtext Colour', 'brevo-campaign-generator' ),        'type' => 'color',  'default' => '#cccccc' ),
+					array( 'key' => 'subtext_font_size', 'label' => __( 'Subtext Font Size (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 15, 'min' => 10, 'max' => 28, 'step' => 1 ),
+					array( 'key' => 'cta_text',        'label' => __( 'Button Text', 'brevo-campaign-generator' ),           'type' => 'text',   'default' => 'Shop Now' ),
+					array( 'key' => 'cta_url',         'label' => __( 'Button URL', 'brevo-campaign-generator' ),            'type' => 'text',   'default' => '' ),
+					array( 'key' => 'cta_bg_color',    'label' => __( 'Button Background', 'brevo-campaign-generator' ),    'type' => 'color',  'default' => '#e63529' ),
+					array( 'key' => 'cta_text_color',  'label' => __( 'Button Text Colour', 'brevo-campaign-generator' ),   'type' => 'color',  'default' => '#ffffff' ),
+					array( 'key' => 'cta_border_radius', 'label' => __( 'Button Border Radius (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 4, 'min' => 0, 'max' => 30, 'step' => 1 ),
+					array( 'key' => 'padding_top',     'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),     'type' => 'range',  'default' => 40, 'min' => 0, 'max' => 120, 'step' => 4 ),
+					array( 'key' => 'padding_bottom',  'label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ),  'type' => 'range',  'default' => 40, 'min' => 0, 'max' => 120, 'step' => 4 ),
+				),
+			),
+
 			// ── Text Block ───────────────────────────────────────────────
 			'text' => array(
 				'label'  => __( 'Text Block', 'brevo-campaign-generator' ),

@@ -50,6 +50,7 @@ class BCG_Section_AI {
 
 		switch ( $type ) {
 			case 'hero':
+			case 'hero_split':
 				return self::generate_hero( $openai, $settings, $context, $tone, $language );
 
 			case 'text':

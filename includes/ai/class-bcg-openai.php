@@ -1262,11 +1262,12 @@ class BCG_OpenAI {
 		$user_prompt = sprintf(
 			"Based on this email campaign brief:\n\"\"%s\"\n\n" .
 			"Return a JSON array of email section types for this campaign layout.\n" .
-			"Available types: header, hero, text, products, banner, cta, coupon, divider, spacer, footer\n\n" .
+			"Available types: header, hero, hero_split, text, products, banner, cta, coupon, divider, spacer, footer\n\n" .
 			"Rules:\n" .
 			"- First element must be \"header\", last must be \"footer\"\n" .
 			"- Use 4–8 sections total\n" .
 			"- Match the brief (e.g. Black Friday → hero + products + coupon + cta)\n" .
+			"- hero_split = image on one side + text on the other — great for product spotlights\n" .
 			"- You may repeat types (e.g. two text blocks)\n" .
 			"- Return ONLY valid JSON — no explanation, no markdown fences\n\n" .
 			"Example: [\"header\",\"hero\",\"products\",\"coupon\",\"cta\",\"footer\"]",
@@ -1294,7 +1295,7 @@ class BCG_OpenAI {
 		}
 
 		// Whitelist valid section types.
-		$valid = array( 'header', 'hero', 'text', 'products', 'banner', 'cta', 'coupon', 'divider', 'spacer', 'footer' );
+		$valid = array( 'header', 'hero', 'hero_split', 'text', 'products', 'banner', 'cta', 'coupon', 'divider', 'spacer', 'footer' );
 		$types = array_values( array_filter( $types, static fn( string $t ) => in_array( $t, $valid, true ) ) );
 
 		// Guarantee header first and footer last.
