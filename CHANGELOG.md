@@ -17,6 +17,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.28] — 2026-02-23
+
+### Added
+- **"Generate with AI" toggles in Section Builder** — every text/textarea field in the section settings panel now has an inline AI badge toggle. When enabled (default), the field is populated by AI on campaign generation; when disabled, the user's manually entered text is preserved. Excluded from toggling: button text, CTA text, and URL fields.
+- **Coupon section variants** — three new coupon section types added to the palette:
+  - **Coupon — Banner** — dark full-width horizontal bar with discount info on the left and the code on the right.
+  - **Coupon — Card** — white card with a 4 px solid left border accent and a dashed code box.
+  - **Coupon — Split** — two-column layout with a large discount number on the left and redemption details on the right.
+  - The original **Coupon — Classic** type gains `headline`, `subtext`, `text_color`, `padding_top`, and `padding_bottom` fields.
+
+### Fixed
+- **Mailing list never loading** — removed N+1 Brevo API calls (one extra request per list for subscriber count). The initial bulk list response already returns `totalSubscribers`; those values are now used directly, eliminating the timeout that prevented the dropdown from populating.
+- **Generation popup wrong colours** — the "Generating Campaign…" modal was rendered with a white background causing dark text to be invisible. Background now uses `var(--bcg-bg-surface)` (dark navy) matching the rest of the admin UI.
+
+---
+
 ## [1.5.27] — 2026-02-23
 
 ### Fixed

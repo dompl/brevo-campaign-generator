@@ -117,18 +117,21 @@ class BCG_Section_AI {
 		$products = $context['products'] ?? array();
 		$theme    = $context['theme'] ?? '';
 
-		$headline = $openai->generate_main_headline( $products, $theme, $tone, $language );
-		if ( is_wp_error( $headline ) ) {
-			return $headline;
+		if ( $settings['_ai_headline'] ?? true ) {
+			$headline = $openai->generate_main_headline( $products, $theme, $tone, $language );
+			if ( is_wp_error( $headline ) ) {
+				return $headline;
+			}
+			$settings['headline'] = $headline;
 		}
 
-		$subtext = $openai->generate_main_description( $products, $theme, $tone, $language );
-		if ( is_wp_error( $subtext ) ) {
-			return $subtext;
+		if ( $settings['_ai_subtext'] ?? true ) {
+			$subtext = $openai->generate_main_description( $products, $theme, $tone, $language );
+			if ( is_wp_error( $subtext ) ) {
+				return $subtext;
+			}
+			$settings['subtext'] = $subtext;
 		}
-
-		$settings['headline'] = $headline;
-		$settings['subtext']  = $subtext;
 
 		return $settings;
 	}
@@ -145,15 +148,22 @@ class BCG_Section_AI {
 	 * @return array|\WP_Error
 	 */
 	private static function generate_text( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
+		$gen_heading = $settings['_ai_heading'] ?? true;
+		$gen_body    = $settings['_ai_body'] ?? true;
+
+		if ( ! $gen_heading && ! $gen_body ) {
+			return $settings;
+		}
+
 		$result = $openai->generate_text_block( $context, $tone, $language );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
-		if ( ! empty( $result['heading'] ) ) {
+		if ( $gen_heading && ! empty( $result['heading'] ) ) {
 			$settings['heading'] = $result['heading'];
 		}
-		if ( ! empty( $result['body'] ) ) {
+		if ( $gen_body && ! empty( $result['body'] ) ) {
 			$settings['body'] = $result['body'];
 		}
 
@@ -172,15 +182,22 @@ class BCG_Section_AI {
 	 * @return array|\WP_Error
 	 */
 	private static function generate_banner( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
+		$gen_heading = $settings['_ai_heading'] ?? true;
+		$gen_subtext = $settings['_ai_subtext'] ?? true;
+
+		if ( ! $gen_heading && ! $gen_subtext ) {
+			return $settings;
+		}
+
 		$result = $openai->generate_banner_text( $context, $tone, $language );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
-		if ( ! empty( $result['heading'] ) ) {
+		if ( $gen_heading && ! empty( $result['heading'] ) ) {
 			$settings['heading'] = $result['heading'];
 		}
-		if ( ! empty( $result['subtext'] ) ) {
+		if ( $gen_subtext && ! empty( $result['subtext'] ) ) {
 			$settings['subtext'] = $result['subtext'];
 		}
 
@@ -199,15 +216,22 @@ class BCG_Section_AI {
 	 * @return array|\WP_Error
 	 */
 	private static function generate_cta( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
+		$gen_heading = $settings['_ai_heading'] ?? true;
+		$gen_subtext = $settings['_ai_subtext'] ?? true;
+
+		if ( ! $gen_heading && ! $gen_subtext ) {
+			return $settings;
+		}
+
 		$result = $openai->generate_cta_text( $context, $tone, $language );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
-		if ( ! empty( $result['heading'] ) ) {
+		if ( $gen_heading && ! empty( $result['heading'] ) ) {
 			$settings['heading'] = $result['heading'];
 		}
-		if ( ! empty( $result['subtext'] ) ) {
+		if ( $gen_subtext && ! empty( $result['subtext'] ) ) {
 			$settings['subtext'] = $result['subtext'];
 		}
 		if ( ! empty( $result['button_text'] ) ) {

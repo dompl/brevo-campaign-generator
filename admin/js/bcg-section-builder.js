@@ -452,7 +452,7 @@
 			}
 
 			$.each( fields, function ( i, field ) {
-				html += self.renderField( section.id, field, section.settings[ field.key ] );
+				html += self.renderField( section.id, field, section.settings[ field.key ], typeDef.has_ai, section.settings );
 			} );
 
 			html += '</div>';
@@ -472,7 +472,7 @@
 		 * @param  {*}      value     Current value.
 		 * @return {string} HTML string.
 		 */
-		renderField: function ( sectionId, field, value ) {
+		renderField: function ( sectionId, field, value, hasAi, allSettings ) {
 			var self  = this;
 			var key   = field.key;
 			var label = field.label || key;
@@ -483,15 +483,43 @@
 				value = field.default !== undefined ? field.default : '';
 			}
 
+			allSettings = allSettings || {};
+
 			var input = '';
+
+			// Keys that should never get the AI toggle.
+			var noAiKeys = ['cta_text', 'button_text', 'button_url', 'cta_url', 'link_url', 'image_url', 'logo_url'];
+			var isUrl    = key.toLowerCase().indexOf( 'url' ) !== -1 || key.toLowerCase().indexOf( 'link' ) !== -1;
+			var canAi    = !! hasAi && noAiKeys.indexOf( key ) === -1 && ! isUrl;
+			var aiOn     = canAi && ( allSettings[ '_ai_' + key ] !== false ); // default true
 
 			switch ( type ) {
 				case 'text':
-					input = '<input type="text" id="' + id + '" class="bcg-sb-field-input bcg-input" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '" />';
+					if ( canAi ) {
+						input = '<div class="bcg-sb-field-ai-wrap">' +
+							'<input type="text" id="' + id + '" class="bcg-sb-field-input bcg-input' + ( aiOn ? ' bcg-ai-field-active' : '' ) + '" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '"' + ( aiOn ? ' placeholder="AI will generate this field"' : '' ) + ' />' +
+							'<label class="bcg-sb-ai-toggle" title="Generate with AI">' +
+							'<input type="checkbox" class="bcg-sb-ai-checkbox" data-ai-key="' + self.escAttr( '_ai_' + key ) + '" data-text-key="' + self.escAttr( key ) + '"' + ( aiOn ? ' checked' : '' ) + ' />' +
+							'<span class="bcg-sb-ai-badge">AI</span>' +
+							'</label>' +
+							'</div>';
+					} else {
+						input = '<input type="text" id="' + id + '" class="bcg-sb-field-input bcg-input" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '" />';
+					}
 					break;
 
 				case 'textarea':
-					input = '<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea" data-key="' + self.escAttr( key ) + '" rows="4">' + self.escHtml( String( value ) ) + '</textarea>';
+					if ( canAi ) {
+						input = '<div class="bcg-sb-field-ai-wrap">' +
+							'<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea' + ( aiOn ? ' bcg-ai-field-active' : '' ) + '" data-key="' + self.escAttr( key ) + '" rows="4"' + ( aiOn ? ' placeholder="AI will generate this field"' : '' ) + '>' + self.escHtml( String( value ) ) + '</textarea>' +
+							'<label class="bcg-sb-ai-toggle" title="Generate with AI">' +
+							'<input type="checkbox" class="bcg-sb-ai-checkbox" data-ai-key="' + self.escAttr( '_ai_' + key ) + '" data-text-key="' + self.escAttr( key ) + '"' + ( aiOn ? ' checked' : '' ) + ' />' +
+							'<span class="bcg-sb-ai-badge">AI</span>' +
+							'</label>' +
+							'</div>';
+					} else {
+						input = '<textarea id="' + id + '" class="bcg-sb-field-input bcg-textarea" data-key="' + self.escAttr( key ) + '" rows="4">' + self.escHtml( String( value ) ) + '</textarea>';
+					}
 					break;
 
 				case 'range':
@@ -736,6 +764,25 @@
 			$body.on( 'click.bcgFields', '.bcg-sb-settings-ai-btn', function () {
 				var id = $( this ).data( 'id' );
 				self.generateSection( id );
+			} );
+
+			// AI toggle checkbox.
+			$body.on( 'change.bcgFields', '.bcg-sb-ai-checkbox', function () {
+				var $cb      = $( this );
+				var aiKey    = $cb.data( 'ai-key' );
+				var textKey  = $cb.data( 'text-key' );
+				var isOn     = $cb.is( ':checked' );
+				var $input   = $body.find( '.bcg-sb-field-input[data-key="' + textKey + '"]' );
+
+				self.updateSetting( sectionId, aiKey, isOn );
+
+				if ( isOn ) {
+					$input.addClass( 'bcg-ai-field-active' ).attr( 'placeholder', 'AI will generate this field' );
+				} else {
+					$input.removeClass( 'bcg-ai-field-active' ).removeAttr( 'placeholder' );
+				}
+
+				self.markDirty();
 			} );
 
 			// Links repeater — helper to serialize all rows → JSON → updateSetting.
