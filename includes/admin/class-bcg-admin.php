@@ -120,6 +120,9 @@ class BCG_Admin {
 		add_action( 'wp_ajax_bcg_sb_generate_all',     array( $this, 'handle_sb_generate_all' ) );
 		add_action( 'wp_ajax_bcg_sb_generate_section', array( $this, 'handle_sb_generate_section' ) );
 		add_action( 'wp_ajax_bcg_request_section',     array( $this, 'handle_request_section' ) );
+
+		// Section campaign editor.
+		add_action( 'wp_ajax_bcg_regen_campaign_section', array( $this, 'handle_regen_campaign_section' ) );
 	}
 
 	/**
@@ -902,83 +905,89 @@ class BCG_Admin {
 			}
 		}
 
-		// ── 5. Generate campaign copy via AI ─────────────────────────────
+		// ── 5 & 6. AI generation — section vs flat templates ─────────────
 
 		$ai_manager = new BCG_AI_Manager();
-		$copy_result = $ai_manager->generate_campaign_copy(
-			$campaign_id,
-			$product_data_for_ai,
-			array(
-				'theme'           => $theme,
-				'tone'            => $tone,
-				'language'        => $language,
-				'generate_coupon' => false, // Coupon already handled above.
-			)
-		);
 
-		if ( is_wp_error( $copy_result ) ) {
-			wp_send_json_error( array( 'message' => $copy_result->get_error_message() ) );
-		}
-
-		// ── 6. Generate images via AI (if enabled) ───────────────────────
-
-		$main_image_url = '';
-		$product_images = array();
-
-		if ( $generate_images ) {
-			$image_result = $ai_manager->generate_campaign_images(
+		if ( $section_template_id > 0 ) {
+			// Section template: sections already AI-populated in step 4b.
+			// Only finalise subject/preview_text from user input.
+			$campaign_handler->update( $campaign_id, array(
+				'subject'      => ! empty( $subject ) ? $subject : $title,
+				'preview_text' => $preview_text,
+				'status'       => 'draft',
+			) );
+		} else {
+			// Flat template: full AI copy + image generation.
+			$copy_result = $ai_manager->generate_campaign_copy(
 				$campaign_id,
 				$product_data_for_ai,
 				array(
-					'theme'                   => $theme,
-					'style'                   => $image_style,
-					'generate_product_images' => true,
+					'theme'           => $theme,
+					'tone'            => $tone,
+					'language'        => $language,
+					'generate_coupon' => false,
 				)
 			);
 
-			if ( ! is_wp_error( $image_result ) ) {
-				$main_image_url = $image_result['main_image_url'] ?? '';
-				$product_images = $image_result['product_images'] ?? array();
-			}
-		}
-
-		// ── 7. Update campaign with generated content ────────────────────
-
-		$update_data = array(
-			'subject'          => ! empty( $copy_result['subject_line'] ) ? $copy_result['subject_line'] : $subject,
-			'preview_text'     => ! empty( $copy_result['preview_text'] ) ? $copy_result['preview_text'] : $preview_text,
-			'main_headline'    => $copy_result['main_headline'] ?? '',
-			'main_description' => $copy_result['main_description'] ?? '',
-			'main_image_url'   => $main_image_url,
-			'status'           => 'draft',
-		);
-
-		$campaign_handler->update( $campaign_id, $update_data );
-
-		// Add products to campaign with AI content.
-		$enriched_products = $copy_result['products'] ?? array();
-
-		foreach ( $enriched_products as $index => $product_entry ) {
-			$product_id = isset( $product_entry['id'] ) ? absint( $product_entry['id'] ) : 0;
-
-			if ( $product_id <= 0 ) {
-				continue;
+			if ( is_wp_error( $copy_result ) ) {
+				wp_send_json_error( array( 'message' => $copy_result->get_error_message() ) );
 			}
 
-			$ai_data = array(
-				'sort_order'          => $index,
-				'ai_headline'         => $product_entry['ai_headline'] ?? '',
-				'ai_short_desc'       => $product_entry['ai_short_desc'] ?? '',
-				'use_product_image'   => $generate_images ? 0 : 1,
-				'show_buy_button'     => 1,
-			);
+			// ── 6. Images ────────────────────────────────────────────────────
+			$main_image_url = '';
+			$product_images = array();
+			$image_result   = array( 'total_credits_used' => 0 );
 
-			// Attach AI-generated product image if available.
-			if ( isset( $product_images[ $index ] ) && ! empty( $product_images[ $index ] ) ) {
-				$ai_data['generated_image_url'] = $product_images[ $index ];
+			if ( $generate_images ) {
+				$gen_images = $ai_manager->generate_campaign_images(
+					$campaign_id,
+					$product_data_for_ai,
+					array(
+						'theme'                   => $theme,
+						'style'                   => $image_style,
+						'generate_product_images' => true,
+					)
+				);
+
+				if ( ! is_wp_error( $gen_images ) ) {
+					$main_image_url = $gen_images['main_image_url'] ?? '';
+					$product_images = $gen_images['product_images'] ?? array();
+					$image_result   = $gen_images;
+				}
 			}
 
-			$campaign_handler->add_product( $campaign_id, $product_id, $ai_data );
+			// ── 7. Update campaign ─────────────────────────────────────────
+			$campaign_handler->update( $campaign_id, array(
+				'subject'          => ! empty( $copy_result['subject_line'] ) ? $copy_result['subject_line'] : $subject,
+				'preview_text'     => ! empty( $copy_result['preview_text'] ) ? $copy_result['preview_text'] : $preview_text,
+				'main_headline'    => $copy_result['main_headline'] ?? '',
+				'main_description' => $copy_result['main_description'] ?? '',
+				'main_image_url'   => $main_image_url,
+				'status'           => 'draft',
+			) );
+
+			// Add products to bcg_campaign_products.
+			foreach ( $copy_result['products'] ?? array() as $index => $product_entry ) {
+				$product_id = absint( $product_entry['id'] ?? 0 );
+				if ( $product_id <= 0 ) {
+					continue;
+				}
+
+				$ai_data = array(
+					'sort_order'        => $index,
+					'ai_headline'       => $product_entry['ai_headline'] ?? '',
+					'ai_short_desc'     => $product_entry['ai_short_desc'] ?? '',
+					'use_product_image' => $generate_images ? 0 : 1,
+					'show_buy_button'   => 1,
+				);
+
+				if ( ! empty( $product_images[ $index ] ) ) {
+					$ai_data['generated_image_url'] = $product_images[ $index ];
+				}
+
+				$campaign_handler->add_product( $campaign_id, $product_id, $ai_data );
+			}
 		}
 
 		// ── 8. Return success with redirect URL ──────────────────────────
@@ -986,11 +995,11 @@ class BCG_Admin {
 		$edit_url = admin_url( 'admin.php?page=bcg-edit-campaign&campaign_id=' . $campaign_id );
 
 		wp_send_json_success( array(
-			'message'       => __( 'Campaign generated successfully!', 'brevo-campaign-generator' ),
-			'campaign_id'   => $campaign_id,
-			'redirect_url'  => $edit_url,
-			'credits_used'  => ( $copy_result['total_credits_used'] ?? 0 ) + ( $image_result['total_credits_used'] ?? 0 ),
-			'new_balance'   => $ai_manager->get_credit_balance(),
+			'message'      => __( 'Campaign generated successfully!', 'brevo-campaign-generator' ),
+			'campaign_id'  => $campaign_id,
+			'redirect_url' => $edit_url,
+			'credits_used' => isset( $copy_result ) ? ( ( $copy_result['total_credits_used'] ?? 0 ) + ( $image_result['total_credits_used'] ?? 0 ) ) : 0,
+			'new_balance'  => $ai_manager->get_credit_balance(),
 		) );
 	}
 
@@ -1521,6 +1530,25 @@ class BCG_Admin {
 						$update_data['template_settings'] = wp_json_encode( $new_settings );
 					}
 				}
+			}
+		}
+
+		// Sections JSON — for section-builder campaigns.
+		if ( isset( $_POST['sections_json'] ) ) {
+			$raw_sections = wp_unslash( $_POST['sections_json'] );
+			$decoded      = json_decode( $raw_sections, true );
+
+			if ( is_array( $decoded ) ) {
+				$update_data['sections_json'] = wp_json_encode( $decoded );
+
+				// Re-render sections to email HTML.
+				$global_settings = json_decode( get_option( 'bcg_default_template_settings', '{}' ), true );
+				if ( ! is_array( $global_settings ) ) {
+					$global_settings = array();
+				}
+
+				$rendered_html                = BCG_Section_Renderer::render_sections( $decoded, $global_settings );
+				$update_data['template_html'] = $rendered_html;
 			}
 		}
 
@@ -2998,6 +3026,115 @@ class BCG_Admin {
 	 * @param  string $classes Space-separated list of body classes.
 	 * @return string Modified body classes.
 	 */
+	/**
+	 * Regenerate AI content for one section in a section-builder campaign.
+	 *
+	 * Loads the campaign's sections_json, finds the section by UUID, runs
+	 * BCG_Section_AI::generate() for that section type, then re-renders the
+	 * full sections HTML and persists the update.
+	 *
+	 * @since  1.5.27
+	 * @return void
+	 */
+	public function handle_regen_campaign_section(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$campaign_id = isset( $_POST['campaign_id'] ) ? absint( $_POST['campaign_id'] ) : 0;
+		$section_id  = isset( $_POST['section_id'] )  ? sanitize_text_field( wp_unslash( $_POST['section_id'] ) ) : '';
+		$tone        = isset( $_POST['tone'] )        ? sanitize_text_field( wp_unslash( $_POST['tone'] ) ) : 'Professional';
+		$language    = isset( $_POST['language'] )    ? sanitize_text_field( wp_unslash( $_POST['language'] ) ) : 'English';
+		$theme       = isset( $_POST['theme'] )       ? sanitize_text_field( wp_unslash( $_POST['theme'] ) ) : '';
+
+		if ( ! $campaign_id || ! $section_id ) {
+			wp_send_json_error( array( 'message' => __( 'Missing campaign or section ID.', 'brevo-campaign-generator' ) ) );
+		}
+
+		$campaign_handler = new BCG_Campaign();
+		$campaign         = $campaign_handler->get( $campaign_id );
+
+		if ( is_wp_error( $campaign ) ) {
+			wp_send_json_error( array( 'message' => $campaign->get_error_message() ) );
+		}
+
+		$sections = json_decode( $campaign->sections_json ?? '[]', true );
+
+		if ( ! is_array( $sections ) ) {
+			wp_send_json_error( array( 'message' => __( 'No sections data found for this campaign.', 'brevo-campaign-generator' ) ) );
+		}
+
+		// Collect product data from any products sections in this campaign.
+		$product_data = array();
+		$product_selector = new BCG_Product_Selector();
+
+		foreach ( $sections as $sec ) {
+			if ( 'products' === ( $sec['type'] ?? '' ) && ! empty( $sec['settings']['product_ids'] ) ) {
+				$ids = array_filter( array_map( 'absint', explode( ',', $sec['settings']['product_ids'] ) ) );
+				foreach ( $ids as $pid ) {
+					$wc_product = wc_get_product( $pid );
+					if ( $wc_product ) {
+						$product_data[] = $product_selector->format_product_preview( $wc_product );
+					}
+				}
+				break; // Use first products section.
+			}
+		}
+
+		// Build AI context.
+		$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
+		$context         = array(
+			'products'        => $product_data,
+			'theme'           => $theme,
+			'tone'            => $tone,
+			'language'        => $language,
+			'currency_symbol' => $currency_symbol,
+		);
+
+		// Find and regenerate the target section.
+		$updated_section = null;
+		foreach ( $sections as &$section ) {
+			if ( ( $section['id'] ?? '' ) !== $section_id ) {
+				continue;
+			}
+
+			$result = BCG_Section_AI::generate( $section['type'], $section['settings'] ?? array(), $context );
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+			}
+
+			$section['settings'] = $result;
+			$updated_section     = $section;
+			break;
+		}
+		unset( $section );
+
+		if ( null === $updated_section ) {
+			wp_send_json_error( array( 'message' => __( 'Section not found.', 'brevo-campaign-generator' ) ) );
+		}
+
+		// Re-render and persist.
+		$global_settings = json_decode( get_option( 'bcg_default_template_settings', '{}' ), true );
+		if ( ! is_array( $global_settings ) ) {
+			$global_settings = array();
+		}
+
+		$rendered_html = BCG_Section_Renderer::render_sections( $sections, $global_settings );
+
+		$campaign_handler->update( $campaign_id, array(
+			'sections_json' => wp_json_encode( $sections ),
+			'template_html' => $rendered_html,
+		) );
+
+		wp_send_json_success( array(
+			'section'  => $updated_section,
+			'settings' => $updated_section['settings'],
+		) );
+	}
+
 	public function add_bcg_body_class( string $classes ): string {
 		$screen = get_current_screen();
 		if ( $screen && $this->is_bcg_page( $screen->id ) ) {

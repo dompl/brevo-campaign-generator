@@ -1102,7 +1102,9 @@
 				theme:               $( '#bcg-theme' ).val(),
 				language:            $( '#bcg-language' ).val(),
 				generate_images:     $( '#bcg-generate-images' ).prop( 'checked' ) ? '1' : '0',
-				image_style:         $( '#bcg-image-style' ).val()
+				image_style:         $( '#bcg-image-style' ).val(),
+				template_slug:       $( '#bcg-template-slug' ).val() || 'classic',
+				section_template_id: parseInt( $( '#bcg-section-template-id' ).val() || 0, 10 )
 			};
 
 			// Calculate expected duration for step animations.

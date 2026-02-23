@@ -17,6 +17,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.27] — 2026-02-23
+
+### Fixed
+- **Generation overlay not appearing** — added `position:fixed`, `z-index`, and backdrop CSS to `.bcg-generation-overlay` which was structurally present but visually invisible.
+- **Section template ignored on generation** — JS `startGeneration()` now sends `template_slug` and `section_template_id` in the AJAX payload; previously these were never read from the hidden inputs, so the server always received empty values and fell back to the classic flat template.
+- **Flat copy generation ran for section campaigns** — `handle_generate_campaign()` now branches on `section_template_id`: section campaigns skip `generate_campaign_copy()` and `generate_campaign_images()` (content already AI-populated per section in step 4b) and only save subject/preview text; flat campaigns retain the existing full generation flow.
+
+### Added
+- **Section editor in Edit Campaign page** — when editing a section-builder campaign, the edit page now shows one card per section with editable AI fields (hero: headline/subtext/button text; text: heading/body; banner: heading/subtext; CTA: heading/subtext/button text) instead of the flat headline/image/description fields.
+- **Save Section Content** — saves all section field edits and re-renders the email HTML server-side via `BCG_Section_Renderer::render_sections()`, then refreshes the live preview iframe.
+- **Per-section Regenerate** — `bcg_regen_campaign_section` AJAX handler regenerates AI content for a single section by UUID, re-renders the full sections HTML, and persists the update.
+
+---
+
 ## [1.5.26] — 2026-02-23
 
 ### Fixed

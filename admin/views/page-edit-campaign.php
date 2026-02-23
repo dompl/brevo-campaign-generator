@@ -77,9 +77,19 @@ $dashboard_url = admin_url( 'admin.php?page=bcg-dashboard' );
 
 // Nonce for all AJAX operations.
 $nonce = wp_create_nonce( 'bcg_nonce' );
+
+// Determine builder type and decode sections data.
+$builder_type  = $campaign->builder_type ?? 'flat';
+$sections_data = array();
+if ( 'sections' === $builder_type && ! empty( $campaign->sections_json ) ) {
+	$decoded = json_decode( $campaign->sections_json, true );
+	if ( is_array( $decoded ) ) {
+		$sections_data = $decoded;
+	}
+}
 ?>
 <?php require BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php'; ?>
-<div class="wrap bcg-wrap bcg-editor-wrap">
+<div class="wrap bcg-wrap bcg-editor-wrap" data-builder-type="<?php echo esc_attr( $builder_type ); ?>" data-campaign-id="<?php echo absint( $campaign_id ); ?>">
 
 	<!-- Page header -->
 	<div class="bcg-editor-page-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-16">
@@ -164,6 +174,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 						</div>
 					</div>
 
+				<?php if ( 'flat' === $builder_type ) : ?>
 					<!-- Main Headline -->
 					<div class="bcg-field-group bcg-mb-16">
 						<label class="bcg-field-label" for="bcg-main-headline">
@@ -249,6 +260,8 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 							</button>
 						</div>
 					</div>
+
+				<?php endif; // flat builder_type ?>
 
 				</div><!-- .bcg-card-body -->
 			</div><!-- #bcg-section-header -->
@@ -352,6 +365,142 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 			</div><!-- #bcg-section-coupon -->
 
 
+		<?php if ( 'sections' === $builder_type && ! empty( $sections_data ) ) : ?>
+		<!-- ── SECTIONS EDITOR ───────────────────────────────── -->
+		<div class="bcg-card bcg-editor-section" id="bcg-section-builder-editor">
+			<div class="bcg-card-header bcg-flex bcg-items-center bcg-justify-between">
+				<h3><?php esc_html_e( 'Email Sections', 'brevo-campaign-generator' ); ?></h3>
+				<button type="button" class="button button-primary" id="bcg-save-sections-btn">
+					<?php esc_html_e( 'Save Section Content', 'brevo-campaign-generator' ); ?>
+				</button>
+			</div>
+			<div class="bcg-card-body">
+				<p class="description bcg-mb-16">
+					<?php esc_html_e( "Edit the AI-generated content for each section below. Click 'Regenerate' to re-generate a section's content with AI.", 'brevo-campaign-generator' ); ?>
+				</p>
+
+				<?php
+				$section_labels = array(
+					'header'   => array( 'label' => 'Header', 'icon' => '⬛' ),
+					'hero'     => array( 'label' => 'Hero / Banner', 'icon' => '🖼️' ),
+					'text'     => array( 'label' => 'Text Block', 'icon' => '📝' ),
+					'image'    => array( 'label' => 'Image', 'icon' => '🖼️' ),
+					'products' => array( 'label' => 'Products', 'icon' => '🛍️' ),
+					'banner'   => array( 'label' => 'Banner', 'icon' => '📢' ),
+					'cta'      => array( 'label' => 'Call to Action', 'icon' => '🎯' ),
+					'coupon'   => array( 'label' => 'Coupon', 'icon' => '🏷️' ),
+					'divider'  => array( 'label' => 'Divider', 'icon' => '—' ),
+					'spacer'   => array( 'label' => 'Spacer', 'icon' => '□' ),
+					'footer'   => array( 'label' => 'Footer', 'icon' => '📄' ),
+				);
+
+				$ai_fields = array(
+					'hero'   => array(
+						array( 'key' => 'headline', 'label' => 'Headline', 'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'subtext',  'label' => 'Subtext',  'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'cta_text', 'label' => 'Button Text', 'type' => 'text' ),
+					),
+					'text'   => array(
+						array( 'key' => 'heading', 'label' => 'Heading', 'type' => 'text' ),
+						array( 'key' => 'body',    'label' => 'Body Text', 'type' => 'textarea', 'rows' => 4 ),
+					),
+					'banner' => array(
+						array( 'key' => 'heading', 'label' => 'Heading', 'type' => 'text' ),
+						array( 'key' => 'subtext', 'label' => 'Subtext',  'type' => 'textarea', 'rows' => 2 ),
+					),
+					'cta'    => array(
+						array( 'key' => 'heading',     'label' => 'Heading',     'type' => 'text' ),
+						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'button_text', 'label' => 'Button Text', 'type' => 'text' ),
+					),
+				);
+
+				foreach ( $sections_data as $sec_index => $section ) :
+					$sec_type     = $section['type'] ?? 'text';
+					$sec_id       = esc_attr( $section['id'] ?? $sec_index );
+					$sec_settings = $section['settings'] ?? array();
+					$sec_info     = $section_labels[ $sec_type ] ?? array( 'label' => ucfirst( $sec_type ), 'icon' => '■' );
+					$sec_ai_fields = $ai_fields[ $sec_type ] ?? array();
+					$has_ai       = ! empty( $sec_ai_fields );
+					?>
+					<div class="bcg-section-edit-card" data-section-id="<?php echo $sec_id; ?>" data-section-type="<?php echo esc_attr( $sec_type ); ?>" data-section-index="<?php echo absint( $sec_index ); ?>">
+						<input type="hidden" class="bcg-section-full-settings" value="<?php echo esc_attr( wp_json_encode( $sec_settings ) ); ?>" />
+						<div class="bcg-section-edit-header">
+							<span class="bcg-section-edit-icon"><?php echo esc_html( $sec_info['icon'] ); ?></span>
+							<span class="bcg-section-edit-label"><?php echo esc_html( $sec_info['label'] ); ?></span>
+							<?php if ( $has_ai ) : ?>
+							<button type="button"
+								class="button bcg-regen-section-btn"
+								data-section-id="<?php echo $sec_id; ?>"
+								data-section-type="<?php echo esc_attr( $sec_type ); ?>">
+								<?php esc_html_e( 'Regenerate', 'brevo-campaign-generator' ); ?>
+							</button>
+							<?php endif; ?>
+						</div>
+						<div class="bcg-section-edit-body">
+							<?php if ( $has_ai ) : ?>
+								<?php foreach ( $sec_ai_fields as $field ) :
+									$field_val = $sec_settings[ $field['key'] ] ?? '';
+								?>
+								<div class="bcg-field-group bcg-mb-12">
+									<label class="bcg-field-label">
+										<?php echo esc_html( $field['label'] ); ?>
+									</label>
+									<?php if ( 'textarea' === $field['type'] ) : ?>
+									<textarea
+										class="large-text bcg-section-field"
+										data-field="<?php echo esc_attr( $field['key'] ); ?>"
+										rows="<?php echo absint( $field['rows'] ?? 2 ); ?>"
+									><?php echo esc_textarea( $field_val ); ?></textarea>
+									<?php else : ?>
+									<input type="text"
+										class="large-text bcg-section-field"
+										data-field="<?php echo esc_attr( $field['key'] ); ?>"
+										value="<?php echo esc_attr( $field_val ); ?>"
+									/>
+									<?php endif; ?>
+								</div>
+								<?php endforeach; ?>
+							<?php elseif ( 'products' === $sec_type ) : ?>
+								<div class="bcg-section-no-ai">
+									<?php
+									$product_ids = array_filter( array_map( 'absint', explode( ',', $sec_settings['product_ids'] ?? '' ) ) );
+									if ( ! empty( $product_ids ) ) :
+										echo '<p class="description">' . esc_html__( 'Products included:', 'brevo-campaign-generator' ) . '</p>';
+										echo '<ul class="bcg-section-product-list">';
+										foreach ( $product_ids as $pid ) :
+											$wcp = wc_get_product( $pid );
+											if ( $wcp ) :
+												echo '<li class="bcg-section-product-item">';
+												echo '<span class="bcg-section-product-thumb">';
+												$img_id = $wcp->get_image_id();
+												if ( $img_id ) {
+													echo wp_get_attachment_image( $img_id, array( 32, 32 ) );
+												}
+												echo '</span>';
+												echo '<span>' . esc_html( $wcp->get_name() ) . '</span>';
+												echo '</li>';
+											endif;
+										endforeach;
+										echo '</ul>';
+									else :
+										echo '<p class="description">' . esc_html__( 'No products specified.', 'brevo-campaign-generator' ) . '</p>';
+									endif;
+									?>
+								</div>
+							<?php else : ?>
+								<p class="description bcg-section-no-ai">
+									<?php esc_html_e( 'No editable content fields for this section type.', 'brevo-campaign-generator' ); ?>
+								</p>
+							<?php endif; ?>
+						</div>
+					</div>
+				<?php endforeach; ?>
+			</div><!-- .bcg-card-body -->
+		</div><!-- #bcg-section-builder-editor -->
+		<?php endif; // sections builder_type ?>
+
+			<?php if ( 'flat' === $builder_type ) : ?>
 			<!-- ── PRODUCTS SECTION ──────────────────────────────── -->
 			<div class="bcg-card bcg-editor-section" id="bcg-section-products">
 				<div class="bcg-card-header">
@@ -390,6 +539,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 
 				</div><!-- .bcg-card-body -->
 			</div><!-- #bcg-section-products -->
+			<?php endif; // flat builder_type ?>
 
 		</div><!-- .bcg-editor-main -->
 
@@ -697,3 +847,174 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 	</div>
 
 </div><!-- .bcg-editor-wrap -->
+<?php if ( 'sections' === $builder_type ) : ?>
+<script type="text/javascript">
+( function( $ ) {
+	'use strict';
+
+	var campaignId = <?php echo absint( $campaign_id ); ?>;
+
+	/**
+	 * Collect all section data from the section edit cards.
+	 * Merges edited AI fields on top of the full original settings.
+	 *
+	 * @return {string} JSON-encoded sections array.
+	 */
+	function gatherSectionsJson() {
+		var sections = [];
+
+		$( '.bcg-section-edit-card' ).each( function() {
+			var $card    = $( this );
+			var settings = {};
+
+			// Start with original full settings.
+			try {
+				settings = JSON.parse( $card.find( '.bcg-section-full-settings' ).val() || '{}' );
+			} catch ( e ) {
+				settings = {};
+			}
+
+			// Apply user edits from visible fields.
+			$card.find( '.bcg-section-field' ).each( function() {
+				var $f = $( this );
+				settings[ $f.data( 'field' ) ] = $f.val();
+			} );
+
+			sections.push( {
+				id:       $card.data( 'section-id' ),
+				type:     $card.data( 'section-type' ),
+				settings: settings
+			} );
+		} );
+
+		return JSON.stringify( sections );
+	}
+
+	/**
+	 * Save sections to server.
+	 *
+	 * @param {Function} done Callback on success.
+	 * @return {void}
+	 */
+	function saveSections( done ) {
+		var $btn = $( '#bcg-save-sections-btn' );
+		$btn.prop( 'disabled', true ).text( 'Saving...' );
+
+		$.post( bcg_editor.ajax_url, {
+			action:       'bcg_save_campaign',
+			_ajax_nonce:  bcg_editor.nonce,
+			campaign_id:  campaignId,
+			subject:      $( '#bcg-subject' ).val() || '',
+			preview_text: $( '#bcg-preview-text' ).val() || '',
+			sections_json: gatherSectionsJson()
+		} ).done( function( response ) {
+			if ( response.success ) {
+				if ( typeof done === 'function' ) { done(); }
+				// Refresh preview iframe.
+				var $iframe = $( '#bcg-preview-iframe' );
+				if ( $iframe.length ) {
+					$.post( bcg_editor.ajax_url, {
+						action:      'bcg_preview_template',
+						_ajax_nonce: bcg_editor.nonce,
+						campaign_id: campaignId
+					} ).done( function( pr ) {
+						if ( pr.success && pr.data.html ) {
+							$iframe[0].srcdoc = pr.data.html;
+						}
+					} );
+				}
+			} else {
+				alert( response.data || 'Save failed.' );
+			}
+		} ).fail( function() {
+			alert( 'Save failed. Please try again.' );
+		} ).always( function() {
+			$btn.prop( 'disabled', false ).text( 'Save Section Content' );
+		} );
+	}
+
+	// Bind Save Sections button.
+	$( '#bcg-save-sections-btn' ).on( 'click', function() {
+		saveSections();
+	} );
+
+	// Bind existing Save Draft to also save sections.
+	$( '#bcg-save-draft' ).on( 'click.sections', function() {
+		saveSections();
+	} );
+
+	// Bind Regenerate Section buttons.
+	$( document ).on( 'click', '.bcg-regen-section-btn', function() {
+		var $btn       = $( this );
+		var sectionId  = $btn.data( 'section-id' );
+		var $card      = $( '[data-section-id="' + sectionId + '"]' );
+
+		$btn.prop( 'disabled', true ).text( 'Regenerating...' );
+		$card.css( 'opacity', 0.6 );
+
+		$.post( bcg_editor.ajax_url, {
+			action:      'bcg_regen_campaign_section',
+			nonce:       bcg_editor.nonce,
+			campaign_id: campaignId,
+			section_id:  sectionId,
+			tone:        '<?php echo esc_js( get_option( 'bcg_default_tone', 'Professional' ) ); ?>',
+			language:    '<?php echo esc_js( get_option( 'bcg_default_language', 'English' ) ); ?>',
+			theme:       ''
+		} ).done( function( response ) {
+			if ( response.success && response.data.settings ) {
+				var settings = response.data.settings;
+
+				// Update visible fields on the card.
+				$card.find( '.bcg-section-field' ).each( function() {
+					var key = $( this ).data( 'field' );
+					if ( settings.hasOwnProperty( key ) ) {
+						$( this ).val( settings[ key ] );
+					}
+				} );
+
+				// Update the hidden full-settings input.
+				$card.find( '.bcg-section-full-settings' ).val( JSON.stringify( settings ) );
+
+				// Refresh preview.
+				var $iframe = $( '#bcg-preview-iframe' );
+				if ( $iframe.length ) {
+					$.post( bcg_editor.ajax_url, {
+						action:      'bcg_preview_template',
+						_ajax_nonce: bcg_editor.nonce,
+						campaign_id: campaignId
+					} ).done( function( pr ) {
+						if ( pr.success && pr.data.html ) {
+							$iframe[0].srcdoc = pr.data.html;
+						}
+					} );
+				}
+			} else {
+				alert( ( response.data && response.data.message ) || 'Regeneration failed.' );
+			}
+		} ).fail( function() {
+			alert( 'Regeneration failed. Please try again.' );
+		} ).always( function() {
+			$btn.prop( 'disabled', false ).text( 'Regenerate' );
+			$card.css( 'opacity', 1 );
+		} );
+	} );
+
+	// Load initial preview.
+	$( function() {
+		var $iframe = $( '#bcg-preview-iframe' );
+		if ( $iframe.length ) {
+			$.post( bcg_editor.ajax_url, {
+				action:      'bcg_preview_template',
+				_ajax_nonce: bcg_editor.nonce,
+				campaign_id: campaignId
+			} ).done( function( pr ) {
+				if ( pr.success && pr.data.html ) {
+					$iframe[0].srcdoc = pr.data.html;
+				}
+			} );
+		}
+	} );
+
+} )( jQuery );
+</script>
+<?php endif; ?>
