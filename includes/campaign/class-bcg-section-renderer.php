@@ -485,7 +485,7 @@ class BCG_Section_Renderer {
 		foreach ( $chunks as $chunk ) {
 			// Pad the last row.
 			while ( count( $chunk ) < $columns ) {
-				$chunk[] = '<td style="width:' . (int) floor( 100 / $columns ) . '%;">&nbsp;</td>';
+				$chunk[] = '<td class="bcg-p" style="width:' . (int) floor( 100 / $columns ) . '%;font-size:0;">&nbsp;</td>';
 			}
 			$rows_html .= '<tr>' . implode( '', $chunk ) . '</tr>';
 		}
@@ -960,6 +960,23 @@ class BCG_Section_Renderer {
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>%s</title>
+<style type="text/css">
+body { margin: 0; padding: 0; }
+img  { border: 0; height: auto; line-height: 100%%; outline: none; text-decoration: none; }
+table td { border-collapse: collapse; }
+@media only screen and (max-width: 620px) {
+  /* Section-level tables go full width */
+  table.bcg-s { width: 100%% !important; max-width: 100%% !important; }
+  /* Content wrapper goes full width */
+  table.bcg-w { width: 100%% !important; }
+  /* Product cells stack vertically */
+  td.bcg-p { display: block !important; width: 100%% !important; box-sizing: border-box !important; }
+  /* Hide header nav on mobile */
+  td.bcg-nav { display: none !important; }
+  /* All images in sections become fluid */
+  table.bcg-s img { max-width: 100%% !important; height: auto !important; }
+}
+</style>
 <!--[if mso]>
 <style>
 * { font-family: %s !important; }
@@ -971,7 +988,7 @@ class BCG_Section_Renderer {
 <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f5f5;">
 <tr>
 <td align="center" style="padding:20px 0;">
-<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;">
+<table class="bcg-w" width="%d" cellpadding="0" cellspacing="0" border="0" style="width:100%%;max-width:%dpx;">
 <tr><td>
 %s
 </td></tr>
@@ -985,7 +1002,7 @@ class BCG_Section_Renderer {
 			esc_html( get_bloginfo( 'name' ) ),
 			esc_html( $font ),
 			esc_html( $font ),
-			$max_width, $max_width, $max_width,
+			$max_width, $max_width,
 			$sections_html
 		);
 	}

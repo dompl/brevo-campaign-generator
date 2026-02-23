@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.23] — 2026-02-23
+
+### Fixed
+- **Responsive email sections** — generated email HTML now includes a `<style>` block with `@media (max-width: 620px)` rules. Section tables carry `class="bcg-s"` and go full-width on mobile; product cells carry `class="bcg-p"` and stack vertically; header nav carries `class="bcg-nav"` and hides on mobile; all images inside sections become fluid. The content wrapper uses `width:100%;max-width:600px` instead of a fixed pixel width.
+- **Mobile preview** — reverted the `transform: scale()` approach; the preview iframe is now literally 375 px wide so the email's CSS media queries actually fire and the layout reflows correctly. Dark background + shadow retained for the mobile frame aesthetic.
+
+---
+
 ## [1.5.22] — 2026-02-23
 
 ### Fixed

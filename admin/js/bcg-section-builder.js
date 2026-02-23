@@ -1102,20 +1102,12 @@
 				var $frame = $( '#bcg-sb-preview-iframe' );
 
 				if ( mode === 'mobile' ) {
-					// Scale the 600 px email down to a 375 px mobile viewport.
-					// transform: scale() shrinks the visual size without reflowing
-					// the iframe content, avoiding horizontal scroll.
-					var emailW  = 600;
-					var targetW = 375;
-					var scale   = ( targetW / emailW ).toFixed( 5 );
-					$frame.css( {
-						width:               emailW + 'px',
-						transform:           'scale(' + scale + ')',
-						'transform-origin':  'top center',
-					} );
+					// Render the iframe at 375 px so the email's responsive
+					// CSS media queries fire and the layout actually reflows.
+					$frame.css( { width: '375px' } );
 					$wrap.addClass( 'bcg-preview-mobile' );
 				} else {
-					$frame.css( { width: '', transform: '', 'transform-origin': '' } );
+					$frame.css( { width: '' } );
 					$wrap.removeClass( 'bcg-preview-mobile' );
 				}
 			} );
