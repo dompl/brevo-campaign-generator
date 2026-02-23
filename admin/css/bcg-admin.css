@@ -132,7 +132,7 @@ body.bcg-admin-page #wpfooter a {
 	z-index: 900;
 	box-shadow: 0 4px 20px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.03) inset;
 	margin: 8px 20px 0;
-	max-width: calc(1400px - 40px);
+	max-width: none;
 }
 
 .bcg-plugin-header-brand {
@@ -260,7 +260,7 @@ body.bcg-admin-page #wpfooter a {
    ========================================================================== */
 
 body.bcg-admin-page .bcg-wrap {
-	max-width: 1400px;
+	max-width: none;
 	margin: 0;
 	padding: 28px 28px 60px;
 	font-family: var(--bcg-font-body);
@@ -4322,6 +4322,10 @@ body.bcg-admin-page .bcg-sb-json-hint {
 	display:    block;
 }
 
+.bcg-sb-date-input {
+	color-scheme: dark;
+}
+
 /* Color row */
 body.bcg-admin-page .bcg-sb-color-row {
 	display:     flex;
@@ -4759,7 +4763,8 @@ body.bcg-admin-page .bcg-spin {
 }
 /* ── Section builder: request modal ── */
 .bcg-sb-request-content {
-	max-width:      560px;
+	min-width:      520px;
+	max-width:      680px;
 	width:          100%;
 	display:        flex;
 	flex-direction: column;
@@ -5859,13 +5864,29 @@ body.bcg-admin-page .bcg-modal-footer {
 
 .bcg-editor-columns {
 	display:     grid;
-	grid-template-columns: 1fr 400px;
+	grid-template-columns: 1fr 1fr;
 	gap:         20px;
 	align-items: flex-start;
 }
 
 .bcg-editor-main {
 	min-width: 0;
+}
+
+/* ── Main campaign image — constrained preview ───────────────────────── */
+
+.bcg-main-image-preview {
+	overflow:  hidden;
+	max-width: 100%;
+}
+
+.bcg-main-image-preview img,
+.bcg-main-image-display {
+	max-width:   100%;
+	max-height:  300px;
+	object-fit:  cover;
+	border-radius: 6px;
+	display:     block;
 }
 
 .bcg-editor-preview {
@@ -6007,8 +6028,9 @@ body.folded .bcg-actions-bar {
 .bcg-action-buttons {
 	display:     flex;
 	align-items: center;
-	gap:         6px;
-	flex-wrap:   wrap;
+	gap:         4px;
+	flex-wrap:   nowrap;
+	white-space: nowrap;
 }
 
 .bcg-action-buttons .bcg-btn-sm,
@@ -6030,6 +6052,11 @@ body.folded .bcg-actions-bar {
 	width:       13px !important;
 	height:      13px !important;
 	line-height: 13px !important;
+}
+
+.bcg-col-actions {
+	white-space: nowrap;
+	min-width:   220px;
 }
 
 /* ── v1.5.27: Generation overlay + section editor ─────────────────────── */
@@ -6054,7 +6081,7 @@ body.folded .bcg-actions-bar {
 	border:        1px solid var(--bcg-border);
 	border-radius: 10px;
 	padding:       36px 40px 28px;
-	max-width:     500px;
+	max-width:     680px;
 	width:         90%;
 	box-shadow:    0 24px 64px rgba(0, 0, 0, 0.55);
 }

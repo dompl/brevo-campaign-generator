@@ -34,6 +34,7 @@
 		// ── Initialisation ─────────────────────────────────────────────────
 
 		init: function () {
+			var self = this;
 			this.bindPalette();
 			this.bindCanvas();
 			this.bindToolbar();
@@ -42,6 +43,13 @@
 			this.bindRequestModal();
 			this.renderPalette();
 			this.renderCanvas();
+
+			// Auto-save every 60 seconds when dirty.
+			setInterval( function () {
+				if ( self.isDirty ) {
+					self.saveAsTemplate( true ); // true = silent (no success toast)
+				}
+			}, 60000 );
 		},
 
 		// ── Palette ─────────────────────────────────────────────────────────
@@ -618,6 +626,10 @@
 					input += '<span class="material-icons-outlined">add</span> Add Link';
 					input += '</button>';
 					input += '</div>';
+					break;
+
+				case 'date':
+					input = '<input type="date" id="' + id + '" class="bcg-sb-field-input bcg-input bcg-sb-date-input" data-key="' + self.escAttr( key ) + '" value="' + self.escAttr( String( value ) ) + '" />';
 					break;
 
 				default:
@@ -1248,23 +1260,29 @@
 		/**
 		 * Save the current canvas as a named template.
 		 */
-		saveAsTemplate: function () {
+		saveAsTemplate: function ( silent ) {
 			var self  = this;
 			var name  = $( '#bcg-sb-template-name' ).val().trim();
 
 			if ( ! name ) {
-				self.showStatus( self.i18n.name_required || 'Template name is required.', 'error' );
-				$( '#bcg-sb-template-name' ).focus();
+				if ( ! silent ) {
+					self.showStatus( self.i18n.name_required || 'Template name is required.', 'error' );
+					$( '#bcg-sb-template-name' ).focus();
+				}
 				return;
 			}
 
 			if ( self.sections.length === 0 ) {
-				self.showStatus( self.i18n.no_sections || 'Add at least one section before saving.', 'error' );
+				if ( ! silent ) {
+					self.showStatus( self.i18n.no_sections || 'Add at least one section before saving.', 'error' );
+				}
 				return;
 			}
 
 			var $btn = $( '#bcg-sb-save-btn' );
-			$btn.prop( 'disabled', true ).text( self.i18n.saving || 'Saving…' );
+			if ( ! silent ) {
+				$btn.prop( 'disabled', true ).text( self.i18n.saving || 'Saving…' );
+			}
 
 			$.ajax( {
 				url:  bcg_section_builder.ajax_url,
@@ -1278,23 +1296,32 @@
 					sections:    JSON.stringify( self.sections )
 				},
 				success: function ( res ) {
-					$btn.prop( 'disabled', false ).html(
-						'<span class="material-icons-outlined">save</span> Save Template'
-					);
+					if ( ! silent ) {
+						$btn.prop( 'disabled', false ).html(
+							'<span class="material-icons-outlined">save</span> Save Template'
+						);
+					}
 
 					if ( res.success ) {
 						self.currentTemplateId = res.data.id;
 						self.isDirty = false;
 						$( '#bcg-sb-dirty-dot' ).hide();
-						self.showStatus( self.i18n.saved || 'Template saved.', 'success' );
+						if ( silent ) {
+							var $indicator = $( '#bcg-sb-autosave-indicator' );
+							$indicator.text( 'Auto-saved' ).fadeIn( 200 ).delay( 2000 ).fadeOut( 400 );
+						} else {
+							self.showStatus( self.i18n.saved || 'Template saved.', 'success' );
+						}
 					} else {
 						self.showStatus( res.data.message || self.i18n.save_error || 'Save failed.', 'error' );
 					}
 				},
 				error: function () {
-					$btn.prop( 'disabled', false ).html(
-						'<span class="material-icons-outlined">save</span> Save Template'
-					);
+					if ( ! silent ) {
+						$btn.prop( 'disabled', false ).html(
+							'<span class="material-icons-outlined">save</span> Save Template'
+						);
+					}
 					self.showStatus( self.i18n.save_error || 'Save failed.', 'error' );
 				}
 			} );

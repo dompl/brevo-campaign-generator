@@ -198,6 +198,7 @@ class BCG_Section_Registry {
 				'icon'   => 'shopping_cart',
 				'has_ai' => true,
 				'fields' => array(
+					array( 'key' => 'section_headline', 'label' => __( 'Section Headline', 'brevo-campaign-generator' ), 'type' => 'text', 'default' => '' ),
 					array( 'key' => 'product_ids',      'label' => __( 'Products', 'brevo-campaign-generator' ),             'type' => 'product_select', 'default' => '' ),
 					array( 'key' => 'columns',          'label' => __( 'Columns', 'brevo-campaign-generator' ),              'type' => 'range',          'default' => 1,       'min' => 1, 'max' => 3, 'step' => 1 ),
 					array( 'key' => 'product_gap',      'label' => __( 'Product Gap (px)', 'brevo-campaign-generator' ),     'type' => 'range',          'default' => 15,      'min' => 0, 'max' => 40, 'step' => 1 ),
@@ -279,13 +280,13 @@ class BCG_Section_Registry {
 			'coupon' => array(
 				'label'  => __( 'Coupon — Classic', 'brevo-campaign-generator' ),
 				'icon'   => 'local_offer',
-				'has_ai' => false,
+				'has_ai' => true,
 				'fields' => array(
 					array( 'key' => 'headline',      'label' => __( 'Headline', 'brevo-campaign-generator' ),      'type' => 'text',  'default' => 'Exclusive Offer Just For You' ),
-					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'SAVE10' ),
-					array( 'key' => 'discount_text', 'label' => __( 'Discount Text', 'brevo-campaign-generator' ), 'type' => 'text',  'default' => 'Get 10% off your order!' ),
+					array( 'key' => 'coupon_text',   'label' => __( 'Offer Text', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'Get 10% off your order!' ),
 					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),       'type' => 'text',  'default' => 'Use at checkout' ),
-					array( 'key' => 'expiry_text',   'label' => __( 'Expiry Text', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'Expires in 7 days' ),
+					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'SAVE10' ),
+					array( 'key' => 'expiry_date',   'label' => __( 'Expiry Date', 'brevo-campaign-generator' ),   'type' => 'date',  'default' => '' ),
 					array( 'key' => 'bg_color',      'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#fff8e6' ),
 					array( 'key' => 'accent_color',  'label' => __( 'Accent Colour', 'brevo-campaign-generator' ),  'type' => 'color', 'default' => '#e63529' ),
 					array( 'key' => 'text_color',    'label' => __( 'Text Colour', 'brevo-campaign-generator' ),    'type' => 'color', 'default' => '#333333' ),
@@ -298,13 +299,13 @@ class BCG_Section_Registry {
 			'coupon_banner' => array(
 				'label'  => __( 'Coupon — Banner', 'brevo-campaign-generator' ),
 				'icon'   => 'redeem',
-				'has_ai' => false,
+				'has_ai' => true,
 				'fields' => array(
 					array( 'key' => 'headline',      'label' => __( 'Headline', 'brevo-campaign-generator' ),      'type' => 'text',  'default' => 'Limited Time Offer' ),
-					array( 'key' => 'discount_text', 'label' => __( 'Discount Text', 'brevo-campaign-generator' ), 'type' => 'text',  'default' => 'Save 20% Today' ),
-					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'SAVE20' ),
+					array( 'key' => 'coupon_text',   'label' => __( 'Offer Text', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'Save 20% Today' ),
 					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),       'type' => 'text',  'default' => 'Apply at checkout' ),
-					array( 'key' => 'expiry_text',   'label' => __( 'Expiry Text', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'Offer ends soon' ),
+					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'SAVE20' ),
+					array( 'key' => 'expiry_date',   'label' => __( 'Expiry Date', 'brevo-campaign-generator' ),   'type' => 'date',  'default' => '' ),
 					array( 'key' => 'bg_color',      'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#1a1a2e' ),
 					array( 'key' => 'accent_color',  'label' => __( 'Accent Colour', 'brevo-campaign-generator' ),  'type' => 'color', 'default' => '#e63529' ),
 					array( 'key' => 'text_color',    'label' => __( 'Text Colour', 'brevo-campaign-generator' ),    'type' => 'color', 'default' => '#ffffff' ),
@@ -317,13 +318,13 @@ class BCG_Section_Registry {
 			'coupon_card' => array(
 				'label'  => __( 'Coupon — Card', 'brevo-campaign-generator' ),
 				'icon'   => 'card_giftcard',
-				'has_ai' => false,
+				'has_ai' => true,
 				'fields' => array(
 					array( 'key' => 'headline',      'label' => __( 'Headline', 'brevo-campaign-generator' ),      'type' => 'text',  'default' => 'Your Special Discount' ),
-					array( 'key' => 'discount_text', 'label' => __( 'Discount Amount', 'brevo-campaign-generator' ), 'type' => 'text',  'default' => '15% OFF' ),
-					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'GIFT15' ),
+					array( 'key' => 'coupon_text',   'label' => __( 'Offer Text', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => '15% OFF' ),
 					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),       'type' => 'text',  'default' => 'Enter code at checkout' ),
-					array( 'key' => 'expiry_text',   'label' => __( 'Expiry Text', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'Valid for 7 days' ),
+					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'GIFT15' ),
+					array( 'key' => 'expiry_date',   'label' => __( 'Expiry Date', 'brevo-campaign-generator' ),   'type' => 'date',  'default' => '' ),
 					array( 'key' => 'bg_color',      'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#ffffff' ),
 					array( 'key' => 'card_bg',       'label' => __( 'Card Background', 'brevo-campaign-generator' ),   'type' => 'color', 'default' => '#f8f9ff' ),
 					array( 'key' => 'accent_color',  'label' => __( 'Accent / Border Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#e63529' ),
@@ -337,14 +338,15 @@ class BCG_Section_Registry {
 			'coupon_split' => array(
 				'label'  => __( 'Coupon — Split', 'brevo-campaign-generator' ),
 				'icon'   => 'view_column',
-				'has_ai' => false,
+				'has_ai' => true,
 				'fields' => array(
 					array( 'key' => 'headline',      'label' => __( 'Headline', 'brevo-campaign-generator' ),       'type' => 'text',  'default' => 'Exclusive Member Offer' ),
+					array( 'key' => 'coupon_text',   'label' => __( 'Offer Text', 'brevo-campaign-generator' ),     'type' => 'text',  'default' => '25% OFF' ),
+					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),        'type' => 'text',  'default' => 'Use code at checkout' ),
+					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'VIP25' ),
+					array( 'key' => 'expiry_date',   'label' => __( 'Expiry Date', 'brevo-campaign-generator' ),    'type' => 'date',  'default' => '' ),
 					array( 'key' => 'discount_text', 'label' => __( 'Discount Amount', 'brevo-campaign-generator' ), 'type' => 'text',  'default' => '25%' ),
 					array( 'key' => 'discount_label','label' => __( 'Discount Label', 'brevo-campaign-generator' ),  'type' => 'text',  'default' => 'OFF' ),
-					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'VIP25' ),
-					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),        'type' => 'text',  'default' => 'Use code at checkout' ),
-					array( 'key' => 'expiry_text',   'label' => __( 'Expiry Text', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'Limited time only' ),
 					array( 'key' => 'left_bg',       'label' => __( 'Left Panel Background', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#e63529' ),
 					array( 'key' => 'right_bg',      'label' => __( 'Right Panel Background', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#ffffff' ),
 					array( 'key' => 'left_text_color','label' => __( 'Left Text Colour', 'brevo-campaign-generator' ),  'type' => 'color', 'default' => '#ffffff' ),
@@ -355,7 +357,46 @@ class BCG_Section_Registry {
 				),
 			),
 
-			// ── Divider ───────────────────────────────────────────────────
+			// ── Coupon — Minimal ─────────────────────────────────────────────────
+			'coupon_minimal' => array(
+				'label'  => __( 'Coupon — Minimal', 'brevo-campaign-generator' ),
+				'icon'   => 'confirmation_number',
+				'has_ai' => true,
+				'fields' => array(
+					array( 'key' => 'headline',      'label' => __( 'Headline', 'brevo-campaign-generator' ),      'type' => 'text',  'default' => 'Special Offer' ),
+					array( 'key' => 'coupon_text',   'label' => __( 'Offer Text', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'Get 20% off your order' ),
+					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),       'type' => 'text',  'default' => 'Use at checkout. Limited time only.' ),
+					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'SAVE20' ),
+					array( 'key' => 'expiry_date',   'label' => __( 'Expiry Date', 'brevo-campaign-generator' ),   'type' => 'date',  'default' => '' ),
+					array( 'key' => 'bg_color',      'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#f9f9f9' ),
+					array( 'key' => 'text_color',    'label' => __( 'Text Colour', 'brevo-campaign-generator' ),    'type' => 'color', 'default' => '#222222' ),
+					array( 'key' => 'accent_color',  'label' => __( 'Accent Colour', 'brevo-campaign-generator' ),  'type' => 'color', 'default' => '#e63529' ),
+					array( 'key' => 'padding_top',   'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),    'type' => 'range', 'default' => 40, 'min' => 0, 'max' => 80, 'step' => 4 ),
+					array( 'key' => 'padding_bottom','label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 40, 'min' => 0, 'max' => 80, 'step' => 4 ),
+				),
+			),
+
+			// ── Coupon — Ribbon ──────────────────────────────────────────────────
+			'coupon_ribbon' => array(
+				'label'  => __( 'Coupon — Ribbon', 'brevo-campaign-generator' ),
+				'icon'   => 'local_offer',
+				'has_ai' => true,
+				'fields' => array(
+					array( 'key' => 'headline',      'label' => __( 'Headline', 'brevo-campaign-generator' ),      'type' => 'text',  'default' => 'Exclusive Deal' ),
+					array( 'key' => 'coupon_text',   'label' => __( 'Offer Text', 'brevo-campaign-generator' ),    'type' => 'text',  'default' => 'Save big on your next purchase' ),
+					array( 'key' => 'subtext',       'label' => __( 'Subtext', 'brevo-campaign-generator' ),       'type' => 'text',  'default' => 'Enter code at checkout to redeem.' ),
+					array( 'key' => 'coupon_code',   'label' => __( 'Coupon Code', 'brevo-campaign-generator' ),   'type' => 'text',  'default' => 'EXCLUSIVE' ),
+					array( 'key' => 'expiry_date',   'label' => __( 'Expiry Date', 'brevo-campaign-generator' ),   'type' => 'date',  'default' => '' ),
+					array( 'key' => 'bg_color',      'label' => __( 'Background Colour', 'brevo-campaign-generator' ), 'type' => 'color', 'default' => '#1a1a2e' ),
+					array( 'key' => 'text_color',    'label' => __( 'Text Colour', 'brevo-campaign-generator' ),    'type' => 'color', 'default' => '#ffffff' ),
+					array( 'key' => 'accent_color',  'label' => __( 'Accent Colour', 'brevo-campaign-generator' ),  'type' => 'color', 'default' => '#e63529' ),
+					array( 'key' => 'ribbon_color',  'label' => __( 'Ribbon Colour', 'brevo-campaign-generator' ),  'type' => 'color', 'default' => '#f5c518' ),
+					array( 'key' => 'padding_top',   'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),    'type' => 'range', 'default' => 48, 'min' => 0, 'max' => 80, 'step' => 4 ),
+					array( 'key' => 'padding_bottom','label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 48, 'min' => 0, 'max' => 80, 'step' => 4 ),
+				),
+			),
+
+						// ── Divider ───────────────────────────────────────────────────
 			'divider' => array(
 				'label'  => __( 'Divider', 'brevo-campaign-generator' ),
 				'icon'   => 'horizontal_rule',
@@ -439,7 +480,7 @@ class BCG_Section_Registry {
 			'footer' => array(
 				'label'  => __( 'Footer', 'brevo-campaign-generator' ),
 				'icon'   => 'web_asset_off',
-				'has_ai' => false,
+				'has_ai' => true,
 				'fields' => array(
 					array( 'key' => 'footer_text',        'label' => __( 'Footer Text', 'brevo-campaign-generator' ),       'type' => 'textarea', 'default' => 'You received this email because you subscribed to our newsletter.' ),
 					array( 'key' => 'footer_links',       'label' => __( 'Footer Links', 'brevo-campaign-generator' ),        'type' => 'links',    'default' => '[{"label":"Unsubscribe","url":"{{unsubscribe_url}}"}]' ),

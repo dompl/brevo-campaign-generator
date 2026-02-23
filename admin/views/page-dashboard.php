@@ -422,7 +422,7 @@ $status_badge_classes = array(
 
 						<!-- Actions -->
 						<td class="bcg-col-actions" data-colname="<?php esc_attr_e( 'Actions', 'brevo-campaign-generator' ); ?>">
-							<div class="bcg-action-buttons">
+							<div class="bcg-action-buttons" style="white-space:nowrap;display:flex;gap:4px;flex-wrap:nowrap;align-items:center;">
 								<a
 									href="<?php echo esc_url( $edit_url ); ?>"
 									class="bcg-btn-sm bcg-btn-secondary"

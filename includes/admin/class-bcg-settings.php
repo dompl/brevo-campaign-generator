@@ -49,11 +49,12 @@ class BCG_Settings {
 	 */
 	public function __construct() {
 		$this->tabs = array(
-			'api-keys'  => __( 'API Keys', 'brevo-campaign-generator' ),
-			'ai-models' => __( 'AI Models', 'brevo-campaign-generator' ),
-			'brevo'     => __( 'Brevo', 'brevo-campaign-generator' ),
-			'stripe'    => __( 'Stripe', 'brevo-campaign-generator' ),
-			'defaults'  => __( 'Defaults', 'brevo-campaign-generator' ),
+			'api-keys'   => __( 'API Keys', 'brevo-campaign-generator' ),
+			'ai-models'  => __( 'AI Models', 'brevo-campaign-generator' ),
+			'brevo'      => __( 'Brevo', 'brevo-campaign-generator' ),
+			'stripe'     => __( 'Stripe', 'brevo-campaign-generator' ),
+			'defaults'   => __( 'Defaults', 'brevo-campaign-generator' ),
+			'ai-trainer' => __( 'AI Trainer', 'brevo-campaign-generator' ),
 		);
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -96,6 +97,7 @@ class BCG_Settings {
 		$this->register_brevo_settings();
 		$this->register_stripe_settings();
 		$this->register_defaults_settings();
+		$this->register_ai_trainer_settings();
 	}
 
 	// ─── API Keys Tab ───────────────────────────────────────────────────
@@ -659,6 +661,54 @@ class BCG_Settings {
 				'label'       => __( 'Enable Test Mode — bypass credit requirements for all AI operations.', 'brevo-campaign-generator' ),
 			)
 		);
+	}
+
+	// ─── AI Trainer Tab ─────────────────────────────────────────────────
+
+	/**
+	 * Register AI Trainer tab settings.
+	 *
+	 * @since  1.6.0
+	 * @return void
+	 */
+	private function register_ai_trainer_settings(): void {
+		$section = 'bcg_ai_trainer_section';
+		$page    = 'bcg_settings_ai_trainer';
+
+		add_settings_section(
+			$section,
+			__( 'AI Context for Generation', 'brevo-campaign-generator' ),
+			function() {
+				echo '<p class="bcg-section-desc">' . esc_html__( 'Provide background information about your store and products. The AI will use this context when generating campaign copy, headlines, and descriptions.', 'brevo-campaign-generator' ) . '</p>';
+			},
+			$page
+		);
+
+		add_settings_field(
+			'bcg_ai_trainer_company',
+			__( 'About Your Store', 'brevo-campaign-generator' ),
+			array( $this, 'render_ai_trainer_company_field' ),
+			$page,
+			$section
+		);
+
+		add_settings_field(
+			'bcg_ai_trainer_products',
+			__( 'About Your Products', 'brevo-campaign-generator' ),
+			array( $this, 'render_ai_trainer_products_field' ),
+			$page,
+			$section
+		);
+
+		register_setting( $page, 'bcg_ai_trainer_company', array(
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'default'           => '',
+		) );
+
+		register_setting( $page, 'bcg_ai_trainer_products', array(
+			'sanitize_callback' => 'sanitize_textarea_field',
+			'default'           => '',
+		) );
 	}
 
 	// ─── Section Description Callbacks ──────────────────────────────────
@@ -1238,6 +1288,30 @@ class BCG_Settings {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the AI trainer company context field.
+	 *
+	 * @since  1.6.0
+	 * @return void
+	 */
+	public function render_ai_trainer_company_field(): void {
+		$value = get_option( 'bcg_ai_trainer_company', '' );
+		echo '<textarea name="bcg_ai_trainer_company" id="bcg_ai_trainer_company" rows="6" class="bcg-textarea large-text" placeholder="' . esc_attr__( 'E.g. We are a UK-based diamond tools supplier specialising in professional cutting and grinding equipment for the construction industry. Our customers are tradespeople and contractors...', 'brevo-campaign-generator' ) . '">' . esc_textarea( $value ) . '</textarea>';
+		echo '<p class="bcg-field-desc">' . esc_html__( 'Describe your store, brand voice, target audience, and any unique selling points. The more detail you provide, the more accurate and on-brand the AI copy will be.', 'brevo-campaign-generator' ) . '</p>';
+	}
+
+	/**
+	 * Render the AI trainer products context field.
+	 *
+	 * @since  1.6.0
+	 * @return void
+	 */
+	public function render_ai_trainer_products_field(): void {
+		$value = get_option( 'bcg_ai_trainer_products', '' );
+		echo '<textarea name="bcg_ai_trainer_products" id="bcg_ai_trainer_products" rows="6" class="bcg-textarea large-text" placeholder="' . esc_attr__( 'E.g. Our best-selling products include diamond core drill bits, angle grinder discs, and SDS drill bits. Key features include long life, professional grade quality, and competitive pricing...', 'brevo-campaign-generator' ) . '">' . esc_textarea( $value ) . '</textarea>';
+		echo '<p class="bcg-field-desc">' . esc_html__( 'Describe your product range, key features, bestsellers, price points, and anything else the AI should know when writing product copy.', 'brevo-campaign-generator' ) . '</p>';
 	}
 
 	// ─── Sanitisation Callbacks ─────────────────────────────────────────

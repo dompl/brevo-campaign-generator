@@ -76,11 +76,89 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		<?php wp_nonce_field( 'bcg_nonce', 'bcg_nonce' ); ?>
 
 		<!-- ============================================================
-		     Section 1: Campaign Basics
+		     Section 1: Email Template
+		     ============================================================ -->
+		<div class="bcg-card bcg-wizard-section" id="bcg-section-template">
+			<div class="bcg-card-header">
+				<h2><?php esc_html_e( '1. Email Template', 'brevo-campaign-generator' ); ?></h2>
+			</div>
+			<div class="bcg-card-body">
+				<p class="description bcg-mb-12">
+					<?php esc_html_e( 'Choose the email template layout for your campaign. You can customise colours and styles later in the template editor.', 'brevo-campaign-generator' ); ?>
+				</p>
+				<?php
+				$template_registry = BCG_Template_Registry::get_instance();
+				$all_templates     = $template_registry->get_templates();
+
+				$layout_diagrams = array(
+					'side-by-side'  => '<rect x="2" y="2" width="16" height="16" rx="1" fill="#ccc"/><rect x="20" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="20" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="20" y="13" width="14" height="5" rx="1" fill="%s"/>',
+					'stacked'       => '<rect x="4" y="1" width="38" height="10" rx="1" fill="#ccc"/><rect x="4" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="4" y="18" width="20" height="5" rx="1" fill="%s"/>',
+					'reversed'      => '<rect x="2" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="2" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="2" y="13" width="14" height="5" rx="1" fill="%s"/><rect x="28" y="2" width="16" height="16" rx="1" fill="#ccc"/>',
+					'alternating'   => '<rect x="2" y="1" width="12" height="8" rx="1" fill="#ccc"/><rect x="16" y="1" width="28" height="3" rx="1" fill="#999"/><rect x="16" y="5" width="22" height="2" rx="1" fill="#bbb"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="22" height="2" rx="1" fill="#bbb"/><rect x="32" y="11" width="12" height="8" rx="1" fill="#ccc"/>',
+					'grid'          => '<rect x="2" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="24" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="2" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="24" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="2" y="19" width="12" height="3" rx="1" fill="%s"/><rect x="24" y="19" width="12" height="3" rx="1" fill="%s"/>',
+					'compact'       => '<rect x="2" y="2" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="2" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="6" width="20" height="2" rx="1" fill="#bbb"/><rect x="2" y="13" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="13" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="20" height="2" rx="1" fill="#bbb"/>',
+					'full-card'     => '<rect x="4" y="1" width="38" height="1" rx="0" fill="#ddd"/><rect x="4" y="2" width="38" height="8" rx="0" fill="#ccc"/><rect x="4" y="10" width="38" height="1" rx="0" fill="#ddd"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="20" height="2" rx="1" fill="#bbb"/><rect x="4" y="20" width="38" height="1" rx="0" fill="#ddd"/>',
+					'text-only'     => '<rect x="4" y="2" width="30" height="4" rx="1" fill="#999"/><rect x="4" y="8" width="38" height="2" rx="1" fill="#bbb"/><line x1="4" y1="12" x2="42" y2="12" stroke="#ddd" stroke-width="1"/><rect x="4" y="14" width="28" height="4" rx="1" fill="#999"/><rect x="4" y="20" width="38" height="2" rx="1" fill="#bbb"/>',
+					'centered'      => '<rect x="10" y="2" width="26" height="8" rx="2" fill="#ccc"/><rect x="8" y="12" width="30" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="22" height="5" rx="2" fill="%s"/>',
+					'feature-first' => '<rect x="2" y="1" width="42" height="10" rx="1" fill="#ccc"/><rect x="2" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="2" y="18" width="6" height="6" rx="1" fill="#ccc"/><rect x="10" y="18" width="20" height="3" rx="1" fill="#bbb"/>',
+				);
+				?>
+				<div class="bcg-template-picker" id="bcg-template-picker">
+					<?php foreach ( $all_templates as $tpl_slug => $tpl ) :
+						$is_default      = ( 'classic' === $tpl_slug );
+						$tpl_settings    = $tpl['settings'] ?? array();
+						$primary         = esc_attr( $tpl_settings['primary_color'] ?? '#e84040' );
+						$product_layout  = $tpl_settings['product_layout'] ?? 'stacked';
+						$diagram_svg     = $layout_diagrams[ $product_layout ] ?? $layout_diagrams['stacked'];
+						$diagram_svg     = sprintf( $diagram_svg, $primary, $primary );
+					?>
+						<button
+							type="button"
+							class="bcg-template-card<?php echo $is_default ? ' bcg-template-card-active' : ''; ?>"
+							data-slug="<?php echo esc_attr( $tpl_slug ); ?>"
+							title="<?php echo esc_attr( $tpl['description'] ?? '' ); ?>"
+						>
+							<div class="bcg-template-card-preview">
+								<div class="bcg-template-card-swatch" style="background-color:#f5f5f5;">
+									<div class="bcg-template-card-swatch-inner" style="background-color:#ffffff;border-top:3px solid <?php echo $primary; ?>;">
+										<svg viewBox="0 0 46 24" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+											<?php echo $diagram_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+										</svg>
+									</div>
+								</div>
+							</div>
+							<span class="bcg-template-card-name"><?php echo esc_html( $tpl['name'] ); ?></span>
+						</button>
+					<?php endforeach; ?>
+				</div>
+				<input type="hidden" id="bcg-template-slug" name="template_slug" value="classic" />
+			<input type="hidden" id="bcg-section-template-id" name="section_template_id" value="0" />
+
+			<div class="bcg-my-templates-section">
+				<h3 class="bcg-my-templates-heading">
+					<span class="material-icons-outlined">dashboard_customize</span>
+					<?php esc_html_e( 'My Templates', 'brevo-campaign-generator' ); ?>
+					<span class="bcg-badge"><?php esc_html_e( 'Template Builder', 'brevo-campaign-generator' ); ?></span>
+				</h3>
+				<p class="description bcg-my-templates-desc">
+					<?php esc_html_e( 'Templates you\'ve built in the Template Builder. Selecting one will use your custom section layout and populate content with AI.', 'brevo-campaign-generator' ); ?>
+				</p>
+				<div class="bcg-my-templates-grid" id="bcg-my-templates-grid">
+					<div class="bcg-my-templates-loading" id="bcg-my-templates-loading">
+						<span class="material-icons-outlined bcg-spin">refresh</span>
+						<?php esc_html_e( 'Loading your templates…', 'brevo-campaign-generator' ); ?>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+
+		<!-- ============================================================
+		     Section 2: Campaign Basics
 		     ============================================================ -->
 		<div class="bcg-card bcg-wizard-section" id="bcg-section-basics">
 			<div class="bcg-card-header">
-				<h2><?php esc_html_e( '1. Campaign Basics', 'brevo-campaign-generator' ); ?></h2>
+				<h2><?php esc_html_e( '2. Campaign Basics', 'brevo-campaign-generator' ); ?></h2>
 			</div>
 			<div class="bcg-card-body">
 
@@ -189,11 +267,11 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		</div>
 
 		<!-- ============================================================
-		     Section 2: Product Selection
+		     Section 3: Product Selection
 		     ============================================================ -->
 		<div class="bcg-card bcg-wizard-section" id="bcg-section-products">
 			<div class="bcg-card-header">
-				<h2><?php esc_html_e( '2. Product Selection', 'brevo-campaign-generator' ); ?></h2>
+				<h2><?php esc_html_e( '3. Product Selection', 'brevo-campaign-generator' ); ?></h2>
 			</div>
 			<div class="bcg-card-body">
 
@@ -340,11 +418,11 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		</div>
 
 		<!-- ============================================================
-		     Section 3: Coupon
+		     Section 4: Coupon
 		     ============================================================ -->
 		<div class="bcg-card bcg-wizard-section" id="bcg-section-coupon">
 			<div class="bcg-card-header">
-				<h2><?php esc_html_e( '3. Coupon', 'brevo-campaign-generator' ); ?></h2>
+				<h2><?php esc_html_e( '4. Coupon', 'brevo-campaign-generator' ); ?></h2>
 			</div>
 			<div class="bcg-card-body">
 
@@ -467,11 +545,11 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 		</div>
 
 		<!-- ============================================================
-		     Section 4: AI Generation Options
+		     Section 5: AI Generation Options
 		     ============================================================ -->
 		<div class="bcg-card bcg-wizard-section" id="bcg-section-ai">
 			<div class="bcg-card-header">
-				<h2><?php esc_html_e( '4. AI Generation Options', 'brevo-campaign-generator' ); ?></h2>
+				<h2><?php esc_html_e( '5. AI Generation Options', 'brevo-campaign-generator' ); ?></h2>
 			</div>
 			<div class="bcg-card-body">
 
@@ -559,84 +637,6 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 					</select>
 				</div>
 
-			</div>
-		</div>
-
-		<!-- ============================================================
-		     Section 5: Email Template
-		     ============================================================ -->
-		<div class="bcg-card bcg-wizard-section" id="bcg-section-template">
-			<div class="bcg-card-header">
-				<h2><?php esc_html_e( '5. Email Template', 'brevo-campaign-generator' ); ?></h2>
-			</div>
-			<div class="bcg-card-body">
-				<p class="description bcg-mb-12">
-					<?php esc_html_e( 'Choose the email template layout for your campaign. You can customise colours and styles later in the template editor.', 'brevo-campaign-generator' ); ?>
-				</p>
-				<?php
-				$template_registry = BCG_Template_Registry::get_instance();
-				$all_templates     = $template_registry->get_templates();
-
-				$layout_diagrams = array(
-					'side-by-side'  => '<rect x="2" y="2" width="16" height="16" rx="1" fill="#ccc"/><rect x="20" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="20" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="20" y="13" width="14" height="5" rx="1" fill="%s"/>',
-					'stacked'       => '<rect x="4" y="1" width="38" height="10" rx="1" fill="#ccc"/><rect x="4" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="4" y="18" width="20" height="5" rx="1" fill="%s"/>',
-					'reversed'      => '<rect x="2" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="2" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="2" y="13" width="14" height="5" rx="1" fill="%s"/><rect x="28" y="2" width="16" height="16" rx="1" fill="#ccc"/>',
-					'alternating'   => '<rect x="2" y="1" width="12" height="8" rx="1" fill="#ccc"/><rect x="16" y="1" width="28" height="3" rx="1" fill="#999"/><rect x="16" y="5" width="22" height="2" rx="1" fill="#bbb"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="22" height="2" rx="1" fill="#bbb"/><rect x="32" y="11" width="12" height="8" rx="1" fill="#ccc"/>',
-					'grid'          => '<rect x="2" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="24" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="2" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="24" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="2" y="19" width="12" height="3" rx="1" fill="%s"/><rect x="24" y="19" width="12" height="3" rx="1" fill="%s"/>',
-					'compact'       => '<rect x="2" y="2" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="2" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="6" width="20" height="2" rx="1" fill="#bbb"/><rect x="2" y="13" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="13" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="20" height="2" rx="1" fill="#bbb"/>',
-					'full-card'     => '<rect x="4" y="1" width="38" height="1" rx="0" fill="#ddd"/><rect x="4" y="2" width="38" height="8" rx="0" fill="#ccc"/><rect x="4" y="10" width="38" height="1" rx="0" fill="#ddd"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="20" height="2" rx="1" fill="#bbb"/><rect x="4" y="20" width="38" height="1" rx="0" fill="#ddd"/>',
-					'text-only'     => '<rect x="4" y="2" width="30" height="4" rx="1" fill="#999"/><rect x="4" y="8" width="38" height="2" rx="1" fill="#bbb"/><line x1="4" y1="12" x2="42" y2="12" stroke="#ddd" stroke-width="1"/><rect x="4" y="14" width="28" height="4" rx="1" fill="#999"/><rect x="4" y="20" width="38" height="2" rx="1" fill="#bbb"/>',
-					'centered'      => '<rect x="10" y="2" width="26" height="8" rx="2" fill="#ccc"/><rect x="8" y="12" width="30" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="22" height="5" rx="2" fill="%s"/>',
-					'feature-first' => '<rect x="2" y="1" width="42" height="10" rx="1" fill="#ccc"/><rect x="2" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="2" y="18" width="6" height="6" rx="1" fill="#ccc"/><rect x="10" y="18" width="20" height="3" rx="1" fill="#bbb"/>',
-				);
-				?>
-				<div class="bcg-template-picker" id="bcg-template-picker">
-					<?php foreach ( $all_templates as $tpl_slug => $tpl ) :
-						$is_default      = ( 'classic' === $tpl_slug );
-						$tpl_settings    = $tpl['settings'] ?? array();
-						$primary         = esc_attr( $tpl_settings['primary_color'] ?? '#e84040' );
-						$product_layout  = $tpl_settings['product_layout'] ?? 'stacked';
-						$diagram_svg     = $layout_diagrams[ $product_layout ] ?? $layout_diagrams['stacked'];
-						$diagram_svg     = sprintf( $diagram_svg, $primary, $primary );
-					?>
-						<button
-							type="button"
-							class="bcg-template-card<?php echo $is_default ? ' bcg-template-card-active' : ''; ?>"
-							data-slug="<?php echo esc_attr( $tpl_slug ); ?>"
-							title="<?php echo esc_attr( $tpl['description'] ?? '' ); ?>"
-						>
-							<div class="bcg-template-card-preview">
-								<div class="bcg-template-card-swatch" style="background-color:#f5f5f5;">
-									<div class="bcg-template-card-swatch-inner" style="background-color:#ffffff;border-top:3px solid <?php echo $primary; ?>;">
-										<svg viewBox="0 0 46 24" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
-											<?php echo $diagram_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-										</svg>
-									</div>
-								</div>
-							</div>
-							<span class="bcg-template-card-name"><?php echo esc_html( $tpl['name'] ); ?></span>
-						</button>
-					<?php endforeach; ?>
-				</div>
-				<input type="hidden" id="bcg-template-slug" name="template_slug" value="classic" />
-			<input type="hidden" id="bcg-section-template-id" name="section_template_id" value="0" />
-
-			<div class="bcg-my-templates-section">
-				<h3 class="bcg-my-templates-heading">
-					<span class="material-icons-outlined">dashboard_customize</span>
-					<?php esc_html_e( 'My Templates', 'brevo-campaign-generator' ); ?>
-					<span class="bcg-badge"><?php esc_html_e( 'Template Builder', 'brevo-campaign-generator' ); ?></span>
-				</h3>
-				<p class="description bcg-my-templates-desc">
-					<?php esc_html_e( 'Templates you\'ve built in the Template Builder. Selecting one will use your custom section layout and populate content with AI.', 'brevo-campaign-generator' ); ?>
-				</p>
-				<div class="bcg-my-templates-grid" id="bcg-my-templates-grid">
-					<div class="bcg-my-templates-loading" id="bcg-my-templates-loading">
-						<span class="material-icons-outlined bcg-spin">refresh</span>
-						<?php esc_html_e( 'Loading your templates…', 'brevo-campaign-generator' ); ?>
-					</div>
-				</div>
-			</div>
 			</div>
 		</div>
 

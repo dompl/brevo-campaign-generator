@@ -102,6 +102,10 @@ class BCG_Section_Renderer {
 				return self::render_coupon_card( $s, $max_width, $font_family );
 			case 'coupon_split':
 				return self::render_coupon_split( $s, $max_width, $font_family );
+			case 'coupon_minimal':
+				return self::render_coupon_minimal( $s, $max_width, $font_family );
+			case 'coupon_ribbon':
+				return self::render_coupon_ribbon( $s, $max_width, $font_family );
 			case 'divider':
 				return self::render_divider( $s, $max_width );
 			case 'spacer':
@@ -368,6 +372,7 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_products( array $s, int $mw, string $font ): string {
+		$section_headline = $s['section_headline'] ?? '';
 		$bg         = esc_attr( $s['bg_color'] );
 		$btn_color  = esc_attr( $s['button_color'] );
 		$btn_text   = esc_html( $s['button_text'] );
@@ -496,7 +501,21 @@ class BCG_Section_Renderer {
 			$rows_html .= '<tr>' . implode( '', $chunk ) . '</tr>';
 		}
 
-		return sprintf(
+		$section_headline_html = '';
+		if ( ! empty( $section_headline ) ) {
+			$section_headline_html = sprintf(
+				'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
+					<tr><td style="padding:16px 20px 0;">
+						<h2 style="font-family:%s;font-size:22px;font-weight:700;color:#333333;margin:0;padding:0;">%s</h2>
+					</td></tr>
+				</table>',
+				$mw, $mw, $mw, $bg,
+				esc_attr( $font ),
+				esc_html( $section_headline )
+			);
+		}
+
+		return $section_headline_html . sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr><td style="padding:20px;">
 					<table width="100%%" cellpadding="0" cellspacing="0" border="0">
@@ -636,12 +655,22 @@ class BCG_Section_Renderer {
 		$accent  = esc_attr( $s['accent_color'] ?? '#e63529' );
 		$text_c  = esc_attr( $s['text_color'] ?? '#333333' );
 		$code    = esc_html( $s['coupon_code'] ?? '' );
-		$disc    = esc_html( $s['discount_text'] ?? '' );
+		$disc    = esc_html( $s['coupon_text'] ?? $s['discount_text'] ?? '' );
 		$head    = esc_html( $s['headline'] ?? '' );
 		$sub     = esc_html( $s['subtext'] ?? '' );
-		$expiry  = esc_html( $s['expiry_text'] ?? '' );
 		$pt      = absint( $s['padding_top'] ?? 30 );
 		$pb      = absint( $s['padding_bottom'] ?? 30 );
+
+		$expiry_date = $s['expiry_date'] ?? '';
+		$expiry_html = '';
+		if ( ! empty( $expiry_date ) ) {
+			$formatted   = date( 'd M Y', strtotime( $expiry_date ) );
+			$expiry_html = sprintf(
+				'<tr><td style="padding-top:8px;text-align:center;"><span style="font-family:%s;font-size:12px;color:#999999;">%s</span></td></tr>',
+				esc_attr( $font ),
+				esc_html( $formatted )
+			);
+		}
 
 		$headline_html = $head ? sprintf(
 			'<tr><td style="text-align:center;padding-bottom:8px;"><p style="font-family:%s;font-size:13px;font-weight:600;color:%s;margin:0;text-transform:uppercase;letter-spacing:1px;">%s</p></td></tr>',
@@ -651,11 +680,6 @@ class BCG_Section_Renderer {
 		$subtext_html = $sub ? sprintf(
 			'<tr><td style="padding-top:6px;text-align:center;"><p style="font-family:%s;font-size:13px;color:%s;margin:0;">%s</p></td></tr>',
 			esc_attr( $font ), $text_c, $sub
-		) : '';
-
-		$expiry_html = $expiry ? sprintf(
-			'<tr><td style="padding-top:8px;text-align:center;"><p style="font-family:%s;font-size:12px;color:#999999;margin:0;">%s</p></td></tr>',
-			esc_attr( $font ), $expiry
 		) : '';
 
 		return sprintf(
@@ -700,12 +724,22 @@ class BCG_Section_Renderer {
 		$accent   = esc_attr( $s['accent_color'] ?? '#e63529' );
 		$text_c   = esc_attr( $s['text_color'] ?? '#ffffff' );
 		$head     = esc_html( $s['headline'] ?? '' );
-		$disc     = esc_html( $s['discount_text'] ?? '' );
+		$disc     = esc_html( $s['coupon_text'] ?? $s['discount_text'] ?? '' );
 		$code     = esc_html( $s['coupon_code'] ?? '' );
 		$sub      = esc_html( $s['subtext'] ?? '' );
-		$expiry   = esc_html( $s['expiry_text'] ?? '' );
 		$pt       = absint( $s['padding_top'] ?? 28 );
 		$pb       = absint( $s['padding_bottom'] ?? 28 );
+
+		$expiry_date = $s['expiry_date'] ?? '';
+		$expiry_row  = '';
+		if ( ! empty( $expiry_date ) ) {
+			$formatted  = date( 'd M Y', strtotime( $expiry_date ) );
+			$expiry_row = sprintf(
+				'<tr><td style="font-family:%s;font-size:11px;color:rgba(255,255,255,0.5);padding-top:8px;">%s</td></tr>',
+				esc_attr( $font ),
+				esc_html( $formatted )
+			);
+		}
 
 		$left_w  = (int) round( $mw * 0.55 );
 		$right_w = $mw - $left_w;
@@ -718,11 +752,6 @@ class BCG_Section_Renderer {
 		$sub_row = $sub ? sprintf(
 			'<tr><td style="font-family:%s;font-size:12px;color:rgba(255,255,255,0.7);padding-top:4px;">%s</td></tr>',
 			esc_attr( $font ), $sub
-		) : '';
-
-		$expiry_row = $expiry ? sprintf(
-			'<tr><td style="font-family:%s;font-size:11px;color:rgba(255,255,255,0.5);padding-top:8px;">%s</td></tr>',
-			esc_attr( $font ), $expiry
 		) : '';
 
 		return sprintf(
@@ -768,12 +797,22 @@ class BCG_Section_Renderer {
 		$accent   = esc_attr( $s['accent_color'] ?? '#e63529' );
 		$text_c   = esc_attr( $s['text_color'] ?? '#222222' );
 		$head     = esc_html( $s['headline'] ?? '' );
-		$disc     = esc_html( $s['discount_text'] ?? '' );
+		$disc     = esc_html( $s['coupon_text'] ?? $s['discount_text'] ?? '' );
 		$code     = esc_html( $s['coupon_code'] ?? '' );
 		$sub      = esc_html( $s['subtext'] ?? '' );
-		$expiry   = esc_html( $s['expiry_text'] ?? '' );
 		$pt       = absint( $s['padding_top'] ?? 24 );
 		$pb       = absint( $s['padding_bottom'] ?? 24 );
+
+		$expiry_date = $s['expiry_date'] ?? '';
+		$expiry_row  = '';
+		if ( ! empty( $expiry_date ) ) {
+			$formatted  = date( 'd M Y', strtotime( $expiry_date ) );
+			$expiry_row = sprintf(
+				'<tr><td style="font-family:%s;font-size:12px;color:#aaaaaa;padding-top:8px;">%s</td></tr>',
+				esc_attr( $font ),
+				esc_html( $formatted )
+			);
+		}
 
 		$inner_w = $mw - 48;
 
@@ -785,11 +824,6 @@ class BCG_Section_Renderer {
 		$sub_row = $sub ? sprintf(
 			'<tr><td style="font-family:%s;font-size:13px;color:#888888;padding-top:6px;">%s</td></tr>',
 			esc_attr( $font ), $sub
-		) : '';
-
-		$expiry_row = $expiry ? sprintf(
-			'<tr><td style="font-family:%s;font-size:12px;color:#aaaaaa;padding-top:8px;">%s</td></tr>',
-			esc_attr( $font ), $expiry
 		) : '';
 
 		return sprintf(
@@ -846,9 +880,19 @@ class BCG_Section_Renderer {
 		$disc_lbl  = esc_html( $s['discount_label'] ?? 'OFF' );
 		$code      = esc_html( $s['coupon_code'] ?? '' );
 		$sub       = esc_html( $s['subtext'] ?? '' );
-		$expiry    = esc_html( $s['expiry_text'] ?? '' );
 		$pt        = absint( $s['padding_top'] ?? 0 );
 		$pb        = absint( $s['padding_bottom'] ?? 0 );
+
+		$expiry_date = $s['expiry_date'] ?? '';
+		$expiry_row  = '';
+		if ( ! empty( $expiry_date ) ) {
+			$formatted  = date( 'd M Y', strtotime( $expiry_date ) );
+			$expiry_row = sprintf(
+				'<tr><td style="font-family:%s;font-size:12px;color:#aaaaaa;padding-top:8px;">%s</td></tr>',
+				esc_attr( $font ),
+				esc_html( $formatted )
+			);
+		}
 
 		$half_w = (int) round( $mw / 2 );
 
@@ -860,11 +904,6 @@ class BCG_Section_Renderer {
 		$sub_row = $sub ? sprintf(
 			'<tr><td style="font-family:%s;font-size:13px;color:#666666;padding-top:6px;">%s</td></tr>',
 			esc_attr( $font ), $sub
-		) : '';
-
-		$expiry_row = $expiry ? sprintf(
-			'<tr><td style="font-family:%s;font-size:12px;color:#aaaaaa;padding-top:8px;">%s</td></tr>',
-			esc_attr( $font ), $expiry
 		) : '';
 
 		return sprintf(
@@ -898,6 +937,163 @@ class BCG_Section_Renderer {
 	}
 
 	/**
+	 * Render coupon minimal section — clean borderless minimal design.
+	 *
+	 * @since  1.6.0
+	 * @param  array  $s     Settings.
+	 * @param  int    $mw    Max width.
+	 * @param  string $font  Font family.
+	 * @return string
+	 */
+	private static function render_coupon_minimal( array $s, int $mw, string $font ): string {
+		$bg      = esc_attr( $s['bg_color'] ?? '#f9f9f9' );
+		$text_c  = esc_attr( $s['text_color'] ?? '#222222' );
+		$accent  = esc_attr( $s['accent_color'] ?? '#e63529' );
+		$code    = esc_html( $s['coupon_code'] ?? '' );
+		$head    = esc_html( $s['headline'] ?? '' );
+		$coupon_text = esc_html( $s['coupon_text'] ?? '' );
+		$sub     = esc_html( $s['subtext'] ?? '' );
+		$pt      = absint( $s['padding_top'] ?? 40 );
+		$pb      = absint( $s['padding_bottom'] ?? 40 );
+
+		$expiry_date = $s['expiry_date'] ?? '';
+		$expiry_html = '';
+		if ( ! empty( $expiry_date ) ) {
+			$formatted   = date( 'd M Y', strtotime( $expiry_date ) );
+			$expiry_html = sprintf(
+				'<tr><td style="text-align:center;padding-top:8px;"><span style="font-family:%s;font-size:11px;color:%s;opacity:0.5;">%s</span></td></tr>',
+				esc_attr( $font ),
+				$text_c,
+				esc_html( $formatted )
+			);
+		}
+
+		$head_html = $head ? sprintf(
+			'<tr><td style="text-align:center;padding-bottom:8px;"><p style="margin:0 0 8px;font-family:%s;font-size:13px;color:%s;opacity:0.7;">%s</p></td></tr>',
+			esc_attr( $font ), $text_c, $head
+		) : '';
+
+		$coupon_text_html = $coupon_text ? sprintf(
+			'<tr><td style="text-align:center;padding-bottom:12px;"><p style="margin:0 0 12px;font-family:%s;font-size:18px;font-weight:700;color:%s;">%s</p></td></tr>',
+			esc_attr( $font ), $text_c, $coupon_text
+		) : '';
+
+		$sub_html = $sub ? sprintf(
+			'<tr><td style="text-align:center;padding-top:12px;"><p style="margin:0;font-family:%s;font-size:12px;color:%s;opacity:0.6;">%s</p></td></tr>',
+			esc_attr( $font ), $text_c, $sub
+		) : '';
+
+		return sprintf(
+			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
+				<tr>
+					<td style="padding:%dpx 40px %dpx;text-align:center;">
+						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+							%s
+							%s
+							<tr><td style="text-align:center;padding-bottom:12px;">
+								<div style="display:inline-block;border:2px dashed %s;border-radius:6px;padding:10px 28px;">
+									<span style="font-family:%s;font-size:24px;font-weight:900;letter-spacing:4px;color:%s;">%s</span>
+								</div>
+							</td></tr>
+							%s
+							%s
+						</table>
+					</td>
+				</tr>
+			</table>',
+			$mw, $mw, $mw, $bg,
+			$pt, $pb,
+			$head_html,
+			$coupon_text_html,
+			$accent,
+			esc_attr( $font ), $accent, $code,
+			$sub_html,
+			$expiry_html
+		);
+	}
+
+	/**
+	 * Render coupon ribbon section — dark background with ribbon badge style.
+	 *
+	 * @since  1.6.0
+	 * @param  array  $s     Settings.
+	 * @param  int    $mw    Max width.
+	 * @param  string $font  Font family.
+	 * @return string
+	 */
+	private static function render_coupon_ribbon( array $s, int $mw, string $font ): string {
+		$bg          = esc_attr( $s['bg_color'] ?? '#1a1a2e' );
+		$text_c      = esc_attr( $s['text_color'] ?? '#ffffff' );
+		$accent      = esc_attr( $s['accent_color'] ?? '#e63529' );
+		$ribbon      = esc_attr( $s['ribbon_color'] ?? '#f5c518' );
+		$code        = esc_html( $s['coupon_code'] ?? '' );
+		$head        = esc_html( $s['headline'] ?? '' );
+		$coupon_text = esc_html( $s['coupon_text'] ?? '' );
+		$sub         = esc_html( $s['subtext'] ?? '' );
+		$pt          = absint( $s['padding_top'] ?? 48 );
+		$pb          = absint( $s['padding_bottom'] ?? 48 );
+
+		$expiry_date = $s['expiry_date'] ?? '';
+		$expiry_html = '';
+		if ( ! empty( $expiry_date ) ) {
+			$formatted   = date( 'd M Y', strtotime( $expiry_date ) );
+			$expiry_html = sprintf(
+				'<tr><td style="text-align:center;padding-top:16px;"><span style="font-family:%s;font-size:12px;color:%s;opacity:0.5;">%s</span></td></tr>',
+				esc_attr( $font ),
+				$text_c,
+				esc_html( $formatted )
+			);
+		}
+
+		$head_html = $head ? sprintf(
+			'<tr><td style="text-align:center;padding-bottom:8px;"><h2 style="margin:0 0 8px;font-family:%s;font-size:28px;font-weight:900;color:%s;">%s</h2></td></tr>',
+			esc_attr( $font ), $text_c, $head
+		) : '';
+
+		$coupon_text_html = $coupon_text ? sprintf(
+			'<tr><td style="text-align:center;padding-bottom:16px;"><p style="margin:0 0 16px;font-family:%s;font-size:16px;color:%s;opacity:0.85;">%s</p></td></tr>',
+			esc_attr( $font ), $text_c, $coupon_text
+		) : '';
+
+		$sub_html = $sub ? sprintf(
+			'<tr><td style="text-align:center;padding-top:16px;"><p style="margin:0;font-family:%s;font-size:13px;color:%s;opacity:0.7;">%s</p></td></tr>',
+			esc_attr( $font ), $text_c, $sub
+		) : '';
+
+		return sprintf(
+			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
+				<tr>
+					<td style="padding:%dpx 40px %dpx;text-align:center;">
+						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+							<tr><td style="text-align:center;padding-bottom:16px;">
+								<div style="display:inline-block;background:%s;color:#000;font-family:%s;font-size:11px;font-weight:800;letter-spacing:2px;padding:4px 20px;text-transform:uppercase;">EXCLUSIVE OFFER</div>
+							</td></tr>
+							%s
+							%s
+							<tr><td style="text-align:center;padding-bottom:16px;">
+								<div style="display:inline-block;background:%s;border-radius:4px;padding:12px 32px;">
+									<span style="font-family:%s;font-size:28px;font-weight:900;letter-spacing:5px;color:#fff;">%s</span>
+								</div>
+							</td></tr>
+							%s
+							%s
+						</table>
+					</td>
+				</tr>
+			</table>',
+			$mw, $mw, $mw, $bg,
+			$pt, $pb,
+			$ribbon, esc_attr( $font ),
+			$head_html,
+			$coupon_text_html,
+			$accent,
+			esc_attr( $font ), $code,
+			$sub_html,
+			$expiry_html
+		);
+	}
+
+		/**
 	 * Render divider section.
 	 *
 	 * @since  1.5.0

@@ -585,7 +585,7 @@ class BCG_OpenAI {
 		$currency        = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'GBP';
 		$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '£';
 
-		return sprintf(
+		$prompt = sprintf(
 			'You are an expert email marketing copywriter for a WooCommerce e-commerce store. ' .
 			'Write compelling, conversion-focused copy. Be concise. Avoid cliches. ' .
 			'Respond only with the requested content - no explanations, no preamble. ' .
@@ -596,6 +596,19 @@ class BCG_OpenAI {
 			$currency,
 			$currency_symbol
 		);
+
+		// Append AI trainer context if available.
+		$company_context  = get_option( 'bcg_ai_trainer_company', '' );
+		$products_context = get_option( 'bcg_ai_trainer_products', '' );
+
+		if ( ! empty( $company_context ) ) {
+			$prompt .= "\n\nStore context: " . $company_context;
+		}
+		if ( ! empty( $products_context ) ) {
+			$prompt .= "\n\nProduct context: " . $products_context;
+		}
+
+		return $prompt;
 	}
 
 	/**

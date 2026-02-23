@@ -57,7 +57,18 @@ class BCG_Section_AI {
 				return self::generate_cta( $openai, $settings, $context, $tone, $language );
 
 			case 'products':
-				return self::generate_products( $openai, $settings, $context, $tone, $language );
+				return self::generate_products_section( $openai, $settings, $context, $tone, $language );
+
+			case 'coupon':
+			case 'coupon_banner':
+			case 'coupon_card':
+			case 'coupon_split':
+			case 'coupon_minimal':
+			case 'coupon_ribbon':
+				return self::generate_coupon_text( $openai, $settings, $context, $tone, $language );
+
+			case 'footer':
+				return self::generate_footer_text( $openai, $settings, $context, $tone, $language );
 
 			default:
 				// Section type has no AI generation — return settings unchanged.
@@ -246,7 +257,8 @@ class BCG_Section_AI {
 	 *
 	 * Generates AI headline and short description for each product ID listed
 	 * in the section's product_ids setting. The generated text is stored in
-	 * ai_overrides sub-array keyed by product ID.
+	 * ai_overrides sub-array keyed by product ID. Also generates a section_headline
+	 * if the _ai_section_headline flag is not false.
 	 *
 	 * @since  1.5.0
 	 * @param  BCG_OpenAI $openai   OpenAI instance.
@@ -256,7 +268,7 @@ class BCG_Section_AI {
 	 * @param  string     $language Target language.
 	 * @return array|\WP_Error
 	 */
-	private static function generate_products( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
+	private static function generate_products_section( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
 		if ( ! function_exists( 'wc_get_product' ) ) {
 			return $settings;
 		}
@@ -298,6 +310,80 @@ class BCG_Section_AI {
 
 		$settings['ai_overrides'] = $overrides;
 
+		// Generate section headline if enabled.
+		if ( ( $settings['_ai_section_headline'] ?? true ) && ! empty( $context['products'] ) ) {
+			$headline = $openai->generate_product_headline( $context['products'][0], $tone, $language );
+			if ( ! is_wp_error( $headline ) ) {
+				$settings['section_headline'] = $headline;
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Generate coupon section AI text (headline, coupon_text, subtext).
+	 *
+	 * Used for all coupon variants: coupon, coupon_banner, coupon_card,
+	 * coupon_split, coupon_minimal, coupon_ribbon.
+	 *
+	 * @since  1.6.0
+	 * @param  BCG_OpenAI $openai   OpenAI instance.
+	 * @param  array      $settings Current settings.
+	 * @param  array      $context  Campaign context.
+	 * @param  string     $tone     Tone of voice.
+	 * @param  string     $language Target language.
+	 * @return array|\WP_Error
+	 */
+	private static function generate_coupon_text( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
+		$products = $context['products'] ?? array();
+		$theme    = $context['theme'] ?? '';
+
+		if ( $settings['_ai_headline'] ?? true ) {
+			$result = $openai->generate_main_headline( $products, $theme, $tone, $language );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+			$settings['headline'] = $result;
+		}
+
+		if ( $settings['_ai_coupon_text'] ?? true ) {
+			$result = $openai->generate_main_description( $products, $theme, $tone, $language );
+			if ( ! is_wp_error( $result ) ) {
+				// Keep it short — first sentence only.
+				$text = preg_replace( '/\..*$/s', '.', $result );
+				$settings['coupon_text'] = trim( $text ) ?: $result;
+			}
+		}
+
+		if ( $settings['_ai_subtext'] ?? true ) {
+			$result = $openai->generate_preview_text( $theme . ' ' . ( $settings['headline'] ?? '' ), $products );
+			if ( ! is_wp_error( $result ) ) {
+				$settings['subtext'] = $result;
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Generate footer section AI text.
+	 *
+	 * Footer text (legal/unsubscribe) is not AI-generated as it typically
+	 * contains required legal language. This method is a no-op placeholder
+	 * that returns settings unchanged.
+	 *
+	 * @since  1.6.0
+	 * @param  BCG_OpenAI $openai   OpenAI instance.
+	 * @param  array      $settings Current settings.
+	 * @param  array      $context  Campaign context.
+	 * @param  string     $tone     Tone of voice.
+	 * @param  string     $language Target language.
+	 * @return array
+	 */
+	private static function generate_footer_text( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array {
+		// Footer usually contains legal/unsubscribe text — skip AI generation to
+		// avoid overwriting required compliance copy.
 		return $settings;
 	}
 }

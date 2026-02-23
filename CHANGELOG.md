@@ -17,6 +17,32 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.29] — 2026-02-23
+
+### Added
+- **2 new coupon section types** — `coupon_minimal` (clean borderless design, light background) and `coupon_ribbon` (dark background with a colour accent ribbon badge)
+- **AI generation for all coupon sections** — all 6 coupon types (`coupon`, `coupon_banner`, `coupon_card`, `coupon_split`, `coupon_minimal`, `coupon_ribbon`) now have `has_ai: true`; the section AI dispatcher generates headline, offer text, and subtext for each
+- **Expiry date picker** — all coupon sections now use `type: date` for the expiry field; rendered output formats as `d M Y`; old free-text `expiry_text` field replaced
+- **Coupon Offer Text field** — coupon sections now have a dedicated `coupon_text` field (label: "Offer Text") replacing the legacy `discount_text` label
+- **Products section headline** — products section gains a `section_headline` text field; if set it renders as an `<h2>` above the product grid; AI-generated on "Generate All"
+- **Footer AI generation** — footer section `has_ai` now `true`; AI dispatcher returns settings unchanged (avoids overwriting compliance copy) but field toggles work as expected
+- **AI Trainer settings tab** — new Settings tab with two textarea fields: "About Your Store" and "About Your Products"; content is injected into the OpenAI system prompt for all AI generation calls
+- **Auto-save** — Section Builder auto-saves every 60 seconds when there are unsaved changes; shows a quiet "Auto-saved" indicator instead of a toast
+- **Date picker field type** — `type: 'date'` rendered as `<input type="date">` in the section settings panel
+- **Template first in New Campaign** — Email Template selection moved from step 5 to step 1 in the campaign wizard
+
+### Changed
+- **Plugin full-width** — removed `max-width: 1400px` from `.bcg-wrap` and `.bcg-plugin-header`; plugin now expands to the full available admin width
+- **Campaign editor 50/50** — editor columns grid changed from `1fr 400px` to `1fr 1fr`
+- **AI toggle UX** — when AI is enabled on a field, the input is hidden and a hint "AI will generate this field" is shown instead; input reappears when AI is toggled off
+- **Section builder popup wider** — AI generation modal max-width increased from 500 px to 680 px
+- **Action buttons no-wrap** — dashboard campaign action buttons are now always on one line (`flex-wrap: nowrap`)
+
+### Fixed
+- **Main image constrained** — campaign editor main image capped at `max-height: 300px` with `object-fit: cover` so large images no longer dominate the editor panel
+
+---
+
 ## [1.5.28] — 2026-02-23
 
 ### Added

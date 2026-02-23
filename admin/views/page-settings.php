@@ -20,11 +20,12 @@ $current_tab = $settings->get_current_tab();
 
 // Map tab slugs to settings page groups (used by settings_fields() and do_settings_sections()).
 $tab_option_groups = array(
-	'api-keys'  => 'bcg_settings_api_keys',
-	'ai-models' => 'bcg_settings_ai_models',
-	'brevo'     => 'bcg_settings_brevo',
-	'stripe'    => 'bcg_settings_stripe',
-	'defaults'  => 'bcg_settings_defaults',
+	'api-keys'   => 'bcg_settings_api_keys',
+	'ai-models'  => 'bcg_settings_ai_models',
+	'brevo'      => 'bcg_settings_brevo',
+	'stripe'     => 'bcg_settings_stripe',
+	'defaults'   => 'bcg_settings_defaults',
+	'ai-trainer' => 'bcg_settings_ai_trainer',
 );
 
 $option_group = $tab_option_groups[ $current_tab ] ?? 'bcg_settings_api_keys';
@@ -77,6 +78,10 @@ $option_group = $tab_option_groups[ $current_tab ] ?? 'bcg_settings_api_keys';
 
 				case 'defaults':
 					do_settings_sections( 'bcg_settings_defaults' );
+					break;
+
+				case 'ai-trainer':
+					do_settings_sections( 'bcg_settings_ai_trainer' );
 					break;
 			}
 			?>

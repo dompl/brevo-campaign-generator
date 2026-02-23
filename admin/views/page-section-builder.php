@@ -75,6 +75,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="material-icons-outlined">save</span>
 				<?php esc_html_e( 'Save Template', 'brevo-campaign-generator' ); ?>
 			</button>
+			<span id="bcg-sb-autosave-indicator" style="display:none;font-size:11px;color:var(--bcg-text-muted);margin-left:8px;"></span>
 
 			<button type="button" id="bcg-sb-request-btn" class="bcg-btn-secondary bcg-btn-sm">
 				<span class="material-icons-outlined">lightbulb</span>
