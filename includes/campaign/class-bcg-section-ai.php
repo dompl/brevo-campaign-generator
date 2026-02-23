@@ -76,6 +76,9 @@ class BCG_Section_AI {
 			case 'footer':
 				return self::generate_footer_text( $openai, $settings, $context, $tone, $language );
 
+			case 'list':
+				return self::generate_list( $openai, $settings, $context, $tone, $language );
+
 			default:
 				// Section type has no AI generation — return settings unchanged.
 				return $settings;
@@ -366,6 +369,43 @@ class BCG_Section_AI {
 			$result = $openai->generate_preview_text( $theme . ' ' . ( $settings['headline'] ?? '' ), $products );
 			if ( ! is_wp_error( $result ) ) {
 				$settings['subtext'] = $result;
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Generate list section AI content.
+	 *
+	 * @since  1.5.41
+	 * @param  BCG_OpenAI $openai   OpenAI instance.
+	 * @param  array      $settings Current settings.
+	 * @param  array      $context  Campaign context.
+	 * @param  string     $tone     Tone of voice.
+	 * @param  string     $language Target language.
+	 * @return array|\WP_Error
+	 */
+	private static function generate_list( BCG_OpenAI $openai, array $settings, array $context, string $tone, string $language ): array|\WP_Error {
+		$products = $context['products'] ?? array();
+		$theme    = $context['theme'] ?? '';
+
+		// Generate heading.
+		if ( $settings['_ai_heading'] ?? true ) {
+			$result = $openai->generate_text_block( $context, $tone, $language );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+			if ( ! empty( $result['heading'] ) ) {
+				$settings['heading'] = $result['heading'];
+			}
+		}
+
+		// Generate list items via OpenAI.
+		if ( $settings['_ai_items'] ?? true ) {
+			$result = $openai->generate_list_items( $context, $tone, $language );
+			if ( ! is_wp_error( $result ) && ! empty( $result ) ) {
+				$settings['items'] = implode( "\n", $result );
 			}
 		}
 

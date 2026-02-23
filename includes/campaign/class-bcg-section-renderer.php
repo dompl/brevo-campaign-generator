@@ -116,6 +116,8 @@ class BCG_Section_Renderer {
 				return self::render_heading( $s, $max_width, $font_family );
 			case 'list':
 				return self::render_list( $s, $max_width, $font_family );
+			case 'social':
+				return self::render_social( $s, $max_width, $font_family );
 			case 'footer':
 				return self::render_footer( $s, $max_width, $font_family );
 			default:
@@ -283,71 +285,72 @@ class BCG_Section_Renderer {
 	 * @return string
 	 */
 	private static function render_hero_split( array $s, int $mw, string $font ): string {
-		$img_url    = esc_url( $s['image_url'] ?? '' );
-		$img_side   = in_array( $s['image_side'] ?? 'right', array( 'left', 'right' ), true ) ? $s['image_side'] : 'right';
-		$text_bg    = esc_attr( $s['text_bg_color'] ?? '#1a1a2e' );
-		$headline   = esc_html( $s['headline'] ?? '' );
-		$hsize      = (int) ( $s['headline_size'] ?? 32 );
-		$hcolor     = esc_attr( $s['headline_color'] ?? '#ffffff' );
-		$subtext    = esc_html( $s['subtext'] ?? '' );
-		$scolor     = esc_attr( $s['subtext_color'] ?? '#cccccc' );
-		$sfsize     = (int) ( $s['subtext_font_size'] ?? 15 );
-		$cta_text   = esc_html( $s['cta_text'] ?? '' );
-		$cta_url    = esc_url( $s['cta_url'] ?: '#' );
-		$cta_bg     = esc_attr( $s['cta_bg_color'] ?? '#e63529' );
-		$cta_tc     = esc_attr( $s['cta_text_color'] ?? '#ffffff' );
-		$cta_radius = (int) ( $s['cta_border_radius'] ?? 4 );
-		$pt         = (int) ( $s['padding_top'] ?? 40 );
-		$pb         = (int) ( $s['padding_bottom'] ?? 40 );
-		$half_w     = (int) round( $mw / 2 );
+		$img_url   = esc_url( $s['image_url'] ?? '' );
+		$img_side  = in_array( $s['image_side'] ?? 'right', array( 'left', 'right' ), true ) ? $s['image_side'] : 'right';
+		$text_bg   = esc_attr( $s['text_bg_color'] ?? '#1a1a2e' );
+		$headline  = esc_html( $s['headline'] ?? '' );
+		$hsize     = (int) ( $s['headline_size'] ?? 32 );
+		$hcolor    = esc_attr( $s['headline_color'] ?? '#ffffff' );
+		$subtext   = esc_html( $s['subtext'] ?? '' );
+		$scolor    = esc_attr( $s['subtext_color'] ?? '#cccccc' );
+		$sfsize    = (int) ( $s['subtext_font_size'] ?? 15 );
+		$cta_text  = esc_html( $s['cta_text'] ?? '' );
+		$cta_url   = esc_url( $s['cta_url'] ?: '#' );
+		$cta_bg    = esc_attr( $s['cta_bg_color'] ?? '#e63529' );
+		$cta_tc    = esc_attr( $s['cta_text_color'] ?? '#ffffff' );
+		$cta_r     = (int) ( $s['cta_border_radius'] ?? 4 );
+		$tp        = (int) ( $s['text_padding'] ?? $s['padding_top'] ?? 48 );
+		$half_w    = (int) round( $mw / 2 );
 
 		$cta_html = '';
 		if ( $cta_text ) {
 			$cta_html = sprintf(
 				'<tr><td style="padding-top:22px;"><a href="%s" style="display:inline-block;padding:12px 28px;background-color:%s;color:%s;font-family:%s;font-size:14px;font-weight:700;text-decoration:none;border-radius:%dpx;">%s</a></td></tr>',
-				$cta_url, $cta_bg, $cta_tc, esc_attr( $font ), $cta_radius, $cta_text
+				$cta_url, $cta_bg, $cta_tc, esc_attr( $font ), $cta_r, $cta_text
 			);
 		}
 
 		$text_td = sprintf(
-			'<td width="%d" valign="middle" bgcolor="%s" style="background-color:%s;padding:%dpx 28px %dpx;width:%dpx;">
+			'<td width="%d" valign="middle" bgcolor="%s" style="background-color:%s;padding:%dpx 28px;width:%dpx;">
 				<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 					<tr><td><h2 style="font-family:%s;font-size:%dpx;font-weight:700;color:%s;margin:0;padding:0;line-height:1.2;">%s</h2></td></tr>
 					<tr><td style="padding-top:14px;"><p style="font-family:%s;font-size:%dpx;color:%s;margin:0;padding:0;line-height:1.65;">%s</p></td></tr>
 					%s
 				</table>
 			</td>',
-			$half_w, $text_bg, $text_bg, $pt, $pb, $half_w,
+			$half_w, $text_bg, $text_bg, $tp, $half_w,
 			esc_attr( $font ), $hsize, $hcolor, $headline,
 			esc_attr( $font ), $sfsize, $scolor, $subtext,
 			$cta_html
 		);
 
+		// Image column: use background-image so it scales to the row height.
+		// For Outlook compatibility, a VML fallback fills with the bg colour.
 		if ( $img_url ) {
-			$image_td = sprintf(
-				'<td width="%d" valign="middle" style="padding:0;line-height:0;font-size:0;width:%dpx;overflow:hidden;">
-					<img src="%s" width="%d" alt="" style="display:block;width:%dpx;height:auto;max-height:400px;object-fit:cover;border:0;outline:none;text-decoration:none;" />
-				</td>',
-				$half_w, $half_w, $img_url, $half_w, $half_w
+			$img_td = sprintf(
+				'<!--[if mso]><td width="%1$d" valign="middle" bgcolor="%2$s" style="background-color:%2$s;width:%1$dpx;">&nbsp;</td><![endif]-->
+				<!--[if !mso]><!-->'
+				. '<td width="%1$d" valign="middle" bgcolor="%2$s" style="background-color:%2$s;background-image:url(\'%3$s\');background-size:cover;background-position:center center;width:%1$dpx;">'
+				. '<div style="font-size:0;line-height:0;">&nbsp;</div></td>'
+				. '<!--<![endif]-->',
+				$half_w, $text_bg, $img_url
 			);
 		} else {
-			$image_td = sprintf(
+			$img_td = sprintf(
 				'<td width="%d" valign="middle" bgcolor="%s" style="background-color:%s;width:%dpx;">&nbsp;</td>',
 				$half_w, $text_bg, $text_bg, $half_w
 			);
 		}
 
-		$cells = ( 'left' === $img_side ) ? $image_td . $text_td : $text_td . $image_td;
+		$cells = ( 'left' === $img_side ) ? $img_td . $text_td : $text_td . $img_td;
 
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;">
 				<tr>%s</tr>
 			</table>',
-			$mw, $mw, $mw,
-			$cells
+			$mw, $mw, $mw, $cells
 		);
 	}
-
 	/**
 	 * Render text block section.
 	 *
@@ -1218,6 +1221,74 @@ class BCG_Section_Renderer {
 	}
 
 	/**
+	 * Render social media section.
+	 *
+	 * @since  1.5.41
+	 * @param  array  $s     Settings.
+	 * @param  int    $mw    Max width.
+	 * @param  string $font  Font family.
+	 * @return string
+	 */
+	private static function render_social( array $s, int $mw, string $font ): string {
+		$bg       = esc_attr( $s['bg_color'] ?? '#ffffff' );
+		$tc       = esc_attr( $s['text_color'] ?? '#333333' );
+		$icon_bg  = esc_attr( $s['icon_bg'] ?? '#e63529' );
+		$icon_tc  = esc_attr( $s['icon_color'] ?? '#ffffff' );
+		$heading  = esc_html( $s['heading'] ?? '' );
+		$pt       = (int) ( $s['padding_top'] ?? 24 );
+		$pb       = (int) ( $s['padding_bottom'] ?? 24 );
+
+		$heading_html = '';
+		if ( $heading ) {
+			$heading_html = sprintf(
+				'<tr><td style="text-align:center;padding-bottom:16px;"><p style="font-family:%s;font-size:13px;font-weight:700;color:%s;margin:0;text-transform:uppercase;letter-spacing:2px;">%s</p></td></tr>',
+				esc_attr( $font ), $tc, $heading
+			);
+		}
+
+		$social_data = is_string( $s['social_links'] ) ? json_decode( $s['social_links'], true ) : ( $s['social_links'] ?? array() );
+		$abbrevs = array(
+			'facebook'  => 'f',  'fb'        => 'f',
+			'instagram' => 'in', 'ig'        => 'in',
+			'twitter'   => 'x',  'x'         => 'x',
+			'tiktok'    => 'tt', 'youtube'   => 'yt',
+			'pinterest' => 'p',  'linkedin'  => 'li',
+			'snapchat'  => 'sc', 'threads'   => 'th',
+		);
+		$icons = array();
+		if ( is_array( $social_data ) ) {
+			foreach ( $social_data as $item ) {
+				if ( empty( $item['label'] ) ) continue;
+				$key   = strtolower( trim( $item['label'] ) );
+				$abbr  = $abbrevs[ $key ] ?? strtoupper( substr( $key, 0, 2 ) );
+				$href  = ! empty( $item['url'] ) ? esc_url( $item['url'] ) : '#';
+				$icons[] = sprintf(
+					'<a href="%s" target="_blank" style="display:inline-block;width:40px;height:40px;line-height:40px;border-radius:50%%;background-color:%s;color:%s;font-family:Arial,sans-serif;font-size:13px;font-weight:700;text-align:center;text-decoration:none;margin:0 6px;text-transform:uppercase;vertical-align:middle;">%s</a>',
+					$href, $icon_bg, $icon_tc, esc_html( $abbr )
+				);
+			}
+		}
+
+		$icons_html = $icons ? '<tr><td style="text-align:center;">' . implode( ' ', $icons ) . '</td></tr>' : '';
+
+		return sprintf(
+			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
+				<tr>
+					<td style="padding:%dpx 30px %dpx;">
+						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
+							%s
+							%s
+						</table>
+					</td>
+				</tr>
+			</table>',
+			$mw, $mw, $mw, $bg,
+			$pt, $pb,
+			$heading_html,
+			$icons_html
+		);
+	}
+	/**
 	 * Render footer section.
 	 *
 	 * @since  1.5.0
@@ -1251,6 +1322,39 @@ class BCG_Section_Renderer {
 			}
 		}
 
+		$social_html = '';
+		if ( ! empty( $s['show_social'] ) ) {
+			$social_data = is_string( $s['social_links'] ) ? json_decode( $s['social_links'], true ) : $s['social_links'];
+			if ( is_array( $social_data ) ) {
+				$icon_bg  = esc_attr( $s['icon_bg'] ?? '#444444' );
+				$icon_tc  = esc_attr( $s['icon_tc'] ?? '#ffffff' );
+				$icons    = array();
+				$abbrevs  = array(
+					'facebook'  => 'f',  'fb'        => 'f',
+					'instagram' => 'in', 'ig'        => 'in',
+					'twitter'   => 'x',  'x'         => 'x',
+					'tiktok'    => 'tt', 'youtube'   => 'yt',
+					'pinterest' => 'p',  'linkedin'  => 'li',
+					'snapchat'  => 'sc', 'threads'   => 'th',
+				);
+				foreach ( $social_data as $item ) {
+					if ( empty( $item['label'] ) || empty( $item['url'] ) ) {
+						continue;
+					}
+					$key   = strtolower( trim( $item['label'] ) );
+					$abbr  = $abbrevs[ $key ] ?? strtoupper( substr( $key, 0, 2 ) );
+					$href  = esc_url( $item['url'] );
+					$icons[] = sprintf(
+						'<a href="%s" target="_blank" style="display:inline-block;width:32px;height:32px;line-height:32px;border-radius:50%%;background-color:%s;color:%s;font-family:Arial,sans-serif;font-size:11px;font-weight:700;text-align:center;text-decoration:none;margin:0 4px;text-transform:uppercase;vertical-align:middle;">%s</a>',
+						$href, $icon_bg, $icon_tc, esc_html( $abbr )
+					);
+				}
+				if ( $icons ) {
+					$social_html = '<tr><td style="padding-top:14px;text-align:center;">' . implode( ' ', $icons ) . '</td></tr>';
+				}
+			}
+		}
+
 		return sprintf(
 			'<table width="%d" cellpadding="0" cellspacing="0" border="0" style="width:%dpx;max-width:%dpx;background-color:%s;">
 				<tr>
@@ -1262,13 +1366,15 @@ class BCG_Section_Renderer {
 								</td>
 							</tr>
 							%s
+							%s
 						</table>
 					</td>
 				</tr>
 			</table>',
 			$mw, $mw, $mw, $bg,
 			esc_attr( $font ), $tc, $text,
-			$links_html
+			$links_html,
+			$social_html
 		);
 	}
 
@@ -1352,6 +1458,7 @@ class BCG_Section_Renderer {
 		$pb      = (int) ( $s['padding_bottom'] ?? $s['padding'] ?? 30 );
 		$text_align = in_array( $s['text_align'] ?? 'left', array( 'left', 'center', 'right' ), true ) ? ( $s['text_align'] ?? 'left' ) : 'left';
 		$style   = $s['list_style'] ?? 'bullets';
+		$item_gap = (int) ( $s['item_gap'] ?? 8 );
 
 		// Parse items: one plain-text line per item (new format).
 		// Also handles legacy JSON array format for backwards compatibility.
@@ -1388,13 +1495,23 @@ class BCG_Section_Renderer {
 				$marker = '<span style="font-family:' . esc_attr( $font ) . ';font-size:' . $fsize . 'px;font-weight:700;color:' . $accent . ';">' . ( $i + 1 ) . '.</span>';
 			} elseif ( 'bullets' === $style ) {
 				$marker = '<span style="color:' . $accent . ';font-size:20px;line-height:1;">&#8226;</span>';
+			} elseif ( 'arrows' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:' . $fsize . 'px;line-height:1;">&#8594;</span>';
+			} elseif ( 'stars' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:' . $fsize . 'px;line-height:1;">&#9733;</span>';
+			} elseif ( 'dashes' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:' . $fsize . 'px;line-height:1;">&#8211;</span>';
+			} elseif ( 'heart' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:' . $fsize . 'px;line-height:1;">&#9829;</span>';
+			} elseif ( 'diamond' === $style ) {
+				$marker = '<span style="color:' . $accent . ';font-size:' . $fsize . 'px;line-height:1;">&#9670;</span>';
 			} else {
 				$marker = '';
 			}
 
 			$rows .= sprintf(
 				'<tr>
-					<td style="padding:5px 0;vertical-align:top;">
+					<td style="padding:%dpx 0 0;vertical-align:top;">
 						<table width="100%%" cellpadding="0" cellspacing="0" border="0">
 							<tr>
 								%s
@@ -1403,6 +1520,7 @@ class BCG_Section_Renderer {
 						</table>
 					</td>
 				</tr>',
+				$i > 0 ? $item_gap : 0,
 				$marker ? '<td style="width:24px;vertical-align:top;padding-top:2px;">' . $marker . '</td>' : '',
 				$marker ? '0' : '0px',
 				esc_attr( $font ),

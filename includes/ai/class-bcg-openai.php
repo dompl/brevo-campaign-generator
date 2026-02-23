@@ -1242,6 +1242,52 @@ class BCG_OpenAI {
 	// ─── Layout Generation ─────────────────────────────────────────────────
 
 	/**
+	 * Generate a list of bullet-point items for a list section.
+	 *
+	 * @since  1.5.41
+	 * @param  array  $context  Campaign context.
+	 * @param  string $tone     Tone of voice.
+	 * @param  string $language Target language.
+	 * @return string[]|\WP_Error Array of plain-text list item strings, or WP_Error.
+	 */
+	public function generate_list_items( array $context, string $tone, string $language ): array|\WP_Error {
+		$system_prompt = $this->build_system_prompt( $tone, $language );
+
+		$product_names = array_map(
+			static fn( array $p ) => $p['name'] ?? '',
+			array_slice( $context['products'] ?? array(), 0, 5 )
+		);
+		$theme = $context['theme'] ?? '';
+
+		$user_prompt = sprintf(
+			'Write 4–6 short bullet-point list items for an email campaign about: %s%s. ' .
+			'Each item should be a single punchy sentence (max 10 words). ' .
+			'Return each item on its own line, no bullet symbols, no numbering.',
+			$theme ? $theme . ' — ' : '',
+			implode( ', ', array_filter( $product_names ) ) ?: 'our products'
+		);
+
+		$result = $this->make_completion_request(
+			$system_prompt,
+			$user_prompt,
+			self::TEMPERATURE_CREATIVE,
+			200
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$lines = array_values(
+			array_filter(
+				array_map( 'trim', explode( "\n", $result ) )
+			)
+		);
+
+		return $lines ?: new \WP_Error( 'list_items_empty', __( 'AI returned empty list items.', 'brevo-campaign-generator' ) );
+	}
+
+	/**
 	 * Ask GPT to suggest an email section layout based on a campaign brief.
 	 *
 	 * Returns an ordered array of section type slugs (e.g. ['header','hero','products','footer'])

@@ -103,6 +103,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'Request a Section', 'brevo-campaign-generator' ); ?>
 			</button>
 		</div>
+		<div class="bcg-sb-primary-color-wrap">
+			<label class="bcg-sb-primary-color-label" for="bcg-sb-primary-color">
+				<span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">palette</span>
+				<?php esc_html_e( 'Primary Colour', 'brevo-campaign-generator' ); ?>
+			</label>
+			<input type="color" id="bcg-sb-primary-color" class="bcg-sb-primary-color-input" value="#e63529" title="<?php esc_attr_e( 'Set primary colour — replaces accent colour across all sections', 'brevo-campaign-generator' ); ?>" />
+			<button type="button" id="bcg-sb-apply-primary-color" class="bcg-btn bcg-btn-secondary bcg-btn-sm">
+				<?php esc_html_e( 'Apply to All', 'brevo-campaign-generator' ); ?>
+			</button>
+		</div>
 	</div><!-- /.bcg-sb-toolbar -->
 
 	<!-- ── Status bar ────────────────────────────────────────────────── -->

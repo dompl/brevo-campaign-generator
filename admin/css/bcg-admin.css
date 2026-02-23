@@ -3983,16 +3983,18 @@ body.bcg-admin-page .bcg-sb-palette-group:last-child {
 }
 
 body.bcg-admin-page .bcg-sb-palette-group-header {
-	display:        flex;
-	align-items:    center;
-	gap:            6px;
-	padding:        8px var(--bcg-space-3) 4px;
-	color:          var(--bcg-text-muted);
-	font-size:      10px;
-	font-weight:    700;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	user-select:    none;
+	display:         flex;
+	align-items:     center;
+	justify-content: space-between;
+	gap:             6px;
+	padding:         8px var(--bcg-space-3) 4px;
+	color:           var(--bcg-text-muted);
+	font-size:       10px;
+	font-weight:     700;
+	text-transform:  uppercase;
+	letter-spacing:  0.08em;
+	user-select:     none;
+	cursor:          pointer;
 }
 
 body.bcg-admin-page .bcg-sb-palette-cat-icon {
@@ -4007,7 +4009,15 @@ body.bcg-admin-page .bcg-sb-palette-group-label {
 }
 
 body.bcg-admin-page .bcg-sb-palette-group-chevron {
-	display: none;
+	font-size:   18px !important;
+	transition:  transform 0.2s ease;
+	margin-left: auto;
+	opacity:     0.6;
+	flex-shrink: 0;
+}
+
+body.bcg-admin-page .bcg-sb-group-open .bcg-sb-group-chevron {
+	transform: rotate(180deg);
 }
 
 /* ── Palette: variant cards ──────────────────────────────────────────── */
@@ -4018,7 +4028,6 @@ body.bcg-admin-page .bcg-sb-palette-variants {
 	gap:            4px;
 	padding:        4px var(--bcg-space-2) var(--bcg-space-2);
 	overflow:       hidden;
-	transition:     max-height 0.2s ease;
 }
 
 body.bcg-admin-page .bcg-sb-palette-variants-collapsed {
@@ -6675,6 +6684,39 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 	border-radius: var(--bcg-radius, 6px);
 	color:         #1e8449;
 	font-size:     13px;
+}
+
+/* ── Section Builder: primary colour picker ──────────────────────────── */
+
+body.bcg-admin-page .bcg-sb-primary-color-wrap {
+	display:     flex;
+	align-items: center;
+	gap:         8px;
+	padding:     8px 12px;
+	background:  var(--bcg-surface, #fff);
+	border-top:  1px solid var(--bcg-border, #e5e5e5);
+	flex-wrap:   wrap;
+	width:       100%;
+}
+
+body.bcg-admin-page .bcg-sb-primary-color-label {
+	font-size:   12px;
+	font-weight: 600;
+	color:       var(--bcg-text-muted, #666);
+	display:     flex;
+	align-items: center;
+	gap:         4px;
+	white-space: nowrap;
+}
+
+body.bcg-admin-page .bcg-sb-primary-color-input {
+	width:         36px;
+	height:        28px;
+	padding:       2px;
+	border:        1px solid var(--bcg-border, #ddd);
+	border-radius: 4px;
+	cursor:        pointer;
+	background:    none;
 }
 
 /* ── New Campaign Multi-Step Wizard ────────────────────────────────────── */

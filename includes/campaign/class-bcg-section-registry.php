@@ -171,8 +171,7 @@ class BCG_Section_Registry {
 					array( 'key' => 'cta_bg_color',    'label' => __( 'Button Background', 'brevo-campaign-generator' ),    'type' => 'color',  'default' => '#e63529' ),
 					array( 'key' => 'cta_text_color',  'label' => __( 'Button Text Colour', 'brevo-campaign-generator' ),   'type' => 'color',  'default' => '#ffffff' ),
 					array( 'key' => 'cta_border_radius', 'label' => __( 'Button Border Radius (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 4, 'min' => 0, 'max' => 30, 'step' => 1 ),
-					array( 'key' => 'padding_top',     'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),     'type' => 'range',  'default' => 40, 'min' => 0, 'max' => 120, 'step' => 4 ),
-					array( 'key' => 'padding_bottom',  'label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ),  'type' => 'range',  'default' => 40, 'min' => 0, 'max' => 120, 'step' => 4 ),
+					array( 'key' => 'text_padding', 'label' => __( 'Padding Top & Bottom (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 48, 'min' => 16, 'max' => 120, 'step' => 4 ),
 				),
 			),
 
@@ -478,7 +477,7 @@ class BCG_Section_Registry {
 			'list' => array(
 				'label'  => __( 'List', 'brevo-campaign-generator' ),
 				'icon'   => 'format_list_bulleted',
-				'has_ai' => false,
+				'has_ai' => true,
 				'fields' => array(
 					array( 'key' => 'heading',      'label' => __( 'Heading', 'brevo-campaign-generator' ),           'type' => 'text',   'default' => '' ),
 					array( 'key' => 'items',        'label' => __( 'List Items (one per line)', 'brevo-campaign-generator' ), 'type' => 'textarea', 'default' => "First item\nSecond item\nThird item" ),
@@ -488,6 +487,11 @@ class BCG_Section_Registry {
 							array( 'value' => 'numbers',  'label' => __( 'Numbers', 'brevo-campaign-generator' ) ),
 							array( 'value' => 'checks',   'label' => __( 'Checkmarks', 'brevo-campaign-generator' ) ),
 							array( 'value' => 'none',     'label' => __( 'None', 'brevo-campaign-generator' ) ),
+						array( 'value' => 'arrows',   'label' => __( 'Arrows (→)', 'brevo-campaign-generator' ) ),
+						array( 'value' => 'stars',    'label' => __( 'Stars (★)', 'brevo-campaign-generator' ) ),
+						array( 'value' => 'dashes',   'label' => __( 'Dashes (–)', 'brevo-campaign-generator' ) ),
+						array( 'value' => 'heart',    'label' => __( 'Hearts (♥)', 'brevo-campaign-generator' ) ),
+						array( 'value' => 'diamond',  'label' => __( 'Diamonds (◆)', 'brevo-campaign-generator' ) ),
 						),
 					),
 					array( 'key' => 'text_color',   'label' => __( 'Text Colour', 'brevo-campaign-generator' ),       'type' => 'color',  'default' => '#333333' ),
@@ -503,6 +507,24 @@ class BCG_Section_Registry {
 					),
 					array( 'key' => 'padding_top',    'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),     'type' => 'range',  'default' => 30, 'min' => 0, 'max' => 60, 'step' => 2 ),
 					array( 'key' => 'padding_bottom', 'label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ),  'type' => 'range',  'default' => 30, 'min' => 0, 'max' => 60, 'step' => 2 ),
+					array( 'key' => 'item_gap', 'label' => __( 'Gap Between Items (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 8, 'min' => 0, 'max' => 32, 'step' => 2 ),
+				),
+			),
+
+			// ── Social Media ──────────────────────────────────────────
+			'social' => array(
+				'label'  => __( 'Social Media', 'brevo-campaign-generator' ),
+				'icon'   => 'share',
+				'has_ai' => false,
+				'fields' => array(
+					array( 'key' => 'heading',    'label' => __( 'Heading', 'brevo-campaign-generator' ),             'type' => 'text',   'default' => 'Follow Us' ),
+					array( 'key' => 'social_links', 'label' => __( 'Social Links', 'brevo-campaign-generator' ),     'type' => 'links',  'default' => '[{"label":"Facebook","url":""},{"label":"Instagram","url":""},{"label":"Twitter","url":""},{"label":"TikTok","url":""}]' ),
+					array( 'key' => 'bg_color',   'label' => __( 'Background Colour', 'brevo-campaign-generator' ),  'type' => 'color',  'default' => '#ffffff' ),
+					array( 'key' => 'text_color', 'label' => __( 'Text Colour', 'brevo-campaign-generator' ),        'type' => 'color',  'default' => '#333333' ),
+					array( 'key' => 'icon_bg',    'label' => __( 'Icon Background', 'brevo-campaign-generator' ),    'type' => 'color',  'default' => '#e63529' ),
+					array( 'key' => 'icon_color', 'label' => __( 'Icon Text Colour', 'brevo-campaign-generator' ),   'type' => 'color',  'default' => '#ffffff' ),
+					array( 'key' => 'padding_top',    'label' => __( 'Padding Top (px)', 'brevo-campaign-generator' ),    'type' => 'range', 'default' => 24, 'min' => 0, 'max' => 60, 'step' => 2 ),
+					array( 'key' => 'padding_bottom', 'label' => __( 'Padding Bottom (px)', 'brevo-campaign-generator' ), 'type' => 'range', 'default' => 24, 'min' => 0, 'max' => 60, 'step' => 2 ),
 				),
 			),
 
@@ -517,6 +539,8 @@ class BCG_Section_Registry {
 					array( 'key' => 'text_color',         'label' => __( 'Text Colour', 'brevo-campaign-generator' ),        'type' => 'color',    'default' => '#999999' ),
 					array( 'key' => 'bg_color',           'label' => __( 'Background Colour', 'brevo-campaign-generator' ),  'type' => 'color',    'default' => '#f5f5f5' ),
 					array( 'key' => 'show_unsubscribe',   'label' => __( 'Show Unsubscribe', 'brevo-campaign-generator' ),   'type' => 'toggle',   'default' => true ),
+					array( 'key' => 'show_social',    'label' => __( 'Show Social Media Icons', 'brevo-campaign-generator' ), 'type' => 'toggle', 'default' => false ),
+					array( 'key' => 'social_links',   'label' => __( 'Social Media Links', 'brevo-campaign-generator' ),      'type' => 'links',  'default' => '[{"label":"Facebook","url":""},{"label":"Instagram","url":""},{"label":"Twitter","url":""}]' ),
 				),
 			),
 		);

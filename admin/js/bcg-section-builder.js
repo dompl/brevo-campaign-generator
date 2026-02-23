@@ -77,7 +77,8 @@
 					.addClass( 'bcg-sb-palette-group-header' )
 					.html(
 						'<span class="material-icons-outlined bcg-sb-palette-cat-icon">' + self.escHtml( cat.icon || 'widgets' ) + '</span>' +
-						'<span class="bcg-sb-palette-group-label">' + self.escHtml( cat.label ) + '</span>'
+						'<span class="bcg-sb-palette-group-label">' + self.escHtml( cat.label ) + '</span>' +
+						'<span class="bcg-sb-group-chevron material-icons-outlined">expand_more</span>'
 					);
 
 				var $variants = $( '<div>' ).addClass( 'bcg-sb-palette-variants' );
@@ -98,6 +99,14 @@
 
 				$group.append( $header ).append( $variants );
 				$list.append( $group );
+
+				// Accordion: first group starts open, all others start closed.
+				if ( i === 0 ) {
+					$group.attr( 'data-open', 'true' ).addClass( 'bcg-sb-group-open' );
+				} else {
+					$group.attr( 'data-open', 'false' );
+					$variants.hide();
+				}
 			} );
 		},
 
@@ -128,7 +137,39 @@
 				self.addSection( type, settings );
 			} );
 
-			// Category headers are plain labels — no accordion toggle.
+			// Palette group header accordion toggle.
+			$( document ).on( 'click', '.bcg-sb-palette-group-header', function ( e ) {
+				// Don't fire when clicking a variant card inside the group.
+				if ( $( e.target ).closest( '.bcg-sb-variant-card' ).length ) { return; }
+
+				var $header   = $( this );
+				var $group    = $header.closest( '.bcg-sb-palette-group' );
+				var $variants = $group.find( '.bcg-sb-palette-variants' );
+				var $chevron  = $header.find( '.bcg-sb-group-chevron' );
+				var isOpen    = $group.attr( 'data-open' ) === 'true';
+
+				if ( isOpen ) {
+					// Close this group.
+					$variants.slideUp( 200 );
+					$group.attr( 'data-open', 'false' ).removeClass( 'bcg-sb-group-open' );
+					$chevron.css( 'transform', 'rotate(0deg)' );
+				} else {
+					// Open this group and close all others.
+					$variants.slideDown( 200 );
+					$group.attr( 'data-open', 'true' ).addClass( 'bcg-sb-group-open' );
+					$chevron.css( 'transform', 'rotate(180deg)' );
+
+					// Close all other groups.
+					$( '.bcg-sb-palette-group' ).not( $group ).each( function () {
+						var $otherGroup    = $( this );
+						var $otherVariants = $otherGroup.find( '.bcg-sb-palette-variants' );
+						var $otherChevron  = $otherGroup.find( '.bcg-sb-group-chevron' );
+						$otherVariants.slideUp( 200 );
+						$otherGroup.attr( 'data-open', 'false' ).removeClass( 'bcg-sb-group-open' );
+						$otherChevron.css( 'transform', 'rotate(0deg)' );
+					} );
+				}
+			} );
 		},
 
 		// ── Canvas ─────────────────────────────────────────────────────────
@@ -1136,6 +1177,11 @@
 					return self.i18n.unsaved_changes || 'You have unsaved changes.';
 				}
 			} );
+
+			// Primary colour picker — apply to all sections.
+			$( '#bcg-sb-apply-primary-color' ).on( 'click', function () {
+				self.applyPrimaryColour();
+			} );
 		},
 
 		// ── Preview ───────────────────────────────────────────────────────
@@ -2025,6 +2071,43 @@
 				var v = c === 'x' ? r : ( r & 0x3 | 0x8 );
 				return v.toString( 16 );
 			} );
+		},
+
+		/**
+		 * Apply the chosen primary colour across all section settings.
+		 *
+		 * Replaces any setting value that matches the default red (#e63529) or
+		 * whose key is recognised as an accent/primary colour key.
+		 */
+		applyPrimaryColour: function () {
+			var self    = this;
+			var newCol  = $( '#bcg-sb-primary-color' ).val();
+			if ( ! newCol ) { return; }
+
+			// Setting keys that should be treated as accent/primary colour fields.
+			var accentKeys = [
+				'accent_color', 'cta_bg_color', 'cta_bg', 'button_bg', 'button_color',
+				'icon_bg', 'ribbon_color', 'left_bg'
+			];
+
+			$.each( self.sections, function ( i, section ) {
+				if ( ! section.settings ) { return; }
+				$.each( section.settings, function ( key, val ) {
+					if ( typeof val !== 'string' ) { return; }
+					var isAccentKey  = accentKeys.indexOf( key ) !== -1;
+					var isDefaultRed = val === '#e63529';
+					if ( isAccentKey || isDefaultRed ) {
+						self.sections[ i ].settings[ key ] = newCol;
+					}
+				} );
+			} );
+
+			self.isDirty = true;
+			self.renderCanvas();
+			if ( self.selectedId ) {
+				self.renderSettingsPanel( self.getSectionById( self.selectedId ) );
+			}
+			self.debouncePreview();
 		},
 
 		/**

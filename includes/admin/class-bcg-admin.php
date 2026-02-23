@@ -295,13 +295,13 @@ class BCG_Admin {
 		$credit_balance = $this->get_current_user_credit_balance();
 
 		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
-		// Each entry shows in the "What's New" modal so users see real release notes.
 		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
-		// Each entry shows in the "What's New" modal so users see real release notes.
 		$whats_new_items = array(
-			array( 'icon' => 'view_column',         'text' => __( 'Hero Split is now in the palette — image on one side, text on the other, with switchable left/right placement and 4 colour variants', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'confirmation_number', 'text' => __( 'Coupon Block now has 7 designs: Classic, Banner, Card, Split Panel, Minimal, Ribbon, and Code Only', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'auto_awesome',        'text' => __( 'AI layout builder can now choose Hero Split automatically when generating layouts from a prompt', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'format_list_bulleted', 'text' => __( 'List sections: item gap slider, 5 new styles (arrows, stars, dashes, hearts, diamonds), AI-generated headings & items', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'view_column',          'text' => __( 'Hero Split: image now fills full height as a background, single padding slider', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'share',                'text' => __( 'New Social Media section type + social icon links option in Footer sections', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'palette',              'text' => __( 'Primary colour picker in the toolbar — apply your brand colour to all sections at once', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'widgets',              'text' => __( 'Palette accordion: section groups now slide open/close — plus 9 new variants (3 headers, 3 footers, 3 CTAs)', 'brevo-campaign-generator' ) ),
 		);
 
 		$bcg_data = array(

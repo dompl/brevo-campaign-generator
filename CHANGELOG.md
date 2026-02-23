@@ -17,6 +17,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.41] — 2026-02-23
+
+### Added
+- **List section**: item gap range slider; 5 new list styles (Arrows →, Stars ★, Dashes –, Hearts ♥, Diamonds ◆); AI-generated headings and list items; `has_ai` now true
+- **Social Media section type**: standalone section with heading, configurable platform links, and circular icon badges
+- **Footer social icons**: toggle to show social media icon links in any footer section
+- **Primary colour picker** in Section Builder toolbar — set once and "Apply to All" pushes it into every accent/button colour field across all sections
+- **Palette accordion**: section groups slide open/close; only one group open at a time
+- **9 new palette variants**: 3 headers (Dark, Centred, Minimal Border), 3 footers (Social Icons, Minimal White, Brand Colour), 3 CTAs (Dark Background, Pill Button, Minimal Text Link)
+- **2 Social Media palette variants**: Light and Dark
+
+### Changed
+- **Hero Split**: image now uses CSS `background-image` on the TD (fills full height); `padding_top` + `padding_bottom` replaced with single `text_padding` slider
+
+---
+
 ## [1.5.40] — 2026-02-23
 
 ### Fixed
