@@ -1011,7 +1011,7 @@
 				// Scroll to top of the wizard steps.
 				var $steps = $( '#bcg-wizard-steps' );
 				if ( $steps.length ) {
-					$( 'html, body' ).animate( { scrollTop: $steps.offset().top - 40 }, 200 );
+					$( 'html, body' ).animate( { scrollTop: $steps.offset().top - 100 }, 200 );
 				}
 
 				// Re-init custom selects on the newly visible step (in case any were hidden).

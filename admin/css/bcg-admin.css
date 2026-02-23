@@ -4419,15 +4419,16 @@ body.bcg-admin-page .bcg-modal {
 }
 
 body.bcg-admin-page .bcg-modal-overlay {
-	position:   absolute;
-	inset:      0;
-	background: rgba(0, 0, 0, 0.65);
+	position:        absolute;
+	inset:           0;
+	z-index:         1;
+	background:      rgba(0, 0, 0, 0.65);
 	backdrop-filter: blur(2px);
 }
 
 body.bcg-admin-page .bcg-modal-content {
 	position:       relative;
-	z-index:        1;
+	z-index:        2;
 	background:     var(--bcg-bg-surface);
 	border:         1px solid var(--bcg-border);
 	border-radius:  var(--bcg-radius-lg, 10px);
@@ -6346,9 +6347,11 @@ body.folded .bcg-actions-bar {
 
 /* ── Schedule Modal — overlay-as-root pattern ────────────────────────── */
 
-/* When .bcg-modal-overlay is the outermost element (full-screen fixed
-   wrapper) rather than the inner backdrop inside a .bcg-modal wrapper. */
-body.bcg-admin-page .bcg-modal-overlay[id] {
+/* The schedule modal uses .bcg-modal-overlay as the outermost fixed wrapper
+   (not inside a .bcg-modal container). Target it specifically so inner
+   backdrop overlays with ids in other modals are not accidentally promoted
+   to position:fixed and block pointer events. */
+body.bcg-admin-page #bcg-schedule-modal {
 	position:        fixed;
 	inset:           0;
 	background:      rgba(0, 0, 0, 0.65);
@@ -6544,15 +6547,14 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 /* ── New Campaign Multi-Step Wizard ────────────────────────────────────── */
 
 .bcg-wizard-steps {
-	display:         flex;
-	align-items:     flex-start;
-	gap:             0;
-	margin:          0 0 28px;
-	padding:         20px 24px;
-	background:      var(--bcg-card-bg, #fff);
-	border:          1px solid var(--bcg-border, #e2e8f0);
-	border-radius:   10px;
-	overflow-x:      auto;
+	display:           flex;
+	align-items:       center;
+	gap:               0;
+	margin:            0 0 28px;
+	padding:           20px 0;
+	background:        transparent;
+	overflow-x:        auto;
+	scroll-margin-top: 100px;
 }
 
 .bcg-wizard-step {
@@ -6617,7 +6619,7 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 .bcg-wizard-step-title {
 	font-size:   12px;
 	font-weight: 600;
-	color:       var(--bcg-text, #2d3748);
+	color:       var(--bcg-text, #f0f4f8);
 	white-space: nowrap;
 }
 
@@ -6628,13 +6630,12 @@ body.bcg-admin-page .bcg-sb-prompt-body {
 }
 
 .bcg-wizard-step-connector {
-	flex:             1;
-	min-width:        20px;
-	height:           2px;
-	background:       var(--bcg-border, #e2e8f0);
-	margin:           0 4px;
-	align-self:       center;
-	margin-top:       -20px; /* offset for the info text below circle */
+	flex:        1;
+	min-width:   20px;
+	height:      2px;
+	background:  var(--bcg-border, #334155);
+	margin:      0 4px;
+	flex-shrink: 0;
 }
 
 .bcg-wizard-nav {

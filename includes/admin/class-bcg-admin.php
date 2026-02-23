@@ -294,12 +294,9 @@ class BCG_Admin {
 		$credit_balance = $this->get_current_user_credit_balance();
 
 		$whats_new_items = array(
-			array( 'icon' => 'linear_scale',        'text' => __( 'New Campaign is now a 5-step wizard — Email Template, Basics, Products, Coupon, AI & Generate', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'dashboard_customize', 'text' => __( 'Your Section Builder templates now appear at the top of the template picker', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'check_circle',        'text' => __( 'Brevo mailing list and sender dropdowns no longer duplicate on refresh', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'lock',                'text' => __( 'API keys can now be defined in wp-config.php — the settings field hides automatically', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'widgets',             'text' => __( 'Section Builder palette icons updated — no more emoji, all Material Icons', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'school',              'text' => __( 'AI Trainer removed from Settings tabs — use the dedicated AI Trainer page in the main menu', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'check_circle',   'text' => __( 'All modals (Preview, Load Template, AI Prompt, What\'s New) now open correctly in front of the blur overlay', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'linear_scale',   'text' => __( 'Wizard step indicator is now fully visible — no longer hidden behind the sticky plugin header', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'title',          'text' => __( 'Step titles are now white and the connector line sits centred between the step circles', 'brevo-campaign-generator' ) ),
 		);
 
 		$bcg_data = array(

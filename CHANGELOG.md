@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.35] — 2026-02-23
+
+### Fixed
+- **Modals blocked by blur overlay** — all modals (What's New, Preview, Load Template, AI Prompt, Request a Section) had their inner backdrop overlay accidentally promoted to `position: fixed` via the `.bcg-modal-overlay[id]` CSS rule; changed the rule to target only `#bcg-schedule-modal` which legitimately uses the overlay-as-root pattern; inner overlays now correctly render behind the modal content
+- **What's New overlay blocking clicks** — specifically, `#bcg-whats-new-overlay` was matching the broad `[id]` selector; removed the id attribute (replaced with class `bcg-whats-new-overlay`) and updated the JS dismiss handler to match
+- **Wizard step indicator hidden behind sticky header** — on page load the wizard steps were scrolled to the top of the viewport but landed behind the sticky plugin header; scroll offset increased from 40px to 100px to account for the WP admin bar (32px) plus plugin header (52px + margin); added `scroll-margin-top: 100px` to the steps container
+- **Wizard step text colour** — step title text now uses a light fallback colour (`#f0f4f8`) instead of the dark `#2d3748` fallback so titles are readable on dark page backgrounds
+- **Wizard connector line position** — removed the `margin-top: -20px` hack and changed the steps container to `align-items: center` so the connector line is vertically centred between the step circles
+
+---
+
 ## [1.5.34] — 2026-02-23
 
 ### Added

@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div id="bcg-whats-new-modal" class="bcg-modal bcg-whats-new-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="bcg-whats-new-title">
-	<div class="bcg-modal-overlay" id="bcg-whats-new-overlay"></div>
+	<div class="bcg-modal-overlay bcg-whats-new-overlay"></div>
 	<div class="bcg-modal-content bcg-whats-new-content">
 
 		<div class="bcg-modal-header bcg-whats-new-header">

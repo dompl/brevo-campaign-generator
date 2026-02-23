@@ -434,7 +434,7 @@
 		}
 
 		// Dismiss handlers.
-		$( document ).on( 'click', '#bcg-whats-new-close, #bcg-whats-new-dismiss, #bcg-whats-new-overlay', function () {
+		$( document ).on( 'click', '#bcg-whats-new-close, #bcg-whats-new-dismiss, .bcg-whats-new-overlay', function () {
 			dismissModal();
 		} );
 
