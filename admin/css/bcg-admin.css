@@ -2877,9 +2877,10 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 /* ── My Templates section (campaign wizard) ───────────────────────── */
 
 body.bcg-admin-page .bcg-my-templates-section {
-	margin-top: var(--bcg-space-6);
-	padding-top: var(--bcg-space-5);
-	border-top: 1px solid var(--bcg-border);
+	margin-top:    var(--bcg-space-6);
+	margin-bottom: var(--bcg-space-6);
+	padding-top:   var(--bcg-space-5);
+	border-top:    1px solid var(--bcg-border);
 }
 
 body.bcg-admin-page .bcg-my-templates-heading {
