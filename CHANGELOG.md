@@ -17,6 +17,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.43] — 2026-02-24
+
+### Fixed
+- **Font selector**: default font dropdown was rendering both the native `<select>` element and the raw options list simultaneously due to incorrect CSS class names; corrected to use the plugin's standard custom-select class structure
+- **Social media icons**: icons were rendering as egg/oval shapes instead of circles; fixed by switching from `display:inline-table` to `display:inline-block` with `overflow:hidden` and SVG centred via calculated `margin-top`
+- **Default Settings**: primary colour picker and font selector moved from toolbar defaults bar into a dedicated "Default Settings" modal (accessible via the tune button); resolves white background issue on colour picker in dark admin theme
+- **Section Builder — my-templates spacing**: "Standard Templates" heading was touching the last user-saved template card; added `margin-bottom` to the saved-templates section container
+
+---
+
 ## [1.5.42] — 2026-02-23
 
 ### Added
