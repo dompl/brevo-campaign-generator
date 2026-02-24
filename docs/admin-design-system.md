@@ -2,7 +2,7 @@
 
 > **Purpose:** This document defines the complete visual design system for WordPress admin plugins built by Red Frog Studio (Dom Kapelewski). Copy this system into any new plugin to achieve a consistent, branded look across all RFS tools.
 >
-> **Last updated:** v1.4.0 · February 2026
+> **Last updated:** v1.5.43 · February 2026
 
 ---
 
@@ -834,6 +834,207 @@ PHP:
 - Add `admin_body_class` filter → `bcg-admin-page` → `your-plugin-admin-page`
 - Add `admin_enqueue_scripts` hook → load fonts, icons, CSS, JS
 - Replace all `bcg_` prefixes in CSS classes with your plugin's prefix
+
+---
+
+## 15. Custom Dropdown Component
+
+All `<select>` elements across the plugin are replaced with a custom accessible dropdown component. This is initialised globally on all BCG admin pages via `window.bcgInitCustomSelects()` in `bcg-settings.js`.
+
+### Structure
+
+```html
+<div class="bcg-select-wrapper" data-select-init="true">
+  <select class="bcg-select" name="field_name" id="field_id">
+    <option value="a">Option A</option>
+    <option value="b">Option B</option>
+  </select>
+  <div class="bcg-select-trigger">
+    <span class="bcg-select-value">Option A</span>
+    <span class="material-icons-outlined bcg-select-arrow">expand_more</span>
+  </div>
+  <div class="bcg-select-menu">
+    <div class="bcg-select-option" data-value="a">Option A</div>
+    <div class="bcg-select-option" data-value="b">Option B</div>
+  </div>
+</div>
+```
+
+The native `<select>` is hidden via CSS; the custom trigger/menu handle display. Options position with `fixed` coordinates to escape `overflow: hidden` ancestors (useful in modals and panels).
+
+### Initialisation
+
+```js
+// Initialise all uninitialised selects on the page:
+window.bcgInitCustomSelects();
+
+// Or initialise within a specific container:
+window.bcgInitCustomSelects( document.getElementById('my-container') );
+```
+
+The guard `data-select-init="true"` prevents double-initialisation. Both `bcg-settings.js` and page-specific scripts delegate to the same global function.
+
+---
+
+## 16. Toggle Switch Component
+
+Used for boolean on/off settings throughout the plugin. Replaces plain checkboxes.
+
+```html
+<label class="bcg-toggle">
+  <input type="checkbox" name="field_name" value="1" <?php checked( $value, 1 ); ?>>
+  <span class="bcg-toggle-pill">
+    <span class="bcg-toggle-thumb"></span>
+  </span>
+  <span class="bcg-toggle-label">Enable this feature</span>
+</label>
+```
+
+The underlying checkbox is hidden with `width: 0; height: 0` — the pill area covers it fully at `width: 100%; height: 100%; z-index: 1` so the entire pill is clickable. The thumb has `pointer-events: none`.
+
+---
+
+## 17. Range Slider Component
+
+All `<input type="range">` fields in the Template Builder settings panel use a custom red slider style:
+
+- Track fills in red (`#e63529`) from 0 to the current value via `--range-progress` CSS variable
+- 16px red thumb with grow-on-hover animation
+- Cross-browser `-webkit` and `-moz` support
+- Value indicator displayed in red bold text below the slider
+
+The `--range-progress` variable is updated via JS on every `input` event:
+
+```js
+input.style.setProperty('--range-progress', ((val - min) / (max - min) * 100) + '%');
+```
+
+---
+
+## 18. What's New Modal Component
+
+The What's New modal auto-shows once per version and can be re-opened via the version badge.
+
+### Structure
+
+```html
+<!-- Trigger: version badge in plugin-header.php -->
+<span id="bcg-version-badge" class="bcg-version-badge">v1.5.43</span>
+
+<!-- Modal: included via partials/whats-new-modal.php -->
+<div id="bcg-whats-new-modal" class="bcg-modal" role="dialog" aria-modal="true" aria-labelledby="bcg-whats-new-title" hidden>
+  <div class="bcg-whats-new-overlay"></div>
+  <div class="bcg-modal-dialog">
+    <div class="bcg-modal-header">
+      <h2 id="bcg-whats-new-title">What's New in v1.5.43</h2>
+      <button id="bcg-whats-new-close" class="bcg-modal-close" aria-label="Close">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+    <div class="bcg-modal-body" id="bcg-whats-new-body">
+      <!-- populated from bcgData.whats_new.items by JS -->
+    </div>
+    <div class="bcg-modal-footer">
+      <button id="bcg-whats-new-dismiss" class="bcg-btn-primary">Got it</button>
+    </div>
+  </div>
+</div>
+```
+
+Items are localised from PHP as `bcgData.whats_new.items` — an array of `{ icon: 'string', text: 'string' }` objects.
+
+Dismissal is tracked in `localStorage` as `bcg_dismissed_version`. The modal shows whenever the stored version differs from `bcgData.version`. Clicking the version badge always re-opens it regardless of dismissed state.
+
+---
+
+## 19. AI Prompt Modal (Template Builder)
+
+The AI Prompt modal is specific to the Template Builder and allows free-form email brief input with voice support.
+
+```html
+<div id="bcg-sb-prompt-modal" class="bcg-modal" role="dialog" aria-modal="true" hidden>
+  <div class="bcg-modal-overlay"></div>
+  <div class="bcg-modal-dialog" style="max-width: 680px;">
+    <div class="bcg-modal-header">
+      <h2>AI Prompt</h2>
+      <button class="bcg-modal-close" aria-label="Close">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+    <div class="bcg-modal-body">
+      <textarea id="bcg-sb-prompt-text" class="bcg-textarea" rows="6"
+        placeholder="Describe your email..."></textarea>
+      <!-- Voice input button (hidden on unsupported browsers) -->
+      <button id="bcg-sb-voice-btn" class="bcg-btn-ghost bcg-btn-sm" type="button">
+        <span class="material-icons-outlined">mic</span>
+        Voice input
+      </button>
+      <!-- Saved prompts dropdown (hidden until at least one prompt saved) -->
+      <select id="bcg-sb-saved-prompts" class="bcg-select" hidden>
+        <option value="">Load a saved prompt...</option>
+      </select>
+    </div>
+    <div class="bcg-modal-footer">
+      <button id="bcg-sb-prompt-cancel" class="bcg-btn-secondary" style="margin-right: auto;">Cancel</button>
+      <button id="bcg-sb-prompt-generate" class="bcg-btn-primary">
+        <span class="material-icons-outlined">auto_awesome</span>
+        Save & Generate with AI
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+While recording, the microphone button shows a pulsing ring animation (CSS `@keyframes bcg-pulse`).
+
+---
+
+## 20. Template Builder Canvas Card
+
+Each section on the canvas is rendered as a card with the following structure and controls:
+
+```html
+<div class="bcg-sb-card" data-uuid="{uuid}" data-type="{slug}">
+  <div class="bcg-sb-card-header">
+    <span class="bcg-sb-drag-handle material-icons-outlined">drag_indicator</span>
+    <span class="bcg-sb-card-icon material-icons-outlined">{icon}</span>
+    <span class="bcg-sb-card-label">{variant name}</span>
+    <div class="bcg-sb-card-actions">
+      <!-- Move up/down (keyboard accessibility) -->
+      <button class="bcg-sb-move-up" title="Move up">
+        <span class="material-icons-outlined">arrow_upward</span>
+      </button>
+      <button class="bcg-sb-move-down" title="Move down">
+        <span class="material-icons-outlined">arrow_downward</span>
+      </button>
+      <!-- Eye: toggle inline preview -->
+      <button class="bcg-sb-preview-toggle" title="Preview section">
+        <span class="material-icons-outlined">visibility</span>
+      </button>
+      <!-- Edit: open settings panel -->
+      <button class="bcg-sb-edit" title="Edit settings">
+        <span class="material-icons-outlined">edit</span>
+      </button>
+      <!-- Duplicate -->
+      <button class="bcg-sb-duplicate" title="Duplicate">
+        <span class="material-icons-outlined">content_copy</span>
+      </button>
+      <!-- AI generate (only on has_ai sections) -->
+      <button class="bcg-sb-ai-gen bcg-btn-ai" title="Generate with AI">
+        <span class="material-icons-outlined">auto_awesome</span>
+      </button>
+      <!-- Delete -->
+      <button class="bcg-sb-delete" title="Remove section">
+        <span class="material-icons-outlined">delete</span>
+      </button>
+    </div>
+  </div>
+  <!-- Inline preview (collapsed by default) -->
+  <div class="bcg-sb-card-preview" hidden>
+    <iframe class="bcg-sb-preview-iframe" scrolling="no"></iframe>
+  </div>
+</div>
+```
 
 ---
 
