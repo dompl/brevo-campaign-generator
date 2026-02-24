@@ -17,6 +17,25 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.44] — 2026-02-24
+
+### Changed
+- **Help & Documentation page**: comprehensive update to reflect current plugin state
+  - Added AI Trainer to sidebar navigation and added a full AI Trainer section with field descriptions, context stack explanation, and example setup
+  - Corrected all section type variant counts: Header (2→5), CTA (4→7), Coupon (2→7), Divider/Spacer (4→8), Footer (3→6)
+  - Added missing section types: Hero Split and Social Media
+  - Added AI badge to Feature List (has supported AI generation since v1.5.41)
+  - Documented new divider variants: Dashed, Dotted, Double, Brand Dashed
+  - Added Default Settings modal documentation to Toolbar Actions
+  - Added voice input and saved prompts to AI Prompt documentation
+  - Added bulk campaign generation (1–5 campaigns) to Step 1 configuration
+  - Added canvas variant labels tip to Section Palette description
+  - Updated Getting Started quick-start to include AI Trainer as step 2
+  - Added Voice Input and AI Trainer feature cards to the overview grid
+  - Added "Use the AI Prompt modal" and "Fill in the AI Trainer" tips to AI tips section
+
+---
+
 ## [1.5.43] — 2026-02-24
 
 ### Fixed

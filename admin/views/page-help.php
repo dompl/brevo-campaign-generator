@@ -77,6 +77,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php esc_html_e( 'Section Types', 'brevo-campaign-generator' ); ?>
 					</a>
 				</div>
+				<a href="#ai-trainer" class="bcg-help-nav-item" data-section="ai-trainer">
+					<span class="material-icons-outlined">school</span>
+					<?php esc_html_e( 'AI Trainer', 'brevo-campaign-generator' ); ?>
+				</a>
 				<a href="#template-editor" class="bcg-help-nav-item" data-section="template-editor">
 					<span class="material-icons-outlined">palette</span>
 					<?php esc_html_e( 'Template Editor', 'brevo-campaign-generator' ); ?>
@@ -154,10 +158,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</div>
 						</div>
 						<div class="bcg-help-feature-item">
+							<span class="material-icons-outlined bcg-help-feature-icon">school</span>
+							<div>
+								<strong><?php esc_html_e( 'AI Trainer', 'brevo-campaign-generator' ); ?></strong>
+								<span><?php esc_html_e( 'Teach the AI about your brand, tone, and products for better copy every time.', 'brevo-campaign-generator' ); ?></span>
+							</div>
+						</div>
+						<div class="bcg-help-feature-item">
 							<span class="material-icons-outlined bcg-help-feature-icon">bar_chart</span>
 							<div>
 								<strong><?php esc_html_e( 'Campaign Analytics', 'brevo-campaign-generator' ); ?></strong>
 								<span><?php esc_html_e( 'View open rates, click rates, and more from the Stats page.', 'brevo-campaign-generator' ); ?></span>
+							</div>
+						</div>
+						<div class="bcg-help-feature-item">
+							<span class="material-icons-outlined bcg-help-feature-icon">mic</span>
+							<div>
+								<strong><?php esc_html_e( 'Voice Input', 'brevo-campaign-generator' ); ?></strong>
+								<span><?php esc_html_e( 'Dictate your AI brief using your microphone — no typing required.', 'brevo-campaign-generator' ); ?></span>
 							</div>
 						</div>
 					</div>
@@ -169,33 +187,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div class="bcg-help-step">
 							<div class="bcg-help-step-number">1</div>
 							<div class="bcg-help-step-body">
-								<strong><?php esc_html_e( 'Go to New Campaign', 'brevo-campaign-generator' ); ?></strong>
-								<p><?php esc_html_e( 'Click "New Campaign" in the left menu or the header. Fill in a title, subject line, and choose your mailing list.', 'brevo-campaign-generator' ); ?></p>
+								<strong><?php esc_html_e( 'Configure API Keys', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Go to Settings and enter your Brevo and OpenAI API keys. Use the "Test Connection" buttons to verify each key is working.', 'brevo-campaign-generator' ); ?></p>
 							</div>
 						</div>
 						<div class="bcg-help-step">
 							<div class="bcg-help-step-number">2</div>
 							<div class="bcg-help-step-body">
-								<strong><?php esc_html_e( 'Select Products', 'brevo-campaign-generator' ); ?></strong>
-								<p><?php esc_html_e( 'Choose how many products to feature, and whether to pull best sellers, latest products, or a manual selection.', 'brevo-campaign-generator' ); ?></p>
+								<strong><?php esc_html_e( 'Set Up AI Trainer (Recommended)', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Visit the AI Trainer page and fill in your company description, brand voice, and any standout products. This context is injected into every AI prompt, dramatically improving copy quality.', 'brevo-campaign-generator' ); ?></p>
 							</div>
 						</div>
 						<div class="bcg-help-step">
 							<div class="bcg-help-step-number">3</div>
 							<div class="bcg-help-step-body">
-								<strong><?php esc_html_e( 'Choose AI Options', 'brevo-campaign-generator' ); ?></strong>
-								<p><?php esc_html_e( 'Set the tone (Professional, Friendly, Urgent, etc.), enter an optional campaign theme like "Summer Sale", and pick your language.', 'brevo-campaign-generator' ); ?></p>
+								<strong><?php esc_html_e( 'Go to New Campaign', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Click "New Campaign" in the left menu. Fill in a title, subject line, and choose your mailing list.', 'brevo-campaign-generator' ); ?></p>
 							</div>
 						</div>
 						<div class="bcg-help-step">
 							<div class="bcg-help-step-number">4</div>
 							<div class="bcg-help-step-body">
-								<strong><?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?></strong>
-								<p><?php esc_html_e( 'Hit "Generate Campaign" and the AI writes all the copy. You land on the campaign editor where you can tweak anything.', 'brevo-campaign-generator' ); ?></p>
+								<strong><?php esc_html_e( 'Select Products & AI Options', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Choose how many products to feature and whether to pull best sellers, latest products, or a manual selection. Set your tone of voice and an optional campaign theme like "Summer Sale".', 'brevo-campaign-generator' ); ?></p>
 							</div>
 						</div>
 						<div class="bcg-help-step">
 							<div class="bcg-help-step-number">5</div>
+							<div class="bcg-help-step-body">
+								<strong><?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Hit "Generate Campaign" and the AI writes all the copy. You land on the campaign editor where you can tweak anything before sending.', 'brevo-campaign-generator' ); ?></p>
+							</div>
+						</div>
+						<div class="bcg-help-step">
+							<div class="bcg-help-step-number">6</div>
 							<div class="bcg-help-step-body">
 								<strong><?php esc_html_e( 'Send or Schedule', 'brevo-campaign-generator' ); ?></strong>
 								<p><?php esc_html_e( 'Preview the email, send yourself a test, then push it to Brevo to send immediately or at a scheduled time.', 'brevo-campaign-generator' ); ?></p>
@@ -208,7 +233,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span class="material-icons-outlined">tips_and_updates</span>
 					<div>
 						<strong><?php esc_html_e( 'Tip:', 'brevo-campaign-generator' ); ?></strong>
-						<?php esc_html_e( 'Before your first campaign, make sure your Brevo mailing list is set up and your API keys are configured in Settings. Contact your administrator if you need these set up.', 'brevo-campaign-generator' ); ?>
+						<?php esc_html_e( 'Set up the AI Trainer before your first campaign. Even a few sentences about your brand and products can significantly improve the quality of AI-generated copy.', 'brevo-campaign-generator' ); ?>
 					</div>
 				</div>
 			</section>
@@ -388,6 +413,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Language', 'brevo-campaign-generator' ); ?></span>
 							<span class="bcg-help-def-desc"><?php esc_html_e( 'The AI will write all copy in the selected language. Supported: English, Polish, French, German, Spanish, Italian.', 'brevo-campaign-generator' ); ?></span>
 						</div>
+						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Number of Campaigns', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generate 1–5 campaigns in one go. Each gets unique AI-written copy with different angles on the same products.', 'brevo-campaign-generator' ); ?></span>
+						</div>
 					</div>
 				</div>
 
@@ -418,6 +447,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="bcg-help-def-desc"><?php esc_html_e( 'Editable here as well — regenerate if needed.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 					</div>
+
+					<h4 class="bcg-mt-24"><?php esc_html_e( 'AI Prompt', 'brevo-campaign-generator' ); ?></h4>
+					<p><?php esc_html_e( 'The AI Prompt button opens a modal where you can write a detailed brief for the AI before generating or regenerating content. Features include:', 'brevo-campaign-generator' ); ?></p>
+					<ul class="bcg-help-list">
+						<li><strong><?php esc_html_e( 'Voice input', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'click the microphone icon to dictate your brief instead of typing', 'brevo-campaign-generator' ); ?></li>
+						<li><strong><?php esc_html_e( 'Saved prompts', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'save frequently-used briefs and load them from a dropdown', 'brevo-campaign-generator' ); ?></li>
+						<li><strong><?php esc_html_e( 'Mandatory brief', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'the prompt is required before generating, ensuring the AI always has context', 'brevo-campaign-generator' ); ?></li>
+					</ul>
 
 					<h4 class="bcg-mt-24"><?php esc_html_e( 'Product Cards', 'brevo-campaign-generator' ); ?></h4>
 					<p><?php esc_html_e( 'Each product appears as a card you can reorder by dragging. Within each card you can:', 'brevo-campaign-generator' ); ?></p>
@@ -520,9 +557,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<h3><?php esc_html_e( 'Section Palette (Left Panel)', 'brevo-campaign-generator' ); ?></h3>
 					<p><?php esc_html_e( 'The palette lists all available section types grouped by category. Each group contains several pre-built variants with different layouts and styles.', 'brevo-campaign-generator' ); ?></p>
 					<ul class="bcg-help-list">
-						<li><?php esc_html_e( 'Scroll through the palette to browse all categories.', 'brevo-campaign-generator' ); ?></li>
+						<li><?php esc_html_e( 'Click the category name to expand or collapse its variants.', 'brevo-campaign-generator' ); ?></li>
 						<li><?php esc_html_e( 'Click any variant card to instantly add that section to the bottom of the canvas.', 'brevo-campaign-generator' ); ?></li>
 						<li><?php esc_html_e( 'The section is added with sensible default settings that you can customise in the Settings panel.', 'brevo-campaign-generator' ); ?></li>
+						<li><?php esc_html_e( 'Canvas cards show the preset name (e.g. "Logo Only", "Dark Background") so you can identify each section at a glance.', 'brevo-campaign-generator' ); ?></li>
 					</ul>
 					<div class="bcg-help-tip">
 						<span class="material-icons-outlined">tips_and_updates</span>
@@ -542,7 +580,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<div class="bcg-help-def-list">
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">auto_awesome</span> <?php esc_html_e( 'AI Generate', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generate or regenerate AI content for this section. Only available for sections that have AI-writable text (Hero, Text Block, Banner, CTA, Products).', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generate or regenerate AI content for this section. Only available for sections that support AI (Hero, Text Block, Banner, CTA, Products, Feature List).', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;">settings</span> <?php esc_html_e( 'Settings', 'brevo-campaign-generator' ); ?></span>
@@ -569,10 +607,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<ul class="bcg-help-list">
 						<li><strong><?php esc_html_e( 'Text fields', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'headlines, body copy, button labels, URLs', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Colour pickers', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'background, text, button, accent colours', 'brevo-campaign-generator' ); ?></li>
-						<li><strong><?php esc_html_e( 'Sliders', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'font size, padding, border radius, image width', 'brevo-campaign-generator' ); ?></li>
-						<li><strong><?php esc_html_e( 'Dropdowns', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'alignment, columns, list style', 'brevo-campaign-generator' ); ?></li>
+						<li><strong><?php esc_html_e( 'Sliders', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'font size, padding, border radius, image width, icon size', 'brevo-campaign-generator' ); ?></li>
+						<li><strong><?php esc_html_e( 'Dropdowns', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'alignment, columns, list style, line style', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Image pickers', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'logo, hero image, product images (opens WordPress media library)', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Toggle switches', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'show/hide navigation, show/hide price, show/hide buy button', 'brevo-campaign-generator' ); ?></li>
+						<li><strong><?php esc_html_e( 'Repeaters', 'brevo-campaign-generator' ); ?></strong> — <?php esc_html_e( 'add/remove navigation links, footer links, list items, social media links', 'brevo-campaign-generator' ); ?></li>
 					</ul>
 					<p class="bcg-text-secondary"><?php esc_html_e( 'Changes in the Settings panel update the live preview automatically within a few seconds.', 'brevo-campaign-generator' ); ?></p>
 				</div>
@@ -587,12 +626,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="bcg-help-section-type-header">
 								<span>🔝</span>
 								<strong><?php esc_html_e( 'Header', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-help-section-type-badge"><?php esc_html_e( '2 variants', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '5 variants', 'brevo-campaign-generator' ); ?></span>
 							</div>
-							<p><?php esc_html_e( 'Displays your store logo at the top of the email. Optionally includes navigation links.', 'brevo-campaign-generator' ); ?></p>
+							<p><?php esc_html_e( 'Displays your store logo at the top of the email. Optionally includes navigation links. Logo can be left- or right-aligned and linked to a URL.', 'brevo-campaign-generator' ); ?></p>
 							<ul class="bcg-help-variants">
 								<li><?php esc_html_e( 'Logo Only — clean, minimal logo display', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Logo + Navigation — logo with linked nav items', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Dark Background — white logo on dark header', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Logo Centred — logo centred with no nav', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Minimal + Border — light header with bottom border', 'brevo-campaign-generator' ); ?></li>
 							</ul>
 						</div>
 
@@ -609,6 +651,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<li><?php esc_html_e( 'No Button — headline + subtext only', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Compact — reduced padding for tighter layouts', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Tall & Spacious — generous padding for impact', 'brevo-campaign-generator' ); ?></li>
+							</ul>
+						</div>
+
+						<div class="bcg-help-section-type">
+							<div class="bcg-help-section-type-header">
+								<span>✂️</span>
+								<strong><?php esc_html_e( 'Hero Split', 'brevo-campaign-generator' ); ?></strong>
+								<span class="bcg-help-section-type-badge bcg-ai-badge"><?php esc_html_e( 'AI', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '1 variant', 'brevo-campaign-generator' ); ?></span>
+							</div>
+							<p><?php esc_html_e( 'A two-column hero: text on the left, full-height image on the right. Great for product spotlight banners where you want both copy and a strong visual.', 'brevo-campaign-generator' ); ?></p>
+							<ul class="bcg-help-variants">
+								<li><?php esc_html_e( 'Image Right — Dark — dark left panel with image filling the right column', 'brevo-campaign-generator' ); ?></li>
 							</ul>
 						</div>
 
@@ -679,9 +734,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="bcg-help-section-type-header">
 								<span>📋</span>
 								<strong><?php esc_html_e( 'Feature List', 'brevo-campaign-generator' ); ?></strong>
+								<span class="bcg-help-section-type-badge bcg-ai-badge"><?php esc_html_e( 'AI', 'brevo-campaign-generator' ); ?></span>
 								<span class="bcg-help-section-type-badge"><?php esc_html_e( '3 variants', 'brevo-campaign-generator' ); ?></span>
 							</div>
-							<p><?php esc_html_e( 'A structured list of features or benefits. Great for highlighting product USPs or offer details.', 'brevo-campaign-generator' ); ?></p>
+							<p><?php esc_html_e( 'A structured list of features or benefits. AI can generate the heading and list items. Great for highlighting product USPs or offer details. Supports multiple list styles: bullets, checkmarks, numbers, arrows, stars, dashes, hearts, and diamonds.', 'brevo-campaign-generator' ); ?></p>
 							<ul class="bcg-help-variants">
 								<li><?php esc_html_e( 'Bullet Points — classic dot list', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Checkmarks — ✓ icon for each item', 'brevo-campaign-generator' ); ?></li>
@@ -694,7 +750,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span>🎯</span>
 								<strong><?php esc_html_e( 'Call to Action', 'brevo-campaign-generator' ); ?></strong>
 								<span class="bcg-help-section-type-badge bcg-ai-badge"><?php esc_html_e( 'AI', 'brevo-campaign-generator' ); ?></span>
-								<span class="bcg-help-section-type-badge"><?php esc_html_e( '4 variants', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '7 variants', 'brevo-campaign-generator' ); ?></span>
 							</div>
 							<p><?php esc_html_e( 'A focused CTA block with heading, subtext, and a prominent button. AI writes the copy to drive action.', 'brevo-campaign-generator' ); ?></p>
 							<ul class="bcg-help-variants">
@@ -702,6 +758,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<li><?php esc_html_e( 'Heading + Button Only', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Compact — minimal padding', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Spacious — generous padding', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Dark Background — white text on dark panel', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Pill Button — rounded pill-shaped button', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Minimal Text Link — understated text-only CTA', 'brevo-campaign-generator' ); ?></li>
 							</ul>
 						</div>
 
@@ -709,12 +768,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="bcg-help-section-type-header">
 								<span>🎟️</span>
 								<strong><?php esc_html_e( 'Coupon Block', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-help-section-type-badge"><?php esc_html_e( '2 variants', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '7 variants', 'brevo-campaign-generator' ); ?></span>
 							</div>
-							<p><?php esc_html_e( 'Displays a discount coupon code with optional description and expiry text. Makes the offer unmissable.', 'brevo-campaign-generator' ); ?></p>
+							<p><?php esc_html_e( 'Displays a discount coupon code with optional description and expiry text. Each design makes the offer unmissable in a different way.', 'brevo-campaign-generator' ); ?></p>
 							<ul class="bcg-help-variants">
-								<li><?php esc_html_e( 'Full Coupon — code + discount text + expiry', 'brevo-campaign-generator' ); ?></li>
-								<li><?php esc_html_e( 'Code Only — clean display of just the code', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Classic — code + discount text + expiry', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Banner — full-width promotional banner', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Card — contained card design', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Split Panel — two-column text + code layout', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Minimal — clean, understated display', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Ribbon — ribbon-style accent design', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Code Only — prominently displays just the code', 'brevo-campaign-generator' ); ?></li>
 							</ul>
 						</div>
 
@@ -735,14 +799,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 						<div class="bcg-help-section-type">
 							<div class="bcg-help-section-type-header">
+								<span>📱</span>
+								<strong><?php esc_html_e( 'Social Media', 'brevo-campaign-generator' ); ?></strong>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '2 variants', 'brevo-campaign-generator' ); ?></span>
+							</div>
+							<p><?php esc_html_e( 'A dedicated social media block with circular icon buttons for your profiles. Supports Facebook, Instagram, Twitter/X, LinkedIn, YouTube, TikTok, Pinterest, Snapchat, WhatsApp, and Threads. Optionally includes a logo with a linkable URL.', 'brevo-campaign-generator' ); ?></p>
+							<ul class="bcg-help-variants">
+								<li><?php esc_html_e( 'Light Background — icons on white/light background', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Dark Background — icons on dark background', 'brevo-campaign-generator' ); ?></li>
+							</ul>
+						</div>
+
+						<div class="bcg-help-section-type">
+							<div class="bcg-help-section-type-header">
 								<span>➖</span>
 								<strong><?php esc_html_e( 'Divider / Spacer', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-help-section-type-badge"><?php esc_html_e( '4 variants', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '8 variants', 'brevo-campaign-generator' ); ?></span>
 							</div>
-							<p><?php esc_html_e( 'Add visual breathing room or horizontal rules between sections.', 'brevo-campaign-generator' ); ?></p>
+							<p><?php esc_html_e( 'Add visual breathing room or horizontal rules between sections. Dividers support solid, dashed, dotted, and double line styles.', 'brevo-campaign-generator' ); ?></p>
 							<ul class="bcg-help-variants">
-								<li><?php esc_html_e( 'Thin Line — subtle 1px divider', 'brevo-campaign-generator' ); ?></li>
-								<li><?php esc_html_e( 'Accent Line — coloured divider', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Thin Line — subtle 1px solid divider', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Accent Line — coloured solid divider', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Dashed Line — dashed rule', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Dotted Line — dotted rule', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Double Line — double rule', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Brand Dashed — dashed rule in brand accent colour', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Small Spacer — 24px of empty space', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Large Spacer — 48px of empty space', 'brevo-campaign-generator' ); ?></li>
 							</ul>
@@ -752,13 +833,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="bcg-help-section-type-header">
 								<span>🔻</span>
 								<strong><?php esc_html_e( 'Footer', 'brevo-campaign-generator' ); ?></strong>
-								<span class="bcg-help-section-type-badge"><?php esc_html_e( '3 variants', 'brevo-campaign-generator' ); ?></span>
+								<span class="bcg-help-section-type-badge"><?php esc_html_e( '6 variants', 'brevo-campaign-generator' ); ?></span>
 							</div>
 							<p><?php esc_html_e( 'Email footer with legal text, links, and the required unsubscribe link. Always include a footer in every campaign.', 'brevo-campaign-generator' ); ?></p>
 							<ul class="bcg-help-variants">
 								<li><?php esc_html_e( 'Text Only — minimal text footer', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Text + Links — footer with clickable links', 'brevo-campaign-generator' ); ?></li>
 								<li><?php esc_html_e( 'Compact + Dark — dark background footer', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Social Icons — footer with circular social media icon links', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Minimal White — clean white footer, minimal styling', 'brevo-campaign-generator' ); ?></li>
+								<li><?php esc_html_e( 'Brand Colour — footer using brand accent colour', 'brevo-campaign-generator' ); ?></li>
 							</ul>
 						</div>
 
@@ -785,6 +869,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="bcg-help-def-desc"><?php esc_html_e( 'Opens a modal showing the rendered HTML email. Toggle between desktop and mobile views.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Default Settings', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Opens a modal where you can set the global default font and primary accent colour for the template. "Apply to All Sections" pushes the primary colour into every relevant colour field across all sections at once.', 'brevo-campaign-generator' ); ?></span>
+						</div>
+						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Save Template', 'brevo-campaign-generator' ); ?></span>
 							<span class="bcg-help-def-desc"><?php esc_html_e( 'Saves the current canvas as a named template. Templates can be loaded when creating a new campaign.', 'brevo-campaign-generator' ); ?></span>
 						</div>
@@ -796,7 +884,84 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</section>
 
-			<!-- ══ 5. TEMPLATE EDITOR ══════════════════════════════════ -->
+			<!-- ══ 5. AI TRAINER ═══════════════════════════════════════ -->
+			<section class="bcg-help-section" id="ai-trainer">
+				<div class="bcg-help-section-header">
+					<span class="material-icons-outlined">school</span>
+					<div>
+						<h2><?php esc_html_e( 'AI Trainer', 'brevo-campaign-generator' ); ?></h2>
+						<p><?php esc_html_e( 'Teach the AI about your brand so every campaign sounds like you.', 'brevo-campaign-generator' ); ?></p>
+					</div>
+				</div>
+
+				<div class="bcg-help-card">
+					<h3><?php esc_html_e( 'What is the AI Trainer?', 'brevo-campaign-generator' ); ?></h3>
+					<p><?php esc_html_e( 'The AI Trainer lets you provide background context about your business — your brand voice, key products, target audience, and any specific instructions — which is then automatically included in every AI generation request. This dramatically improves copy quality without you having to repeat the same context every time.', 'brevo-campaign-generator' ); ?></p>
+					<div class="bcg-help-tip">
+						<span class="material-icons-outlined">tips_and_updates</span>
+						<div>
+							<strong><?php esc_html_e( 'Tip:', 'brevo-campaign-generator' ); ?></strong>
+							<?php esc_html_e( 'Set up the AI Trainer before your first campaign. Even a short company description can noticeably improve how the AI writes about your products.', 'brevo-campaign-generator' ); ?>
+						</div>
+					</div>
+				</div>
+
+				<div class="bcg-help-card">
+					<h3><?php esc_html_e( 'AI Trainer Fields', 'brevo-campaign-generator' ); ?></h3>
+					<div class="bcg-help-def-list">
+						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Company Description', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'A short paragraph about your business — what you sell, who your customers are, what makes you different. The AI uses this to write copy that feels specific to your brand rather than generic.', 'brevo-campaign-generator' ); ?></span>
+						</div>
+						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Brand Voice & Tone Notes', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Any additional guidance on how the AI should write — e.g. "always use friendly, conversational language", "avoid jargon", "we never use exclamation marks", "always mention our 30-day returns policy".', 'brevo-campaign-generator' ); ?></span>
+						</div>
+						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Key Products / Categories', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Describe your most important products or ranges so the AI understands your inventory. This helps it write more relevant copy when products are selected.', 'brevo-campaign-generator' ); ?></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="bcg-help-card">
+					<h3><?php esc_html_e( 'How the AI Trainer Affects Generation', 'brevo-campaign-generator' ); ?></h3>
+					<p><?php esc_html_e( 'The AI Trainer content is added to the system prompt for every generation request, above the specific task instructions. The full context stack the AI receives is:', 'brevo-campaign-generator' ); ?></p>
+					<div class="bcg-help-steps">
+						<div class="bcg-help-step">
+							<div class="bcg-help-step-number">1</div>
+							<div class="bcg-help-step-body">
+								<strong><?php esc_html_e( 'Base system prompt', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Built-in instructions telling the AI it is an email marketing copywriter, the selected tone of voice, the target language, and currency.', 'brevo-campaign-generator' ); ?></p>
+							</div>
+						</div>
+						<div class="bcg-help-step">
+							<div class="bcg-help-step-number">2</div>
+							<div class="bcg-help-step-body">
+								<strong><?php esc_html_e( 'AI Trainer context', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Your company description, brand voice notes, and product context from the AI Trainer page.', 'brevo-campaign-generator' ); ?></p>
+							</div>
+						</div>
+						<div class="bcg-help-step">
+							<div class="bcg-help-step-number">3</div>
+							<div class="bcg-help-step-body">
+								<strong><?php esc_html_e( 'Per-generation task', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'The specific request — product data, campaign theme, and any brief you typed in the AI Prompt modal.', 'brevo-campaign-generator' ); ?></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="bcg-help-card">
+					<h3><?php esc_html_e( 'Example AI Trainer Setup', 'brevo-campaign-generator' ); ?></h3>
+					<p class="bcg-text-secondary"><?php esc_html_e( 'Company Description:', 'brevo-campaign-generator' ); ?></p>
+					<p><em><?php esc_html_e( '"We are ATS Diamond Tools, a UK-based supplier of professional diamond cutting and grinding tools for the construction and stone industries. Our customers are professional tradespeople, contractors, and stone fabricators who need reliable, high-performance tools that can withstand daily heavy use."', 'brevo-campaign-generator' ); ?></em></p>
+					<p class="bcg-text-secondary bcg-mt-16"><?php esc_html_e( 'Brand Voice Notes:', 'brevo-campaign-generator' ); ?></p>
+					<p><em><?php esc_html_e( '"Write in a professional but approachable tone. Focus on performance, durability, and value for money. Avoid overly salesy language. Always mention free UK delivery on orders over £50."', 'brevo-campaign-generator' ); ?></em></p>
+				</div>
+			</section>
+
+			<!-- ══ 6. TEMPLATE EDITOR ══════════════════════════════════ -->
 			<section class="bcg-help-section" id="template-editor">
 				<div class="bcg-help-section-header">
 					<span class="material-icons-outlined">palette</span>
@@ -808,7 +973,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<div class="bcg-help-card">
 					<h3><?php esc_html_e( 'Overview', 'brevo-campaign-generator' ); ?></h3>
-					<p><?php esc_html_e( 'The Template Editor works with the 20 pre-built flat HTML templates used in standard campaigns (not the Section Builder). It has three panels:', 'brevo-campaign-generator' ); ?></p>
+					<p><?php esc_html_e( 'The Template Editor works with the 20 pre-built flat HTML templates used in standard campaigns (not the Template Builder). It has three panels:', 'brevo-campaign-generator' ); ?></p>
 					<div class="bcg-help-three-col">
 						<div class="bcg-help-col-item">
 							<strong><?php esc_html_e( 'Visual Settings', 'brevo-campaign-generator' ); ?></strong>
@@ -830,7 +995,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<div class="bcg-help-def-list">
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Branding', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Upload your logo, set logo width, and add a header tagline.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Upload your logo, set logo width, logo alignment (left/centre/right), and add a header tagline.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Layout', 'brevo-campaign-generator' ); ?></span>
@@ -842,7 +1007,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Typography', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Font family, heading font, button border radius, and button text colour.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Body font family, heading font family, button border radius, and button text colour.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Navigation', 'brevo-campaign-generator' ); ?></span>
@@ -874,7 +1039,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</section>
 
-			<!-- ══ 6. AI & CREDITS ════════════════════════════════════ -->
+			<!-- ══ 7. AI & CREDITS ════════════════════════════════════ -->
 			<section class="bcg-help-section" id="ai-credits">
 				<div class="bcg-help-section-header">
 					<span class="material-icons-outlined">auto_awesome</span>
@@ -896,6 +1061,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Campaign Generation', 'brevo-campaign-generator' ); ?></span>
 							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generating a full campaign (subject line, headline, description + all product copy) uses credits for each piece of content generated.', 'brevo-campaign-generator' ); ?></span>
+						</div>
+						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Bulk Generation', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generating multiple campaigns at once (2–5) uses credits proportionally for each campaign created.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Regenerating Fields', 'brevo-campaign-generator' ); ?></span>
@@ -925,8 +1094,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="bcg-help-card">
 					<h3><?php esc_html_e( 'Tips for Better AI Results', 'brevo-campaign-generator' ); ?></h3>
 					<ul class="bcg-help-list">
+						<li><strong><?php esc_html_e( 'Fill in the AI Trainer.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( 'This is the single most impactful thing you can do. A well-configured AI Trainer makes every generation more relevant and on-brand.', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Set a campaign theme.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( 'Adding a theme like "Summer Sale" or "Back to School" gives the AI important context for writing focused, relevant copy.', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Choose the right tone.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( '"Urgent" works well for flash sales, "Luxury" for premium products, "Friendly" for community-oriented brands.', 'brevo-campaign-generator' ); ?></li>
+						<li><strong><?php esc_html_e( 'Use the AI Prompt modal.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( 'Write a specific brief before generating — "focus on the waterproof feature, mention the 50% discount, write for professional tradespeople". Save it as a saved prompt to reuse.', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Check your WooCommerce product data.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( 'The AI uses your product names and descriptions as context. Well-written product descriptions lead to better campaign copy.', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Edit after generating.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( 'AI is a starting point. Always review the generated copy and make tweaks to match your brand voice exactly.', 'brevo-campaign-generator' ); ?></li>
 						<li><strong><?php esc_html_e( 'Regenerate selectively.', 'brevo-campaign-generator' ); ?></strong> <?php esc_html_e( 'If you like the headline but not the description, just regenerate the description. No need to redo everything.', 'brevo-campaign-generator' ); ?></li>
@@ -934,7 +1105,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</section>
 
-			<!-- ══ 7. BREVO STATS ══════════════════════════════════════ -->
+			<!-- ══ 8. BREVO STATS ══════════════════════════════════════ -->
 			<section class="bcg-help-section" id="brevo-stats">
 				<div class="bcg-help-section-header">
 					<span class="material-icons-outlined">bar_chart</span>
