@@ -381,37 +381,101 @@ if ( 'sections' === $builder_type && ! empty( $campaign->sections_json ) ) {
 
 				<?php
 				$section_labels = array(
-					'header'   => array( 'label' => 'Header', 'icon' => 'web_asset' ),
-					'hero'     => array( 'label' => 'Hero / Banner', 'icon' => 'panorama' ),
-					'text'     => array( 'label' => 'Text Block', 'icon' => 'article' ),
-					'image'    => array( 'label' => 'Image', 'icon' => 'image' ),
-					'products' => array( 'label' => 'Products', 'icon' => 'shopping_cart' ),
-					'banner'   => array( 'label' => 'Banner', 'icon' => 'campaign' ),
-					'cta'      => array( 'label' => 'Call to Action', 'icon' => 'ads_click' ),
-					'coupon'   => array( 'label' => 'Coupon', 'icon' => 'local_offer' ),
-					'divider'  => array( 'label' => 'Divider', 'icon' => 'horizontal_rule' ),
-					'spacer'   => array( 'label' => 'Spacer', 'icon' => 'space_bar' ),
-					'footer'   => array( 'label' => 'Footer', 'icon' => 'web_asset_off' ),
+					'header'         => array( 'label' => 'Header',           'icon' => 'web_asset' ),
+					'hero'           => array( 'label' => 'Hero / Banner',    'icon' => 'panorama' ),
+					'hero_split'     => array( 'label' => 'Hero Split',       'icon' => 'view_column' ),
+					'text'           => array( 'label' => 'Text Block',       'icon' => 'article' ),
+					'image'          => array( 'label' => 'Image',            'icon' => 'image' ),
+					'products'       => array( 'label' => 'Products',         'icon' => 'shopping_cart' ),
+					'banner'         => array( 'label' => 'Banner',           'icon' => 'campaign' ),
+					'cta'            => array( 'label' => 'Call to Action',   'icon' => 'ads_click' ),
+					'coupon'         => array( 'label' => 'Coupon — Classic', 'icon' => 'local_offer' ),
+					'coupon_banner'  => array( 'label' => 'Coupon — Banner',  'icon' => 'redeem' ),
+					'coupon_card'    => array( 'label' => 'Coupon — Card',    'icon' => 'card_giftcard' ),
+					'coupon_split'   => array( 'label' => 'Coupon — Split',   'icon' => 'view_column' ),
+					'coupon_minimal' => array( 'label' => 'Coupon — Minimal', 'icon' => 'confirmation_number' ),
+					'coupon_ribbon'  => array( 'label' => 'Coupon — Ribbon',  'icon' => 'local_offer' ),
+					'divider'        => array( 'label' => 'Divider',          'icon' => 'horizontal_rule' ),
+					'spacer'         => array( 'label' => 'Spacer',           'icon' => 'space_bar' ),
+					'heading'        => array( 'label' => 'Heading',          'icon' => 'title' ),
+					'list'           => array( 'label' => 'List',             'icon' => 'format_list_bulleted' ),
+					'social'         => array( 'label' => 'Social Media',     'icon' => 'share' ),
+					'footer'         => array( 'label' => 'Footer',           'icon' => 'web_asset_off' ),
 				);
 
+				// Editable text fields for each section type that has user-facing content.
 				$ai_fields = array(
-					'hero'   => array(
-						array( 'key' => 'headline', 'label' => 'Headline', 'type' => 'textarea', 'rows' => 2 ),
-						array( 'key' => 'subtext',  'label' => 'Subtext',  'type' => 'textarea', 'rows' => 2 ),
+					'hero'          => array(
+						array( 'key' => 'headline', 'label' => 'Headline',    'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'subtext',  'label' => 'Subtext',     'type' => 'textarea', 'rows' => 2 ),
 						array( 'key' => 'cta_text', 'label' => 'Button Text', 'type' => 'text' ),
 					),
-					'text'   => array(
-						array( 'key' => 'heading', 'label' => 'Heading', 'type' => 'text' ),
+					'hero_split'    => array(
+						array( 'key' => 'headline', 'label' => 'Headline',    'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'subtext',  'label' => 'Subtext',     'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'cta_text', 'label' => 'Button Text', 'type' => 'text' ),
+					),
+					'text'          => array(
+						array( 'key' => 'heading', 'label' => 'Heading',   'type' => 'text' ),
 						array( 'key' => 'body',    'label' => 'Body Text', 'type' => 'textarea', 'rows' => 4 ),
 					),
-					'banner' => array(
+					'banner'        => array(
 						array( 'key' => 'heading', 'label' => 'Heading', 'type' => 'text' ),
-						array( 'key' => 'subtext', 'label' => 'Subtext',  'type' => 'textarea', 'rows' => 2 ),
+						array( 'key' => 'subtext', 'label' => 'Subtext', 'type' => 'textarea', 'rows' => 2 ),
 					),
-					'cta'    => array(
+					'cta'           => array(
 						array( 'key' => 'heading',     'label' => 'Heading',     'type' => 'text' ),
 						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'textarea', 'rows' => 2 ),
 						array( 'key' => 'button_text', 'label' => 'Button Text', 'type' => 'text' ),
+					),
+					'coupon'        => array(
+						array( 'key' => 'headline',    'label' => 'Headline',    'type' => 'text' ),
+						array( 'key' => 'coupon_text', 'label' => 'Offer Text',  'type' => 'text' ),
+						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'text' ),
+						array( 'key' => 'coupon_code', 'label' => 'Coupon Code', 'type' => 'text' ),
+					),
+					'coupon_banner' => array(
+						array( 'key' => 'headline',    'label' => 'Headline',    'type' => 'text' ),
+						array( 'key' => 'coupon_text', 'label' => 'Offer Text',  'type' => 'text' ),
+						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'text' ),
+						array( 'key' => 'coupon_code', 'label' => 'Coupon Code', 'type' => 'text' ),
+					),
+					'coupon_card'   => array(
+						array( 'key' => 'headline',    'label' => 'Headline',    'type' => 'text' ),
+						array( 'key' => 'coupon_text', 'label' => 'Offer Text',  'type' => 'text' ),
+						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'text' ),
+						array( 'key' => 'coupon_code', 'label' => 'Coupon Code', 'type' => 'text' ),
+					),
+					'coupon_split'  => array(
+						array( 'key' => 'headline',       'label' => 'Headline',        'type' => 'text' ),
+						array( 'key' => 'coupon_text',    'label' => 'Offer Text',      'type' => 'text' ),
+						array( 'key' => 'subtext',        'label' => 'Subtext',         'type' => 'text' ),
+						array( 'key' => 'coupon_code',    'label' => 'Coupon Code',     'type' => 'text' ),
+						array( 'key' => 'discount_text',  'label' => 'Discount Amount', 'type' => 'text' ),
+						array( 'key' => 'discount_label', 'label' => 'Discount Label',  'type' => 'text' ),
+					),
+					'coupon_minimal'=> array(
+						array( 'key' => 'headline',    'label' => 'Headline',    'type' => 'text' ),
+						array( 'key' => 'coupon_text', 'label' => 'Offer Text',  'type' => 'text' ),
+						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'text' ),
+						array( 'key' => 'coupon_code', 'label' => 'Coupon Code', 'type' => 'text' ),
+					),
+					'coupon_ribbon' => array(
+						array( 'key' => 'headline',    'label' => 'Headline',    'type' => 'text' ),
+						array( 'key' => 'coupon_text', 'label' => 'Offer Text',  'type' => 'text' ),
+						array( 'key' => 'subtext',     'label' => 'Subtext',     'type' => 'text' ),
+						array( 'key' => 'coupon_code', 'label' => 'Coupon Code', 'type' => 'text' ),
+					),
+					'heading'       => array(
+						array( 'key' => 'text',    'label' => 'Heading Text', 'type' => 'text' ),
+						array( 'key' => 'subtext', 'label' => 'Subtext',      'type' => 'text' ),
+					),
+					'list'          => array(
+						array( 'key' => 'heading', 'label' => 'Heading',                   'type' => 'text' ),
+						array( 'key' => 'items',   'label' => 'List Items (one per line)', 'type' => 'textarea', 'rows' => 5 ),
+					),
+					'footer'        => array(
+						array( 'key' => 'footer_text', 'label' => 'Footer Text', 'type' => 'textarea', 'rows' => 3 ),
 					),
 				);
 
@@ -549,57 +613,7 @@ if ( 'sections' === $builder_type && ! empty( $campaign->sections_json ) ) {
 			 ============================================================ -->
 		<div class="bcg-editor-preview">
 
-			<!-- Template Picker Strip -->
-			<?php
-			$template_registry = BCG_Template_Registry::get_instance();
-			$all_templates     = $template_registry->get_templates();
-			$current_slug      = $campaign->template_slug ?? 'classic';
-
-			$layout_diagrams = array(
-				'side-by-side'  => '<rect x="2" y="2" width="16" height="16" rx="1" fill="#ccc"/><rect x="20" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="20" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="20" y="13" width="14" height="5" rx="1" fill="%s"/>',
-				'stacked'       => '<rect x="4" y="1" width="38" height="10" rx="1" fill="#ccc"/><rect x="4" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="4" y="18" width="20" height="5" rx="1" fill="%s"/>',
-				'reversed'      => '<rect x="2" y="2" width="24" height="4" rx="1" fill="#999"/><rect x="2" y="8" width="20" height="3" rx="1" fill="#bbb"/><rect x="2" y="13" width="14" height="5" rx="1" fill="%s"/><rect x="28" y="2" width="16" height="16" rx="1" fill="#ccc"/>',
-				'alternating'   => '<rect x="2" y="1" width="12" height="8" rx="1" fill="#ccc"/><rect x="16" y="1" width="28" height="3" rx="1" fill="#999"/><rect x="16" y="5" width="22" height="2" rx="1" fill="#bbb"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="22" height="2" rx="1" fill="#bbb"/><rect x="32" y="11" width="12" height="8" rx="1" fill="#ccc"/>',
-				'grid'          => '<rect x="2" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="24" y="2" width="20" height="10" rx="1" fill="#ccc"/><rect x="2" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="24" y="14" width="16" height="3" rx="1" fill="#999"/><rect x="2" y="19" width="12" height="3" rx="1" fill="%s"/><rect x="24" y="19" width="12" height="3" rx="1" fill="%s"/>',
-				'compact'       => '<rect x="2" y="2" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="2" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="6" width="20" height="2" rx="1" fill="#bbb"/><rect x="2" y="13" width="8" height="8" rx="1" fill="#ccc"/><rect x="12" y="13" width="26" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="20" height="2" rx="1" fill="#bbb"/>',
-				'full-card'     => '<rect x="4" y="1" width="38" height="1" rx="0" fill="#ddd"/><rect x="4" y="2" width="38" height="8" rx="0" fill="#ccc"/><rect x="4" y="10" width="38" height="1" rx="0" fill="#ddd"/><rect x="6" y="12" width="28" height="3" rx="1" fill="#999"/><rect x="6" y="16" width="20" height="2" rx="1" fill="#bbb"/><rect x="4" y="20" width="38" height="1" rx="0" fill="#ddd"/>',
-				'text-only'     => '<rect x="4" y="2" width="30" height="4" rx="1" fill="#999"/><rect x="4" y="8" width="38" height="2" rx="1" fill="#bbb"/><line x1="4" y1="12" x2="42" y2="12" stroke="#ddd" stroke-width="1"/><rect x="4" y="14" width="28" height="4" rx="1" fill="#999"/><rect x="4" y="20" width="38" height="2" rx="1" fill="#bbb"/>',
-				'centered'      => '<rect x="10" y="2" width="26" height="8" rx="2" fill="#ccc"/><rect x="8" y="12" width="30" height="3" rx="1" fill="#999"/><rect x="12" y="17" width="22" height="5" rx="2" fill="%s"/>',
-				'feature-first' => '<rect x="2" y="1" width="42" height="10" rx="1" fill="#ccc"/><rect x="2" y="13" width="30" height="3" rx="1" fill="#999"/><rect x="2" y="18" width="6" height="6" rx="1" fill="#ccc"/><rect x="10" y="18" width="20" height="3" rx="1" fill="#bbb"/>',
-			);
-			?>
-			<div class="bcg-editor-template-strip" id="bcg-editor-template-strip">
-				<div class="bcg-template-strip-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-8">
-					<span class="bcg-template-strip-label"><?php esc_html_e( 'Template:', 'brevo-campaign-generator' ); ?></span>
-				</div>
-				<div class="bcg-template-strip-cards">
-					<?php foreach ( $all_templates as $tpl_slug => $tpl ) :
-						$is_active       = ( $tpl_slug === $current_slug );
-						$tpl_settings    = $tpl['settings'] ?? array();
-						$primary         = esc_attr( $tpl_settings['primary_color'] ?? '#e84040' );
-						$product_layout  = $tpl_settings['product_layout'] ?? 'stacked';
-						$diagram_svg     = $layout_diagrams[ $product_layout ] ?? $layout_diagrams['stacked'];
-						$diagram_svg     = sprintf( $diagram_svg, $primary, $primary );
-					?>
-						<button
-							type="button"
-							class="bcg-template-mini-card<?php echo $is_active ? ' bcg-template-card-active' : ''; ?>"
-							data-slug="<?php echo esc_attr( $tpl_slug ); ?>"
-							title="<?php echo esc_attr( $tpl['name'] . ( ! empty( $tpl['description'] ) ? ' — ' . $tpl['description'] : '' ) ); ?>"
-						>
-							<div class="bcg-template-mini-swatch" style="background-color:#f5f5f5;">
-								<div class="bcg-template-mini-swatch-inner" style="background-color:#ffffff;border-top:2px solid <?php echo $primary; ?>;">
-									<svg viewBox="0 0 46 24" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
-										<?php echo $diagram_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-									</svg>
-								</div>
-							</div>
-							<span class="bcg-template-mini-name"><?php echo esc_html( $tpl['name'] ); ?></span>
-						</button>
-					<?php endforeach; ?>
-				</div>
-			</div>
-
+	
 			<div class="bcg-preview-panel">
 				<div class="bcg-preview-header bcg-flex bcg-items-center bcg-justify-between">
 					<h3 class="bcg-mt-0 bcg-mb-0"><?php esc_html_e( 'Live Preview', 'brevo-campaign-generator' ); ?></h3>

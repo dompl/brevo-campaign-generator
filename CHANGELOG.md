@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.45] — 2026-02-24
+
+### Fixed
+- **Campaign redirect**: after generating a single campaign, now redirects directly to the campaign editor instead of the dashboard
+- **Section editor**: expanded editable fields to cover all section types — Hero Split, all Coupon variants (Classic, Banner, Card, Split, Minimal, Ribbon), Heading, List, and Footer sections now display their text fields in the editor
+- **Editor layout**: left column is now wider (`1.5fr : 1fr`) so the section editor is not squashed
+- **Template strip removed**: removed the template switcher strip from the campaign editor right column (template switching from the editor is no longer possible)
+- **Template editor**: disabled the template chooser in the Template Editor page so the selected template cannot be switched from within the editor
+
+---
+
 ## [1.5.44] — 2026-02-24
 
 ### Changed

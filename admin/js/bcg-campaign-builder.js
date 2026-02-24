@@ -1201,9 +1201,15 @@
 				}
 
 				if ( index > count ) {
-					// All campaigns generated — go to the dashboard.
-					window.location.href = bcg_campaign_builder.dashboard_url ||
-						( bcg_campaign_builder.admin_url + 'admin.php?page=bcg-dashboard' );
+					// All campaigns generated.
+					if ( 1 === count && self.generatedCampaigns.length > 0 && self.generatedCampaigns[0].redirect_url ) {
+						// Single campaign — go straight to the editor.
+						window.location.href = self.generatedCampaigns[0].redirect_url;
+					} else {
+						// Multiple campaigns — go to the dashboard.
+						window.location.href = bcg_campaign_builder.dashboard_url ||
+							( bcg_campaign_builder.admin_url + 'admin.php?page=bcg-dashboard' );
+					}
 					return;
 				}
 

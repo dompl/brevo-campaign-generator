@@ -148,7 +148,7 @@ $nonce = wp_create_nonce( 'bcg_nonce' );
 	<!-- ============================================================ -->
 	<!-- TEMPLATE CHOOSER STRIP                                       -->
 	<!-- ============================================================ -->
-	<div class="bcg-template-chooser" id="bcg-template-chooser">
+	<div class="bcg-template-chooser" id="bcg-template-chooser" style="display:none;">
 		<div class="bcg-template-chooser-scroll">
 			<?php
 			// Layout diagram map: each layout gets a distinct mini-preview SVG.
