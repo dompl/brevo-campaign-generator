@@ -48,7 +48,7 @@ class BCG_Stripe {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		$this->secret_key = get_option( 'bcg_stripe_secret_key', '' );
+		$this->secret_key = bcg_get_api_key( 'bcg_stripe_secret_key' );
 
 		// Register webhook endpoint.
 		add_action( 'rest_api_init', array( $this, 'register_webhook_route' ) );

@@ -1605,7 +1605,7 @@ class BCG_Settings {
 			);
 		}
 
-		$api_key = get_option( 'bcg_brevo_api_key', '' );
+		$api_key = bcg_get_api_key( 'bcg_brevo_api_key' );
 
 		if ( empty( $api_key ) ) {
 			wp_send_json_error(
@@ -1665,7 +1665,7 @@ class BCG_Settings {
 	 * @return array|\WP_Error Success data or error.
 	 */
 	private function test_openai_connection(): array|\WP_Error {
-		$api_key = get_option( 'bcg_openai_api_key', '' );
+		$api_key = bcg_get_api_key( 'bcg_openai_api_key' );
 
 		if ( empty( $api_key ) ) {
 			return new \WP_Error(
@@ -1728,7 +1728,7 @@ class BCG_Settings {
 	 * @return array|\WP_Error Success data or error.
 	 */
 	private function test_gemini_connection(): array|\WP_Error {
-		$api_key = get_option( 'bcg_gemini_api_key', '' );
+		$api_key = bcg_get_api_key( 'bcg_gemini_api_key' );
 
 		if ( empty( $api_key ) ) {
 			return new \WP_Error(
@@ -1790,7 +1790,7 @@ class BCG_Settings {
 	 * @return array|\WP_Error Success data or error.
 	 */
 	private function test_brevo_connection(): array|\WP_Error {
-		$api_key = get_option( 'bcg_brevo_api_key', '' );
+		$api_key = bcg_get_api_key( 'bcg_brevo_api_key' );
 
 		if ( empty( $api_key ) ) {
 			return new \WP_Error(
@@ -1862,7 +1862,7 @@ class BCG_Settings {
 	 * @return array|\WP_Error Success data or error.
 	 */
 	private function test_stripe_pub_connection(): array|\WP_Error {
-		$key = get_option( 'bcg_stripe_publishable_key', '' );
+		$key = bcg_get_api_key( 'bcg_stripe_publishable_key' );
 
 		if ( empty( $key ) ) {
 			return new \WP_Error(
@@ -1893,7 +1893,7 @@ class BCG_Settings {
 	 * @return array|\WP_Error Success data or error.
 	 */
 	private function test_stripe_secret_connection(): array|\WP_Error {
-		$key = get_option( 'bcg_stripe_secret_key', '' );
+		$key = bcg_get_api_key( 'bcg_stripe_secret_key' );
 
 		if ( empty( $key ) ) {
 			return new \WP_Error(

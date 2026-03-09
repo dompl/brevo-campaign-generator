@@ -17,6 +17,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.46] — 2026-03-09
+
+### Fixed
+- **API key validation**: all "Test Connection" buttons now use `bcg_get_api_key()` instead of `get_option()`, so keys defined as PHP constants (`BCG_BREVO_API_KEY`, etc.) are correctly resolved during validation
+- **Brevo list fetch**: same constant-aware key lookup applied to the mailing list refresh AJAX handler
+- **Stripe key lookups**: Stripe publishable and secret key references in admin JS localisation and the Stripe integration class now use `bcg_get_api_key()` for consistency
+
+---
+
 ## [1.5.45] — 2026-02-24
 
 ### Fixed

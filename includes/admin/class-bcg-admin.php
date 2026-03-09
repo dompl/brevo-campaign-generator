@@ -309,7 +309,7 @@ class BCG_Admin {
 			'ajax_url'         => admin_url( 'admin-ajax.php' ),
 			'nonce'            => wp_create_nonce( 'bcg_nonce' ),
 			'credit_balance'   => $credit_balance,
-			'stripe_pub_key'   => get_option( 'bcg_stripe_publishable_key', '' ),
+			'stripe_pub_key'   => bcg_get_api_key( 'bcg_stripe_publishable_key' ),
 			'openai_models'    => $settings_obj->get_openai_models(),
 			'gemini_models'    => $settings_obj->get_gemini_models(),
 			'openai_model'     => get_option( 'bcg_openai_model', 'gpt-4o' ),
@@ -629,7 +629,7 @@ class BCG_Admin {
 				array(
 					'ajax_url'        => admin_url( 'admin-ajax.php' ),
 					'nonce'           => wp_create_nonce( 'bcg_nonce' ),
-					'publishable_key' => get_option( 'bcg_stripe_publishable_key', '' ),
+					'publishable_key' => bcg_get_api_key( 'bcg_stripe_publishable_key' ),
 					'currency'        => strtolower( $currency_code ),
 					'currency_symbol' => $currency_symbol,
 					'i18n'            => array(
