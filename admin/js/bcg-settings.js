@@ -279,11 +279,11 @@
 			$select.find( 'option' ).each( function() {
 				var $opt    = $( this );
 				var isChosen = ( $opt.val() === selectedVal );
-				var $item   = $(
-					'<button type="button" class="bcg-select-option' + ( isChosen ? ' is-selected' : '' ) + '" ' +
-					'data-value="' + $opt.val() + '" role="option" aria-selected="' + String( isChosen ) + '">' +
-					$opt.text().trim() + '</button>'
-				);
+				var $item   = $( '<button type="button" role="option"></button>' )
+					.addClass( 'bcg-select-option' + ( isChosen ? ' is-selected' : '' ) )
+					.attr( 'data-value', $opt.val() )
+					.attr( 'aria-selected', String( isChosen ) )
+					.text( $opt.text().trim() );
 				$menu.append( $item );
 			} );
 
@@ -360,7 +360,7 @@
 		var $wrapper = $opt.closest( '.bcg-select-wrapper' );
 		var $trigger = $wrapper.find( '.bcg-select-trigger' );
 		var $menu    = $wrapper.find( '.bcg-select-menu' );
-		var value    = $opt.data( 'value' );
+		var value    = $opt.attr( 'data-value' );
 		var label    = $opt.text().trim();
 
 		$wrapper.find( 'select.bcg-select-styled' ).val( value ).trigger( 'change' );

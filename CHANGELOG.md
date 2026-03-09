@@ -17,6 +17,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.47] — 2026-03-09
+
+### Fixed
+- **Sender not saving**: custom select dropdown was breaking JSON option values (unescaped double quotes in `data-value` attribute); now uses jQuery `.attr()` for safe HTML attribute escaping
+- **Sender selection lost on save**: jQuery `.data()` auto-parses JSON strings into objects, causing `.val(object)` to fail silently; now uses `.attr('data-value')` to read the raw string
+- **Duplicate senders**: Brevo API can return the same sender from both transactional and marketing contexts; senders are now deduplicated by email address before display
+
+---
+
 ## [1.5.46] — 2026-03-09
 
 ### Fixed

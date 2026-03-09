@@ -2339,12 +2339,20 @@ class BCG_Admin {
 		}
 
 		// Simplify the response to just id, name, email.
+		// Deduplicate by email (Brevo can return the same sender from
+		// both transactional and marketing contexts).
 		$formatted = array();
+		$seen      = array();
 		foreach ( $senders as $sender ) {
-			$formatted[] = array(
+			$email = isset( $sender['email'] ) ? strtolower( $sender['email'] ) : '';
+			if ( '' === $email || isset( $seen[ $email ] ) ) {
+				continue;
+			}
+			$seen[ $email ] = true;
+			$formatted[]    = array(
 				'id'    => isset( $sender['id'] ) ? (int) $sender['id'] : 0,
 				'name'  => isset( $sender['name'] ) ? $sender['name'] : '',
-				'email' => isset( $sender['email'] ) ? $sender['email'] : '',
+				'email' => $sender['email'],
 			);
 		}
 
