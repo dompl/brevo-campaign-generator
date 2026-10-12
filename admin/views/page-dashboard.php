@@ -110,59 +110,80 @@ $status_badge_classes = array(
 		</a>
 	</div>
 
-	<!-- ─── Stats Cards ────────────────────────────────────────────── -->
+	<!-- ─── Overview ───────────────────────────────────────────────── -->
 
-	<div class="bcg-stats-cards bcg-grid-4 bcg-mb-20">
+	<?php $has_api_key = ! empty( get_option( 'bcg_brevo_api_key', '' ) ); ?>
 
-		<div class="bcg-stat-card bcg-card">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon">
-					<span class="material-icons-outlined" aria-hidden="true">campaign</span>
-				</div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value"><?php echo esc_html( number_format( $status_counts['all'] ) ); ?></span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Total Campaigns', 'brevo-campaign-generator' ); ?></span>
-				</div>
+	<section class="bcg-perf bcg-dash-overview bcg-mb-20">
+
+		<div class="bcg-perf-summary">
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Campaigns', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value"><?php echo esc_html( number_format( $status_counts['all'] ) ); ?></span>
+				<span class="bcg-perf-note"><?php esc_html_e( 'Built in this plugin', 'brevo-campaign-generator' ); ?></span>
+			</div>
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Drafts', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value"><?php echo esc_html( number_format( $status_counts['draft'] ) ); ?></span>
+				<span class="bcg-perf-note">
+					<?php
+					printf(
+						/* translators: %s: number of campaigns ready to send */
+						esc_html__( '%s ready to send', 'brevo-campaign-generator' ),
+						esc_html( number_format( $status_counts['ready'] ?? 0 ) )
+					);
+					?>
+				</span>
+			</div>
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Sent', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value"><?php echo esc_html( number_format( $status_counts['sent'] ) ); ?></span>
+				<span class="bcg-perf-note">
+					<?php
+					printf(
+						/* translators: %s: number of scheduled campaigns */
+						esc_html__( '%s scheduled', 'brevo-campaign-generator' ),
+						esc_html( number_format( $status_counts['scheduled'] ?? 0 ) )
+					);
+					?>
+				</span>
+			</div>
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Credits remaining', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value"><?php echo esc_html( number_format( $credit_balance, 0 ) ); ?></span>
+				<span class="bcg-perf-note"><?php esc_html_e( 'Used for AI copy and images', 'brevo-campaign-generator' ); ?></span>
 			</div>
 		</div>
 
-		<div class="bcg-stat-card bcg-card">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon bcg-stat-icon-draft">
-					<span class="material-icons-outlined" aria-hidden="true">drafts</span>
+		<?php if ( $has_api_key ) : ?>
+			<div class="bcg-dash-latest" id="bcg-dash-latest">
+				<div class="bcg-perf-chart-head">
+					<h2 class="bcg-perf-title"><?php esc_html_e( 'Latest from Brevo', 'brevo-campaign-generator' ); ?></h2>
+					<a class="bcg-dash-latest-link" href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-stats' ) ); ?>">
+						<?php esc_html_e( 'All campaign stats', 'brevo-campaign-generator' ); ?>
+						<span class="material-icons-outlined" aria-hidden="true">arrow_forward</span>
+					</a>
 				</div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value"><?php echo esc_html( number_format( $status_counts['draft'] ) ); ?></span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Drafts', 'brevo-campaign-generator' ); ?></span>
-				</div>
+				<table class="bcg-dash-latest-table">
+					<thead>
+						<tr>
+							<th scope="col"><?php esc_html_e( 'Campaign', 'brevo-campaign-generator' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Sent on', 'brevo-campaign-generator' ); ?></th>
+							<th scope="col" class="is-num"><?php esc_html_e( 'Sent to', 'brevo-campaign-generator' ); ?></th>
+							<th scope="col" class="is-num"><?php esc_html_e( 'Open rate', 'brevo-campaign-generator' ); ?></th>
+							<th scope="col" class="is-num"><?php esc_html_e( 'Click rate', 'brevo-campaign-generator' ); ?></th>
+						</tr>
+					</thead>
+					<tbody id="bcg-dash-latest-body">
+						<?php for ( $i = 0; $i < 5; $i++ ) : ?>
+							<tr class="is-loading"><td colspan="5"><span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span></td></tr>
+						<?php endfor; ?>
+					</tbody>
+				</table>
 			</div>
-		</div>
+		<?php endif; ?>
 
-		<div class="bcg-stat-card bcg-card">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon bcg-stat-icon-sent">
-					<span class="material-icons-outlined" aria-hidden="true">mark_email_read</span>
-				</div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value"><?php echo esc_html( number_format( $status_counts['sent'] ) ); ?></span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Sent', 'brevo-campaign-generator' ); ?></span>
-				</div>
-			</div>
-		</div>
-
-		<div class="bcg-stat-card bcg-card">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon bcg-stat-icon-credits">
-					<span class="material-icons-outlined" aria-hidden="true">toll</span>
-				</div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value"><?php echo esc_html( number_format( $credit_balance, 0 ) ); ?></span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Credits Remaining', 'brevo-campaign-generator' ); ?></span>
-				</div>
-			</div>
-		</div>
-
-	</div>
+	</section>
 
 	<!-- ─── Status Filter Tabs ─────────────────────────────────────── -->
 
@@ -377,7 +398,7 @@ $status_badge_classes = array(
 									<?php echo esc_html( $campaign_row->title ); ?>
 								</a>
 							</strong>
-							<?php if ( ! empty( $campaign_row->subject ) ) : ?>
+							<?php if ( ! empty( $campaign_row->subject ) && 0 !== strcasecmp( trim( $campaign_row->subject ), trim( $campaign_row->title ) ) ) : ?>
 								<br />
 								<span class="bcg-text-muted bcg-text-small bcg-truncate" style="display: inline-block; max-width: 300px;">
 									<?php echo esc_html( $campaign_row->subject ); ?>
@@ -614,3 +635,68 @@ $status_badge_classes = array(
 </div>
 
 </div>
+
+<?php if ( $has_api_key ) : ?>
+<script>
+( function ( $ ) {
+	'use strict';
+
+	var $body = $( '#bcg-dash-latest-body' );
+
+	function esc( value ) {
+		return $( '<div>' ).text( value == null ? '' : String( value ) ).html();
+	}
+
+	function shortDate( raw ) {
+		var d = raw ? new Date( raw ) : null;
+		return d && ! isNaN( d ) ? d.toLocaleDateString( 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' } ) : '';
+	}
+
+	function rateCell( value, scale, cls ) {
+		var v = parseFloat( value ) || 0;
+		var w = Math.max( 0, Math.min( 100, ( v / scale ) * 100 ) );
+		return '<td class="is-num ' + cls + '"><span class="bcg-rate-bar"><i style="width:' + w.toFixed( 1 ) + '%"></i></span>' +
+			'<span class="bcg-rate">' + v.toFixed( 1 ) + '%</span></td>';
+	}
+
+	function message( text ) {
+		$body.html( '<tr class="is-empty"><td colspan="5">' + esc( text ) + '</td></tr>' );
+	}
+
+	$.post( ajaxurl, {
+		action: 'bcg_dashboard_latest',
+		nonce: <?php echo wp_json_encode( wp_create_nonce( 'bcg_nonce' ) ); ?>
+	} ).done( function ( response ) {
+		if ( ! response || ! response.success ) {
+			message( ( response && response.data && response.data.message ) || <?php echo wp_json_encode( __( 'Could not load campaigns from Brevo.', 'brevo-campaign-generator' ) ); ?> );
+			return;
+		}
+
+		// Local statuses were just corrected from Brevo, so reload once to show them.
+		if ( response.data.synced > 0 ) {
+			window.location.reload();
+			return;
+		}
+
+		var rows = response.data.campaigns || [];
+
+		if ( ! rows.length ) {
+			message( <?php echo wp_json_encode( __( 'No campaigns have been sent from Brevo yet.', 'brevo-campaign-generator' ) ); ?> );
+			return;
+		}
+
+		$body.html( rows.map( function ( c ) {
+			return '<tr>' +
+				'<td class="bcg-dash-latest-name"><span title="' + esc( c.subject ) + '">' + esc( c.name ) + '</span></td>' +
+				'<td title="' + esc( c.sent_date ) + '">' + esc( shortDate( c.sent_date_raw ) ) + '</td>' +
+				'<td class="is-num">' + ( parseInt( c.recipients, 10 ) || 0 ).toLocaleString( 'en-GB' ) + '</td>' +
+				rateCell( c.open_rate_raw, 60, 'bcg-col-open-rate' ) +
+				rateCell( c.click_rate_raw, 15, 'bcg-col-click-rate' ) +
+				'</tr>';
+		} ).join( '' ) );
+	} ).fail( function () {
+		message( <?php echo wp_json_encode( __( 'Could not load campaigns from Brevo.', 'brevo-campaign-generator' ) ); ?> );
+	} );
+}( jQuery ) );
+</script>
+<?php endif; ?>

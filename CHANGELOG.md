@@ -17,6 +17,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.48] — 2026-10-12
+
+### Fixed
+- **Stats showing zero opens/clicks**: Brevo only returns `globalStats` when `statistics=globalStats` is requested; the list and single-campaign requests now ask for it, with summed `campaignStats` as a fallback
+- **Rates didn't match Brevo**: open, click and unsubscribe rates are now calculated against delivered emails, the same as Brevo
+- **Dashboard stuck on "Ready"**: campaigns sent from inside Brevo never updated locally; new `BCG_Stats::sync_local_statuses()` marks them as sent with Brevo's real send date (runs on the dashboard and stats page)
+
+### Changed
+- **Stats page redesign**: summary strip (emails sent, open, click and unsubscribe rate with last-5 trend), open/click rate chart per campaign with hover details, cleaner campaign table with rate bars, status pills and expandable detail rows
+- **Dashboard**: summary strip replaces the icon cards, new "Latest from Brevo" panel (loaded over AJAX via `bcg_dashboard_latest`), status pills for every status, subject line hidden when it repeats the title
+- **Tables**: sentence-case column headers instead of tiny uppercase
+
+---
+
 ## [1.5.47] — 2026-03-09
 
 ### Fixed

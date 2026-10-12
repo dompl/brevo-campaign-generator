@@ -56,6 +56,7 @@ class BCG_Stats {
 		add_action( 'wp_ajax_bcg_get_stats', array( $this, 'handle_get_stats' ) );
 		add_action( 'wp_ajax_bcg_refresh_stats', array( $this, 'handle_refresh_stats' ) );
 		add_action( 'wp_ajax_bcg_get_campaign_detail', array( $this, 'handle_get_campaign_detail' ) );
+		add_action( 'wp_ajax_bcg_dashboard_latest', array( $this, 'handle_dashboard_latest' ) );
 	}
 
 	/**
@@ -144,7 +145,10 @@ class BCG_Stats {
 				'avg_click_rate'    => $this->format_rate( $aggregate['avg_click_rate'] ?? 0 ),
 				'avg_click_rate_raw' => (float) ( $aggregate['avg_click_rate'] ?? 0 ),
 				'total_emails_sent' => (int) ( $aggregate['total_emails_sent'] ?? 0 ),
+				'total_delivered'   => (int) ( $aggregate['total_delivered'] ?? 0 ),
+				'total_unsubscribes' => (int) ( $aggregate['total_unsubscribes'] ?? 0 ),
 			),
+			'trend'      => isset( $aggregate['trend'] ) && is_array( $aggregate['trend'] ) ? $aggregate['trend'] : array(),
 			'campaigns'  => $formatted_campaigns,
 			'total'      => $total,
 			'limit'      => absint( $filters['limit'] ),
@@ -180,7 +184,7 @@ class BCG_Stats {
 	 * @return array Formatted campaign row.
 	 */
 	private function format_campaign_row( array $campaign ): array {
-		$stats = isset( $campaign['statistics']['globalStats'] ) ? $campaign['statistics']['globalStats'] : array();
+		$stats = BCG_Brevo::get_global_stats( $campaign );
 
 		$sent         = (int) ( $stats['sent'] ?? 0 );
 		$unique_views = (int) ( $stats['uniqueViews'] ?? 0 );
@@ -188,8 +192,9 @@ class BCG_Stats {
 		$unsubscribes = (int) ( $stats['unsubscriptions'] ?? 0 );
 		$delivered    = (int) ( $stats['delivered'] ?? 0 );
 
-		$open_rate  = $sent > 0 ? round( ( $unique_views / $sent ) * 100, 2 ) : 0;
-		$click_rate = $sent > 0 ? round( ( $unique_clicks / $sent ) * 100, 2 ) : 0;
+		// Rates use delivered as the base, matching Brevo's own figures.
+		$open_rate  = $delivered > 0 ? round( ( $unique_views / $delivered ) * 100, 2 ) : 0;
+		$click_rate = $delivered > 0 ? round( ( $unique_clicks / $delivered ) * 100, 2 ) : 0;
 
 		$sent_date = '';
 		if ( ! empty( $campaign['sentDate'] ) ) {
@@ -318,6 +323,73 @@ class BCG_Stats {
 		);
 	}
 
+	/**
+	 * Mark local campaigns as sent once Brevo reports them as sent.
+	 *
+	 * Campaigns sent (or scheduled and then sent) from inside Brevo never
+	 * report back, so the local row stayed on "Ready" forever. This reads
+	 * the cached Brevo campaign list and copies the real sent date across.
+	 *
+	 * @since 1.5.48
+	 *
+	 * @return int Number of local campaigns updated.
+	 */
+	public function sync_local_statuses(): int {
+		global $wpdb;
+
+		if ( empty( get_option( 'bcg_brevo_api_key', '' ) ) ) {
+			return 0;
+		}
+
+		$table = $wpdb->prefix . BCG_Campaign::CAMPAIGNS_TABLE;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$pending = $wpdb->get_results( "SELECT id, brevo_campaign_id FROM {$table} WHERE brevo_campaign_id IS NOT NULL AND brevo_campaign_id > 0 AND status <> 'sent'" );
+
+		if ( empty( $pending ) ) {
+			return 0;
+		}
+
+		$data = $this->get_stats_data();
+
+		if ( is_wp_error( $data ) || empty( $data['campaigns'] ) ) {
+			return 0;
+		}
+
+		$sent_dates = array();
+		foreach ( $data['campaigns'] as $campaign ) {
+			if ( 'sent' === ( $campaign['status'] ?? '' ) ) {
+				$sent_dates[ (int) $campaign['id'] ] = $campaign['sent_date_raw'] ?? '';
+			}
+		}
+
+		$handler = new BCG_Campaign();
+		$updated = 0;
+
+		foreach ( $pending as $row ) {
+			$brevo_id = (int) $row->brevo_campaign_id;
+
+			if ( ! isset( $sent_dates[ $brevo_id ] ) ) {
+				continue;
+			}
+
+			$timestamp = $sent_dates[ $brevo_id ] ? strtotime( $sent_dates[ $brevo_id ] ) : false;
+			$result    = $handler->update(
+				(int) $row->id,
+				array(
+					'status'  => 'sent',
+					'sent_at' => $timestamp ? wp_date( 'Y-m-d H:i:s', $timestamp ) : current_time( 'mysql' ),
+				)
+			);
+
+			if ( true === $result ) {
+				++$updated;
+			}
+		}
+
+		return $updated;
+	}
+
 	// ─── AJAX Handlers ──────────────────────────────────────────────────
 
 	/**
@@ -345,6 +417,10 @@ class BCG_Stats {
 
 		$data = $this->get_stats_data( $filters );
 
+		if ( ! is_wp_error( $data ) ) {
+			$this->sync_local_statuses();
+		}
+
 		if ( is_wp_error( $data ) ) {
 			wp_send_json_error(
 				array( 'message' => $data->get_error_message() )
@@ -352,6 +428,57 @@ class BCG_Stats {
 		}
 
 		wp_send_json_success( $data );
+	}
+
+	/**
+	 * Handle AJAX request for the dashboard "Latest from Brevo" panel.
+	 *
+	 * Also syncs local campaign statuses with Brevo, so campaigns that were
+	 * sent from inside Brevo stop showing as "Ready" on the dashboard.
+	 *
+	 * @since  1.5.48
+	 * @return void
+	 */
+	public function handle_dashboard_latest(): void {
+		check_ajax_referer( 'bcg_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'You do not have permission to perform this action.', 'brevo-campaign-generator' ) )
+			);
+		}
+
+		$synced = $this->sync_local_statuses();
+		$data   = $this->get_stats_data();
+
+		if ( is_wp_error( $data ) ) {
+			wp_send_json_error(
+				array( 'message' => $data->get_error_message() )
+			);
+		}
+
+		$sent = array_values(
+			array_filter(
+				$data['campaigns'] ?? array(),
+				function ( $campaign ) {
+					return 'sent' === ( $campaign['status'] ?? '' );
+				}
+			)
+		);
+
+		usort(
+			$sent,
+			function ( $a, $b ) {
+				return strcmp( (string) $b['sent_date_raw'], (string) $a['sent_date_raw'] );
+			}
+		);
+
+		wp_send_json_success(
+			array(
+				'synced'    => $synced,
+				'campaigns' => array_slice( $sent, 0, 5 ),
+			)
+		);
 	}
 
 	/**

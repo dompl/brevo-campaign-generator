@@ -298,11 +298,10 @@ class BCG_Admin {
 		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
 		// IMPORTANT: Update this array every time BCG_VERSION is bumped.
 		$whats_new_items = array(
-			array( 'icon' => 'format_list_bulleted', 'text' => __( 'List sections: item gap slider, 5 new styles (arrows, stars, dashes, hearts, diamonds), AI-generated headings & items', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'view_column',          'text' => __( 'Hero Split: image now fills full height as a background, single padding slider', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'share',                'text' => __( 'New Social Media section type + social icon links option in Footer sections', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'palette',              'text' => __( 'Primary colour picker in the toolbar — apply your brand colour to all sections at once', 'brevo-campaign-generator' ) ),
-			array( 'icon' => 'widgets',              'text' => __( 'Palette accordion: section groups now slide open/close — plus 9 new variants (3 headers, 3 footers, 3 CTAs)', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'insights',             'text' => __( 'Stats page fixed: open and click rates now match Brevo (they were showing as zero)', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'bar_chart',            'text' => __( 'New stats overview: headline numbers plus a chart of open and click rates for every campaign', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'sync',                 'text' => __( 'Campaigns sent from Brevo now show as Sent on the dashboard, with the real send date', 'brevo-campaign-generator' ) ),
+			array( 'icon' => 'mark_email_read',      'text' => __( 'Dashboard shows your latest Brevo campaigns with open and click rates', 'brevo-campaign-generator' ) ),
 		);
 
 		$bcg_data = array(

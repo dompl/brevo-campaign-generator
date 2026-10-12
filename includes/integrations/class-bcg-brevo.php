@@ -383,10 +383,13 @@ class BCG_Brevo {
 			}
 		}
 
+		// Brevo returns zeroed globalStats unless they are requested explicitly.
 		$query_params = array(
-			'type'   => 'classic',
-			'limit'  => min( absint( $limit ), 1000 ),
-			'offset' => absint( $offset ),
+			'type'               => 'classic',
+			'limit'              => min( absint( $limit ), 1000 ),
+			'offset'             => absint( $offset ),
+			'statistics'         => 'globalStats',
+			'excludeHtmlContent' => 'true',
 		);
 
 		// Brevo accepts 'status' as a filter — only add it for specific statuses.
@@ -465,7 +468,11 @@ class BCG_Brevo {
 		}
 
 		// Fetch the full campaign data which includes statistics.
-		$campaign = $this->request( 'GET', 'emailCampaigns/' . absint( $campaign_id ) );
+		$campaign = $this->request(
+			'GET',
+			'emailCampaigns/' . absint( $campaign_id ),
+			array( 'statistics' => 'globalStats' )
+		);
 
 		if ( is_wp_error( $campaign ) ) {
 			return $campaign;
@@ -482,8 +489,8 @@ class BCG_Brevo {
 		);
 
 		// Parse global statistics if available.
-		if ( isset( $campaign['statistics']['globalStats'] ) ) {
-			$global                   = $campaign['statistics']['globalStats'];
+		if ( isset( $campaign['statistics'] ) ) {
+			$global               = self::get_global_stats( $campaign );
 			$stats['globalStats'] = array(
 				'uniqueClicks'    => isset( $global['uniqueClicks'] ) ? (int) $global['uniqueClicks'] : 0,
 				'clickers'        => isset( $global['clickers'] ) ? (int) $global['clickers'] : 0,
@@ -498,11 +505,11 @@ class BCG_Brevo {
 				'viewed'          => isset( $global['viewed'] ) ? (int) $global['viewed'] : 0,
 			);
 
-			// Calculate rates.
-			$sent = $stats['globalStats']['sent'];
-			if ( $sent > 0 ) {
-				$stats['globalStats']['openRate']  = round( ( $stats['globalStats']['uniqueViews'] / $sent ) * 100, 2 );
-				$stats['globalStats']['clickRate'] = round( ( $stats['globalStats']['uniqueClicks'] / $sent ) * 100, 2 );
+			// Calculate rates against delivered, matching Brevo's own figures.
+			$delivered = $stats['globalStats']['delivered'];
+			if ( $delivered > 0 ) {
+				$stats['globalStats']['openRate']  = round( ( $stats['globalStats']['uniqueViews'] / $delivered ) * 100, 2 );
+				$stats['globalStats']['clickRate'] = round( ( $stats['globalStats']['uniqueClicks'] / $delivered ) * 100, 2 );
 			} else {
 				$stats['globalStats']['openRate']  = 0.0;
 				$stats['globalStats']['clickRate'] = 0.0;
@@ -817,10 +824,12 @@ class BCG_Brevo {
 				'GET',
 				'emailCampaigns',
 				array(
-					'type'   => 'classic',
-					'status' => 'sent',
-					'limit'  => $limit,
-					'offset' => $offset,
+					'type'               => 'classic',
+					'status'             => 'sent',
+					'limit'              => $limit,
+					'offset'             => $offset,
+					'statistics'         => 'globalStats',
+					'excludeHtmlContent' => 'true',
 				)
 			);
 
@@ -843,16 +852,39 @@ class BCG_Brevo {
 		$total_delivered    = 0;
 		$total_unsubscribes = 0;
 
+		$trend              = array();
+
 		foreach ( $all_campaigns as $campaign ) {
-			if ( isset( $campaign['statistics']['globalStats'] ) ) {
-				$gs                  = $campaign['statistics']['globalStats'];
+			if ( isset( $campaign['statistics'] ) ) {
+				$gs                  = self::get_global_stats( $campaign );
 				$total_sent         += isset( $gs['sent'] ) ? (int) $gs['sent'] : 0;
 				$total_opens        += isset( $gs['uniqueViews'] ) ? (int) $gs['uniqueViews'] : 0;
 				$total_clicks       += isset( $gs['uniqueClicks'] ) ? (int) $gs['uniqueClicks'] : 0;
 				$total_delivered    += isset( $gs['delivered'] ) ? (int) $gs['delivered'] : 0;
 				$total_unsubscribes += isset( $gs['unsubscriptions'] ) ? (int) $gs['unsubscriptions'] : 0;
+
+				// Per-campaign series for the performance chart.
+				if ( ! empty( $campaign['sentDate'] ) ) {
+					$trend[] = array(
+						'id'           => isset( $campaign['id'] ) ? (int) $campaign['id'] : 0,
+						'name'         => isset( $campaign['name'] ) ? (string) $campaign['name'] : '',
+						'sent_date'    => (string) $campaign['sentDate'],
+						'sent'         => isset( $gs['sent'] ) ? (int) $gs['sent'] : 0,
+						'delivered'    => isset( $gs['delivered'] ) ? (int) $gs['delivered'] : 0,
+						'opens'        => isset( $gs['uniqueViews'] ) ? (int) $gs['uniqueViews'] : 0,
+						'clicks'       => isset( $gs['uniqueClicks'] ) ? (int) $gs['uniqueClicks'] : 0,
+						'unsubscribes' => isset( $gs['unsubscriptions'] ) ? (int) $gs['unsubscriptions'] : 0,
+					);
+				}
 			}
 		}
+
+		usort(
+			$trend,
+			function ( $a, $b ) {
+				return strcmp( $a['sent_date'], $b['sent_date'] );
+			}
+		);
 
 		$aggregate = array(
 			'total_campaigns'    => $total_campaigns,
@@ -861,13 +893,57 @@ class BCG_Brevo {
 			'total_opens'        => $total_opens,
 			'total_clicks'       => $total_clicks,
 			'total_unsubscribes' => $total_unsubscribes,
-			'avg_open_rate'      => $total_sent > 0 ? round( ( $total_opens / $total_sent ) * 100, 2 ) : 0.0,
-			'avg_click_rate'     => $total_sent > 0 ? round( ( $total_clicks / $total_sent ) * 100, 2 ) : 0.0,
+			// Rates use delivered as the base, matching Brevo's own figures.
+			'avg_open_rate'      => $total_delivered > 0 ? round( ( $total_opens / $total_delivered ) * 100, 2 ) : 0.0,
+			'avg_click_rate'     => $total_delivered > 0 ? round( ( $total_clicks / $total_delivered ) * 100, 2 ) : 0.0,
+			'trend'              => $trend,
 		);
 
 		set_transient( $cache_key, $aggregate, self::STATS_CACHE_TTL );
 
 		return $aggregate;
+	}
+
+	/**
+	 * Return a campaign's overall statistics.
+	 *
+	 * Uses globalStats when Brevo provides them. Brevo only computes globalStats
+	 * for events in the last six months, so older or partial responses fall back
+	 * to summing the per-list campaignStats (contacts on several lists may be
+	 * counted more than once there, so this is an approximation).
+	 *
+	 * @since 1.5.48
+	 *
+	 * @param array $campaign Campaign data from the Brevo API.
+	 * @return array Statistics keyed like Brevo's globalStats.
+	 */
+	public static function get_global_stats( array $campaign ): array {
+		$global = isset( $campaign['statistics']['globalStats'] ) && is_array( $campaign['statistics']['globalStats'] )
+			? $campaign['statistics']['globalStats']
+			: array();
+
+		if ( ! empty( $global['sent'] ) ) {
+			return $global;
+		}
+
+		$per_list = isset( $campaign['statistics']['campaignStats'] ) && is_array( $campaign['statistics']['campaignStats'] )
+			? $campaign['statistics']['campaignStats']
+			: array();
+
+		if ( empty( $per_list ) ) {
+			return $global;
+		}
+
+		$summed = array();
+		foreach ( $per_list as $list_stats ) {
+			foreach ( (array) $list_stats as $key => $value ) {
+				if ( 'listId' !== $key && is_numeric( $value ) ) {
+					$summed[ $key ] = ( isset( $summed[ $key ] ) ? $summed[ $key ] : 0 ) + (int) $value;
+				}
+			}
+		}
+
+		return $summed;
 	}
 
 	// -------------------------------------------------------------------------

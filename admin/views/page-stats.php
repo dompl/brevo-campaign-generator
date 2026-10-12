@@ -43,80 +43,70 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		</div>
 	<?php endif; ?>
 
-	<!-- Cache Notice -->
-	<div class="bcg-stats-cache-notice" id="bcg-stats-cache-notice">
-		<span class="bcg-cache-text">
-			<?php if ( $cache_age ) : ?>
-				<?php
-				printf(
-					/* translators: %s: time ago string */
-					esc_html__( 'Stats updated %s', 'brevo-campaign-generator' ),
-					esc_html( $cache_age )
-				);
-				?>
-			<?php else : ?>
-				<?php esc_html_e( 'Stats not yet loaded', 'brevo-campaign-generator' ); ?>
-			<?php endif; ?>
-		</span>
-		<button type="button" class="bcg-btn-secondary bcg-btn-sm" id="bcg-refresh-stats" <?php echo $has_api_key ? '' : 'disabled'; ?>>
-			<?php esc_html_e( 'Refresh', 'brevo-campaign-generator' ); ?>
-		</button>
-	</div>
-
 	<!-- ============================================================ -->
-	<!-- Aggregate Stats Cards                                         -->
+	<!-- Performance summary + chart                                   -->
 	<!-- ============================================================ -->
-	<div class="bcg-stats-cards bcg-grid-4" id="bcg-stats-cards">
+	<section class="bcg-perf" id="bcg-perf">
 
-		<div class="bcg-stat-card" id="bcg-stat-total-campaigns">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon"><span class="material-icons-outlined">campaign</span></div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value" id="bcg-stat-value-campaigns">
-						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
-					</span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Total Campaigns', 'brevo-campaign-generator' ); ?></span>
-				</div>
+		<div class="bcg-perf-summary" id="bcg-stats-cards">
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Emails sent', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value" id="bcg-perf-sent"><span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span></span>
+				<span class="bcg-perf-note" id="bcg-perf-sent-note">&nbsp;</span>
+			</div>
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Open rate', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value" id="bcg-perf-open"><span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span></span>
+				<span class="bcg-perf-note" id="bcg-perf-open-note">&nbsp;</span>
+			</div>
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Click rate', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value" id="bcg-perf-click"><span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span></span>
+				<span class="bcg-perf-note" id="bcg-perf-click-note">&nbsp;</span>
+			</div>
+			<div class="bcg-perf-cell">
+				<span class="bcg-perf-label"><?php esc_html_e( 'Unsubscribe rate', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value" id="bcg-perf-unsub"><span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span></span>
+				<span class="bcg-perf-note" id="bcg-perf-unsub-note">&nbsp;</span>
 			</div>
 		</div>
 
-		<div class="bcg-stat-card" id="bcg-stat-open-rate">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon"><span class="material-icons-outlined">visibility</span></div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value" id="bcg-stat-value-open-rate">
-						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
-					</span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Avg Open Rate', 'brevo-campaign-generator' ); ?></span>
-				</div>
+		<div class="bcg-perf-chart-wrap">
+			<div class="bcg-perf-chart-head">
+				<h2 class="bcg-perf-title"><?php esc_html_e( 'Open and click rate by campaign', 'brevo-campaign-generator' ); ?></h2>
+				<ul class="bcg-perf-legend">
+					<li><i class="is-open"></i><?php esc_html_e( 'Opened', 'brevo-campaign-generator' ); ?></li>
+					<li><i class="is-click"></i><?php esc_html_e( 'Clicked', 'brevo-campaign-generator' ); ?></li>
+					<li><i class="is-avg"></i><?php esc_html_e( 'Average open rate', 'brevo-campaign-generator' ); ?></li>
+				</ul>
 			</div>
+			<div class="bcg-perf-chart" id="bcg-perf-chart">
+				<span class="bcg-skeleton bcg-perf-chart-skeleton">&nbsp;</span>
+			</div>
+			<div class="bcg-perf-tip" id="bcg-perf-tip" hidden></div>
 		</div>
 
-		<div class="bcg-stat-card" id="bcg-stat-click-rate">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon"><span class="material-icons-outlined">touch_app</span></div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value" id="bcg-stat-value-click-rate">
-						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
-					</span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Avg Click Rate', 'brevo-campaign-generator' ); ?></span>
-				</div>
-			</div>
+		<div class="bcg-stats-cache-notice" id="bcg-stats-cache-notice">
+			<span class="bcg-cache-text">
+				<?php if ( $cache_age ) : ?>
+					<?php
+					printf(
+						/* translators: %s: time ago string */
+						esc_html__( 'Figures from Brevo, updated %s', 'brevo-campaign-generator' ),
+						esc_html( $cache_age )
+					);
+					?>
+				<?php else : ?>
+					<?php esc_html_e( 'Figures from Brevo', 'brevo-campaign-generator' ); ?>
+				<?php endif; ?>
+			</span>
+			<button type="button" class="bcg-perf-refresh" id="bcg-refresh-stats" <?php echo $has_api_key ? '' : 'disabled'; ?>>
+				<span class="material-icons-outlined" aria-hidden="true">refresh</span>
+				<?php esc_html_e( 'Refresh', 'brevo-campaign-generator' ); ?>
+			</button>
 		</div>
 
-		<div class="bcg-stat-card" id="bcg-stat-total-sent">
-			<div class="bcg-stat-card-inner">
-				<div class="bcg-stat-icon"><span class="material-icons-outlined">send</span></div>
-				<div class="bcg-stat-content">
-					<span class="bcg-stat-value" id="bcg-stat-value-total-sent">
-						<span class="bcg-skeleton bcg-skeleton-text">&nbsp;</span>
-					</span>
-					<span class="bcg-stat-label"><?php esc_html_e( 'Total Emails Sent', 'brevo-campaign-generator' ); ?></span>
-				</div>
-			</div>
-		</div>
-
-	</div>
+	</section>
 
 	<!-- ============================================================ -->
 	<!-- Filter Bar                                                    -->
@@ -143,8 +133,8 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 				</select>
 			</div>
 			<div class="bcg-filter-group bcg-filter-actions">
-				<button type="button" class="bcg-btn-primary" id="bcg-apply-filters">
-					<?php esc_html_e( 'Apply Filters', 'brevo-campaign-generator' ); ?>
+				<button type="button" class="bcg-btn-secondary" id="bcg-apply-filters">
+					<?php esc_html_e( 'Apply', 'brevo-campaign-generator' ); ?>
 				</button>
 				<button type="button" class="bcg-btn-secondary" id="bcg-clear-filters">
 					<?php esc_html_e( 'Clear', 'brevo-campaign-generator' ); ?>
@@ -164,7 +154,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 					<th class="bcg-col-expand"></th>
 					<th class="bcg-col-name"><?php esc_html_e( 'Campaign', 'brevo-campaign-generator' ); ?></th>
 					<th class="bcg-col-date"><?php esc_html_e( 'Sent Date', 'brevo-campaign-generator' ); ?></th>
-					<th class="bcg-col-recipients"><?php esc_html_e( 'Recipients', 'brevo-campaign-generator' ); ?></th>
+					<th class="bcg-col-recipients"><?php esc_html_e( 'Sent', 'brevo-campaign-generator' ); ?></th>
 					<th class="bcg-col-opens"><?php esc_html_e( 'Opens', 'brevo-campaign-generator' ); ?></th>
 					<th class="bcg-col-open-rate"><?php esc_html_e( 'Open Rate', 'brevo-campaign-generator' ); ?></th>
 					<th class="bcg-col-clicks"><?php esc_html_e( 'Clicks', 'brevo-campaign-generator' ); ?></th>
@@ -254,6 +244,8 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		offset:    0,
 		limit:     50,
 		total:     0,
+		trend:     [],
+		resizeTimer: null,
 
 		init: function () {
 			this.ajaxUrl   = $('#bcg-stats-ajax-url').val() || '';
@@ -311,20 +303,32 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			// Expand/collapse row detail.
 			$(document).on('click', '.bcg-stats-row-toggle', function (e) {
 				e.preventDefault();
-				var $row      = $(this).closest('tr');
-				var $detail   = $row.next('.bcg-stats-detail-row');
-				var campId    = $row.data('campaign-id');
+				var $btn    = $(this);
+				var $row    = $btn.closest('tr');
+				var $detail = $row.next('.bcg-stats-detail-row');
+				var open    = $btn.attr('aria-expanded') !== 'true';
 
-				if ($detail.length && $detail.is(':visible')) {
-					$detail.hide();
-					$(this).find('.dashicons').removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
-				} else if ($detail.length) {
-					$detail.show();
-					$(this).find('.dashicons').removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
-				} else {
-					self.loadCampaignDetail(campId, $row);
-					$(this).find('.dashicons').removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+				$btn.attr('aria-expanded', open ? 'true' : 'false');
+				$row.toggleClass('is-open', open);
+
+				if ($detail.length) {
+					$detail.toggle(open);
+				} else if (open) {
+					self.loadCampaignDetail($row.data('campaign-id'), $row);
 				}
+			});
+
+			// Chart hover and resize.
+			$('#bcg-perf-chart').on('mousemove', '.bcg-perf-hit', function (e) {
+				self.showTip($(this).data('i'), e);
+			}).on('mouseleave', function () {
+				$('#bcg-perf-tip').prop('hidden', true);
+				$('#bcg-perf-chart .bcg-perf-col.is-hover').removeClass('is-hover');
+			});
+
+			$(window).on('resize', function () {
+				clearTimeout(self.resizeTimer);
+				self.resizeTimer = setTimeout(function () { self.renderChart(); }, 150);
 			});
 		},
 
@@ -370,12 +374,10 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		},
 
 		renderStats: function (data) {
-			// Render aggregate cards.
-			var agg = data.aggregate || {};
-			$('#bcg-stat-value-campaigns').text(this.formatNumber(agg.total_campaigns || 0));
-			$('#bcg-stat-value-open-rate').text(agg.avg_open_rate || '0.00%');
-			$('#bcg-stat-value-click-rate').text(agg.avg_click_rate || '0.00%');
-			$('#bcg-stat-value-total-sent').text(this.formatNumber(agg.total_emails_sent || 0));
+			// Render the summary strip and chart.
+			this.trend = data.trend || [];
+			this.renderSummary(data.aggregate || {});
+			this.renderChart();
 
 			// Render campaigns table.
 			var campaigns = data.campaigns || [];
@@ -400,7 +402,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			// Update cache notice.
 			if (data.cached_at) {
 				$('#bcg-stats-cache-notice .bcg-cache-text').text(
-					'<?php echo esc_js( __( 'Stats updated just now', 'brevo-campaign-generator' ) ); ?>'
+					'<?php echo esc_js( __( 'Figures from Brevo, updated just now', 'brevo-campaign-generator' ) ); ?>'
 				);
 			}
 
@@ -409,25 +411,207 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		},
 
 		buildCampaignRow: function (camp, index) {
-			var altClass  = (index % 2 === 0) ? 'alternate' : '';
-			var statusBadge = this.getStatusBadge(camp.status);
+			var isSent = camp.status === 'sent';
+			var dash   = '<span class="bcg-muted">—</span>';
+			var date   = isSent ? this.shortDate(camp.sent_date_raw) : '';
 
-			return '<tr class="bcg-stats-campaign-row ' + altClass + '" data-campaign-id="' + camp.id + '">' +
+			return '<tr class="bcg-stats-campaign-row' + (isSent ? '' : ' is-unsent') + '" data-campaign-id="' + camp.id + '">' +
 				'<td class="bcg-col-expand">' +
-					'<button type="button" class="button button-link bcg-stats-row-toggle" title="<?php echo esc_js( __( 'Expand details', 'brevo-campaign-generator' ) ); ?>">' +
-						'<span class="dashicons dashicons-arrow-down-alt2"></span>' +
+					'<button type="button" class="bcg-stats-row-toggle" aria-expanded="false" aria-label="<?php echo esc_js( __( 'Show details', 'brevo-campaign-generator' ) ); ?>">' +
+						'<span class="material-icons-outlined" aria-hidden="true">expand_more</span>' +
 					'</button>' +
 				'</td>' +
-				'<td class="bcg-col-name">' + this.escHtml(camp.name) + '</td>' +
-				'<td class="bcg-col-date">' + this.escHtml(camp.sent_date || '—') + '</td>' +
-				'<td class="bcg-col-recipients">' + this.formatNumber(camp.recipients) + '</td>' +
-				'<td class="bcg-col-opens">' + this.formatNumber(camp.opens) + '</td>' +
-				'<td class="bcg-col-open-rate"><strong>' + this.escHtml(camp.open_rate) + '</strong></td>' +
-				'<td class="bcg-col-clicks">' + this.formatNumber(camp.clicks) + '</td>' +
-				'<td class="bcg-col-click-rate"><strong>' + this.escHtml(camp.click_rate) + '</strong></td>' +
-				'<td class="bcg-col-unsubs">' + this.formatNumber(camp.unsubscribes) + '</td>' +
-				'<td class="bcg-col-status">' + statusBadge + '</td>' +
+				'<td class="bcg-col-name"><span class="bcg-camp-name">' + this.escHtml(camp.name) + '</span>' +
+					(camp.subject && camp.subject.trim().toLowerCase() !== (camp.name || '').trim().toLowerCase() ? '<span class="bcg-camp-subject">' + this.escHtml(camp.subject) + '</span>' : '') +
+				'</td>' +
+				'<td class="bcg-col-date" title="' + this.escHtml(camp.sent_date || '') + '">' + (date ? this.escHtml(date) : dash) + '</td>' +
+				'<td class="bcg-col-recipients">' + (isSent ? this.formatNumber(camp.recipients) : dash) + '</td>' +
+				'<td class="bcg-col-opens">' + (isSent ? this.formatNumber(camp.opens) : dash) + '</td>' +
+				'<td class="bcg-col-open-rate">' + (isSent ? this.rateCell(camp.open_rate_raw, 60) : dash) + '</td>' +
+				'<td class="bcg-col-clicks">' + (isSent ? this.formatNumber(camp.clicks) : dash) + '</td>' +
+				'<td class="bcg-col-click-rate">' + (isSent ? this.rateCell(camp.click_rate_raw, 15) : dash) + '</td>' +
+				'<td class="bcg-col-unsubs">' + (isSent ? this.formatNumber(camp.unsubscribes) : dash) + '</td>' +
+				'<td class="bcg-col-status">' + this.getStatusBadge(camp.status) + '</td>' +
 			'</tr>';
+		},
+
+		rateCell: function (value, scaleMax) {
+			var v     = parseFloat(value) || 0;
+			var width = Math.min(100, (v / scaleMax) * 100);
+			return '<span class="bcg-rate-bar" aria-hidden="true"><i style="width:' + width.toFixed(1) + '%"></i></span>' +
+				'<span class="bcg-rate">' + v.toFixed(1) + '%</span>';
+		},
+
+		shortDate: function (raw) {
+			if (!raw) {
+				return '';
+			}
+			var d = new Date(raw);
+			if (isNaN(d.getTime())) {
+				return '';
+			}
+			return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+		},
+
+		// ------------------------------------------------------------
+		// Summary strip
+		// ------------------------------------------------------------
+
+		renderSummary: function (agg) {
+			var trend     = this.trend;
+			var delivered = agg.total_delivered || 0;
+			var first     = trend.length ? new Date(trend[0].sent_date) : null;
+			var recent    = this.rates(trend.slice(-5));
+
+			$('#bcg-perf-sent').text(this.formatNumber(agg.total_emails_sent || 0));
+			$('#bcg-perf-sent-note').text(
+				this.formatNumber(agg.total_campaigns || 0) + ' <?php echo esc_js( __( 'campaigns', 'brevo-campaign-generator' ) ); ?>' +
+				(first && !isNaN(first.getTime()) ? ' <?php echo esc_js( __( 'since', 'brevo-campaign-generator' ) ); ?> ' + first.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) : '')
+			);
+
+			$('#bcg-perf-open').text((agg.avg_open_rate_raw || 0).toFixed(1) + '%');
+			$('#bcg-perf-open-note').html(this.recentNote(recent.open, agg.avg_open_rate_raw || 0, trend.length));
+
+			$('#bcg-perf-click').text((agg.avg_click_rate_raw || 0).toFixed(1) + '%');
+			$('#bcg-perf-click-note').html(this.recentNote(recent.click, agg.avg_click_rate_raw || 0, trend.length));
+
+			var unsubRate = delivered ? ((agg.total_unsubscribes || 0) / delivered) * 100 : 0;
+			$('#bcg-perf-unsub').text(unsubRate.toFixed(2) + '%');
+			$('#bcg-perf-unsub-note').text(this.formatNumber(agg.total_unsubscribes || 0) + ' <?php echo esc_js( __( 'people in total', 'brevo-campaign-generator' ) ); ?>');
+		},
+
+		rates: function (list) {
+			var d = 0, o = 0, c = 0;
+			for (var i = 0; i < list.length; i++) {
+				d += list[i].delivered || 0;
+				o += list[i].opens || 0;
+				c += list[i].clicks || 0;
+			}
+			return { open: d ? (o / d) * 100 : 0, click: d ? (c / d) * 100 : 0 };
+		},
+
+		recentNote: function (recent, overall, count) {
+			if (count < 6) {
+				return '<?php echo esc_js( __( 'Average across all campaigns', 'brevo-campaign-generator' ) ); ?>';
+			}
+			var diff  = recent - overall;
+			var cls   = Math.abs(diff) < 0.05 ? '' : (diff > 0 ? 'is-up' : 'is-down');
+			var sign  = diff > 0 ? '+' : (diff < 0 ? '−' : '');
+			return '<?php echo esc_js( __( 'Last 5 campaigns', 'brevo-campaign-generator' ) ); ?> ' + recent.toFixed(1) + '% ' +
+				'<span class="bcg-delta ' + cls + '">' + sign + Math.abs(diff).toFixed(1) + ' pts</span>';
+		},
+
+		// ------------------------------------------------------------
+		// Chart
+		// ------------------------------------------------------------
+
+		chartPoints: function () {
+			var f    = this.getFilters();
+			var out  = [];
+			for (var i = 0; i < this.trend.length; i++) {
+				var t   = this.trend[i];
+				var day = (t.sent_date || '').substr(0, 10);
+				if ((f.date_from && day < f.date_from) || (f.date_to && day > f.date_to) || !t.delivered) {
+					continue;
+				}
+				out.push({
+					t:     t,
+					open:  (t.opens / t.delivered) * 100,
+					click: (t.clicks / t.delivered) * 100,
+					date:  new Date(t.sent_date)
+				});
+			}
+			return out;
+		},
+
+		renderChart: function () {
+			var $box   = $('#bcg-perf-chart');
+			var pts    = this.chartPoints();
+			this.points = pts;
+
+			if (!pts.length) {
+				$box.html('<p class="bcg-perf-chart-empty"><?php echo esc_js( __( 'No sent campaigns in this date range.', 'brevo-campaign-generator' ) ); ?></p>');
+				return;
+			}
+
+			var W   = Math.max(320, $box.width());
+			var H   = 260;
+			var pad = { t: 12, r: 8, b: 28, l: 40 };
+			var iw  = W - pad.l - pad.r;
+			var ih  = H - pad.t - pad.b;
+
+			var max = 0, sumO = 0, sumD = 0;
+			for (var i = 0; i < pts.length; i++) {
+				max = Math.max(max, pts[i].open);
+				sumO += pts[i].t.opens;
+				sumD += pts[i].t.delivered;
+			}
+			var top  = Math.max(20, Math.ceil(max / 20) * 20);
+			var y    = function (v) { return pad.t + ih - (v / top) * ih; };
+			var step = iw / pts.length;
+			var bw   = Math.max(3, Math.min(28, step * 0.62));
+			var avg  = sumD ? (sumO / sumD) * 100 : 0;
+			var svg  = '';
+
+			// Gridlines.
+			for (var g = 0; g <= top; g += 20) {
+				svg += '<line class="bcg-perf-grid" x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + y(g) + '" y2="' + y(g) + '"/>' +
+					'<text class="bcg-perf-axis" x="' + (pad.l - 8) + '" y="' + (y(g) + 4) + '" text-anchor="end">' + g + '%</text>';
+			}
+
+			// Columns, hit areas and x labels.
+			var lastLabel = -Infinity, lastYear = null, line = '', dots = '', hits = '';
+			for (var j = 0; j < pts.length; j++) {
+				var cx = pad.l + step * j + step / 2;
+				var p  = pts[j];
+				svg  += '<rect class="bcg-perf-col" data-i="' + j + '" x="' + (cx - bw / 2) + '" y="' + y(p.open) + '" width="' + bw + '" height="' + (y(0) - y(p.open)) + '" rx="2"/>';
+				line += (j ? 'L' : 'M') + cx.toFixed(1) + ' ' + y(p.click).toFixed(1);
+				dots += '<circle class="bcg-perf-dot" cx="' + cx + '" cy="' + y(p.click) + '" r="' + (step > 14 ? 3 : 2) + '"/>';
+				hits += '<rect class="bcg-perf-hit" data-i="' + j + '" x="' + (pad.l + step * j) + '" y="' + pad.t + '" width="' + step + '" height="' + ih + '"/>';
+
+				var newMonth = j === 0 || p.date.getMonth() !== pts[j - 1].date.getMonth() || p.date.getFullYear() !== pts[j - 1].date.getFullYear();
+				if (newMonth && cx - lastLabel > 64) {
+					var label = p.date.toLocaleDateString('en-GB', { month: 'short' });
+					if (p.date.getFullYear() !== lastYear) {
+						label += ' ' + String(p.date.getFullYear()).substr(2);
+						lastYear = p.date.getFullYear();
+					}
+					svg += '<text class="bcg-perf-axis" x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle">' + label + '</text>';
+					lastLabel = cx;
+				}
+			}
+
+			// Average open rate reference.
+			svg += '<line class="bcg-perf-avg" x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + y(avg) + '" y2="' + y(avg) + '"/>';
+			svg += '<path class="bcg-perf-line" d="' + line + '"/>' + dots + hits;
+
+			$box.html('<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="<?php echo esc_js( __( 'Open and click rate for each campaign', 'brevo-campaign-generator' ) ); ?>">' + svg + '</svg>');
+		},
+
+		showTip: function (i, e) {
+			var p = this.points && this.points[i];
+			if (!p) {
+				return;
+			}
+			var $tip  = $('#bcg-perf-tip');
+			var $wrap = $tip.parent();
+			var off   = $wrap.offset();
+
+			$('#bcg-perf-chart .bcg-perf-col').removeClass('is-hover').filter('[data-i="' + i + '"]').addClass('is-hover');
+
+			$tip.html(
+				'<strong>' + this.escHtml(p.t.name) + '</strong>' +
+				'<span class="bcg-perf-tip-date">' + this.escHtml(this.shortDate(p.t.sent_date)) + ' · ' + this.formatNumber(p.t.sent) + ' <?php echo esc_js( __( 'sent', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span><i class="is-open"></i><?php echo esc_js( __( 'Opened', 'brevo-campaign-generator' ) ); ?> ' + this.formatNumber(p.t.opens) + ' <b>' + p.open.toFixed(1) + '%</b></span>' +
+				'<span><i class="is-click"></i><?php echo esc_js( __( 'Clicked', 'brevo-campaign-generator' ) ); ?> ' + this.formatNumber(p.t.clicks) + ' <b>' + p.click.toFixed(1) + '%</b></span>'
+			).prop('hidden', false);
+
+			var x = e.pageX - off.left + 14;
+			var maxX = $wrap.outerWidth() - $tip.outerWidth() - 8;
+			if (x > maxX) {
+				x = e.pageX - off.left - $tip.outerWidth() - 14;
+			}
+			$tip.css({ left: Math.max(8, x), top: Math.max(8, e.pageY - off.top - $tip.outerHeight() - 12) });
 		},
 
 		loadCampaignDetail: function (campaignId, $parentRow) {
@@ -475,7 +659,6 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			var gs = data.globalStats || {};
 
 			var html = '<div class="bcg-stats-detail-content">';
-			html += '<h4>' + this.escHtml(data.name || '') + '</h4>';
 
 			html += '<div class="bcg-stats-detail-grid">';
 
@@ -490,32 +673,32 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			'</div>';
 
 			html += '<div class="bcg-stats-detail-item">' +
-				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Unique Opens', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Opened', 'brevo-campaign-generator' ) ); ?></span>' +
 				'<span class="bcg-detail-value">' + this.formatNumber(gs.uniqueViews || 0) + '</span>' +
 			'</div>';
 
 			html += '<div class="bcg-stats-detail-item">' +
-				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Unique Clicks', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Clicked', 'brevo-campaign-generator' ) ); ?></span>' +
 				'<span class="bcg-detail-value">' + this.formatNumber(gs.uniqueClicks || 0) + '</span>' +
 			'</div>';
 
 			html += '<div class="bcg-stats-detail-item">' +
-				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Open Rate', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Open rate', 'brevo-campaign-generator' ) ); ?></span>' +
 				'<span class="bcg-detail-value">' + (gs.openRate || '0.00') + '%</span>' +
 			'</div>';
 
 			html += '<div class="bcg-stats-detail-item">' +
-				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Click Rate', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Click rate', 'brevo-campaign-generator' ) ); ?></span>' +
 				'<span class="bcg-detail-value">' + (gs.clickRate || '0.00') + '%</span>' +
 			'</div>';
 
 			html += '<div class="bcg-stats-detail-item">' +
-				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Soft Bounces', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Soft bounces', 'brevo-campaign-generator' ) ); ?></span>' +
 				'<span class="bcg-detail-value">' + this.formatNumber(gs.softBounces || 0) + '</span>' +
 			'</div>';
 
 			html += '<div class="bcg-stats-detail-item">' +
-				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Hard Bounces', 'brevo-campaign-generator' ) ); ?></span>' +
+				'<span class="bcg-detail-label"><?php echo esc_js( __( 'Hard bounces', 'brevo-campaign-generator' ) ); ?></span>' +
 				'<span class="bcg-detail-value">' + this.formatNumber(gs.hardBounces || 0) + '</span>' +
 			'</div>';
 
@@ -592,11 +775,9 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 			$('#bcg-stats-error').hide();
 			$('#bcg-stats-empty').show();
 
-			// Clear card values.
-			$('#bcg-stat-value-campaigns').text('0');
-			$('#bcg-stat-value-open-rate').text('0.00%');
-			$('#bcg-stat-value-click-rate').text('0.00%');
-			$('#bcg-stat-value-total-sent').text('0');
+			// Clear the summary strip.
+			$('#bcg-perf .bcg-perf-value').text('—');
+			$('#bcg-perf .bcg-perf-note').html('&nbsp;');
 		},
 
 		showError: function (message) {
