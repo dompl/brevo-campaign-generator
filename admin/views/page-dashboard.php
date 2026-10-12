@@ -268,7 +268,7 @@ $status_badge_classes = array(
 		<!-- Empty State -->
 		<div class="bcg-card bcg-empty-state">
 			<div class="bcg-empty-state-icon">
-				<span class="material-icons-outlined" style="font-size: 48px; color: var(--bcg-text-muted, #565c7a);" aria-hidden="true">mail_outline</span>
+				<span class="material-icons-outlined" style="font-size: 48px; color: var(--bcg-text-muted);" aria-hidden="true">mail_outline</span>
 			</div>
 			<?php if ( ! empty( $current_search ) ) : ?>
 				<h2><?php esc_html_e( 'No campaigns found', 'brevo-campaign-generator' ); ?></h2>

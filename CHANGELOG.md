@@ -17,6 +17,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.49] — 2026-10-12
+
+### Changed
+- Admin colour scheme moved from navy and blue tints to neutral charcoal greys. The red accent stays.
+- Info notices, help tips and the Ready and Queued status pills use a muted mauve instead of blue.
+- The AI button gradient is now red only (no purple).
+- Campaign Statistics loads up to 100 campaigns per page, so every campaign shows on one page.
+
+### Fixed
+- The "API key set in wp-config" notice in Settings had dark text on a dark background.
+
 ## [1.5.48] — 2026-10-12
 
 ### Fixed

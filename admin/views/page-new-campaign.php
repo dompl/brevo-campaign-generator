@@ -753,7 +753,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 				<!-- Campaign count + Generate button -->
 				<div class="bcg-wizard-actions" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
 					<div style="display:flex;align-items:center;gap:8px;">
-						<label for="bcg-campaign-count" style="font-size:13px;color:var(--bcg-text-muted,#8892b0);white-space:nowrap;">
+						<label for="bcg-campaign-count" style="font-size:13px;color:var(--bcg-text-muted);white-space:nowrap;">
 							<?php esc_html_e( 'Number of campaigns:', 'brevo-campaign-generator' ); ?>
 						</label>
 						<select id="bcg-campaign-count" name="campaign_count" class="bcg-select-styled" style="min-width:130px;">

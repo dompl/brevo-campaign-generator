@@ -18,11 +18,11 @@
 
 body.bcg-admin-page {
 	/* Backgrounds */
-	--bcg-bg-page:     #0c0e1a;
-	--bcg-bg-surface:  #111526;
-	--bcg-bg-raised:   #181d35;
-	--bcg-bg-hover:    #1e2440;
-	--bcg-bg-input:    #0e1120;
+	--bcg-bg-page:     #111111;
+	--bcg-bg-surface:  #191919;
+	--bcg-bg-raised:   #212121;
+	--bcg-bg-hover:    #2a2a2a;
+	--bcg-bg-input:    #141414;
 
 	/* Borders */
 	--bcg-border:       rgba(255, 255, 255, 0.07);
@@ -36,9 +36,9 @@ body.bcg-admin-page {
 	--bcg-accent-glow:  rgba(230, 53, 41, 0.28);
 
 	/* Text */
-	--bcg-text-primary:   #eef0ff;
-	--bcg-text-secondary: #8b92be;
-	--bcg-text-muted:     #4f567a;
+	--bcg-text-primary:   #f3f3f1;
+	--bcg-text-secondary: #a8a8a3;
+	--bcg-text-muted:     #6e6e6a;
 
 	/* Status colours */
 	--bcg-success:       #22c55e;
@@ -47,8 +47,8 @@ body.bcg-admin-page {
 	--bcg-warning-dim:   rgba(245, 158, 11, 0.1);
 	--bcg-error:         #ef4444;
 	--bcg-error-dim:     rgba(239, 68, 68, 0.1);
-	--bcg-info:          #3b82f6;
-	--bcg-info-dim:      rgba(59, 130, 246, 0.1);
+	--bcg-info:          #c9a7bb;
+	--bcg-info-dim:      rgba(201, 167, 187, 0.1);
 
 	/* Typography — system font stack (no Google Fonts dependency) */
 	--bcg-font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
@@ -546,8 +546,8 @@ body.bcg-admin-page .bcg-stat-icon .material-icons-outlined {
 }
 
 .bcg-stat-icon-credits {
-	background: rgba(59, 130, 246, 0.1);
-	border-color: rgba(59, 130, 246, 0.15);
+	background: rgba(201, 167, 187, 0.1);
+	border-color: rgba(201, 167, 187, 0.15);
 	color: var(--bcg-info);
 }
 
@@ -720,7 +720,7 @@ a.bcg-btn-ai {
 	font-weight:     600 !important;
 	line-height:     1 !important;
 	color:           #ffffff !important;
-	background:      linear-gradient(135deg, #7c3aed, #e63529) !important;
+	background:      linear-gradient(135deg, #f0563c, #c8261b) !important;
 	border:          none !important;
 	border-radius:   var(--bcg-radius-sm) !important;
 	text-decoration: none !important;
@@ -1278,7 +1278,7 @@ body.bcg-admin-page .bcg-wrap .widefat th a {
 	text-transform: uppercase;
 }
 
-.bcg-badge-draft     { background: rgba(139,146,184,0.12); color: var(--bcg-text-secondary); }
+.bcg-badge-draft     { background: rgba(255, 255, 255, 0.08); color: var(--bcg-text-secondary); }
 .bcg-badge-ready     { background: var(--bcg-info-dim);    color: var(--bcg-info); }
 .bcg-badge-sent      { background: var(--bcg-success-dim); color: var(--bcg-success); }
 .bcg-badge-scheduled { background: var(--bcg-warning-dim); color: var(--bcg-warning); }
@@ -1311,7 +1311,7 @@ body.bcg-admin-page #wpbody-content > .error {
 .bcg-notice-success  { background: var(--bcg-success-dim); border: 1px solid rgba(34,197,94,0.2); color: #86efac; }
 .bcg-notice-warning  { background: var(--bcg-warning-dim); border: 1px solid rgba(245,158,11,0.2); color: #fde68a; }
 .bcg-notice-error    { background: var(--bcg-error-dim);   border: 1px solid rgba(239,68,68,0.2);  color: #fca5a5; }
-.bcg-notice-info     { background: var(--bcg-info-dim);    border: 1px solid rgba(59,130,246,0.2); color: #93c5fd; }
+.bcg-notice-info     { background: var(--bcg-info-dim);    border: 1px solid rgba(201, 167, 187, 0.2); color: var(--bcg-info); }
 
 /* Settings_errors WP notices shown inside the form */
 body.bcg-admin-page .bcg-wrap .settings-error,
@@ -2657,7 +2657,7 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding: 20px 20px 0;
-	background: var(--bcg-bg-body, #1a1a1f);
+	background: var(--bcg-bg-body, #191919);
 	scrollbar-width: thin;
 	scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
@@ -2749,7 +2749,7 @@ body.bcg-admin-page .bcg-wrap .form-table tr:last-child td {
 	padding: 0;
 	border: none;
 	border-radius: 4px;
-	background: rgba(10, 10, 15, 0.82);
+	background: rgba(8, 8, 8, 0.82);
 	color: #fff;
 	font-size: 14px;
 	line-height: 1;
@@ -3573,12 +3573,12 @@ body.bcg-admin-page .bcg-perf-title {
 	width: 10px;
 	height: 10px;
 	border-radius: 2px;
-	background: rgba(139, 146, 190, 0.45);
+	background: rgba(255, 255, 255, 0.3);
 }
 
 .bcg-perf-legend i.is-click,
 .bcg-perf-tip i.is-click { height: 2px; border-radius: 1px; background: var(--bcg-accent); }
-.bcg-perf-legend i.is-avg { height: 0; border-top: 1px dashed rgba(238, 240, 255, 0.5); background: none; border-radius: 0; }
+.bcg-perf-legend i.is-avg { height: 0; border-top: 1px dashed rgba(255, 255, 255, 0.5); background: none; border-radius: 0; }
 
 .bcg-perf-chart { min-height: 260px; }
 .bcg-perf-chart svg { display: block; overflow: visible; }
@@ -3587,9 +3587,9 @@ body.bcg-admin-page .bcg-perf-title {
 
 .bcg-perf-grid { stroke: rgba(255, 255, 255, 0.06); stroke-width: 1; }
 .bcg-perf-axis { fill: var(--bcg-text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
-.bcg-perf-col { fill: rgba(139, 146, 190, 0.32); transition: fill 0.12s; }
-.bcg-perf-col.is-hover { fill: rgba(139, 146, 190, 0.6); }
-.bcg-perf-avg { stroke: rgba(238, 240, 255, 0.45); stroke-width: 1; stroke-dasharray: 4 4; }
+.bcg-perf-col { fill: rgba(255, 255, 255, 0.2); transition: fill 0.12s; }
+.bcg-perf-col.is-hover { fill: rgba(255, 255, 255, 0.38); }
+.bcg-perf-avg { stroke: rgba(255, 255, 255, 0.45); stroke-width: 1; stroke-dasharray: 4 4; }
 .bcg-perf-line { fill: none; stroke: var(--bcg-accent); stroke-width: 2; stroke-linejoin: round; }
 .bcg-perf-dot { fill: var(--bcg-accent); stroke: var(--bcg-bg-surface); stroke-width: 1.5; }
 .bcg-perf-hit { fill: transparent; }
@@ -3704,7 +3704,7 @@ body.bcg-admin-page .bcg-perf-title {
 .bcg-dash-latest-table .is-empty td { padding: 24px 0; text-align: center; color: var(--bcg-text-muted); }
 .bcg-dash-latest-table .is-loading .bcg-skeleton { display: block; height: 14px; }
 
-.bcg-status-badge.bcg-status-ready { background: rgba(59, 130, 246, 0.14); color: #93c5fd; }
+.bcg-status-badge.bcg-status-ready { background: rgba(201, 167, 187, 0.14); color: var(--bcg-info); }
 .bcg-status-badge.bcg-status-scheduled { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
 
 @media (max-width: 782px) {
@@ -3893,7 +3893,7 @@ body.bcg-admin-page .bcg-perf-title {
 	background: rgba(255, 255, 255, 0.06);
 	overflow: hidden;
 }
-.bcg-rate-bar i { display: block; height: 100%; background: rgba(139, 146, 190, 0.7); }
+.bcg-rate-bar i { display: block; height: 100%; background: rgba(255, 255, 255, 0.42); }
 .bcg-col-click-rate .bcg-rate-bar i { background: var(--bcg-accent); }
 
 .bcg-status-badge {
@@ -3907,7 +3907,7 @@ body.bcg-admin-page .bcg-perf-title {
 	color: var(--bcg-text-secondary);
 }
 .bcg-status-badge.bcg-status-sent { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
-.bcg-status-badge.bcg-status-queued { background: rgba(59, 130, 246, 0.14); color: #93c5fd; }
+.bcg-status-badge.bcg-status-queued { background: rgba(201, 167, 187, 0.14); color: var(--bcg-info); }
 .bcg-status-badge.bcg-status-suspended,
 .bcg-status-badge.bcg-status-archive { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
 
@@ -4186,7 +4186,7 @@ body.bcg-admin-page .bcg-btn-secondary:hover {
 }
 
 body.bcg-admin-page .bcg-btn-ai {
-	background: linear-gradient(135deg, #7c3aed, #e63529) !important;
+	background: linear-gradient(135deg, #f0563c, #c8261b) !important;
 	color:      #fff !important;
 	border:     none !important;
 }
@@ -4241,7 +4241,7 @@ body.bcg-admin-page .bcg-sb-status-error {
 body.bcg-admin-page .bcg-sb-status-loading {
 	background: var(--bcg-info-dim);
 	color:      var(--bcg-info);
-	border:     1px solid rgba(59,130,246,0.2);
+	border:     1px solid rgba(201, 167, 187, 0.2);
 }
 
 /* ── Three-Panel Layout ──────────────────────────────────────────────── */
@@ -4873,7 +4873,7 @@ body.bcg-admin-page .bcg-sb-preview-iframe {
 /* Mobile preview — iframe is literally 375 px wide so the email's
    CSS media queries fire and the layout actually reflows. */
 body.bcg-admin-page .bcg-sb-preview-frame-wrap.bcg-preview-mobile {
-	background: #1e1e22;
+	background: #212121;
 	padding:    32px var(--bcg-space-4) var(--bcg-space-4);
 }
 
@@ -5078,8 +5078,8 @@ body.bcg-admin-page .bcg-spin {
 }
 .bcg-sb-card-preview {
 	overflow: hidden;
-	border-top: 1px solid var(--bcg-border, #e5e7eb);
-	background: #f0f2f5;
+	border-top: 1px solid var(--bcg-border);
+	background: #f2f2f2;
 	position: relative;
 }
 .bcg-sb-card-iframe {
@@ -5591,8 +5591,8 @@ body.bcg-admin-page .bcg-help-tip {
 	display: flex;
 	gap: 12px;
 	align-items: flex-start;
-	background: rgba(59, 130, 246, 0.08);
-	border: 1px solid rgba(59, 130, 246, 0.25);
+	background: rgba(201, 167, 187, 0.08);
+	border: 1px solid rgba(201, 167, 187, 0.25);
 	border-radius: var(--bcg-radius);
 	padding: 14px 16px;
 	margin-top: 16px;
@@ -6754,7 +6754,7 @@ body.bcg-admin-page .bcg-modal-box {
 	align-items:    center;
 	font-size:      11px;
 	font-weight:    500;
-	color:          var(--bcg-text-muted, #8892b0);
+	color:          var(--bcg-text-muted);
 	cursor:         pointer;
 	margin-left:    8px;
 	letter-spacing: 0.02em;
@@ -7095,8 +7095,8 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 	justify-content: center;
 	font-size:       13px;
 	font-weight:     700;
-	background:      var(--bcg-border, #e2e8f0);
-	color:           var(--bcg-text-muted, #8892b0);
+	background:      var(--bcg-border);
+	color:           var(--bcg-text-muted);
 	flex-shrink:     0;
 	transition:      background 0.2s, color 0.2s;
 }
@@ -7132,13 +7132,13 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 .bcg-wizard-step-title {
 	font-size:   12px;
 	font-weight: 600;
-	color:       var(--bcg-text, #f0f4f8);
+	color:       var(--bcg-text-primary);
 	white-space: nowrap;
 }
 
 .bcg-wizard-step-desc {
 	font-size:   11px;
-	color:       var(--bcg-text-muted, #8892b0);
+	color:       var(--bcg-text-muted);
 	white-space: nowrap;
 }
 
@@ -7146,7 +7146,7 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 	flex:        1;
 	min-width:   20px;
 	height:      2px;
-	background:  var(--bcg-border, #334155);
+	background:  var(--bcg-border);
 	margin:      0 4px;
 	flex-shrink: 0;
 }
@@ -7157,7 +7157,7 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 	justify-content: space-between;
 	padding-top:     20px;
 	margin-top:      20px;
-	border-top:      1px solid var(--bcg-border, #e2e8f0);
+	border-top:      1px solid var(--bcg-border);
 }
 
 .bcg-wizard-nav > div:empty {
@@ -7167,12 +7167,12 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 .bcg-section-divider-heading {
 	font-size:     12px;
 	font-weight:   600;
-	color:         var(--bcg-text-muted, #8892b0);
+	color:         var(--bcg-text-muted);
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 	margin:        36px 0 10px;
 	padding-bottom: 8px;
-	border-bottom: 1px solid var(--bcg-border, #e2e8f0);
+	border-bottom: 1px solid var(--bcg-border);
 }
 
 /* wp-config API key info notice */
@@ -7184,7 +7184,7 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 	border:      1px solid rgba(46, 204, 113, 0.3);
 	border-radius: 6px;
 	font-size:   13px;
-	color:       var(--bcg-text, #2d3748);
+	color:       var(--bcg-text-primary);
 	margin-bottom: 8px;
 	flex-wrap:   wrap;
 	gap:         4px;

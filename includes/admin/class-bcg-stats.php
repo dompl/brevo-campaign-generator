@@ -73,7 +73,7 @@ class BCG_Stats {
 	 *     @type string $status    Campaign status filter ('all', 'sent', 'draft', 'queued'). Default 'all'.
 	 *     @type string $date_from Start date in Y-m-d format. Default empty.
 	 *     @type string $date_to   End date in Y-m-d format. Default empty.
-	 *     @type int    $limit     Number of campaigns to fetch. Default 50.
+	 *     @type int    $limit     Number of campaigns to fetch. Default 100.
 	 *     @type int    $offset    Pagination offset. Default 0.
 	 * }
 	 * @param bool  $force_refresh Whether to bypass transient cache. Default false.
@@ -84,7 +84,7 @@ class BCG_Stats {
 			'status'    => 'all',
 			'date_from' => '',
 			'date_to'   => '',
-			'limit'     => 50,
+			'limit'     => 100,
 			'offset'    => 0,
 		);
 
@@ -411,7 +411,7 @@ class BCG_Stats {
 			'status'    => isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : 'all',
 			'date_from' => isset( $_POST['date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['date_from'] ) ) : '',
 			'date_to'   => isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '',
-			'limit'     => isset( $_POST['limit'] ) ? absint( $_POST['limit'] ) : 50,
+			'limit'     => isset( $_POST['limit'] ) ? absint( $_POST['limit'] ) : 100,
 			'offset'    => isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0,
 		);
 
@@ -502,7 +502,7 @@ class BCG_Stats {
 			'status'    => isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : 'all',
 			'date_from' => isset( $_POST['date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['date_from'] ) ) : '',
 			'date_to'   => isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '',
-			'limit'     => isset( $_POST['limit'] ) ? absint( $_POST['limit'] ) : 50,
+			'limit'     => isset( $_POST['limit'] ) ? absint( $_POST['limit'] ) : 100,
 			'offset'    => isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0,
 		);
 

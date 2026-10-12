@@ -242,7 +242,7 @@ $nonce         = wp_create_nonce( 'bcg_nonce' );
 		nonce:     '',
 		hasApiKey: false,
 		offset:    0,
-		limit:     50,
+		limit:     100,
 		total:     0,
 		trend:     [],
 		resizeTimer: null,
