@@ -299,6 +299,7 @@ $status_badge_classes = array(
 
 	<?php else : ?>
 
+		<div class="bcg-table-card">
 		<table class="wp-list-table widefat fixed striped bcg-campaigns-table">
 			<thead>
 				<tr>
@@ -313,7 +314,7 @@ $status_badge_classes = array(
 						's'       => $current_search,
 					), $base_url );
 					?>
-					<th scope="col" class="bcg-col-title column-primary <?php echo esc_attr( $title_class ); ?>" style="width: 30%;">
+					<th scope="col" class="bcg-col-title column-primary <?php echo esc_attr( $title_class ); ?>">
 						<a href="<?php echo esc_url( $title_url ); ?>">
 							<span><?php esc_html_e( 'Title', 'brevo-campaign-generator' ); ?></span>
 							<span class="sorting-indicators">
@@ -322,13 +323,13 @@ $status_badge_classes = array(
 							</span>
 						</a>
 					</th>
-					<th scope="col" class="bcg-col-status" style="width: 10%;">
+					<th scope="col" class="bcg-col-status">
 						<?php esc_html_e( 'Status', 'brevo-campaign-generator' ); ?>
 					</th>
-					<th scope="col" class="bcg-col-products" style="width: 8%;">
+					<th scope="col" class="bcg-col-products">
 						<?php esc_html_e( 'Products', 'brevo-campaign-generator' ); ?>
 					</th>
-					<th scope="col" class="bcg-col-list" style="width: 14%;">
+					<th scope="col" class="bcg-col-list">
 						<?php esc_html_e( 'Mailing List', 'brevo-campaign-generator' ); ?>
 					</th>
 					<?php
@@ -342,7 +343,7 @@ $status_badge_classes = array(
 						's'       => $current_search,
 					), $base_url );
 					?>
-					<th scope="col" class="bcg-col-created <?php echo esc_attr( $created_class ); ?>" style="width: 15%;">
+					<th scope="col" class="bcg-col-created <?php echo esc_attr( $created_class ); ?>">
 						<a href="<?php echo esc_url( $created_url ); ?>">
 							<span><?php esc_html_e( 'Created', 'brevo-campaign-generator' ); ?></span>
 							<span class="sorting-indicators">
@@ -351,7 +352,7 @@ $status_badge_classes = array(
 							</span>
 						</a>
 					</th>
-					<th scope="col" class="bcg-col-actions" style="width: 23%;">
+					<th scope="col" class="bcg-col-actions">
 						<?php esc_html_e( 'Actions', 'brevo-campaign-generator' ); ?>
 					</th>
 				</tr>
@@ -399,8 +400,7 @@ $status_badge_classes = array(
 								</a>
 							</strong>
 							<?php if ( ! empty( $campaign_row->subject ) && 0 !== strcasecmp( trim( $campaign_row->subject ), trim( $campaign_row->title ) ) ) : ?>
-								<br />
-								<span class="bcg-text-muted bcg-text-small bcg-truncate" style="display: inline-block; max-width: 300px;">
+								<span class="bcg-row-subject" title="<?php echo esc_attr( $campaign_row->subject ); ?>">
 									<?php echo esc_html( $campaign_row->subject ); ?>
 								</span>
 							<?php endif; ?>
@@ -443,7 +443,7 @@ $status_badge_classes = array(
 
 						<!-- Actions -->
 						<td class="bcg-col-actions" data-colname="<?php esc_attr_e( 'Actions', 'brevo-campaign-generator' ); ?>">
-							<div class="bcg-action-buttons" style="white-space:nowrap;display:flex;gap:4px;flex-wrap:nowrap;align-items:center;">
+							<div class="bcg-action-buttons">
 								<a
 									href="<?php echo esc_url( $edit_url ); ?>"
 									class="bcg-btn-sm bcg-btn-secondary"
@@ -455,46 +455,46 @@ $status_badge_classes = array(
 								<?php if ( ! empty( $campaign_row->template_html ) ) : ?>
 									<a
 										href="<?php echo esc_url( $edit_url . '&preview=1' ); ?>"
-										class="bcg-btn-sm bcg-btn-secondary"
+										class="bcg-btn-sm bcg-btn-secondary bcg-icon-btn"
 										title="<?php esc_attr_e( 'Preview', 'brevo-campaign-generator' ); ?>"
+										aria-label="<?php esc_attr_e( 'Preview', 'brevo-campaign-generator' ); ?>"
 									>
-										<?php esc_html_e( 'Preview', 'brevo-campaign-generator' ); ?>
+										<span class="dashicons dashicons-visibility" aria-hidden="true"></span>
 									</a>
 								<?php endif; ?>
 
 								<?php if ( in_array( $campaign_row->status, array( 'draft', 'ready' ), true ) ) : ?>
 									<button
 										type="button"
-										class="bcg-btn-sm bcg-btn-secondary bcg-schedule-campaign"
+										class="bcg-btn-sm bcg-btn-secondary bcg-icon-btn bcg-schedule-campaign"
 										data-campaign-id="<?php echo absint( $campaign_row->id ); ?>"
 										data-campaign-title="<?php echo esc_attr( $campaign_row->title ); ?>"
 										title="<?php esc_attr_e( 'Schedule', 'brevo-campaign-generator' ); ?>"
+										aria-label="<?php esc_attr_e( 'Schedule', 'brevo-campaign-generator' ); ?>"
 									>
-										<span class="dashicons dashicons-calendar-alt"></span>
-										<?php esc_html_e( 'Schedule', 'brevo-campaign-generator' ); ?>
+										<span class="dashicons dashicons-calendar-alt" aria-hidden="true"></span>
 									</button>
 								<?php endif; ?>
 
 								<button
 									type="button"
-									class="bcg-btn-sm bcg-btn-secondary bcg-duplicate-campaign"
+									class="bcg-btn-sm bcg-btn-secondary bcg-icon-btn bcg-duplicate-campaign"
 									data-campaign-id="<?php echo absint( $campaign_row->id ); ?>"
 									title="<?php esc_attr_e( 'Duplicate', 'brevo-campaign-generator' ); ?>"
+									aria-label="<?php esc_attr_e( 'Duplicate', 'brevo-campaign-generator' ); ?>"
 								>
-									<span class="dashicons dashicons-admin-page"></span>
-									<?php esc_html_e( 'Duplicate', 'brevo-campaign-generator' ); ?>
+									<span class="dashicons dashicons-admin-page" aria-hidden="true"></span>
 								</button>
 
 								<button
 									type="button"
-									class="bcg-btn-sm bcg-btn-secondary bcg-delete-campaign"
+									class="bcg-btn-sm bcg-btn-secondary bcg-icon-btn bcg-icon-btn--danger bcg-delete-campaign"
 									data-campaign-id="<?php echo absint( $campaign_row->id ); ?>"
 									data-campaign-title="<?php echo esc_attr( $campaign_row->title ); ?>"
 									title="<?php esc_attr_e( 'Delete', 'brevo-campaign-generator' ); ?>"
-									style="color:#d63638;border-color:rgba(214,54,56,0.3);"
+									aria-label="<?php esc_attr_e( 'Delete', 'brevo-campaign-generator' ); ?>"
 								>
-									<span class="dashicons dashicons-trash" style="color:#d63638;"></span>
-									<?php esc_html_e( 'Delete', 'brevo-campaign-generator' ); ?>
+									<span class="dashicons dashicons-trash" aria-hidden="true"></span>
 								</button>
 							</div>
 						</td>
@@ -502,17 +502,8 @@ $status_badge_classes = array(
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
-			<tfoot>
-				<tr>
-					<th scope="col" class="bcg-col-title column-primary"><?php esc_html_e( 'Title', 'brevo-campaign-generator' ); ?></th>
-					<th scope="col" class="bcg-col-status"><?php esc_html_e( 'Status', 'brevo-campaign-generator' ); ?></th>
-					<th scope="col" class="bcg-col-products"><?php esc_html_e( 'Products', 'brevo-campaign-generator' ); ?></th>
-					<th scope="col" class="bcg-col-list"><?php esc_html_e( 'Mailing List', 'brevo-campaign-generator' ); ?></th>
-					<th scope="col" class="bcg-col-created"><?php esc_html_e( 'Created', 'brevo-campaign-generator' ); ?></th>
-					<th scope="col" class="bcg-col-actions"><?php esc_html_e( 'Actions', 'brevo-campaign-generator' ); ?></th>
-				</tr>
-			</tfoot>
 		</table>
+		</div>
 
 		<!-- ─── Pagination ──────────────────────────────────────────── -->
 

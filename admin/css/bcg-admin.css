@@ -262,7 +262,7 @@ body.bcg-admin-page #wpfooter a {
 body.bcg-admin-page .bcg-wrap {
 	max-width: none;
 	margin: 0;
-	padding: 28px 28px 60px;
+	padding: 28px 20px 60px;
 	font-family: var(--bcg-font-body);
 	color: var(--bcg-text-primary);
 }
@@ -3913,7 +3913,7 @@ body.bcg-admin-page .bcg-perf-title {
 
 /* Expanded detail row */
 .bcg-stats-table tr.bcg-stats-detail-row { background: var(--bcg-bg-raised) !important; }
-.bcg-stats-table tr.bcg-stats-detail-row td { padding: 4px 24px 20px 56px !important; }
+.bcg-stats-table tr.bcg-stats-detail-row td { padding: 4px 24px 20px 50px !important; }
 .bcg-stats-detail-grid {
 	display: grid;
 	grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -7188,4 +7188,116 @@ body.bcg-admin-page .bcg-sb-defaults-modal-footer {
 	margin-bottom: 8px;
 	flex-wrap:   wrap;
 	gap:         4px;
+}
+
+/* ── v1.5.50: Dashboard spacing ───────────────────────────────────────── */
+
+/* Campaigns table sits in a card, like the stats table */
+body.bcg-admin-page .bcg-table-card {
+	background:    var(--bcg-bg-surface);
+	border:        1px solid var(--bcg-border);
+	border-radius: var(--bcg-radius-lg);
+	overflow:      hidden;
+	margin-bottom: 16px;
+}
+
+body.bcg-admin-page .bcg-wrap .bcg-table-card .bcg-campaigns-table {
+	margin: 0;
+	border: 0;
+}
+
+body.bcg-admin-page .bcg-wrap .bcg-campaigns-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+body.bcg-admin-page .bcg-wrap .bcg-campaigns-table td {
+	padding-top:    14px;
+	padding-bottom: 14px;
+}
+
+@media screen and (min-width: 783px) {
+	body.bcg-admin-page .bcg-campaigns-table .bcg-col-status   { width: 110px; }
+	body.bcg-admin-page .bcg-campaigns-table .bcg-col-products { width: 90px; }
+	body.bcg-admin-page .bcg-campaigns-table .bcg-col-list     { width: 110px; }
+	body.bcg-admin-page .bcg-campaigns-table .bcg-col-created  { width: 120px; }
+	body.bcg-admin-page .bcg-campaigns-table .bcg-col-actions  { width: 232px; min-width: 0; }
+}
+
+body.bcg-admin-page .bcg-wrap .bcg-campaigns-table th.sortable a,
+body.bcg-admin-page .bcg-wrap .bcg-campaigns-table th.sorted a {
+	display:     inline-flex;
+	align-items: center;
+	padding:     0;
+}
+
+body.bcg-admin-page .bcg-campaigns-table .row-title {
+	font-weight: 600;
+}
+
+body.bcg-admin-page .bcg-campaigns-table .bcg-row-subject {
+	display:       block;
+	margin-top:    4px;
+	overflow:      hidden;
+	text-overflow: ellipsis;
+	white-space:   nowrap;
+	font-size:     12px;
+	color:         var(--bcg-text-muted);
+}
+
+body.bcg-admin-page .bcg-campaigns-table abbr {
+	text-decoration: none;
+	border:          0;
+	cursor:          default;
+}
+
+/* Actions: one text button, the rest icon-only */
+body.bcg-admin-page .bcg-action-buttons {
+	gap: 6px;
+}
+
+body.bcg-admin-page .bcg-action-buttons .bcg-btn-sm {
+	height:      30px !important;
+	padding:     0 12px !important;
+	line-height: 30px !important;
+}
+
+body.bcg-admin-page .bcg-action-buttons .bcg-icon-btn {
+	justify-content: center;
+	flex:            0 0 30px;
+	width:           30px;
+	padding:         0 !important;
+	color:           var(--bcg-text-secondary);
+}
+
+body.bcg-admin-page .bcg-action-buttons .bcg-icon-btn .dashicons {
+	font-size:   16px !important;
+	width:       16px !important;
+	height:      16px !important;
+	line-height: 16px !important;
+}
+
+body.bcg-admin-page .bcg-action-buttons .bcg-icon-btn:hover,
+body.bcg-admin-page .bcg-action-buttons .bcg-icon-btn:focus-visible {
+	color: var(--bcg-text-primary);
+}
+
+body.bcg-admin-page .bcg-action-buttons .bcg-icon-btn--danger:hover,
+body.bcg-admin-page .bcg-action-buttons .bcg-icon-btn--danger:focus-visible {
+	color:        #f06b62;
+	border-color: rgba(230, 53, 41, 0.45);
+	background:   rgba(230, 53, 41, 0.1);
+}
+
+/* Latest from Brevo: give the number columns room */
+.bcg-dash-latest-table th:not(:first-child),
+.bcg-dash-latest-table td:not(:first-child) { padding-left: 24px; }
+.bcg-dash-latest-table th:nth-child(2) { width: 110px; }
+.bcg-dash-latest-table th:nth-child(3) { width: 80px; }
+.bcg-dash-latest-table th:nth-child(4),
+.bcg-dash-latest-table th:nth-child(5) { width: 112px; }
+.bcg-dash-latest-table .bcg-rate { text-align: right; }
+
+/* Stats page heading: same gap below it as the dashboard header */
+body.bcg-admin-page .bcg-stats-wrap > h1 {
+	margin-bottom: 22px;
 }

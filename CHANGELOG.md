@@ -17,6 +17,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.5.50] — 2026-10-12
+
+### Fixed
+- Dashboard campaign list no longer runs off the right edge: Preview, Schedule, Duplicate and Delete are now compact icon buttons (with tooltips), and columns have set widths so the title gets the spare room.
+- Email subject under each campaign title now trims to the column instead of wrapping at a fixed 300px.
+- Removed the repeated header row at the bottom of the campaign list and put the list in a card to match the stats page.
+- Page content now lines up with the plugin header edges on every plugin page.
+- Stats page heading has the same breathing room as the dashboard; expanded campaign details line up with the campaign name.
+- "Latest from Brevo" number columns have fixed widths and more space between them.
+
 ## [1.5.49] — 2026-10-12
 
 ### Changed
