@@ -1168,7 +1168,7 @@ class BCG_Admin {
 		$campaign         = $campaign_handler->get( $campaign_id );
 
 		if ( is_wp_error( $campaign ) ) {
-			wp_send_json_error( array( 'message' => $campaign->get_error_message() ) );
+			wp_send_json_error( array( 'message' => $campaign->get_error_message(), 'code' => $campaign->get_error_code() ) );
 		}
 
 		// Find the specific product row.
@@ -1325,6 +1325,7 @@ class BCG_Admin {
 
 		$ai_manager    = new BCG_AI_Manager();
 		$total_charged = 0.0;
+		$errors        = array();
 		$ai_data       = array(
 			'use_product_image' => 1,
 			'show_buy_button'   => 1,
@@ -1341,6 +1342,11 @@ class BCG_Admin {
 		if ( ! is_wp_error( $headline_result ) ) {
 			$ai_data['ai_headline'] = $headline_result['content'];
 			$total_charged         += (float) ( $headline_result['charged_gbp'] ?? 0 );
+		} else {
+			if ( 'ats_portal_out_of_credit' === $headline_result->get_error_code() ) {
+				$this->send_ai_error( $headline_result, array( 'errors' => $errors ) );
+			}
+			$errors[] = $headline_result->get_error_message();
 		}
 
 		// Generate short description.
@@ -1348,6 +1354,11 @@ class BCG_Admin {
 		if ( ! is_wp_error( $desc_result ) ) {
 			$ai_data['ai_short_desc'] = $desc_result['content'];
 			$total_charged           += (float) ( $desc_result['charged_gbp'] ?? 0 );
+		} else {
+			if ( 'ats_portal_out_of_credit' === $desc_result->get_error_code() ) {
+				$this->send_ai_error( $desc_result, array( 'errors' => $errors ) );
+			}
+			$errors[] = $desc_result->get_error_message();
 		}
 
 		// Add the product to the campaign.
@@ -1355,7 +1366,7 @@ class BCG_Admin {
 		$row_id           = $campaign_handler->add_product( $campaign_id, $product_id, $ai_data );
 
 		if ( is_wp_error( $row_id ) ) {
-			wp_send_json_error( array( 'message' => $row_id->get_error_message() ) );
+			wp_send_json_error( array( 'message' => $row_id->get_error_message(), 'code' => $row_id->get_error_code() ) );
 		}
 
 		wp_send_json_success( array(
@@ -1370,6 +1381,7 @@ class BCG_Admin {
 			'ai_short_desc'  => $ai_data['ai_short_desc'] ?? '',
 			'charged_gbp'    => round( $total_charged, 4 ),
 			'balance_gbp'    => $ai_manager->get_balance_gbp(),
+			'partial_errors' => $errors,
 		) );
 	}
 

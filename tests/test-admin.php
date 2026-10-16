@@ -64,4 +64,79 @@ bcg_assert( false === strpos( $src, 'new_balance' ), 'no new_balance payloads' )
 bcg_assert( false === strpos( $src, 'js.stripe.com' ), 'Stripe.js no longer enqueued' );
 bcg_assert( false !== strpos( $src, "do_action( 'ats_ai_portal_credits_bar' )" ) || false !== strpos( file_get_contents( BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php' ), "do_action( 'ats_ai_portal_credits_bar' )" ), 'credits bar action fired on BCG pages' );
 
+// 4. handle_add_product() stops on the first out-of-credit AI result: no
+// second AI call, no error swallowed, no product row inserted (Finding 1,
+// task-4 fix round 1). DOING_AJAX makes wp_send_json_error() route through
+// wp_die() via the 'wp_die_ajax_handler' filter instead of a bare die(),
+// which we intercept below so the test script can keep running.
+if ( ! defined( 'DOING_AJAX' ) ) {
+	define( 'DOING_AJAX', true );
+}
+
+global $wpdb;
+
+$campaign_handler = new BCG_Campaign();
+$test_campaign_id  = $campaign_handler->create_draft( array( 'title' => 'bcg-fix1-test-campaign' ) );
+bcg_assert( ! is_wp_error( $test_campaign_id ), 'test campaign draft created for handle_add_product() test' );
+
+$product_ids = wc_get_products( array( 'limit' => 1, 'status' => 'publish', 'return' => 'ids' ) );
+bcg_assert( ! empty( $product_ids ), 'a published WooCommerce product exists to test handle_add_product() with' );
+$test_product_id = (int) $product_ids[0];
+
+// A single 402 "insufficient_balance" response - the same shape Portal::error()
+// is already proven (tests/test-openai-client.php, tests/test-images.php) to map
+// to a WP_Error coded ats_portal_out_of_credit. bcg_mock_http() repeats the last
+// (only) queued response forever, so a second AI call would hit this too if the
+// handler didn't stop after the first.
+bcg_mock_http( array(
+	bcg_response( 402, array( 'error' => array( 'code' => 'insufficient_balance', 'message' => 'Out of credit' ) ) ),
+) );
+
+$_POST = array(
+	'nonce'       => wp_create_nonce( 'bcg_nonce' ),
+	'campaign_id' => $test_campaign_id,
+	'product_id'  => $test_product_id,
+	'tone'        => 'Professional',
+	'language'    => 'English',
+);
+$_REQUEST['nonce'] = $_POST['nonce'];
+
+$die_interceptor = function () {
+	return function ( $message = '', $title = '', $args = array() ) {
+		throw new RuntimeException( 'wp_die intercepted' );
+	};
+};
+
+$buffer              = '';
+$product_count_after = null;
+
+try {
+	add_filter( 'wp_die_ajax_handler', $die_interceptor );
+	add_filter( 'wp_die_handler', $die_interceptor );
+
+	ob_start();
+	try {
+		$admin->handle_add_product();
+	} catch ( RuntimeException $e ) {
+		// Expected: wp_send_json_error() reached wp_die().
+	}
+	$buffer = ob_get_clean();
+
+	$product_count_after = $campaign_handler->get_product_count( $test_campaign_id );
+} finally {
+	remove_filter( 'wp_die_ajax_handler', $die_interceptor );
+	remove_filter( 'wp_die_handler', $die_interceptor );
+	// Always clean up the test campaign (and any product rows it ended up
+	// with), even if an unexpected exception escaped the inner try above.
+	$campaign_handler->delete( $test_campaign_id );
+	$_POST    = array();
+	$_REQUEST = array();
+}
+
+$response = json_decode( $buffer, true );
+bcg_assert( is_array( $response ) && false === ( $response['success'] ?? null ), 'handle_add_product() returns success=false when the first AI call is out of credit' );
+bcg_assert_same( 'ats_portal_out_of_credit', $response['data']['code'] ?? null, 'handle_add_product() error payload code is ats_portal_out_of_credit' );
+bcg_assert_same( 1, bcg_call_count(), 'handle_add_product() stops after the first AI call (no second call made)' );
+bcg_assert_same( 0, $product_count_after, 'handle_add_product() did not insert a product row' );
+
 bcg_done( 'test-admin' );
