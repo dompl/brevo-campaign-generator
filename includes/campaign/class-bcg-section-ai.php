@@ -38,7 +38,7 @@ class BCG_Section_AI {
 	 * @return array|\WP_Error Updated settings array on success, WP_Error on failure.
 	 */
 	public static function generate( string $type, array $settings, array $context ): array|\WP_Error {
-		$openai = new BCG_OpenAI();
+		$openai = new BCG_OpenAI( '', 'ats:email:section', (string) ( $context['campaign_id'] ?? '' ) );
 
 		// Inject campaign-level AI prompt if provided.
 		if ( ! empty( $context['prompt'] ) ) {

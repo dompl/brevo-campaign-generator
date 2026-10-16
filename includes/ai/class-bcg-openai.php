@@ -3,9 +3,10 @@
  * OpenAI GPT integration.
  *
  * Handles all text generation tasks for the Brevo Campaign Generator plugin
- * using the OpenAI Chat Completions API. Provides methods for generating
- * subject lines, headlines, descriptions, preview text, and coupon
- * suggestions from WooCommerce product data.
+ * using the OpenAI Chat Completions API, routed through the Red Frog API
+ * portal (`ats-ai-portal`) rather than a direct OpenAI key. Provides methods
+ * for generating subject lines, headlines, descriptions, preview text, and
+ * coupon suggestions from WooCommerce product data.
  *
  * @package Brevo_Campaign_Generator
  * @since   1.0.0
@@ -24,13 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class BCG_OpenAI {
-
-	/**
-	 * OpenAI Chat Completions API endpoint.
-	 *
-	 * @var string
-	 */
-	const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 
 	/**
 	 * Request timeout in seconds.
@@ -61,13 +55,6 @@ class BCG_OpenAI {
 	const TEMPERATURE_STRUCTURED = 0.3;
 
 	/**
-	 * The OpenAI API key.
-	 *
-	 * @var string
-	 */
-	private string $api_key;
-
-	/**
 	 * The OpenAI model to use (e.g. gpt-4o, gpt-4o-mini, gpt-4-turbo).
 	 *
 	 * @var string
@@ -93,18 +80,49 @@ class BCG_OpenAI {
 	private string $campaign_prompt = '';
 
 	/**
-	 * Constructor.
+	 * Charge in pounds reported by the gateway for the last request (null when absent).
 	 *
-	 * Retrieves the API key and model from WordPress options.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $api_key Optional. Override the stored API key.
-	 * @param string $model   Optional. Override the stored model.
+	 * @var float|null
 	 */
-	public function __construct( string $api_key = '', string $model = '' ) {
-		$this->api_key = ! empty( $api_key ) ? $api_key : bcg_get_api_key( 'bcg_openai_api_key' );
-		$this->model   = ! empty( $model ) ? $model : get_option( 'bcg_openai_model', 'gpt-4o-mini' );
+	private ?float $last_charged = null;
+
+	/**
+	 * X-Purpose sent with every request from this instance.
+	 *
+	 * @var string
+	 */
+	private string $purpose;
+
+	/**
+	 * X-Reference sent with every request (campaign id, or empty).
+	 *
+	 * @var string
+	 */
+	private string $reference;
+
+	/**
+	 * @param string $model     OpenAI model id; defaults to the bcg_openai_model option.
+	 * @param string $purpose   Gateway X-Purpose for this instance's requests.
+	 * @param string $reference Gateway X-Reference (campaign id as a string, or '').
+	 */
+	public function __construct( string $model = '', string $purpose = 'ats:email:copy', string $reference = '' ) {
+		$this->model     = ! empty( $model ) ? $model : get_option( 'bcg_openai_model', 'gpt-4o' );
+		$this->purpose   = $purpose;
+		$this->reference = $reference;
+	}
+
+	/**
+	 * Set the X-Reference for subsequent requests.
+	 */
+	public function set_reference( string $reference ): void {
+		$this->reference = $reference;
+	}
+
+	/**
+	 * Charge in pounds for the most recent request, or null if the gateway sent none.
+	 */
+	public function last_charged(): ?float {
+		return $this->last_charged;
 	}
 
 	/**
@@ -437,12 +455,13 @@ class BCG_OpenAI {
 	): string|\WP_Error {
 		// Reset token counter for this call.
 		$this->last_tokens_used = 0;
+		$this->last_charged     = null;
 
 		// Validate prerequisites.
-		if ( empty( $this->api_key ) ) {
+		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
 			return new \WP_Error(
-				'bcg_openai_no_key',
-				__( 'OpenAI API key is not configured. Please add your API key in Settings.', 'brevo-campaign-generator' )
+				'ats_portal_no_key',
+				__( 'The AI portal key is not configured. Please contact support.', 'brevo-campaign-generator' )
 			);
 		}
 
@@ -476,47 +495,42 @@ class BCG_OpenAI {
 		 */
 		$body = apply_filters( 'bcg_openai_request_body', $body, $system_prompt, $user_prompt );
 
-		$response = wp_remote_post(
-			self::API_ENDPOINT,
-			array(
-				'headers' => array(
-					'Authorization' => 'Bearer ' . $this->api_key,
-					'Content-Type'  => 'application/json',
-				),
-				'body'    => wp_json_encode( $body ),
-				'timeout' => self::REQUEST_TIMEOUT,
-			)
+		$url     = \RedFrogStudio\AtsAiPortal\Portal::openai_url( '/chat/completions' );
+		$request = array(
+			'headers' => \RedFrogStudio\AtsAiPortal\Portal::headers( 'email', $this->purpose, $this->reference ),
+			'body'    => wp_json_encode( $body ),
+			'timeout' => self::REQUEST_TIMEOUT,
 		);
 
-		// Handle transport-level errors (connection timeout, DNS failure, etc.).
-		if ( is_wp_error( $response ) ) {
+		$response  = wp_remote_post( $url, $request );
+		$http_code = is_wp_error( $response ) ? 0 : wp_remote_retrieve_response_code( $response );
+
+		// Retry once on a transient failure: an unreachable gateway or a 5xx response.
+		if ( is_wp_error( $response ) || $http_code >= 500 ) {
+			$response  = wp_remote_post( $url, $request );
+			$http_code = is_wp_error( $response ) ? 0 : wp_remote_retrieve_response_code( $response );
+		}
+
+		if ( is_wp_error( $response ) || $http_code >= 500 ) {
 			$this->log_error(
-				'request_failed',
-				$response->get_error_message(),
+				'portal_unavailable',
+				is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . $http_code,
 				array( 'model' => $this->model )
 			);
 
 			return new \WP_Error(
-				'bcg_openai_request_failed',
-				sprintf(
-					/* translators: %s: error message from wp_remote_post */
-					__( 'OpenAI API request failed: %s', 'brevo-campaign-generator' ),
-					$response->get_error_message()
-				)
+				'ats_portal_unavailable',
+				__( 'AI service unavailable, try again.', 'brevo-campaign-generator' )
 			);
 		}
 
-		$http_code = wp_remote_retrieve_response_code( $response );
-		$raw_body  = wp_remote_retrieve_body( $response );
-		$data      = json_decode( $raw_body, true );
+		$raw_body = wp_remote_retrieve_body( $response );
 
-		// Handle HTTP error responses.
+		// Handle HTTP error responses the gateway did not retry (4xx, or a non-5xx failure).
 		if ( 200 !== $http_code ) {
-			$error_message = $this->extract_api_error_message( $data, $http_code );
-
 			$this->log_error(
 				'api_error',
-				$error_message,
+				'HTTP ' . $http_code,
 				array(
 					'http_code' => $http_code,
 					'model'     => $this->model,
@@ -524,11 +538,12 @@ class BCG_OpenAI {
 				)
 			);
 
-			return new \WP_Error(
-				'bcg_openai_api_error',
-				$error_message
-			);
+			return \RedFrogStudio\AtsAiPortal\Portal::error( $http_code, $raw_body );
 		}
+
+		$this->last_charged = \RedFrogStudio\AtsAiPortal\Portal::observe( $response );
+
+		$data = json_decode( $raw_body, true );
 
 		// Validate response structure.
 		if (
@@ -881,42 +896,6 @@ class BCG_OpenAI {
 	// ─── Error Handling & Logging ──────────────────────────────────────
 
 	/**
-	 * Extract a human-readable error message from an OpenAI API error response.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array|null $data      The decoded response body.
-	 * @param int        $http_code The HTTP status code.
-	 * @return string The error message.
-	 */
-	private function extract_api_error_message( ?array $data, int $http_code ): string {
-		if ( is_array( $data ) && isset( $data['error']['message'] ) ) {
-			$api_message = sanitize_text_field( $data['error']['message'] );
-
-			return sprintf(
-				/* translators: 1: HTTP status code, 2: API error message */
-				__( 'OpenAI API error (HTTP %1$d): %2$s', 'brevo-campaign-generator' ),
-				$http_code,
-				$api_message
-			);
-		}
-
-		// Map common HTTP codes to helpful messages.
-		return match ( $http_code ) {
-			401     => __( 'OpenAI API error: Invalid API key. Please check your API key in Settings.', 'brevo-campaign-generator' ),
-			429     => __( 'OpenAI API error: Rate limit exceeded. Please wait a moment and try again.', 'brevo-campaign-generator' ),
-			500,
-			502,
-			503     => __( 'OpenAI API error: The service is temporarily unavailable. Please try again shortly.', 'brevo-campaign-generator' ),
-			default => sprintf(
-				/* translators: %d: HTTP status code */
-				__( 'OpenAI API returned an unexpected error (HTTP %d).', 'brevo-campaign-generator' ),
-				$http_code
-			),
-		};
-	}
-
-	/**
 	 * Log an error to the plugin's error log.
 	 *
 	 * Stores the last N errors (FIFO) in the bcg_error_log WordPress option
@@ -1051,33 +1030,10 @@ class BCG_OpenAI {
 	}
 
 	/**
-	 * Check whether a valid API key is configured.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return bool True if an API key is present.
+	 * Whether the email gateway key is sealed (the portal is reachable in principle).
 	 */
 	public function has_api_key(): bool {
-		return ! empty( $this->api_key );
-	}
-
-	/**
-	 * Get the credit cost for the current model.
-	 *
-	 * Reads the per-generation credit cost from WordPress options based on
-	 * the model currently selected.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return int Number of credits per generation.
-	 */
-	public function get_credit_cost(): int {
-		return match ( $this->model ) {
-			'gpt-4o'      => (int) get_option( 'bcg_credit_cost_openai_gpt4o', 5 ),
-			'gpt-4o-mini' => (int) get_option( 'bcg_credit_cost_openai_gpt4o_mini', 1 ),
-			'gpt-4-turbo' => (int) get_option( 'bcg_credit_cost_openai_gpt4o', 5 ),
-			default       => (int) get_option( 'bcg_credit_cost_openai_gpt4o_mini', 1 ),
-		};
+		return \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' );
 	}
 
 	/**
@@ -1358,22 +1314,32 @@ class BCG_OpenAI {
 	// ─── Test Connection ─────────────────────────────────────────────
 
 	public function test_connection(): bool|\WP_Error {
-		if ( empty( $this->api_key ) ) {
+		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
 			return new \WP_Error(
-				'bcg_openai_no_key',
-				__( 'OpenAI API key is not configured.', 'brevo-campaign-generator' )
+				'ats_portal_no_key',
+				__( 'The AI portal key is not configured. Please contact support.', 'brevo-campaign-generator' )
 			);
 		}
 
-		$result = $this->make_completion_request(
-			'You are a helpful assistant.',
-			'Reply with exactly the word: OK',
-			0.0,
-			5
+		$response = wp_remote_get(
+			\RedFrogStudio\AtsAiPortal\Portal::openai_url( '/models' ),
+			array(
+				'headers' => \RedFrogStudio\AtsAiPortal\Portal::headers( 'email', 'ats:email:test' ),
+				'timeout' => self::REQUEST_TIMEOUT,
+			)
 		);
 
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error(
+				'ats_portal_unavailable',
+				__( 'AI service unavailable, try again.', 'brevo-campaign-generator' )
+			);
+		}
+
+		$http_code = wp_remote_retrieve_response_code( $response );
+
+		if ( 200 !== $http_code ) {
+			return \RedFrogStudio\AtsAiPortal\Portal::error( $http_code, wp_remote_retrieve_body( $response ) );
 		}
 
 		return true;
