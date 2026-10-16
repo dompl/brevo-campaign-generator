@@ -1,10 +1,12 @@
 <?php
 /**
- * Google Gemini AI integration for image generation.
+ * Campaign image generation via OpenAI gpt-image-1 through the Red Frog API portal.
  *
- * Provides methods to generate product and campaign banner images using the
- * Google Gemini API. Generated images are saved to the WordPress uploads
- * directory and their URLs are returned for use in email campaigns.
+ * Provides methods to generate product and campaign banner images using
+ * OpenAI's gpt-image-1 model, routed through the Red Frog API portal
+ * (`ats-ai-portal`) rather than a direct OpenAI key. Generated images are
+ * saved to the WordPress uploads directory and their URLs are returned for
+ * use in email campaigns.
  *
  * @package Brevo_Campaign_Generator
  * @since   1.0.0
@@ -16,23 +18,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class BCG_Gemini
+ * Class BCG_Images
  *
- * Handles all communication with the Google Gemini API for image generation
- * tasks. Builds prompts from product data, calls the API, validates responses,
- * and saves generated images to the local filesystem.
+ * Handles all communication with the Red Frog API portal for gpt-image-1
+ * image generation tasks. Builds prompts from product data, calls the
+ * portal, validates responses, and saves generated images to the local
+ * filesystem.
  *
  * @since 1.0.0
  */
-class BCG_Gemini {
-
-	/**
-	 * Base URL for the Gemini API (without trailing slash).
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	private const API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
+class BCG_Images {
 
 	/**
 	 * Maximum time in seconds to wait for an API response.
@@ -63,120 +58,78 @@ class BCG_Gemini {
 	);
 
 	/**
-	 * The Gemini API key.
-	 *
-	 * @since 1.0.0
-	 * @var string
+	 * Image model. Only gpt-image-1 is used.
 	 */
-	private string $api_key;
+	private const MODEL = 'gpt-image-1';
 
 	/**
-	 * The Gemini model to use for generation.
-	 *
-	 * @since 1.0.0
-	 * @var string
+	 * Hero banner size (landscape) and product tile size (square).
 	 */
-	private string $model;
+	private const SIZE_HERO    = '1536x1024';
+	private const SIZE_PRODUCT = '1024x1024';
 
 	/**
-	 * Constructor.
-	 *
-	 * Loads the API key and selected model from WordPress options.
-	 *
-	 * @since 1.0.0
+	 * Images take longer than text; allow two minutes.
 	 */
-	public function __construct() {
-		$this->api_key = bcg_get_api_key( 'bcg_gemini_api_key' );
-		$model         = (string) get_option( 'bcg_gemini_model', 'gemini-2.5-flash' );
+	private const IMAGE_TIMEOUT = 120;
 
-		// Migrate deprecated model names to current equivalents.
-		$deprecated_map = array(
-			'gemini-1.5-flash'              => 'gemini-2.5-flash',
-			'gemini-1.5-pro'                => 'gemini-2.5-pro',
-			'gemini-2.0-flash-exp'          => 'gemini-2.5-flash',
-			'gemini-2.0-flash'              => 'gemini-2.5-flash',
-			'gemini-2.5-flash-preview-05-20' => 'gemini-2.5-flash',
-			'gemini-2.5-pro-preview-05-06'  => 'gemini-2.5-pro',
-		);
+	/**
+	 * Charge in pounds reported by the gateway for the last request.
+	 *
+	 * @var float|null
+	 */
+	private ?float $last_charged = null;
 
-		if ( isset( $deprecated_map[ $model ] ) ) {
-			$model = $deprecated_map[ $model ];
-			update_option( 'bcg_gemini_model', $model );
-		}
+	public function __construct() {}
 
-		$this->model = $model;
+	/**
+	 * Charge in pounds for the most recent request, or null if the gateway sent none.
+	 */
+	public function last_charged(): ?float {
+		return $this->last_charged;
 	}
 
 	/**
-	 * Test the connection to the Gemini API.
+	 * Model id used for every request.
+	 */
+	public function get_model(): string {
+		return self::MODEL;
+	}
+
+	/**
+	 * Shared "no key" error.
+	 */
+	private function no_key_error(): \WP_Error {
+		return new \WP_Error(
+			'ats_portal_no_key',
+			__( 'AI is not connected. Run: wp ats secret set gateway_key_email', 'brevo-campaign-generator' )
+		);
+	}
+
+	/**
+	 * Free connectivity check: GET /models through the gateway.
 	 *
-	 * Sends a minimal text-only request to verify that the API key is valid
-	 * and the selected model is accessible.
-	 *
-	 * @since  1.0.0
-	 * @return true|\WP_Error True on success, WP_Error on failure.
+	 * @return bool|\WP_Error True on 200.
 	 */
 	public function test_connection(): bool|\WP_Error {
-		if ( empty( $this->api_key ) ) {
-			return new \WP_Error(
-				'bcg_gemini_no_key',
-				__( 'Google Gemini API key is not configured.', 'brevo-campaign-generator' )
-			);
+		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
+			return $this->no_key_error();
 		}
 
-		$url = $this->build_endpoint_url();
-
-		$body = array(
-			'contents' => array(
-				array(
-					'parts' => array(
-						array(
-							'text' => 'Respond with exactly: OK',
-						),
-					),
-				),
-			),
-			'generationConfig' => array(
-				'maxOutputTokens' => 10,
-			),
-		);
-
-		$response = wp_remote_post(
-			$url,
+		$response = wp_remote_get(
+			\RedFrogStudio\AtsAiPortal\Portal::openai_url( '/models' ),
 			array(
+				'headers' => \RedFrogStudio\AtsAiPortal\Portal::headers( 'email', 'ats:email:test' ),
 				'timeout' => 15,
-				'headers' => array(
-					'Content-Type' => 'application/json',
-				),
-				'body'    => wp_json_encode( $body ),
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
-			$this->log_error( 'test_connection', $response->get_error_message() );
-			return new \WP_Error(
-				'bcg_gemini_connection_failed',
-				sprintf(
-					/* translators: %s: error message from the API request */
-					__( 'Failed to connect to Gemini API: %s', 'brevo-campaign-generator' ),
-					$response->get_error_message()
-				)
-			);
+			return new \WP_Error( 'ats_portal_unavailable', __( 'AI service unavailable, try again.', 'brevo-campaign-generator' ) );
 		}
 
-		$code = wp_remote_retrieve_response_code( $response );
-		$body = wp_remote_retrieve_body( $response );
-
-		if ( 200 !== $code ) {
-			$error_message = $this->extract_api_error( $body, $code );
-			$this->log_error( 'test_connection', $error_message );
-			return new \WP_Error(
-				'bcg_gemini_api_error',
-				$error_message
-			);
-		}
-
-		return true;
+		$code = (int) wp_remote_retrieve_response_code( $response );
+		return 200 === $code ? true : \RedFrogStudio\AtsAiPortal\Portal::error( $code, wp_remote_retrieve_body( $response ) );
 	}
 
 	/**
@@ -197,16 +150,13 @@ class BCG_Gemini {
 	 * @return string|\WP_Error    Full URL to the saved image on success, WP_Error on failure.
 	 */
 	public function generate_main_email_image( array $products, string $theme, string $style, int $campaign_id = 0 ): string|\WP_Error {
-		if ( empty( $this->api_key ) ) {
-			return new \WP_Error(
-				'bcg_gemini_no_key',
-				__( 'Google Gemini API key is not configured.', 'brevo-campaign-generator' )
-			);
+		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
+			return $this->no_key_error();
 		}
 
 		if ( empty( $products ) ) {
 			return new \WP_Error(
-				'bcg_gemini_no_products',
+				'bcg_images_no_products',
 				__( 'At least one product is required to generate a main email image.', 'brevo-campaign-generator' )
 			);
 		}
@@ -214,7 +164,7 @@ class BCG_Gemini {
 		$product_names = $this->extract_product_names( $products );
 		$prompt        = $this->build_main_image_prompt( $product_names, $theme, $style );
 
-		$image_data = $this->call_image_generation_api( $prompt );
+		$image_data = $this->call_image_generation_api( $prompt, 'ats:email:hero-image', (string) $campaign_id, self::SIZE_HERO );
 
 		if ( is_wp_error( $image_data ) ) {
 			return $image_data;
@@ -241,23 +191,20 @@ class BCG_Gemini {
 	 * @return string|\WP_Error    Full URL to the saved image on success, WP_Error on failure.
 	 */
 	public function generate_product_image( array $product, string $style, int $campaign_id = 0 ): string|\WP_Error {
-		if ( empty( $this->api_key ) ) {
-			return new \WP_Error(
-				'bcg_gemini_no_key',
-				__( 'Google Gemini API key is not configured.', 'brevo-campaign-generator' )
-			);
+		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
+			return $this->no_key_error();
 		}
 
 		if ( empty( $product['name'] ) ) {
 			return new \WP_Error(
-				'bcg_gemini_invalid_product',
+				'bcg_images_invalid_product',
 				__( 'Product name is required to generate an image.', 'brevo-campaign-generator' )
 			);
 		}
 
 		$prompt = $this->build_product_image_prompt( $product, $style );
 
-		$image_data = $this->call_image_generation_api( $prompt );
+		$image_data = $this->call_image_generation_api( $prompt, 'ats:email:product-image', (string) $campaign_id, self::SIZE_PRODUCT );
 
 		if ( is_wp_error( $image_data ) ) {
 			return $image_data;
@@ -294,7 +241,7 @@ class BCG_Gemini {
 		);
 
 		/**
-		 * Filter the Gemini prompt for main email banner image generation.
+		 * Filter the prompt for main email banner image generation.
 		 *
 		 * @since 1.0.0
 		 * @param string $prompt        The generated prompt.
@@ -302,7 +249,7 @@ class BCG_Gemini {
 		 * @param string $theme         Campaign theme.
 		 * @param string $style         Image style.
 		 */
-		return apply_filters( 'bcg_gemini_main_image_prompt', $prompt, $product_names, $theme, $style );
+		return apply_filters( 'bcg_images_main_image_prompt', $prompt, $product_names, $theme, $style );
 	}
 
 	/**
@@ -329,196 +276,74 @@ class BCG_Gemini {
 		);
 
 		/**
-		 * Filter the Gemini prompt for individual product image generation.
+		 * Filter the prompt for individual product image generation.
 		 *
 		 * @since 1.0.0
 		 * @param string $prompt  The generated prompt.
 		 * @param array  $product Product data.
 		 * @param string $style   Image style.
 		 */
-		return apply_filters( 'bcg_gemini_product_image_prompt', $prompt, $product, $style );
+		return apply_filters( 'bcg_images_product_image_prompt', $prompt, $product, $style );
 	}
 
 	/**
-	 * Call the Gemini API to generate an image.
+	 * POST /images/generations through the gateway. No retry: a second image costs real money.
 	 *
-	 * Sends the prompt to the Gemini generateContent endpoint with image
-	 * generation configuration. Extracts and validates the base64 image
-	 * data from the response.
-	 *
-	 * @since  1.0.0
-	 * @param  string $prompt The image generation prompt.
-	 * @return array|\WP_Error Array with 'data' (base64 string) and 'mime_type' keys on
-	 *                          success, WP_Error on failure.
+	 * @param string $prompt    Full prompt.
+	 * @param string $purpose   Gateway X-Purpose.
+	 * @param string $reference Gateway X-Reference (campaign id or '').
+	 * @param string $size      WxH accepted by gpt-image-1.
+	 * @return array|\WP_Error ['data' => base64 png, 'mime_type' => 'image/png', 'charged_gbp' => float|null].
 	 */
-	private function call_image_generation_api( string $prompt ): array|\WP_Error {
-		$url = $this->build_endpoint_url();
+	private function call_image_generation_api( string $prompt, string $purpose, string $reference = '', string $size = self::SIZE_PRODUCT ): array|\WP_Error {
+		$this->last_charged = null;
 
-		$request_body = array(
-			'contents'         => array(
-				array(
-					'parts' => array(
-						array(
-							'text' => $prompt,
-						),
-					),
-				),
-			),
-			'generationConfig' => array(
-				'responseModalities' => array( 'TEXT', 'IMAGE' ),
-			),
+		$body = array(
+			'model'   => self::MODEL,
+			'prompt'  => $prompt,
+			'size'    => $size,
+			'quality' => 'medium',
+			'n'       => 1,
 		);
 
-		/**
-		 * Filter the request body sent to the Gemini API.
-		 *
-		 * @since 1.0.0
-		 * @param array  $request_body The API request body.
-		 * @param string $prompt       The image generation prompt.
-		 */
-		$request_body = apply_filters( 'bcg_gemini_request_body', $request_body, $prompt );
-
 		$response = wp_remote_post(
-			$url,
+			\RedFrogStudio\AtsAiPortal\Portal::openai_url( '/images/generations' ),
 			array(
-				'timeout' => self::REQUEST_TIMEOUT,
-				'headers' => array(
-					'Content-Type' => 'application/json',
-				),
-				'body'    => wp_json_encode( $request_body ),
+				'headers' => \RedFrogStudio\AtsAiPortal\Portal::headers( 'email', $purpose, $reference ),
+				'body'    => wp_json_encode( $body ),
+				'timeout' => self::IMAGE_TIMEOUT,
 			)
 		);
 
-		if ( is_wp_error( $response ) ) {
-			$error_msg = $response->get_error_message();
+		$code = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
 
-			// Check for timeout specifically.
-			if ( str_contains( strtolower( $error_msg ), 'timeout' ) || str_contains( strtolower( $error_msg ), 'timed out' ) ) {
-				$this->log_error( 'image_generation', __( 'API request timed out after 30 seconds.', 'brevo-campaign-generator' ) );
-				return new \WP_Error(
-					'bcg_gemini_timeout',
-					__( 'The Gemini API request timed out. Please try again.', 'brevo-campaign-generator' )
-				);
-			}
-
-			$this->log_error( 'image_generation', $error_msg );
-			return new \WP_Error(
-				'bcg_gemini_request_failed',
-				sprintf(
-					/* translators: %s: HTTP error message */
-					__( 'Failed to connect to Gemini API: %s', 'brevo-campaign-generator' ),
-					$error_msg
-				)
-			);
+		if ( is_wp_error( $response ) || $code >= 500 ) {
+			$this->log_error( 'request_failed', is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . $code );
+			return new \WP_Error( 'ats_portal_unavailable', __( 'AI service unavailable, try again.', 'brevo-campaign-generator' ) );
 		}
 
-		$http_code     = wp_remote_retrieve_response_code( $response );
-		$response_body = wp_remote_retrieve_body( $response );
+		$raw = wp_remote_retrieve_body( $response );
 
-		if ( 200 !== $http_code ) {
-			$error_message = $this->extract_api_error( $response_body, $http_code );
-			$this->log_error( 'image_generation', $error_message );
-			return new \WP_Error(
-				'bcg_gemini_api_error',
-				$error_message
-			);
+		if ( 200 !== $code ) {
+			$error = \RedFrogStudio\AtsAiPortal\Portal::error( $code, $raw );
+			$this->log_error( 'api_error', $error->get_error_message() );
+			return $error;
 		}
 
-		return $this->extract_image_from_response( $response_body );
-	}
+		$this->last_charged = \RedFrogStudio\AtsAiPortal\Portal::observe( $response );
 
-	/**
-	 * Extract base64 image data from the Gemini API response.
-	 *
-	 * Parses the JSON response and looks for inline image data within the
-	 * candidates array. Validates that the MIME type is an allowed image format.
-	 *
-	 * @since  1.0.0
-	 * @param  string $response_body Raw JSON response body from the API.
-	 * @return array|\WP_Error Array with 'data' and 'mime_type' on success, WP_Error on failure.
-	 */
-	private function extract_image_from_response( string $response_body ): array|\WP_Error {
-		$decoded = json_decode( $response_body, true );
+		$data = json_decode( $raw, true );
+		$b64  = $data['data'][0]['b64_json'] ?? '';
 
-		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			$this->log_error( 'image_extraction', __( 'Invalid JSON response from Gemini API.', 'brevo-campaign-generator' ) );
-			return new \WP_Error(
-				'bcg_gemini_invalid_json',
-				__( 'The Gemini API returned an invalid response. Please try again.', 'brevo-campaign-generator' )
-			);
+		if ( ! is_string( $b64 ) || '' === $b64 ) {
+			$this->log_error( 'invalid_response', 'No b64_json in image response' );
+			return new \WP_Error( 'bcg_images_no_image', __( 'The AI service returned no image. Try again.', 'brevo-campaign-generator' ) );
 		}
 
-		// Navigate the response structure to find image data.
-		// Expected structure: candidates[0].content.parts[N].inlineData.data
-		$candidates = $decoded['candidates'] ?? array();
-
-		if ( empty( $candidates ) ) {
-			$this->log_error( 'image_extraction', __( 'No candidates returned in Gemini API response.', 'brevo-campaign-generator' ) );
-			return new \WP_Error(
-				'bcg_gemini_no_candidates',
-				__( 'The Gemini API did not return any image candidates. Please try again with a different prompt.', 'brevo-campaign-generator' )
-			);
-		}
-
-		$parts = $candidates[0]['content']['parts'] ?? array();
-
-		if ( empty( $parts ) ) {
-			$this->log_error( 'image_extraction', __( 'No parts found in Gemini API response candidate.', 'brevo-campaign-generator' ) );
-			return new \WP_Error(
-				'bcg_gemini_no_parts',
-				__( 'The Gemini API response did not contain any content. Please try again.', 'brevo-campaign-generator' )
-			);
-		}
-
-		// Search through parts for inline image data.
-		foreach ( $parts as $part ) {
-			if ( ! empty( $part['inlineData']['data'] ) && ! empty( $part['inlineData']['mimeType'] ) ) {
-				$mime_type  = $part['inlineData']['mimeType'];
-				$image_data = $part['inlineData']['data'];
-
-				// Validate MIME type.
-				if ( ! array_key_exists( $mime_type, self::ALLOWED_MIME_TYPES ) ) {
-					$this->log_error(
-						'image_extraction',
-						sprintf(
-							/* translators: %s: MIME type */
-							__( 'Unsupported image MIME type received: %s', 'brevo-campaign-generator' ),
-							$mime_type
-						)
-					);
-					return new \WP_Error(
-						'bcg_gemini_unsupported_mime',
-						sprintf(
-							/* translators: %s: MIME type */
-							__( 'The Gemini API returned an unsupported image format: %s', 'brevo-campaign-generator' ),
-							esc_html( $mime_type )
-						)
-					);
-				}
-
-				// Validate that the data is valid base64.
-				$decoded_data = base64_decode( $image_data, true );
-
-				if ( false === $decoded_data || empty( $decoded_data ) ) {
-					$this->log_error( 'image_extraction', __( 'Invalid base64 image data received from Gemini API.', 'brevo-campaign-generator' ) );
-					return new \WP_Error(
-						'bcg_gemini_invalid_base64',
-						__( 'The image data received from Gemini API was corrupted. Please try again.', 'brevo-campaign-generator' )
-					);
-				}
-
-				return array(
-					'data'      => $image_data,
-					'mime_type' => $mime_type,
-				);
-			}
-		}
-
-		// No inline image data found — the model may have only returned text.
-		$this->log_error( 'image_extraction', __( 'No inline image data found in Gemini API response. The model may not support image generation.', 'brevo-campaign-generator' ) );
-		return new \WP_Error(
-			'bcg_gemini_no_image_data',
-			__( 'The Gemini API did not return an image. The selected model may not support image generation, or the prompt may need adjustment.', 'brevo-campaign-generator' )
+		return array(
+			'data'        => $b64,
+			'mime_type'   => 'image/png',
+			'charged_gbp' => $this->last_charged,
 		);
 	}
 
@@ -641,7 +466,7 @@ class BCG_Gemini {
 		chmod( $file_path, 0644 );
 
 		/**
-		 * Fires after a Gemini-generated image has been successfully saved.
+		 * Fires after a generated image has been successfully saved.
 		 *
 		 * @since 1.0.0
 		 * @param string $file_url    Full URL to the saved image.
@@ -649,51 +474,9 @@ class BCG_Gemini {
 		 * @param int    $campaign_id Campaign ID the image belongs to.
 		 * @param string $mime_type   MIME type of the saved image.
 		 */
-		do_action( 'bcg_gemini_image_saved', $file_url, $file_path, $campaign_id, $actual_mime );
+		do_action( 'bcg_images_image_saved', $file_url, $file_path, $campaign_id, $actual_mime );
 
 		return $file_url;
-	}
-
-	/**
-	 * Build the full API endpoint URL including the model and API key.
-	 *
-	 * @since  1.0.0
-	 * @return string The complete endpoint URL.
-	 */
-	private function build_endpoint_url(): string {
-		return sprintf(
-			'%s/%s:generateContent?key=%s',
-			self::API_BASE_URL,
-			rawurlencode( $this->model ),
-			rawurlencode( $this->api_key )
-		);
-	}
-
-	/**
-	 * Extract a human-readable error message from an API error response.
-	 *
-	 * @since  1.0.0
-	 * @param  string $response_body Raw response body (JSON).
-	 * @param  int    $http_code     HTTP status code.
-	 * @return string Formatted error message.
-	 */
-	private function extract_api_error( string $response_body, int $http_code ): string {
-		$decoded = json_decode( $response_body, true );
-
-		if ( json_last_error() === JSON_ERROR_NONE && ! empty( $decoded['error']['message'] ) ) {
-			return sprintf(
-				/* translators: 1: HTTP status code, 2: error message from the API */
-				__( 'Gemini API error (%1$d): %2$s', 'brevo-campaign-generator' ),
-				$http_code,
-				sanitize_text_field( $decoded['error']['message'] )
-			);
-		}
-
-		return sprintf(
-			/* translators: %d: HTTP status code */
-			__( 'Gemini API returned an unexpected error (HTTP %d).', 'brevo-campaign-generator' ),
-			$http_code
-		);
 	}
 
 	/**
@@ -760,10 +543,10 @@ class BCG_Gemini {
 
 		$log[] = array(
 			'time'    => current_time( 'mysql', true ),
-			'service' => 'gemini',
+			'service' => 'openai-images',
 			'context' => sanitize_text_field( $context ),
 			'message' => sanitize_text_field( $message ),
-			'model'   => $this->model,
+			'model'   => self::MODEL,
 		);
 
 		// Enforce maximum log size (FIFO).
@@ -772,50 +555,6 @@ class BCG_Gemini {
 		}
 
 		update_option( 'bcg_error_log', $log, false );
-	}
-
-	/**
-	 * Get the currently configured Gemini model.
-	 *
-	 * @since  1.0.0
-	 * @return string The model identifier string.
-	 */
-	public function get_model(): string {
-		return $this->model;
-	}
-
-	/**
-	 * Get the credit cost for the currently configured model.
-	 *
-	 * Returns the per-image credit cost based on the selected Gemini model.
-	 * Falls back to the flash tier cost if the model is not recognised.
-	 *
-	 * @since  1.0.0
-	 * @return int Credit cost per image generation.
-	 */
-	public function get_credit_cost(): int {
-		if ( str_contains( $this->model, 'pro' ) ) {
-			return (int) get_option( 'bcg_credit_cost_gemini_pro', 10 );
-		}
-
-		return (int) get_option( 'bcg_credit_cost_gemini_flash', 3 );
-	}
-
-	/**
-	 * Determine the AI service identifier for transaction logging.
-	 *
-	 * Maps the current model to one of the ENUM values accepted by the
-	 * bcg_transactions table: 'gemini-pro' or 'gemini-flash'.
-	 *
-	 * @since  1.0.0
-	 * @return string The service identifier for logging.
-	 */
-	public function get_service_identifier(): string {
-		if ( str_contains( $this->model, 'pro' ) ) {
-			return 'gemini-pro';
-		}
-
-		return 'gemini-flash';
 	}
 
 	/**

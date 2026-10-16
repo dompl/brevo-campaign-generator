@@ -132,7 +132,7 @@ class BCG_Plugin {
 
 		// AI classes.
 		require_once $includes . 'ai/class-bcg-openai.php';
-		require_once $includes . 'ai/class-bcg-gemini.php';
+		require_once $includes . 'ai/class-bcg-images.php';
 		require_once $includes . 'ai/class-bcg-ai-manager.php';
 
 		// Integration classes.

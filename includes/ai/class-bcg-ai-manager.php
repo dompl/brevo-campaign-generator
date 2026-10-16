@@ -3,7 +3,7 @@
  * AI Manager — orchestrator for all AI generation tasks and credit handling.
  *
  * Sits between the AJAX handlers and the underlying AI service classes
- * (BCG_OpenAI for text, BCG_Gemini for images). Responsible for:
+ * (BCG_OpenAI for text, BCG_Images for images). Responsible for:
  * - Calculating credit costs before each operation
  * - Deducting credits and logging transactions
  * - Dispatching calls to the correct AI service
@@ -45,9 +45,9 @@ class BCG_AI_Manager {
 	/**
 	 * Gemini client instance.
 	 *
-	 * @var BCG_Gemini
+	 * @var BCG_Images
 	 */
-	private BCG_Gemini $gemini;
+	private BCG_Images $gemini;
 
 	/**
 	 * Credits handler instance.
@@ -71,12 +71,12 @@ class BCG_AI_Manager {
 	 * @since 1.0.0
 	 *
 	 * @param BCG_OpenAI|null  $openai  Optional. Override the OpenAI client.
-	 * @param BCG_Gemini|null  $gemini  Optional. Override the Gemini client.
+	 * @param BCG_Images|null  $gemini  Optional. Override the Gemini client.
 	 * @param BCG_Credits|null $credits Optional. Override the credits handler.
 	 */
-	public function __construct( ?BCG_OpenAI $openai = null, ?BCG_Gemini $gemini = null, ?BCG_Credits $credits = null ) {
+	public function __construct( ?BCG_OpenAI $openai = null, ?BCG_Images $gemini = null, ?BCG_Credits $credits = null ) {
 		$this->openai  = $openai ?? new BCG_OpenAI();
-		$this->gemini  = $gemini ?? new BCG_Gemini();
+		$this->gemini  = $gemini ?? new BCG_Images();
 		$this->credits = $credits ?? new BCG_Credits();
 		$this->user_id = get_current_user_id();
 	}
@@ -950,9 +950,9 @@ class BCG_AI_Manager {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return BCG_Gemini
+	 * @return BCG_Images
 	 */
-	public function get_gemini(): BCG_Gemini {
+	public function get_gemini(): BCG_Images {
 		return $this->gemini;
 	}
 

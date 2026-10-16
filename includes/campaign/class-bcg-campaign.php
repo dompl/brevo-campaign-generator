@@ -557,7 +557,7 @@ class BCG_Campaign {
 		$coupon_handler->delete_campaign_coupon( $campaign_id );
 
 		// Delete generated images.
-		$gemini = new BCG_Gemini();
+		$gemini = new BCG_Images();
 		$gemini->delete_campaign_images( $campaign_id );
 
 		// Delete associated products.
