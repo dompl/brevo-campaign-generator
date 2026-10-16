@@ -2,7 +2,7 @@
 /**
  * Dashboard view -- campaign list and quick stats.
  *
- * Displays summary stat cards (total campaigns, drafts, sent, credit
+ * Displays summary stat cards (total campaigns, drafts, sent, AI wallet
  * balance), a filterable/searchable campaigns table with pagination
  * (20 per page), and a quick-action button for creating new campaigns.
  *
@@ -62,19 +62,8 @@ $total_pages = $campaigns_data['total_pages'];
 // Get status counts for filter tabs.
 $status_counts = $campaign_handler->get_status_counts();
 
-// Credit balance.
-$credit_balance = 0.0;
-$user_id        = get_current_user_id();
-if ( $user_id ) {
-	global $wpdb;
-	$credits_table  = $wpdb->prefix . 'bcg_credits';
-	$credit_balance = (float) $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT balance FROM {$credits_table} WHERE user_id = %d",
-			$user_id
-		)
-	);
-}
+// Shared AI wallet balance (pounds) from the Red Frog portal.
+$ai_balance = \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ? \RedFrogStudio\AtsAiPortal\Portal::balance() : null;
 
 // Base URL for filter/pagination links.
 $base_url = admin_url( 'admin.php?page=bcg-dashboard' );
@@ -149,9 +138,9 @@ $status_badge_classes = array(
 				</span>
 			</div>
 			<div class="bcg-perf-cell">
-				<span class="bcg-perf-label"><?php esc_html_e( 'Credits remaining', 'brevo-campaign-generator' ); ?></span>
-				<span class="bcg-perf-value"><?php echo esc_html( number_format( $credit_balance, 0 ) ); ?></span>
-				<span class="bcg-perf-note"><?php esc_html_e( 'Used for AI copy and images', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-label"><?php esc_html_e( 'AI credit remaining', 'brevo-campaign-generator' ); ?></span>
+				<span class="bcg-perf-value"><?php echo null === $ai_balance ? esc_html__( 'n/a', 'brevo-campaign-generator' ) : '£' . esc_html( number_format( $ai_balance, 2 ) ); ?></span>
+				<span class="bcg-perf-note"><a href="<?php echo esc_url( \RedFrogStudio\AtsAiPortal\Portal::credits_url() ); ?>"><?php esc_html_e( 'Shared across all AI tools. Top up', 'brevo-campaign-generator' ); ?></a></span>
 			</div>
 		</div>
 

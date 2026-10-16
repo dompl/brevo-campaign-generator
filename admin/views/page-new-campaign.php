@@ -731,7 +731,7 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 						</span>
 						<span class="bcg-toggle-content">
 							<span class="bcg-toggle-title"><?php esc_html_e( 'Generate product images with AI', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-toggle-description"><?php esc_html_e( 'Uses Gemini to create campaign imagery. If unchecked, WooCommerce product images are used instead.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-toggle-description"><?php esc_html_e( 'Uses OpenAI to create campaign imagery. If unchecked, WooCommerce product images are used instead.', 'brevo-campaign-generator' ); ?></span>
 						</span>
 					</label>
 				</div>
@@ -764,10 +764,15 @@ foreach ( $locale_map as $prefix => $lang_code ) {
 							<option value="5">5 campaigns</option>
 						</select>
 					</div>
+					<?php $bcg_connected = \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ); ?>
+					<?php if ( ! $bcg_connected ) : ?>
+						<p class="bcg-field-help bcg-notice-warning"><?php esc_html_e( 'AI is not connected. Run: wp ats secret set gateway_key_email', 'brevo-campaign-generator' ); ?></p>
+					<?php endif; ?>
 					<button
 						type="submit"
 						class="bcg-btn-primary bcg-btn-large"
 						id="bcg-generate-campaign-btn"
+						<?php disabled( ! $bcg_connected ); ?>
 					>
 						<span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px;">auto_awesome</span>
 						<?php esc_html_e( 'Generate Campaign', 'brevo-campaign-generator' ); ?>
