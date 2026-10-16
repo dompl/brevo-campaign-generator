@@ -80,4 +80,24 @@ bcg_assert_same( '88', bcg_last_call()['args']['headers']['X-Reference'], 'set_r
 // 9. has_api_key() reflects the portal key.
 bcg_assert_same( true, $client->has_api_key(), 'has_api_key() true when the email key constant is defined' );
 
+// 10. No portal key → ats_portal_no_key, for both generate_subject_line() and test_connection().
+// Overrides has_portal_key() via a tiny anonymous subclass; no real secret is read.
+$no_key_client = new class( 'gpt-4o-mini', 'ats:email:copy', '77' ) extends BCG_OpenAI {
+	protected function has_portal_key(): bool {
+		return false;
+	}
+};
+bcg_assert_same( false, $no_key_client->has_api_key(), 'has_api_key() false when has_portal_key() is overridden' );
+
+bcg_mock_http( array( new WP_Error( 'should_not_be_called', 'no request expected' ) ) );
+$res = $no_key_client->generate_subject_line( array( array( 'name' => 'Diamond blade' ) ), 'Autumn sale', 'Friendly', 'English' );
+bcg_assert_same( 'ats_portal_no_key', is_wp_error( $res ) ? $res->get_error_code() : 'no-error', 'missing key maps to ats_portal_no_key (generate)' );
+bcg_assert_same( 'AI is not connected. Run: wp ats secret set gateway_key_email', is_wp_error( $res ) ? $res->get_error_message() : '', 'missing key copy (generate)' );
+bcg_assert_same( 0, bcg_call_count(), 'no HTTP call made when key missing (generate)' );
+
+$res2 = $no_key_client->test_connection();
+bcg_assert_same( 'ats_portal_no_key', is_wp_error( $res2 ) ? $res2->get_error_code() : 'no-error', 'missing key maps to ats_portal_no_key (test_connection)' );
+bcg_assert_same( 'AI is not connected. Run: wp ats secret set gateway_key_email', is_wp_error( $res2 ) ? $res2->get_error_message() : '', 'missing key copy (test_connection)' );
+bcg_assert_same( 0, bcg_call_count(), 'no HTTP call made when key missing (test_connection)' );
+
 bcg_done( 'test-openai-client' );

@@ -458,10 +458,10 @@ class BCG_OpenAI {
 		$this->last_charged     = null;
 
 		// Validate prerequisites.
-		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
+		if ( ! $this->has_portal_key() ) {
 			return new \WP_Error(
 				'ats_portal_no_key',
-				__( 'The AI portal key is not configured. Please contact support.', 'brevo-campaign-generator' )
+				__( 'AI is not connected. Run: wp ats secret set gateway_key_email', 'brevo-campaign-generator' )
 			);
 		}
 
@@ -503,12 +503,12 @@ class BCG_OpenAI {
 		);
 
 		$response  = wp_remote_post( $url, $request );
-		$http_code = is_wp_error( $response ) ? 0 : wp_remote_retrieve_response_code( $response );
+		$http_code = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
 
 		// Retry once on a transient failure: an unreachable gateway or a 5xx response.
 		if ( is_wp_error( $response ) || $http_code >= 500 ) {
 			$response  = wp_remote_post( $url, $request );
-			$http_code = is_wp_error( $response ) ? 0 : wp_remote_retrieve_response_code( $response );
+			$http_code = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
 		}
 
 		if ( is_wp_error( $response ) || $http_code >= 500 ) {
@@ -528,9 +528,11 @@ class BCG_OpenAI {
 
 		// Handle HTTP error responses the gateway did not retry (4xx, or a non-5xx failure).
 		if ( 200 !== $http_code ) {
+			$error = \RedFrogStudio\AtsAiPortal\Portal::error( $http_code, $raw_body );
+
 			$this->log_error(
 				'api_error',
-				'HTTP ' . $http_code,
+				$error->get_error_message(),
 				array(
 					'http_code' => $http_code,
 					'model'     => $this->model,
@@ -538,7 +540,7 @@ class BCG_OpenAI {
 				)
 			);
 
-			return \RedFrogStudio\AtsAiPortal\Portal::error( $http_code, $raw_body );
+			return $error;
 		}
 
 		$this->last_charged = \RedFrogStudio\AtsAiPortal\Portal::observe( $response );
@@ -1033,6 +1035,17 @@ class BCG_OpenAI {
 	 * Whether the email gateway key is sealed (the portal is reachable in principle).
 	 */
 	public function has_api_key(): bool {
+		return $this->has_portal_key();
+	}
+
+	/**
+	 * Whether the email gateway key is sealed.
+	 *
+	 * Wraps Portal::has_key() behind a protected method so tests can
+	 * simulate a missing key via a tiny anonymous subclass, without
+	 * touching real secrets.
+	 */
+	protected function has_portal_key(): bool {
 		return \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' );
 	}
 
@@ -1314,10 +1327,10 @@ class BCG_OpenAI {
 	// ─── Test Connection ─────────────────────────────────────────────
 
 	public function test_connection(): bool|\WP_Error {
-		if ( ! \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ) {
+		if ( ! $this->has_portal_key() ) {
 			return new \WP_Error(
 				'ats_portal_no_key',
-				__( 'The AI portal key is not configured. Please contact support.', 'brevo-campaign-generator' )
+				__( 'AI is not connected. Run: wp ats secret set gateway_key_email', 'brevo-campaign-generator' )
 			);
 		}
 
@@ -1336,7 +1349,7 @@ class BCG_OpenAI {
 			);
 		}
 
-		$http_code = wp_remote_retrieve_response_code( $response );
+		$http_code = (int) wp_remote_retrieve_response_code( $response );
 
 		if ( 200 !== $http_code ) {
 			return \RedFrogStudio\AtsAiPortal\Portal::error( $http_code, wp_remote_retrieve_body( $response ) );
