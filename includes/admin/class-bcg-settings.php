@@ -3,7 +3,7 @@
  * Settings handler.
  *
  * Registers all plugin settings using the WordPress Settings API, organises
- * them into five tabs (API Keys, AI Models, Brevo, Stripe, Defaults), and
+ * them into four tabs (API Keys, AI Models, Brevo, Defaults), and
  * provides sanitisation callbacks and the AJAX handler for API key testing.
  *
  * @package Brevo_Campaign_Generator
@@ -52,7 +52,6 @@ class BCG_Settings {
 			'api-keys'  => __( 'API Keys', 'brevo-campaign-generator' ),
 			'ai-models' => __( 'AI Models', 'brevo-campaign-generator' ),
 			'brevo'     => __( 'Brevo', 'brevo-campaign-generator' ),
-			'stripe'    => __( 'Stripe', 'brevo-campaign-generator' ),
 			'defaults'  => __( 'Defaults', 'brevo-campaign-generator' ),
 		);
 
@@ -94,7 +93,6 @@ class BCG_Settings {
 		$this->register_api_keys_settings();
 		$this->register_ai_models_settings();
 		$this->register_brevo_settings();
-		$this->register_stripe_settings();
 		$this->register_defaults_settings();
 		$this->register_ai_trainer_settings();
 	}
@@ -113,51 +111,9 @@ class BCG_Settings {
 
 		add_settings_section(
 			$section,
-			__( 'API Key Configuration', 'brevo-campaign-generator' ),
+			__( 'API Keys', 'brevo-campaign-generator' ),
 			array( $this, 'render_api_keys_section_description' ),
 			$page
-		);
-
-		// OpenAI API Key.
-		register_setting( $page, 'bcg_openai_api_key', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_api_key' ),
-			'default'           => '',
-		) );
-
-		add_settings_field(
-			'bcg_openai_api_key',
-			__( 'OpenAI API Key', 'brevo-campaign-generator' ),
-			array( $this, 'render_api_key_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_openai_api_key',
-				'option_name' => 'bcg_openai_api_key',
-				'service'     => 'openai',
-				'description' => __( 'Your OpenAI API key for GPT text generation.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Google Gemini API Key.
-		register_setting( $page, 'bcg_gemini_api_key', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_api_key' ),
-			'default'           => '',
-		) );
-
-		add_settings_field(
-			'bcg_gemini_api_key',
-			__( 'Google Gemini API Key', 'brevo-campaign-generator' ),
-			array( $this, 'render_api_key_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_gemini_api_key',
-				'option_name' => 'bcg_gemini_api_key',
-				'service'     => 'gemini',
-				'description' => __( 'Your Google Gemini API key for image generation.', 'brevo-campaign-generator' ),
-			)
 		);
 
 		// Brevo API Key.
@@ -178,48 +134,6 @@ class BCG_Settings {
 				'option_name' => 'bcg_brevo_api_key',
 				'service'     => 'brevo',
 				'description' => __( 'Your Brevo (formerly Sendinblue) API key.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Stripe Publishable Key.
-		register_setting( $page, 'bcg_stripe_publishable_key', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_api_key' ),
-			'default'           => '',
-		) );
-
-		add_settings_field(
-			'bcg_stripe_publishable_key',
-			__( 'Stripe Publishable Key', 'brevo-campaign-generator' ),
-			array( $this, 'render_api_key_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_stripe_publishable_key',
-				'option_name' => 'bcg_stripe_publishable_key',
-				'service'     => 'stripe_pub',
-				'description' => __( 'Your Stripe publishable key (starts with pk_).', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Stripe Secret Key.
-		register_setting( $page, 'bcg_stripe_secret_key', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_api_key' ),
-			'default'           => '',
-		) );
-
-		add_settings_field(
-			'bcg_stripe_secret_key',
-			__( 'Stripe Secret Key', 'brevo-campaign-generator' ),
-			array( $this, 'render_api_key_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_stripe_secret_key',
-				'option_name' => 'bcg_stripe_secret_key',
-				'service'     => 'stripe_secret',
-				'description' => __( 'Your Stripe secret key (starts with sk_). Keep this confidential.', 'brevo-campaign-generator' ),
 			)
 		);
 	}
@@ -257,146 +171,6 @@ class BCG_Settings {
 			$page,
 			$section,
 			array( 'label_for' => 'bcg_openai_model' )
-		);
-
-		// Gemini Model.
-		register_setting( $page, 'bcg_gemini_model', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_gemini_model' ),
-			'default'           => 'gemini-2.5-flash',
-		) );
-
-		add_settings_field(
-			'bcg_gemini_model',
-			__( 'Gemini Model', 'brevo-campaign-generator' ),
-			array( $this, 'render_gemini_model_field' ),
-			$page,
-			$section,
-			array( 'label_for' => 'bcg_gemini_model' )
-		);
-
-		// ── Credit costs section ────────────────────────────────────────
-
-		$credits_section = 'bcg_credit_costs_section';
-
-		add_settings_section(
-			$credits_section,
-			__( 'Credit Costs per AI Operation', 'brevo-campaign-generator' ),
-			array( $this, 'render_credit_costs_section_description' ),
-			$page
-		);
-
-		// Credit cost: OpenAI GPT-4o.
-		register_setting( $page, 'bcg_credit_cost_openai_gpt4o', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 5,
-		) );
-
-		add_settings_field(
-			'bcg_credit_cost_openai_gpt4o',
-			__( 'GPT-4o (per generation)', 'brevo-campaign-generator' ),
-			array( $this, 'render_number_field' ),
-			$page,
-			$credits_section,
-			array(
-				'label_for'   => 'bcg_credit_cost_openai_gpt4o',
-				'option_name' => 'bcg_credit_cost_openai_gpt4o',
-				'min'         => 1,
-				'max'         => 100,
-				'suffix'      => __( 'credits', 'brevo-campaign-generator' ),
-				'description' => __( 'Credits deducted per GPT-4o text generation.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Credit cost: OpenAI GPT-4o Mini.
-		register_setting( $page, 'bcg_credit_cost_openai_gpt4o_mini', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 1,
-		) );
-
-		add_settings_field(
-			'bcg_credit_cost_openai_gpt4o_mini',
-			__( 'GPT-4o Mini (per generation)', 'brevo-campaign-generator' ),
-			array( $this, 'render_number_field' ),
-			$page,
-			$credits_section,
-			array(
-				'label_for'   => 'bcg_credit_cost_openai_gpt4o_mini',
-				'option_name' => 'bcg_credit_cost_openai_gpt4o_mini',
-				'min'         => 1,
-				'max'         => 100,
-				'suffix'      => __( 'credits', 'brevo-campaign-generator' ),
-				'description' => __( 'Credits deducted per GPT-4o Mini text generation.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Credit cost: Gemini Pro.
-		register_setting( $page, 'bcg_credit_cost_gemini_pro', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 10,
-		) );
-
-		add_settings_field(
-			'bcg_credit_cost_gemini_pro',
-			__( 'Gemini Pro (per image)', 'brevo-campaign-generator' ),
-			array( $this, 'render_number_field' ),
-			$page,
-			$credits_section,
-			array(
-				'label_for'   => 'bcg_credit_cost_gemini_pro',
-				'option_name' => 'bcg_credit_cost_gemini_pro',
-				'min'         => 1,
-				'max'         => 100,
-				'suffix'      => __( 'credits', 'brevo-campaign-generator' ),
-				'description' => __( 'Credits deducted per Gemini Pro image generation.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Credit cost: Gemini Flash.
-		register_setting( $page, 'bcg_credit_cost_gemini_flash', array(
-			'type'              => 'integer',
-			'sanitize_callback' => 'absint',
-			'default'           => 3,
-		) );
-
-		add_settings_field(
-			'bcg_credit_cost_gemini_flash',
-			__( 'Gemini Flash (per image)', 'brevo-campaign-generator' ),
-			array( $this, 'render_number_field' ),
-			$page,
-			$credits_section,
-			array(
-				'label_for'   => 'bcg_credit_cost_gemini_flash',
-				'option_name' => 'bcg_credit_cost_gemini_flash',
-				'min'         => 1,
-				'max'         => 100,
-				'suffix'      => __( 'credits', 'brevo-campaign-generator' ),
-				'description' => __( 'Credits deducted per Gemini Flash image generation.', 'brevo-campaign-generator' ),
-			)
-		);
-
-		// Credit value ratio.
-		register_setting( $page, 'bcg_credit_value', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_decimal' ),
-			'default'           => '0.05',
-		) );
-
-		add_settings_field(
-			'bcg_credit_value',
-			__( 'Credit Value Ratio', 'brevo-campaign-generator' ),
-			array( $this, 'render_text_field' ),
-			$page,
-			$credits_section,
-			array(
-				'label_for'   => 'bcg_credit_value',
-				'option_name' => 'bcg_credit_value',
-				'class'       => 'small-text',
-				'description' => __( 'Monetary value of 1 credit in your currency (e.g. 0.05 = 5p per credit).', 'brevo-campaign-generator' ),
-			)
 		);
 	}
 
@@ -475,61 +249,6 @@ class BCG_Settings {
 				'option_name' => 'bcg_brevo_campaign_prefix',
 				'class'       => 'small-text',
 				'description' => __( 'Prefix added to all campaign names in Brevo (e.g. [WC]).', 'brevo-campaign-generator' ),
-			)
-		);
-	}
-
-	// ─── Stripe Tab ─────────────────────────────────────────────────────
-
-	/**
-	 * Register Stripe tab settings.
-	 *
-	 * @since  1.0.0
-	 * @return void
-	 */
-	private function register_stripe_settings(): void {
-		$section = 'bcg_stripe_section';
-		$page    = 'bcg_settings_stripe';
-
-		add_settings_section(
-			$section,
-			__( 'Stripe Configuration', 'brevo-campaign-generator' ),
-			array( $this, 'render_stripe_section_description' ),
-			$page
-		);
-
-		// Currency.
-		register_setting( $page, 'bcg_stripe_currency', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_currency' ),
-			'default'           => 'GBP',
-		) );
-
-		add_settings_field(
-			'bcg_stripe_currency',
-			__( 'Currency', 'brevo-campaign-generator' ),
-			array( $this, 'render_currency_field' ),
-			$page,
-			$section,
-			array( 'label_for' => 'bcg_stripe_currency' )
-		);
-
-		// Credit Packs.
-		register_setting( $page, 'bcg_stripe_credit_packs', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_credit_packs' ),
-			'default'           => '',
-		) );
-
-		add_settings_field(
-			'bcg_stripe_credit_packs',
-			__( 'Credit Packs', 'brevo-campaign-generator' ),
-			array( $this, 'render_credit_packs_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_stripe_credit_packs',
-				'option_name' => 'bcg_stripe_credit_packs',
 			)
 		);
 	}
@@ -640,26 +359,6 @@ class BCG_Settings {
 				'label'       => __( 'Automatically create a WooCommerce coupon when generating a new campaign.', 'brevo-campaign-generator' ),
 			)
 		);
-
-		// Test Mode.
-		register_setting( $page, 'bcg_test_mode', array(
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_checkbox' ),
-			'default'           => 'no',
-		) );
-
-		add_settings_field(
-			'bcg_test_mode',
-			__( 'Test Mode', 'brevo-campaign-generator' ),
-			array( $this, 'render_checkbox_field' ),
-			$page,
-			$section,
-			array(
-				'label_for'   => 'bcg_test_mode',
-				'option_name' => 'bcg_test_mode',
-				'label'       => __( 'Enable Test Mode — bypass credit requirements for all AI operations.', 'brevo-campaign-generator' ),
-			)
-		);
 	}
 
 	// ─── AI Trainer Tab ─────────────────────────────────────────────────
@@ -719,10 +418,7 @@ class BCG_Settings {
 	 * @return void
 	 */
 	public function render_api_keys_section_description(): void {
-		echo '<p>' . esc_html__(
-			'Enter your API keys for each service. Keys are stored securely in the WordPress database. Use the Test Connection button to verify each key is valid.',
-			'brevo-campaign-generator'
-		) . '</p>';
+		echo '<p>' . esc_html__( 'Only the Brevo key is stored here. AI text and images run through the Red Frog AI portal; its keys are sealed on the server with "wp ats secret set gateway_key_email" and billed from the shared AI Credits page.', 'brevo-campaign-generator' ) . '</p>';
 	}
 
 	/**
@@ -739,19 +435,6 @@ class BCG_Settings {
 	}
 
 	/**
-	 * Render the Credit Costs section description.
-	 *
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public function render_credit_costs_section_description(): void {
-		echo '<p>' . esc_html__(
-			'Configure how many credits are deducted for each AI operation. Adjust these values to reflect actual provider costs.',
-			'brevo-campaign-generator'
-		) . '</p>';
-	}
-
-	/**
 	 * Render the Brevo section description.
 	 *
 	 * @since  1.0.0
@@ -760,19 +443,6 @@ class BCG_Settings {
 	public function render_brevo_section_description(): void {
 		echo '<p>' . esc_html__(
 			'Configure your Brevo email campaign defaults. Ensure your sender email is verified in your Brevo account.',
-			'brevo-campaign-generator'
-		) . '</p>';
-	}
-
-	/**
-	 * Render the Stripe section description.
-	 *
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public function render_stripe_section_description(): void {
-		echo '<p>' . esc_html__(
-			'Configure your Stripe payment settings for credit top-ups. Define the credit packs available for purchase.',
 			'brevo-campaign-generator'
 		) . '</p>';
 	}
@@ -808,11 +478,7 @@ class BCG_Settings {
 
 		// Check if key is defined via wp-config.php constant.
 		static $constant_map = array(
-			'bcg_openai_api_key'         => 'BCG_OPENAI_API_KEY',
-			'bcg_gemini_api_key'         => 'BCG_GEMINI_API_KEY',
-			'bcg_brevo_api_key'          => 'BCG_BREVO_API_KEY',
-			'bcg_stripe_publishable_key' => 'BCG_STRIPE_PUB_KEY',
-			'bcg_stripe_secret_key'      => 'BCG_STRIPE_SECRET_KEY',
+			'bcg_brevo_api_key' => 'BCG_BREVO_API_KEY',
 		);
 		$constant         = $constant_map[ $option_name ] ?? null;
 		$is_from_constant = $constant && defined( $constant );
@@ -908,31 +574,6 @@ class BCG_Settings {
 		</select>
 		<p class="description">
 			<?php esc_html_e( 'Select the OpenAI model used for text generation (headlines, descriptions, subject lines).', 'brevo-campaign-generator' ); ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Render the Gemini model select field.
-	 *
-	 * @since  1.0.0
-	 * @param  array $args Field arguments.
-	 * @return void
-	 */
-	public function render_gemini_model_field( array $args ): void {
-		$value  = get_option( 'bcg_gemini_model', 'gemini-2.5-flash' );
-		$models = $this->get_gemini_models();
-
-		?>
-		<select id="bcg_gemini_model" name="bcg_gemini_model" class="bcg-select-styled">
-			<?php foreach ( $models as $model_id => $label ) : ?>
-				<option value="<?php echo esc_attr( $model_id ); ?>" <?php selected( $value, $model_id ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<p class="description">
-			<?php esc_html_e( 'Select the Gemini model used for image generation.', 'brevo-campaign-generator' ); ?>
 		</p>
 		<?php
 	}
@@ -1213,131 +854,6 @@ class BCG_Settings {
 	}
 
 	/**
-	 * Render the currency select field.
-	 *
-	 * @since  1.0.0
-	 * @param  array $args Field arguments.
-	 * @return void
-	 */
-	public function render_currency_field( array $args ): void {
-		$value      = get_option( 'bcg_stripe_currency', 'GBP' );
-		$currencies = array(
-			'GBP' => __( 'GBP - British Pound Sterling', 'brevo-campaign-generator' ),
-			'USD' => __( 'USD - US Dollar', 'brevo-campaign-generator' ),
-			'EUR' => __( 'EUR - Euro', 'brevo-campaign-generator' ),
-			'CAD' => __( 'CAD - Canadian Dollar', 'brevo-campaign-generator' ),
-			'AUD' => __( 'AUD - Australian Dollar', 'brevo-campaign-generator' ),
-			'PLN' => __( 'PLN - Polish Zloty', 'brevo-campaign-generator' ),
-		);
-
-		?>
-		<select id="bcg_stripe_currency" name="bcg_stripe_currency" class="bcg-select-styled">
-			<?php foreach ( $currencies as $code => $label ) : ?>
-				<option value="<?php echo esc_attr( $code ); ?>" <?php selected( $value, $code ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<p class="description">
-			<?php esc_html_e( 'The currency used for credit pack purchases via Stripe.', 'brevo-campaign-generator' ); ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Render the credit packs repeater field.
-	 *
-	 * Displays three credit pack rows, each with a credits amount and price
-	 * input. Stored as JSON in a single option.
-	 *
-	 * @since  1.0.0
-	 * @param  array $args Field arguments.
-	 * @return void
-	 */
-	public function render_credit_packs_field( array $args ): void {
-		$raw   = get_option( 'bcg_stripe_credit_packs', '' );
-		$packs = json_decode( $raw, true );
-
-		if ( ! is_array( $packs ) || empty( $packs ) ) {
-			$packs = array(
-				array( 'credits' => 100, 'price' => 5.00 ),
-				array( 'credits' => 300, 'price' => 12.00 ),
-				array( 'credits' => 1000, 'price' => 35.00 ),
-			);
-		}
-
-		// Ensure exactly 3 packs.
-		while ( count( $packs ) < 3 ) {
-			$packs[] = array( 'credits' => 0, 'price' => 0 );
-		}
-
-		$currency = get_option( 'bcg_stripe_currency', 'GBP' );
-		$symbol   = $this->get_currency_symbol( $currency );
-
-		?>
-		<div class="bcg-credit-packs">
-			<table class="bcg-credit-packs-table widefat">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Pack', 'brevo-campaign-generator' ); ?></th>
-						<th><?php esc_html_e( 'Credits', 'brevo-campaign-generator' ); ?></th>
-						<th><?php esc_html_e( 'Price', 'brevo-campaign-generator' ); ?></th>
-						<th><?php esc_html_e( 'Per Credit', 'brevo-campaign-generator' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php for ( $i = 0; $i < 3; $i++ ) : ?>
-						<?php
-						$credits    = isset( $packs[ $i ]['credits'] ) ? (int) $packs[ $i ]['credits'] : 0;
-						$price      = isset( $packs[ $i ]['price'] ) ? (float) $packs[ $i ]['price'] : 0;
-						$per_credit = $credits > 0 ? $price / $credits : 0;
-						?>
-						<tr>
-							<td>
-								<?php
-								printf(
-									/* translators: %d: pack number */
-									esc_html__( 'Pack %d', 'brevo-campaign-generator' ),
-									$i + 1
-								);
-								?>
-							</td>
-							<td>
-								<input
-									type="number"
-									name="bcg_stripe_credit_packs[<?php echo esc_attr( $i ); ?>][credits]"
-									value="<?php echo esc_attr( $credits ); ?>"
-									class="small-text"
-									min="1"
-									step="1"
-								/>
-							</td>
-							<td>
-								<span class="bcg-currency-symbol"><?php echo esc_html( $symbol ); ?></span>
-								<input
-									type="number"
-									name="bcg_stripe_credit_packs[<?php echo esc_attr( $i ); ?>][price]"
-									value="<?php echo esc_attr( number_format( $price, 2, '.', '' ) ); ?>"
-									class="small-text"
-									min="0.01"
-									step="0.01"
-								/>
-							</td>
-							<td class="bcg-per-credit">
-								<?php echo esc_html( $symbol . number_format( $per_credit, 4 ) ); ?>
-							</td>
-						</tr>
-					<?php endfor; ?>
-				</tbody>
-			</table>
-			<p class="description">
-				<?php esc_html_e( 'Define three credit top-up packs available for purchase. Each pack specifies the number of credits and the price.', 'brevo-campaign-generator' ); ?>
-			</p>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Render the AI trainer company context field.
 	 *
 	 * @since  1.6.0
@@ -1395,19 +911,6 @@ class BCG_Settings {
 	}
 
 	/**
-	 * Sanitise Gemini model selection.
-	 *
-	 * @since  1.0.0
-	 * @param  string $value The raw input value.
-	 * @return string Sanitised model ID.
-	 */
-	public function sanitize_gemini_model( string $value ): string {
-		$valid = array_keys( $this->get_gemini_models() );
-
-		return in_array( $value, $valid, true ) ? $value : 'gemini-2.5-flash';
-	}
-
-	/**
 	 * Sanitise a decimal number string.
 	 *
 	 * @since  1.0.0
@@ -1422,56 +925,6 @@ class BCG_Settings {
 		}
 
 		return number_format( $value, 4, '.', '' );
-	}
-
-	/**
-	 * Sanitise currency code.
-	 *
-	 * @since  1.0.0
-	 * @param  string $value The raw input value.
-	 * @return string Sanitised 3-letter currency code.
-	 */
-	public function sanitize_currency( string $value ): string {
-		$value = strtoupper( sanitize_text_field( $value ) );
-		$valid = array( 'GBP', 'USD', 'EUR', 'CAD', 'AUD', 'PLN' );
-
-		return in_array( $value, $valid, true ) ? $value : 'GBP';
-	}
-
-	/**
-	 * Sanitise credit packs.
-	 *
-	 * Accepts either a JSON string or an array from the form submission,
-	 * validates each pack, and returns a JSON-encoded string.
-	 *
-	 * @since  1.0.0
-	 * @param  string|array $value The raw input value.
-	 * @return string JSON-encoded credit packs.
-	 */
-	public function sanitize_credit_packs( string|array $value ): string {
-		if ( is_string( $value ) ) {
-			$packs = json_decode( $value, true );
-		} else {
-			$packs = $value;
-		}
-
-		if ( ! is_array( $packs ) ) {
-			$packs = array();
-		}
-
-		$sanitised = array();
-
-		for ( $i = 0; $i < 3; $i++ ) {
-			$credits = isset( $packs[ $i ]['credits'] ) ? absint( $packs[ $i ]['credits'] ) : 0;
-			$price   = isset( $packs[ $i ]['price'] ) ? (float) $packs[ $i ]['price'] : 0;
-
-			$sanitised[] = array(
-				'credits' => max( 1, $credits ),
-				'price'   => max( 0.01, round( $price, 2 ) ),
-			);
-		}
-
-		return wp_json_encode( $sanitised );
 	}
 
 	/**
@@ -1573,17 +1026,17 @@ class BCG_Settings {
 		}
 
 		$result = match ( $service ) {
-			'openai'        => $this->test_openai_connection(),
-			'gemini'        => $this->test_gemini_connection(),
-			'brevo'         => $this->test_brevo_connection(),
-			'stripe_pub'    => $this->test_stripe_pub_connection(),
-			'stripe_secret' => $this->test_stripe_secret_connection(),
-			default         => new \WP_Error( 'invalid_service', __( 'Unknown service.', 'brevo-campaign-generator' ) ),
+			'openai' => $this->test_openai_connection(),
+			'brevo'  => $this->test_brevo_connection(),
+			default  => new \WP_Error( 'invalid_service', __( 'Unknown service.', 'brevo-campaign-generator' ) ),
 		};
 
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
-				array( 'message' => $result->get_error_message() )
+				array(
+					'message' => $result->get_error_message(),
+					'code'    => $result->get_error_code(),
+				)
 			);
 		}
 
@@ -1657,127 +1110,20 @@ class BCG_Settings {
 	// ─── API Connection Tests ───────────────────────────────────────────
 
 	/**
-	 * Test the OpenAI API connection.
+	 * Ping the portal's free /models endpoint with the email key.
 	 *
-	 * Makes a lightweight call to the models endpoint to verify the key.
-	 *
-	 * @since  1.0.0
-	 * @return array|\WP_Error Success data or error.
+	 * @return array|\WP_Error ['message' => string].
 	 */
 	private function test_openai_connection(): array|\WP_Error {
-		$api_key = bcg_get_api_key( 'bcg_openai_api_key' );
+		$client = new BCG_OpenAI( '', 'ats:email:test' );
+		$result = $client->test_connection();
 
-		if ( empty( $api_key ) ) {
-			return new \WP_Error(
-				'missing_key',
-				__( 'OpenAI API key is not saved. Please save your settings first.', 'brevo-campaign-generator' )
-			);
-		}
-
-		$response = wp_remote_get(
-			'https://api.openai.com/v1/models',
-			array(
-				'headers' => array(
-					'Authorization' => 'Bearer ' . $api_key,
-					'Content-Type'  => 'application/json',
-				),
-				'timeout' => 15,
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return new \WP_Error(
-				'connection_failed',
-				sprintf(
-					/* translators: %s: error message */
-					__( 'Connection failed: %s', 'brevo-campaign-generator' ),
-					$response->get_error_message()
-				)
-			);
-		}
-
-		$code = wp_remote_retrieve_response_code( $response );
-
-		if ( 200 !== $code ) {
-			$body = json_decode( wp_remote_retrieve_body( $response ), true );
-			$msg  = isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Unknown error', 'brevo-campaign-generator' );
-
-			return new \WP_Error(
-				'api_error',
-				sprintf(
-					/* translators: 1: HTTP status code, 2: error message */
-					__( 'OpenAI returned HTTP %1$d: %2$s', 'brevo-campaign-generator' ),
-					$code,
-					$msg
-				)
-			);
+		if ( is_wp_error( $result ) ) {
+			return $result;
 		}
 
 		return array(
-			'message' => __( 'OpenAI API connection successful!', 'brevo-campaign-generator' ),
-			'service' => 'openai',
-		);
-	}
-
-	/**
-	 * Test the Google Gemini API connection.
-	 *
-	 * Makes a lightweight call to list available models.
-	 *
-	 * @since  1.0.0
-	 * @return array|\WP_Error Success data or error.
-	 */
-	private function test_gemini_connection(): array|\WP_Error {
-		$api_key = bcg_get_api_key( 'bcg_gemini_api_key' );
-
-		if ( empty( $api_key ) ) {
-			return new \WP_Error(
-				'missing_key',
-				__( 'Gemini API key is not saved. Please save your settings first.', 'brevo-campaign-generator' )
-			);
-		}
-
-		$response = wp_remote_get(
-			'https://generativelanguage.googleapis.com/v1beta/models?key=' . $api_key,
-			array(
-				'headers' => array(
-					'Content-Type' => 'application/json',
-				),
-				'timeout' => 15,
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return new \WP_Error(
-				'connection_failed',
-				sprintf(
-					/* translators: %s: error message */
-					__( 'Connection failed: %s', 'brevo-campaign-generator' ),
-					$response->get_error_message()
-				)
-			);
-		}
-
-		$code = wp_remote_retrieve_response_code( $response );
-
-		if ( 200 !== $code ) {
-			$body = json_decode( wp_remote_retrieve_body( $response ), true );
-			$msg  = isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Unknown error', 'brevo-campaign-generator' );
-
-			return new \WP_Error(
-				'api_error',
-				sprintf(
-					/* translators: 1: HTTP status code, 2: error message */
-					__( 'Gemini returned HTTP %1$d: %2$s', 'brevo-campaign-generator' ),
-					$code,
-					$msg
-				)
-			);
-		}
-
-		return array(
-			'message' => __( 'Gemini API connection successful!', 'brevo-campaign-generator' ),
-			'service' => 'gemini',
+			'message' => __( 'Connected to the Red Frog AI portal.', 'brevo-campaign-generator' ),
 		);
 	}
 
@@ -1852,107 +1198,6 @@ class BCG_Settings {
 		);
 	}
 
-	/**
-	 * Test the Stripe publishable key.
-	 *
-	 * Validates format only since publishable keys cannot make server-side
-	 * API calls. Checks that it starts with pk_test_ or pk_live_.
-	 *
-	 * @since  1.0.0
-	 * @return array|\WP_Error Success data or error.
-	 */
-	private function test_stripe_pub_connection(): array|\WP_Error {
-		$key = bcg_get_api_key( 'bcg_stripe_publishable_key' );
-
-		if ( empty( $key ) ) {
-			return new \WP_Error(
-				'missing_key',
-				__( 'Stripe publishable key is not saved. Please save your settings first.', 'brevo-campaign-generator' )
-			);
-		}
-
-		if ( ! str_starts_with( $key, 'pk_test_' ) && ! str_starts_with( $key, 'pk_live_' ) ) {
-			return new \WP_Error(
-				'invalid_format',
-				__( 'Invalid format. Stripe publishable keys should start with pk_test_ or pk_live_.', 'brevo-campaign-generator' )
-			);
-		}
-
-		return array(
-			'message' => __( 'Stripe publishable key format is valid!', 'brevo-campaign-generator' ),
-			'service' => 'stripe_pub',
-		);
-	}
-
-	/**
-	 * Test the Stripe secret key.
-	 *
-	 * Makes a lightweight call to the Stripe balance endpoint.
-	 *
-	 * @since  1.0.0
-	 * @return array|\WP_Error Success data or error.
-	 */
-	private function test_stripe_secret_connection(): array|\WP_Error {
-		$key = bcg_get_api_key( 'bcg_stripe_secret_key' );
-
-		if ( empty( $key ) ) {
-			return new \WP_Error(
-				'missing_key',
-				__( 'Stripe secret key is not saved. Please save your settings first.', 'brevo-campaign-generator' )
-			);
-		}
-
-		if ( ! str_starts_with( $key, 'sk_test_' ) && ! str_starts_with( $key, 'sk_live_' ) ) {
-			return new \WP_Error(
-				'invalid_format',
-				__( 'Invalid format. Stripe secret keys should start with sk_test_ or sk_live_.', 'brevo-campaign-generator' )
-			);
-		}
-
-		$response = wp_remote_get(
-			'https://api.stripe.com/v1/balance',
-			array(
-				'headers' => array(
-					'Authorization' => 'Bearer ' . $key,
-				),
-				'timeout' => 15,
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return new \WP_Error(
-				'connection_failed',
-				sprintf(
-					/* translators: %s: error message */
-					__( 'Connection failed: %s', 'brevo-campaign-generator' ),
-					$response->get_error_message()
-				)
-			);
-		}
-
-		$code = wp_remote_retrieve_response_code( $response );
-
-		if ( 200 !== $code ) {
-			$body = json_decode( wp_remote_retrieve_body( $response ), true );
-			$msg  = isset( $body['error']['message'] ) ? $body['error']['message'] : __( 'Unknown error', 'brevo-campaign-generator' );
-
-			return new \WP_Error(
-				'api_error',
-				sprintf(
-					/* translators: 1: HTTP status code, 2: error message */
-					__( 'Stripe returned HTTP %1$d: %2$s', 'brevo-campaign-generator' ),
-					$code,
-					$msg
-				)
-			);
-		}
-
-		return array(
-			'message' => __( 'Stripe secret key connection successful!', 'brevo-campaign-generator' ),
-			'service' => 'stripe_secret',
-		);
-	}
-
 	// ─── Helper Methods ─────────────────────────────────────────────────
 
 	/**
@@ -1966,20 +1211,6 @@ class BCG_Settings {
 			'gpt-4o'      => __( 'GPT-4o (recommended, best quality)', 'brevo-campaign-generator' ),
 			'gpt-4o-mini' => __( 'GPT-4o Mini (faster, lower cost)', 'brevo-campaign-generator' ),
 			'gpt-4-turbo' => __( 'GPT-4 Turbo', 'brevo-campaign-generator' ),
-		);
-	}
-
-	/**
-	 * Get available Gemini models.
-	 *
-	 * @since  1.0.0
-	 * @return array<string, string> Model ID => Label.
-	 */
-	public function get_gemini_models(): array {
-		return array(
-			'gemini-2.5-flash'      => __( 'Gemini 2.5 Flash (recommended, fast, cost-efficient)', 'brevo-campaign-generator' ),
-			'gemini-2.5-flash-lite' => __( 'Gemini 2.5 Flash Lite (fastest, lowest cost)', 'brevo-campaign-generator' ),
-			'gemini-2.5-pro'        => __( 'Gemini 2.5 Pro (best quality, higher cost)', 'brevo-campaign-generator' ),
 		);
 	}
 
@@ -2007,27 +1238,7 @@ class BCG_Settings {
 	}
 
 	/**
-	 * Get the currency symbol for a given currency code.
-	 *
-	 * @since  1.0.0
-	 * @param  string $code The 3-letter currency code.
-	 * @return string The currency symbol.
-	 */
-	public function get_currency_symbol( string $code ): string {
-		$symbols = array(
-			'GBP' => "\xC2\xA3",
-			'USD' => '$',
-			'EUR' => "\xE2\x82\xAC",
-			'CAD' => 'C$',
-			'AUD' => 'A$',
-			'PLN' => "z\xC5\x82",
-		);
-
-		return $symbols[ $code ] ?? $code;
-	}
-
-	/**
-	 * Get the pricing reference data for the static table.
+	 * Approximate cost per task in pounds, after the portal's ×10 email markup.
 	 *
 	 * @since  1.0.0
 	 * @return array Pricing reference rows.
@@ -2038,25 +1249,19 @@ class BCG_Settings {
 				'service' => 'OpenAI',
 				'model'   => 'GPT-4o',
 				'task'    => __( 'Per campaign copy (approx 2K tokens)', 'brevo-campaign-generator' ),
-				'cost'    => '~$0.01-$0.05',
+				'cost'    => '~£0.10-£0.40',
 			),
 			array(
 				'service' => 'OpenAI',
 				'model'   => 'GPT-4o Mini',
 				'task'    => __( 'Per campaign copy', 'brevo-campaign-generator' ),
-				'cost'    => '~$0.001-$0.005',
+				'cost'    => '~£0.01-£0.04',
 			),
 			array(
-				'service' => 'Gemini',
-				'model'   => '2.5 Pro',
-				'task'    => __( 'Per image generation', 'brevo-campaign-generator' ),
-				'cost'    => '~$0.01-$0.04',
-			),
-			array(
-				'service' => 'Gemini',
-				'model'   => '2.0 Flash',
-				'task'    => __( 'Per image generation', 'brevo-campaign-generator' ),
-				'cost'    => '~$0.001-$0.01',
+				'service' => 'OpenAI',
+				'model'   => 'gpt-image-1 (medium)',
+				'task'    => __( 'Per image', 'brevo-campaign-generator' ),
+				'cost'    => '~£0.30-£0.50',
 			),
 		);
 	}

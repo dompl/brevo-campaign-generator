@@ -23,7 +23,6 @@ $tab_option_groups = array(
 	'api-keys'  => 'bcg_settings_api_keys',
 	'ai-models' => 'bcg_settings_ai_models',
 	'brevo'     => 'bcg_settings_brevo',
-	'stripe'    => 'bcg_settings_stripe',
 	'defaults'  => 'bcg_settings_defaults',
 );
 
@@ -71,10 +70,6 @@ $option_group = $tab_option_groups[ $current_tab ] ?? 'bcg_settings_api_keys';
 					do_settings_sections( 'bcg_settings_brevo' );
 					break;
 
-				case 'stripe':
-					do_settings_sections( 'bcg_settings_stripe' );
-					break;
-
 				case 'defaults':
 					do_settings_sections( 'bcg_settings_defaults' );
 					break;
@@ -105,7 +100,7 @@ function bcg_render_pricing_table( BCG_Settings $settings ): void {
 	<div class="bcg-pricing-reference">
 		<h3><?php esc_html_e( 'Approximate Cost Reference', 'brevo-campaign-generator' ); ?></h3>
 		<p class="description">
-			<?php esc_html_e( 'These are approximate costs from each AI provider. Check the provider\'s pricing page for current rates.', 'brevo-campaign-generator' ); ?>
+			<?php esc_html_e( 'Approximate charges to the shared AI wallet, including the Red Frog markup. Actual charges show on the AI Credits page.', 'brevo-campaign-generator' ); ?>
 		</p>
 		<table class="widefat bcg-pricing-table">
 			<thead>

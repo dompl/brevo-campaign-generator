@@ -4,7 +4,6 @@
  * Handles:
  * - Test Connection AJAX calls for each API key
  * - Brevo mailing list loading/refreshing
- * - Credit packs per-credit calculation
  *
  * @package Brevo_Campaign_Generator
  * @since   1.0.0
@@ -25,7 +24,6 @@
 		init: function() {
 			this.bindTestConnection();
 			this.bindBrevoListRefresh();
-			this.bindCreditPackCalculation();
 			this.autoLoadBrevoLists();
 		},
 
@@ -178,23 +176,6 @@
 						'error'
 					);
 				}
-			} );
-		},
-
-		/**
-		 * Bind input handlers on credit pack fields to recalculate per-credit cost.
-		 */
-		bindCreditPackCalculation: function() {
-			$( document ).on( 'input', '.bcg-credit-packs-table input[type="number"]', function() {
-				var $row     = $( this ).closest( 'tr' );
-				var credits  = parseInt( $row.find( 'input[name*="[credits]"]' ).val(), 10 ) || 0;
-				var price    = parseFloat( $row.find( 'input[name*="[price]"]' ).val() ) || 0;
-				var perCredit = credits > 0 ? ( price / credits ).toFixed( 4 ) : '0.0000';
-
-				// Get the currency symbol from the first cell that has it.
-				var symbol = $row.find( '.bcg-currency-symbol' ).first().text() || '';
-
-				$row.find( '.bcg-per-credit' ).text( symbol + perCredit );
 			} );
 		},
 
