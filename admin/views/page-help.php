@@ -87,7 +87,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</a>
 				<a href="#ai-credits" class="bcg-help-nav-item" data-section="ai-credits">
 					<span class="material-icons-outlined">auto_awesome</span>
-					<?php esc_html_e( 'AI & Credits', 'brevo-campaign-generator' ); ?>
+					<?php esc_html_e( 'AI & Billing', 'brevo-campaign-generator' ); ?>
 				</a>
 				<a href="#brevo-stats" class="bcg-help-nav-item" data-section="brevo-stats">
 					<span class="material-icons-outlined">bar_chart</span>
@@ -187,8 +187,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div class="bcg-help-step">
 							<div class="bcg-help-step-number">1</div>
 							<div class="bcg-help-step-body">
-								<strong><?php esc_html_e( 'Configure API Keys', 'brevo-campaign-generator' ); ?></strong>
-								<p><?php esc_html_e( 'Go to Settings and enter your Brevo and OpenAI API keys. Use the "Test Connection" buttons to verify each key is working.', 'brevo-campaign-generator' ); ?></p>
+								<strong><?php esc_html_e( 'Configure Settings', 'brevo-campaign-generator' ); ?></strong>
+								<p><?php esc_html_e( 'Go to Settings and enter your Brevo API key. AI text and images use the Red Frog AI portal automatically, no key needed here.', 'brevo-campaign-generator' ); ?></p>
 							</div>
 						</div>
 						<div class="bcg-help-step">
@@ -265,8 +265,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span class="bcg-help-def-desc"><?php esc_html_e( 'Campaigns that have been delivered to your subscribers.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
-							<span class="bcg-help-def-term"><?php esc_html_e( 'Credits Balance', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Your remaining AI credits. Click "Top Up" to buy more.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-term"><?php esc_html_e( 'AI Credits balance', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'The shared wallet balance in pounds. Click it to top up on Marketing → AI Credits.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 					</div>
 				</div>
@@ -862,7 +862,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Generate All with AI', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'AI fills in the text fields for every section that supports it in one go. Uses credits. Set your campaign theme and tone first for best results.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'AI fills in the text fields for every section that supports it in one go, charged to the AI Credits wallet. Set your campaign theme and tone first for best results.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Preview Email', 'brevo-campaign-generator' ); ?></span>
@@ -1039,56 +1039,59 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</section>
 
-			<!-- ══ 7. AI & CREDITS ════════════════════════════════════ -->
+			<!-- ══ 7. AI & BILLING ════════════════════════════════════ -->
 			<section class="bcg-help-section" id="ai-credits">
 				<div class="bcg-help-section-header">
 					<span class="material-icons-outlined">auto_awesome</span>
 					<div>
-						<h2><?php esc_html_e( 'AI & Credits', 'brevo-campaign-generator' ); ?></h2>
-						<p><?php esc_html_e( 'How AI generation works and how to manage your credits.', 'brevo-campaign-generator' ); ?></p>
+						<h2><?php esc_html_e( 'AI & Billing', 'brevo-campaign-generator' ); ?></h2>
+						<p><?php esc_html_e( 'How AI generation works and how it is billed.', 'brevo-campaign-generator' ); ?></p>
 					</div>
 				</div>
 
 				<div class="bcg-help-card">
-					<h3><?php esc_html_e( 'What are Credits?', 'brevo-campaign-generator' ); ?></h3>
-					<p><?php esc_html_e( 'Credits are the currency used to pay for AI generation. Each time you ask the AI to write content, a small number of credits is deducted from your balance.', 'brevo-campaign-generator' ); ?></p>
-					<p><?php esc_html_e( 'Your current credit balance is always visible in the header bar at the top of every plugin page. When your balance reaches zero, AI generation is paused until you top up.', 'brevo-campaign-generator' ); ?></p>
+					<h3><?php esc_html_e( 'How AI is billed', 'brevo-campaign-generator' ); ?></h3>
+					<p><?php esc_html_e( 'This plugin uses the shared ATS AI wallet, the same balance used by the other AI tools on the site. Every AI call is billed in pounds at the moment it runs; there are no credits to buy or convert.', 'brevo-campaign-generator' ); ?></p>
+					<p><?php esc_html_e( 'The current balance is always visible in the header bar at the top of every plugin page. When the balance runs out, AI generation is paused until you top up.', 'brevo-campaign-generator' ); ?></p>
 				</div>
 
 				<div class="bcg-help-card">
-					<h3><?php esc_html_e( 'What Uses Credits?', 'brevo-campaign-generator' ); ?></h3>
+					<h3><?php esc_html_e( 'What is charged', 'brevo-campaign-generator' ); ?></h3>
 					<div class="bcg-help-def-list">
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Campaign Generation', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generating a full campaign (subject line, headline, description + all product copy) uses credits for each piece of content generated.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generating a full campaign (subject line, headline, description and all product copy) is charged for each piece of content generated.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Bulk Generation', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generating multiple campaigns at once (2–5) uses credits proportionally for each campaign created.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Generating multiple campaigns at once (2–5) is charged proportionally for each campaign created.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Regenerating Fields', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Every ↻ Regenerate button click costs credits for that specific field.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Every ↻ Regenerate button click is charged for that specific field.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Template Builder AI Generation', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( '"Generate All with AI" and per-section AI buttons in the Template Builder both use credits.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( '"Generate All with AI" and per-section AI buttons in the Template Builder are both charged.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'Adding Products', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'Adding a new product to an existing campaign immediately generates AI content for it, which costs credits.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Adding a new product to an existing campaign immediately generates AI content for it, which is charged.', 'brevo-campaign-generator' ); ?></span>
+						</div>
+						<div class="bcg-help-def-item">
+							<span class="bcg-help-def-term"><?php esc_html_e( 'Images', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'Hero and product images are generated by OpenAI and billed per image.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 					</div>
 					<div class="bcg-help-tip bcg-mt-16">
 						<span class="material-icons-outlined">info</span>
-						<div><?php esc_html_e( 'If an AI call fails due to an API error, your credits are automatically refunded for that generation.', 'brevo-campaign-generator' ); ?></div>
+						<div><?php esc_html_e( 'If an AI call fails, nothing is charged for that attempt.', 'brevo-campaign-generator' ); ?></div>
 					</div>
 				</div>
 
 				<div class="bcg-help-card">
-					<h3><?php esc_html_e( 'Topping Up Credits', 'brevo-campaign-generator' ); ?></h3>
-					<p><?php esc_html_e( 'Go to Credits & Billing in the menu. Choose a credit pack and complete the purchase. Credits are added to your balance instantly after payment.', 'brevo-campaign-generator' ); ?></p>
-					<p><?php esc_html_e( 'Your full transaction history — top-ups and AI usage — is visible on the Credits & Billing page.', 'brevo-campaign-generator' ); ?></p>
+					<h3><?php esc_html_e( 'Topping up', 'brevo-campaign-generator' ); ?></h3>
+					<p><?php esc_html_e( 'Go to Marketing → AI Credits in the WordPress menu to top up the shared wallet. The new balance is available straight away and shows everywhere this plugin displays it.', 'brevo-campaign-generator' ); ?></p>
 				</div>
 
 				<div class="bcg-help-card">

@@ -545,12 +545,6 @@ body.bcg-admin-page .bcg-stat-icon .material-icons-outlined {
 	color: var(--bcg-success);
 }
 
-.bcg-stat-icon-credits {
-	background: rgba(201, 167, 187, 0.1);
-	border-color: rgba(201, 167, 187, 0.15);
-	color: var(--bcg-info);
-}
-
 .bcg-stat-content {
 	display: flex !important;
 	flex-direction: column !important;
@@ -3929,121 +3923,6 @@ body.bcg-admin-page .bcg-perf-title {
 .bcg-skeleton-row td { padding: 10px 14px !important; }
 
 /* ==========================================================================
-   28e-2. Credits Page Additional Styles
-   ========================================================================== */
-
-/* The packs grid uses bcg-grid-3 + this class */
-.bcg-credit-packs-grid {
-	margin-bottom: 24px;
-}
-
-/* Stripe card form */
-.bcg-payment-card {
-	border: 1px solid rgba(230, 53, 41, 0.2);
-}
-
-.bcg-card-element-wrapper {
-	background: var(--bcg-bg-input);
-	border: 1px solid var(--bcg-border);
-	border-radius: var(--bcg-radius-sm);
-	padding: 12px 14px;
-	transition: border-color var(--bcg-transition);
-}
-
-.bcg-card-errors {
-	color: var(--bcg-error);
-	font-size: 13px;
-	margin-top: 6px;
-}
-
-.bcg-stripe-badge {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	font-size: 11px;
-	color: var(--bcg-text-muted);
-	line-height: 1.5;
-}
-
-/* ==========================================================================
-   28f. Transaction Filters
-   ========================================================================== */
-
-.bcg-transaction-filters {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-}
-
-.bcg-transaction-filter-link {
-	display: inline-flex;
-	align-items: center;
-	padding: 5px 12px;
-	background: var(--bcg-bg-raised);
-	border: 1px solid var(--bcg-border);
-	border-radius: var(--bcg-radius-pill);
-	font-family: var(--bcg-font-body);
-	font-size: 11px;
-	font-weight: 600;
-	color: var(--bcg-text-muted) !important;
-	text-decoration: none !important;
-	transition: all var(--bcg-transition);
-}
-
-.bcg-transaction-filter-link:hover {
-	border-color: rgba(255, 255, 255, 0.14);
-	color: var(--bcg-text-primary) !important;
-	text-decoration: none !important;
-}
-
-.bcg-transaction-filter-link.bcg-filter-active {
-	background: var(--bcg-accent-dim);
-	border-color: rgba(230, 53, 41, 0.3);
-	color: var(--bcg-accent) !important;
-}
-
-/* Transaction table */
-.bcg-transactions-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 13px;
-}
-
-.bcg-transactions-table thead th {
-	background: var(--bcg-bg-raised) !important;
-	color: var(--bcg-text-muted) !important;
-	font-family: var(--bcg-font-body) !important;
-	font-size: 10px !important;
-	font-weight: 700 !important;
-	letter-spacing: 0.08em !important;
-	text-transform: uppercase !important;
-	padding: 10px 14px !important;
-	border-bottom: 1px solid var(--bcg-border) !important;
-	border-top: none !important;
-	border-left: none !important;
-	border-right: none !important;
-}
-
-.bcg-transactions-table tbody tr {
-	border-bottom: 1px solid var(--bcg-border-subtle);
-	transition: background var(--bcg-transition);
-}
-
-.bcg-transactions-table tbody tr:last-child { border-bottom: none; }
-
-.bcg-transactions-table tbody tr:hover {
-	background: var(--bcg-bg-raised) !important;
-}
-
-.bcg-transactions-table td {
-	padding: 10px 14px !important;
-	color: var(--bcg-text-secondary) !important;
-	border: none !important;
-	background: transparent !important;
-	vertical-align: middle;
-}
-
-/* ==========================================================================
    28. Responsive
    ========================================================================== */
 
@@ -4063,10 +3942,6 @@ body.bcg-admin-page .bcg-perf-title {
 @media (max-width: 640px) {
 	.bcg-plugin-header-actions .bcg-header-nav-link {
 		display: none;
-	}
-
-	.bcg-credit-packs {
-		grid-template-columns: 1fr;
 	}
 }
 

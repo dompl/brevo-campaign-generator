@@ -439,7 +439,6 @@ class BCG_Admin {
 						'scheduled'         => __( 'Campaign scheduled successfully.', 'brevo-campaign-generator' ),
 						'campaign_sent'     => __( 'Campaign sent successfully!', 'brevo-campaign-generator' ),
 						'select_datetime'   => __( 'Please select a date and time.', 'brevo-campaign-generator' ),
-						'insufficient_credits' => __( 'Out of AI credit. Top up on the AI Credits page.', 'brevo-campaign-generator' ),
 					),
 				)
 			);

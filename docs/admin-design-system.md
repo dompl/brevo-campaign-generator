@@ -253,7 +253,7 @@ Place this **before** the `.wrap.bcg-wrap` div so it's flush with the top of the
 The header partial includes:
 - Red Frog Studio logo (links to redfrogstudio.co.uk)
 - Plugin name + "by Dom Kapelewski"
-- Credit balance pill (links to Credits & Billing page)
+- AI Credits balance pill (`.bcg-header-credits`, links to Marketing → AI Credits)
 - Navigation: Dashboard · New Campaign · Settings
 
 **Critical:** The page body must have class `bcg-admin-page` AND `#wpbody-content` must have `padding-top: 0 !important` to avoid a gap below the WP toolbar. This is handled automatically by the CSS when the body class is set.
@@ -331,12 +331,12 @@ The header partial includes:
   <!-- Info (blue icon) -->
   <div class="bcg-stat-card bcg-card">
     <div class="bcg-stat-card-inner">
-      <div class="bcg-stat-icon bcg-stat-icon-credits">
-        <span class="material-icons-outlined" aria-hidden="true">toll</span>
+      <div class="bcg-stat-icon bcg-stat-icon-info">
+        <span class="material-icons-outlined" aria-hidden="true">bar_chart</span>
       </div>
       <div class="bcg-stat-content">
-        <span class="bcg-stat-value">250</span>
-        <span class="bcg-stat-label">Credits Remaining</span>
+        <span class="bcg-stat-value">42%</span>
+        <span class="bcg-stat-label">Open Rate</span>
       </div>
     </div>
   </div>
@@ -348,7 +348,7 @@ The header partial includes:
 - (none) → accent red (`--bcg-accent`)
 - `.bcg-stat-icon-draft` → warning amber (`--bcg-warning`)
 - `.bcg-stat-icon-sent` → success green (`--bcg-success`)
-- `.bcg-stat-icon-credits` → info blue (`--bcg-info`)
+- `.bcg-stat-icon-info` → info blue (`--bcg-info`)
 
 ---
 
@@ -508,7 +508,7 @@ Active tab gets the class `active` (or `current` for WP compatibility).
 <!-- Warning -->
 <div class="bcg-notice bcg-notice-warning">
   <span class="material-icons-outlined" aria-hidden="true">warning</span>
-  Your credit balance is low.
+  Your AI credit balance is low.
 </div>
 
 <!-- Info -->
@@ -724,13 +724,14 @@ Create `admin/views/partials/plugin-header.php`:
 ```php
 <?php
 /**
- * Plugin header — branding bar, credit pill, navigation.
+ * Plugin header — branding bar, AI Credits balance pill, navigation.
  * Rendered OUTSIDE .bcg-wrap so it sits flush at the top of #wpbody-content.
  */
 defined( 'ABSPATH' ) || exit;
 
-// Get credit balance (adapt to your plugin's credit system).
-$credit_balance = 0;
+// Get the shared AI wallet balance from the Red Frog AI Portal (adapt the feature key to your plugin).
+$portal_balance = \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ? \RedFrogStudio\AtsAiPortal\Portal::balance() : null;
+$credits_url    = \RedFrogStudio\AtsAiPortal\Portal::credits_url();
 ?>
 <header class="bcg-plugin-header">
     <div class="bcg-plugin-header-brand">
@@ -752,10 +753,9 @@ $credit_balance = 0;
     </div>
 
     <div class="bcg-plugin-header-actions">
-        <a href="<?php echo esc_url( admin_url( 'admin.php?page=your-plugin-credits' ) ); ?>"
-           class="bcg-header-credit-pill">
-            <img src="<?php echo esc_url( YOUR_PLUGIN_URL . 'admin/images/rfs-logo.png' ); ?>" alt="" width="16" height="10">
-            <span><?php echo esc_html( number_format( $credit_balance ) ); ?> credits</span>
+        <a href="<?php echo esc_url( $credits_url ); ?>" class="bcg-header-credits">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span class="bcg-header-credits-label"><?php echo null === $portal_balance ? esc_html__( 'AI not connected', 'your-plugin-slug' ) : '£' . esc_html( number_format( $portal_balance, 2 ) ) . ' ' . esc_html__( 'AI credit', 'your-plugin-slug' ); ?></span>
         </a>
         <nav class="bcg-plugin-header-nav" aria-label="Plugin navigation">
             <a href="<?php echo esc_url( admin_url( 'admin.php?page=your-plugin' ) ); ?>" class="bcg-header-nav-link">Dashboard</a>

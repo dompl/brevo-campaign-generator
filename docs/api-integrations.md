@@ -4,13 +4,13 @@ This document describes all third-party APIs used by the plugin, how they are us
 
 ---
 
-## OpenAI (GPT)
+## OpenAI (GPT), via the Red Frog AI Portal
 
 **Used for:** All text generation — campaign headlines, descriptions, subject lines, coupon text, and all Template Builder section copy
 
-**Endpoint:** `https://api.openai.com/v1/chat/completions`
+**Endpoint:** the portal's OpenAI route, `Portal::openai_url( '/chat/completions' )`, which proxies to OpenAI and meters usage. The plugin never calls `api.openai.com` directly.
 
-**Authentication:** Bearer token (`Authorization: Bearer {api_key}`)
+**Authentication:** `Portal::headers( 'email', $purpose, $reference )` sets the Authorization header from the sealed `gateway_key_email` key; the plugin holds no OpenAI key of its own.
 
 ### Supported Models
 
@@ -74,20 +74,13 @@ Every generation call uses a layered system prompt built by `BCG_OpenAI::build_s
 
 Hero, Hero Split, and all Coupon section types are handled by the `BCG_Section_AI` dispatcher, which routes to the appropriate method based on the section type slug, using the same underlying `BCG_OpenAI` client.
 
-### Credit Cost
+### Billing
 
-| Model | Credits per generation task |
-|---|---|
-| GPT-4o | 5 |
-| GPT-4o Mini | 1 |
-| GPT-4 Turbo | 5 |
+Every call is billed in pounds to the shared ATS AI wallet, not to a credit count. See **Settings → AI Models** for the current rate per generation, and top up on **Marketing → AI Credits** if the balance runs low.
 
 ### Configuring the Key
 
-1. Get your key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
-2. Go to **Settings → API Keys** in the plugin, or define `BCG_OPENAI_API_KEY` in `wp-config.php`
-3. Paste into the **OpenAI API Key** field
-4. Click **Test Connection**
+No key is needed in this plugin. The ATS AI Portal plugin holds one sealed gateway key per generator (`wp ats secret set gateway_key_email`), and every request to the portal is authenticated with it automatically.
 
 ### Troubleshooting
 
@@ -100,68 +93,42 @@ Hero, Hero Split, and all Coupon section types are handled by the `BCG_Section_A
 
 ---
 
-## Google Gemini
+## OpenAI Images, via the Red Frog AI Portal
 
-**Used for:** AI image generation for campaign header and product images (flat-template campaigns only)
+**Used for:** AI image generation for the campaign hero banner and individual product images
 
-**Endpoint:** `https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent`
+**Model:** `gpt-image-1`, quality `medium`. Hero banners generate at 1536x1024; product images generate at 1024x1024.
 
-**Authentication:** API key in query string (`?key={api_key}`)
+**Endpoint:** `Portal::openai_url( '/images/generations' )`, proxied and metered the same way as the text calls above.
 
-### Supported Models
+**Authentication:** the same sealed `gateway_key_email` key, via `Portal::headers()`. No key is stored in this plugin.
 
-| Model | ID | Best For | Approx Cost |
-|---|---|---|---|
-| Gemini 1.5 Pro | `gemini-1.5-pro` | Highest quality images | ~$3.50/1M input tokens |
-| Gemini 1.5 Flash | `gemini-1.5-flash` | Fast, cost-efficient | ~$0.075/1M input tokens |
-| Gemini 2.0 Flash (Exp) | `gemini-2.0-flash-exp` | Latest experimental | Check Google AI pricing |
+There is no automatic retry on image generation. A failed attempt is reported as an error rather than retried, because a second attempt is a second charge.
 
-> Costs are approximate. See [ai.google.dev/pricing](https://ai.google.dev/pricing) for current rates.
+### Available Styles
 
-> **Note:** Gemini image generation is not available in all countries. If you receive a regional restriction error, the plugin shows a human-readable message explaining the limitation.
-
-### Image Prompt Structure
-
-```
-A professional {style} photograph of {product_name}.
-{product_short_description}.
-Clean neutral background, high detail, sharp focus,
-suitable for an e-commerce email newsletter.
-No text, labels, watermarks, or logos.
-Aspect ratio: 600x400px horizontal banner.
-```
-
-**Available styles:**
-- `photorealistic product` — clean studio shot
-- `studio product photography` — professional white background
-- `lifestyle product` — contextual, in-use setting
-- `minimalist flat-lay` — overhead, clean composition
-- `vivid illustrated` — bold, graphic style
-
-### Credit Cost
-
-| Model | Credits per image |
+| Value | Label |
 |---|---|
-| Gemini 1.5 Pro | 10 |
-| Gemini 1.5 Flash | 3 |
-| Gemini 2.0 Flash Exp | 5 |
+| `photorealistic` | Photorealistic |
+| `studio_product` | Studio Product |
+| `lifestyle` | Lifestyle |
+| `minimalist` | Minimalist |
+| `vivid_illustration` | Vivid Illustration |
 
-### Configuring the Key
+The chosen style is woven into the prompt built by `BCG_Images::build_main_image_prompt()` (hero banner) and `build_product_image_prompt()` (per-product), both filterable via `bcg_images_main_image_prompt` and `bcg_images_product_image_prompt`.
 
-1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-2. Create a new API key
-3. Ensure the Generative Language API is enabled in your Google Cloud project
-4. Paste the key into **Settings → API Keys → Google Gemini API Key**, or define `BCG_GEMINI_API_KEY` in `wp-config.php`
-5. Click **Test Connection**
+### Billing
+
+Every image is billed in pounds to the shared ATS AI wallet, at the rate shown in **Settings → AI Models**. Top up on **Marketing → AI Credits**.
 
 ### Troubleshooting
 
 | Error | Cause | Fix |
 |---|---|---|
-| `403 Forbidden` | Key invalid or API not enabled | Enable Generative Language API in Google Cloud |
-| `429 Resource Exhausted` | Quota exceeded | Check quota in Google Cloud Console |
-| Image not returned | Model selected does not support image output | Switch to a supported model |
-| Regional restriction error | Gemini image gen not available in your country | Use WooCommerce product images instead |
+| "No AI credit" / `ats_portal_out_of_credit` | Wallet balance is too low | Top up on Marketing → AI Credits |
+| "AI is not available" / `ats_portal_no_key` | Gateway key not sealed for this generator | Ask an admin to run `wp ats secret set gateway_key_email` |
+| `ats_portal_rate_limited` | Too many requests in a short time | Wait a moment and try again |
+| `ats_portal_unavailable` | Portal or OpenAI outage | Check again shortly; no charge is made on failure |
 
 ---
 
@@ -252,69 +219,6 @@ Mailing lists are fetched server-side on page load using a 1-hour transient (`bc
 
 ---
 
-## Stripe
-
-**Used for:** Processing credit top-up payments
-
-**Integration:** Stripe Elements (JS) + PaymentIntents API (server-side)
-
-**Mode:** Uses test keys (`pk_test_`, `sk_test_`) during development; switch to live keys for production.
-
-### Payment Flow
-
-```
-1. User selects credit pack → JS requests PaymentIntent
-2. Plugin: POST /v1/payment_intents (server-side, secret key)
-3. Stripe returns client_secret
-4. Stripe.js confirms payment with card details
-5. On success → AJAX call to bcg_stripe_confirm
-6. Plugin verifies PaymentIntent status
-7. Credits added, transaction logged
-```
-
-### Webhook (Recommended for Production)
-
-Configure a Stripe webhook to `https://yoursite.com/wp-json/bcg/v1/stripe-webhook` for the event `payment_intent.succeeded`. This provides a fallback if the AJAX confirmation fails.
-
-### Credit Packs (Default)
-
-| Pack | Credits | Price (GBP) | Stripe Amount |
-|---|---|---|---|
-| Starter | 100 | £5.00 | 500 pence |
-| Standard | 300 | £12.00 | 1200 pence |
-| Pro | 1,000 | £35.00 | 3500 pence |
-
-All amounts stored in pence (integer) for Stripe. Pack values editable in **Settings → Stripe**.
-
-### Configuring Keys
-
-1. Log into [dashboard.stripe.com](https://dashboard.stripe.com)
-2. Go to **Developers → API Keys**
-3. Copy both **Publishable key** and **Secret key**
-4. Paste into **Settings → Stripe**, or define `BCG_STRIPE_PUB_KEY` and `BCG_STRIPE_SECRET_KEY` in `wp-config.php`
-5. For production, use live keys; for testing, use test keys
-
-### Test Cards
-
-| Card Number | Result |
-|---|---|
-| `4242 4242 4242 4242` | Success |
-| `4000 0000 0000 9995` | Decline |
-| `4000 0025 0000 3155` | 3D Secure required |
-
-Use any future expiry date and any 3-digit CVC.
-
-### Troubleshooting
-
-| Error | Cause | Fix |
-|---|---|---|
-| `No such payment_intent` | Stale or wrong intent ID | Refresh and retry |
-| `Card declined` | Test card or actual decline | Use `4242...` test card |
-| Credits not added after payment | AJAX confirmation failed | Check error log; add Stripe webhook as fallback |
-| `Invalid API Key` | Wrong key pasted | Ensure no spaces; check test vs live mode |
-
----
-
 ## API Key Storage
 
 API keys can be stored in two ways:
@@ -325,16 +229,14 @@ Keys are stored in `wp_options` with the prefix `bcg_`. They are displayed as ma
 
 ### Option B — PHP Constants in wp-config.php
 
-Define constants before WordPress loads to use them instead of the database option:
+Define the constant before WordPress loads to use it instead of the database option:
 
 ```php
-define( 'BCG_OPENAI_API_KEY',    'sk-...' );
-define( 'BCG_GEMINI_API_KEY',    'AIza...' );
-define( 'BCG_BREVO_API_KEY',     'xkeysib-...' );
-define( 'BCG_STRIPE_PUB_KEY',    'pk_live_...' );
-define( 'BCG_STRIPE_SECRET_KEY', 'sk_live_...' );
+define( 'BCG_BREVO_API_KEY', 'xkeysib-...' );
 ```
 
-When a constant is defined, the corresponding settings field shows a "Key configured via wp-config.php" notice and the database option is ignored. All API consumers read the constant automatically.
+When the constant is defined, the Brevo API Key field shows a "Key configured via wp-config.php" notice and the database option is ignored.
 
 This approach is recommended for production environments where database-stored secrets are undesirable.
+
+OpenAI text and image generation have no key in this plugin at all. They are authenticated by the Red Frog AI Portal's sealed gateway key (`wp ats secret set gateway_key_email`), managed outside this plugin.

@@ -24,8 +24,8 @@ BCG_Admin (menus, enqueues)
       │       │
       │       ▼
       │   BCG_AI_Manager
-      │       ├── BCG_OpenAI ──────► OpenAI API (copy)
-      │       └── BCG_Gemini ──────► Gemini API (images)
+      │       ├── BCG_OpenAI ──────► Red Frog AI Portal ──► OpenAI (copy)
+      │       └── BCG_Images ──────► Red Frog AI Portal ──► OpenAI gpt-image-1 (images)
       │
       ├── Template Builder (page-section-builder.php)
       │       │
@@ -53,12 +53,6 @@ BCG_Admin (menus, enqueues)
       │       ▼
       │   BCG_Brevo ───────────────► Brevo API
       │
-      ├── Credits & Billing
-      │       │
-      │       ▼
-      │   BCG_Credits
-      │   BCG_Stripe ──────────────► Stripe API
-      │
       └── Stats Dashboard
               │
               ▼
@@ -82,9 +76,10 @@ BCG_Admin (menus, enqueues)
 | Class | File | Responsibility |
 |---|---|---|
 | `BCG_Admin` | `includes/admin/class-bcg-admin.php` | Register menus, enqueue scripts/styles, register all AJAX handlers |
-| `BCG_Settings` | `includes/admin/class-bcg-settings.php` | Settings page registration, save, API key resolution (constant vs option) |
-| `BCG_Credits` | `includes/admin/class-bcg-credits.php` | Credit balance reads/writes, admin bar widget, Stripe AJAX handlers |
+| `BCG_Settings` | `includes/admin/class-bcg-settings.php` | Settings page registration, save, Brevo key resolution (constant vs option) |
 | `BCG_Stats` | `includes/admin/class-bcg-stats.php` | Brevo stats page controller |
+
+The AI Credits admin bar widget and the plugin header's balance pill live directly in `BCG_Admin` (`add_credit_widget_to_admin_bar()`) and `partials/plugin-header.php`; both read the balance from `\RedFrogStudio\AtsAiPortal\Portal`.
 
 ### Campaign
 
@@ -137,16 +132,15 @@ The following section type slugs are registered. Types marked `has_ai: true` sup
 
 | Class | File | Responsibility |
 |---|---|---|
-| `BCG_AI_Manager` | `includes/ai/class-bcg-ai-manager.php` | Dispatch AI tasks, deduct credits, handle errors/refunds, test mode guard |
-| `BCG_OpenAI` | `includes/ai/class-bcg-openai.php` | OpenAI Chat Completions API client; all text generation methods |
-| `BCG_Gemini` | `includes/ai/class-bcg-gemini.php` | Google Gemini API client; image generation |
+| `BCG_AI_Manager` | `includes/ai/class-bcg-ai-manager.php` | Dispatches calls to `BCG_OpenAI` (text) or `BCG_Images` (images), records what the portal charged for each call, and stops a batch as soon as the portal reports the wallet is empty |
+| `BCG_OpenAI` | `includes/ai/class-bcg-openai.php` | OpenAI Chat Completions client (via the Red Frog AI Portal); all text generation methods |
+| `BCG_Images` | `includes/ai/class-bcg-images.php` | OpenAI `gpt-image-1` client (via the Red Frog AI Portal); hero and product image generation |
 
 ### Integrations
 
 | Class | File | Responsibility |
 |---|---|---|
 | `BCG_Brevo` | `includes/integrations/class-bcg-brevo.php` | Brevo REST API client |
-| `BCG_Stripe` | `includes/integrations/class-bcg-stripe.php` | Stripe PaymentIntents + webhook handling |
 
 ---
 
@@ -161,17 +155,15 @@ The following section type slugs are registered. Types marked `has_ai: true` sup
 | AI Trainer | AI Trainer | `admin/views/page-ai-trainer.php` | `bcg-ai-trainer` | Store and product context for AI prompts |
 | Template Editor | Template Editor | `admin/views/page-template-editor.php` | `bcg-template-editor` | Legacy flat HTML template editor |
 | Brevo Stats | Brevo Stats | `admin/views/page-stats.php` | `bcg-stats` | Campaign analytics from Brevo |
-| Credits & Billing | Credits & Billing | `admin/views/page-credits.php` | `bcg-credits` | Balance, top-up, transaction history |
-| Settings | Settings | `admin/views/page-settings.php` | `bcg-settings` | API keys, models, defaults — restricted to RFS admin |
+| Settings | Settings | `admin/views/page-settings.php` | `bcg-settings` | Brevo key, AI models, campaign defaults — restricted to RFS admin |
 | Help & Docs | Help & Docs | `admin/views/page-help.php` | `bcg-help` | Full in-admin documentation |
 
 ### Shared Partials
 
 | Partial | File | Description |
 |---|---|---|
-| Plugin Header | `admin/views/partials/plugin-header.php` | Brand header with version badge, credit balance, nav links. Included on every page. Also includes the What's New modal partial. |
+| Plugin Header | `admin/views/partials/plugin-header.php` | Brand header with version badge, the `.bcg-header-credits` AI Credits balance pill, nav links. Included on every page. Also includes the What's New modal partial. |
 | What's New Modal | `admin/views/partials/whats-new-modal.php` | Auto-shows on version change via localStorage. Re-openable via `#bcg-version-badge` click. |
-| Credit Widget | `admin/views/partials/credit-widget.php` | Inline credit balance display |
 | Template Preview | `admin/views/partials/template-preview.php` | Rendered email preview frame |
 | Product Card | `admin/views/partials/product-card.php` | Single product card for campaign editor |
 
@@ -230,7 +222,7 @@ Shown when the user clicks the AI Prompt toolbar button. Features:
 5. AJAX POST to `bcg_sb_generate_all` — PHP iterates sections; for each with `has_ai: true`, calls `BCG_Section_AI::generate()`
 6. `BCG_Section_AI` dispatches to the appropriate `BCG_OpenAI` method
 7. Full context stack injected: AI Trainer store context + AI Trainer product context + user prompt
-8. Credits deducted per generation call
+8. Each call is billed in pounds to the shared ATS AI wallet via the Red Frog AI Portal
 9. Updated sections JSON returned to JS
 10. Canvas re-renders all section settings panels with AI-generated values
 
@@ -283,9 +275,9 @@ Introduced in v1.5.34. The New Campaign page is split into five steps with a ste
 |---|---|
 | `bcg_campaigns` | Campaign metadata, template HTML, Brevo campaign ID, `builder_type`, `sections_json`, `section_template_id` |
 | `bcg_campaign_products` | Products per campaign with AI-generated and custom copy |
-| `bcg_credits` | Per-user credit balance |
-| `bcg_transactions` | Full audit trail of credit top-ups and usage |
 | `bcg_section_templates` | Named email templates from the Template Builder (sections JSON) |
+
+The local `bcg_credits` and `bcg_transactions` tables were dropped in the 1.6.0 upgrade (`BCG_Activator::maybe_upgrade()`). AI usage is now billed in pounds from the shared ATS AI wallet, tracked by the Red Frog AI Portal plugin, not by this plugin.
 
 All table names use `$wpdb->prefix` (typically `wp_bcg_*`).
 
@@ -349,14 +341,11 @@ All AJAX handlers must: verify nonce (`bcg_nonce`), check `manage_woocommerce` c
 | `bcg_sb_save_global_defaults` | `handle_sb_save_global_defaults` | Persist default font and primary colour |
 | `bcg_request_section` | `handle_request_section` | Send a "Request a Section" email to Red Frog Studio |
 
-### Settings & Credits
+### Settings
 
 | Action | Handler | Description |
 |---|---|---|
-| `bcg_test_api_key` | `handle_test_api_key` | Test any API connection |
-| `bcg_stripe_create_intent` | `handle_stripe_create_intent` | Create Stripe PaymentIntent |
-| `bcg_stripe_confirm` | `handle_stripe_confirm` | Confirm payment, add credits |
-| `bcg_get_credit_balance` | `handle_get_credit_balance` | Refresh credit balance widget |
+| `bcg_test_api_key` | `handle_test_api_key` | Test the Brevo API connection |
 
 ---
 
@@ -371,13 +360,10 @@ All AJAX handlers must: verify nonce (`bcg_nonce`), check `manage_woocommerce` c
 5. `BCG_Campaign::create_draft()` creates a campaign DB record
 6. `BCG_Product_Selector::get_products()` fetches WooCommerce products
 7. `BCG_AI_Manager::generate_campaign_copy()` is called
-   - Checks credit balance
-   - Deducts credits upfront
-   - Calls `BCG_OpenAI` for all copy tasks
-   - On error: refunds credits, returns `WP_Error`
+   - Calls `BCG_OpenAI` for all copy tasks, each request going through the Red Frog AI Portal
+   - If the portal reports the wallet is empty, the batch stops and returns `WP_Error`
 8. `BCG_AI_Manager::generate_campaign_images()` is called (if enabled)
-   - Deducts credits per image
-   - Calls `BCG_Gemini` for each product + main image
+   - Calls `BCG_Images` for each product + main image, each request going through the Red Frog AI Portal
    - Saves images to `uploads/bcg/{campaign_id}/`
 9. `BCG_Campaign::update()` saves all generated content
 10. JSON response with campaign ID returned to JS
@@ -427,10 +413,10 @@ Mailing lists are now also fetched and rendered server-side on the New Campaign 
 
 - All AJAX endpoints: nonce verification (`bcg_nonce`) + capability check (`manage_woocommerce`)
 - Settings page restricted to the Red Frog Studio admin email via `is_rfs_admin()` check
-- API keys: stored in `wp_options` or read from PHP constants; never exposed in HTML (masked input fields)
+- Brevo key: stored in `wp_options` or read from a PHP constant; never exposed in HTML (masked input field)
+- OpenAI access: no key is held by this plugin at all; requests are authenticated by the Red Frog AI Portal's sealed gateway key
 - All DB writes: `$wpdb->prepare()` with parameterised queries
 - Image uploads: stored in `uploads/bcg/`, validated MIME type
-- Stripe webhooks: signature verification via `Stripe\Webhook::constructEvent()`
 - No `eval()`, no raw SQL, no `$_GET`/`$_POST` used without sanitisation
 - Template settings JSON uses `wp_unslash()` only (not `sanitize_text_field()` which would corrupt JSON)
 
@@ -446,4 +432,3 @@ Mailing lists are now also fetched and rendered server-side on the New Campaign 
 | `admin/js/bcg-settings.js` | Global: custom dropdown init, What's New modal, settings page tabs, API key test |
 | `admin/js/bcg-regenerate.js` | AI regeneration handlers (shared between wizard and editor) |
 | `admin/js/bcg-dashboard.js` | Dashboard: schedule modal, campaign actions |
-| `admin/js/bcg-stripe.js` | Stripe Elements: PaymentIntent flow, credit balance update |

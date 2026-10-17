@@ -429,7 +429,7 @@ class BCG_Settings {
 	 */
 	public function render_ai_models_section_description(): void {
 		echo '<p>' . esc_html__(
-			'Select which AI models to use for text and image generation. Higher-quality models cost more credits per operation.',
+			'Select which AI models to use for text and image generation. Higher-quality models cost more per operation; usage is charged to the AI Credits wallet.',
 			'brevo-campaign-generator'
 		) . '</p>';
 	}
