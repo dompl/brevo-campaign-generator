@@ -39,7 +39,7 @@ foreach ( $iter as $file ) {
 	}
 	$scanned_ext[] = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
 	foreach ( file( $path ) as $n => $line ) {
-		if ( preg_match( '/Gemini|gemini|BCG_Credits|BCG_Stripe|bcg_credits|bcg_transactions|credits_used|new_balance|[Ss]tripe(?!d)|credit_pack|bcg_test_mode|insufficient_credits/', $line ) ) {
+		if ( preg_match( '/Gemini|gemini|GEMINI|BCG_Credits|BCG_Stripe|bcg_credits|bcg_transactions|credits_used|new_balance|[Ss]tripe(?!d)|STRIPE_|credit_pack|bcg_test_mode|insufficient_credits/', $line ) ) {
 			$leftovers[] = $rel . ':' . ( $n + 1 ) . ' ' . trim( $line );
 		}
 	}
