@@ -292,8 +292,6 @@ class BCG_Admin {
 		$bcg_data = array(
 			'ajax_url'         => admin_url( 'admin-ajax.php' ),
 			'nonce'            => wp_create_nonce( 'bcg_nonce' ),
-			'balance_gbp'      => \RedFrogStudio\AtsAiPortal\Portal::balance(),
-			'connected'        => \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ),
 			'openai_models'    => $settings_obj->get_openai_models(),
 			'openai_model'     => get_option( 'bcg_openai_model', 'gpt-4o' ),
 			'credits_url'      => \RedFrogStudio\AtsAiPortal\Portal::credits_url(),

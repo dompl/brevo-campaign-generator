@@ -1,5 +1,7 @@
 # CLAUDE.md — Brevo Campaign Generator for WooCommerce
 
+> **Status as of 1.6.0 (October 2026):** this file is the original v1.0.0 build specification and is kept for history only. It still describes Google Gemini image generation, Stripe credit packs and a local credit ledger. All of that was removed in 1.6.0. Every AI call now goes through the Red Frog AI portal (sibling plugin `ats-ai-portal`, feature `email`) and balances are managed on the Marketing → AI Credits page. For the current architecture read `docs/architecture.md` and `README.md`, and do not implement anything from this file that contradicts them.
+
 > **Instructions for Claude Code:** This file defines the full specification for building the **Brevo Campaign Generator for WooCommerce** plugin. Read this file completely before writing any code. Follow the architecture, naming conventions, and implementation notes precisely.
 
 ---

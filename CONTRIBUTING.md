@@ -61,8 +61,8 @@ All work branches off `develop`. PRs merge back into `develop`. Releases merge `
 ### Naming Conventions
 
 ```
-feature/gemini-image-retry
-fix/stripe-webhook-duplicate-credits
+feature/portal-image-retry
+fix/duplicate-webhook-event
 release/1.1.0
 ```
 
@@ -84,7 +84,7 @@ type(scope): short description
 
 **Examples:**
 ```
-feat(ai): add Gemini 2.0 Flash model support
+feat(ai): add gpt-4o-mini model support
 fix(credits): correct credit deduction on API timeout refund
 docs(readme): update installation steps
 chore(deps): bump openai client to 2.1.0

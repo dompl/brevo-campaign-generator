@@ -4,8 +4,8 @@
 - [x] Phase 1B — Settings & Options — COMPLETE
 - [x] Phase 2A — Brevo Client — COMPLETE
 - [x] Phase 2B — OpenAI Client — COMPLETE
-- [x] Phase 2C — Gemini Client — COMPLETE
-- [x] Phase 2D — Stripe Integration — COMPLETE
+- [x] Phase 2C — Image Generation Client — COMPLETE (replaced by the AI portal in 1.6.0)
+- [x] Phase 2D — Payment Integration — COMPLETE (removed in 1.6.0)
 - [x] Phase 3A — Campaign & Product Logic — COMPLETE
 - [x] Phase 3B — AI Manager & Template Engine — COMPLETE
 - [x] Phase 4A — Admin Bootstrap & Dashboard — COMPLETE

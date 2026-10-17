@@ -40,16 +40,12 @@ bcg_assert_same( Portal::credits_url(), $node->href, 'node links to the AI Credi
 $admin->enqueue_assets( 'toplevel_page_bcg-dashboard' );
 $data = wp_scripts()->get_data( 'bcg-admin-global', 'data' );
 bcg_assert( is_string( $data ) && '' !== $data, 'bcgData localised' );
-// wp_localize_script() stringifies every top-level scalar (see
-// WP_Scripts::localize() in wp-includes/class-wp-scripts.php, which runs
-// each scalar through (string) before wp_json_encode()), so these come
-// through the wire as quoted JSON strings, not a bare number/boolean.
-bcg_assert( false !== strpos( $data, '"balance_gbp":"12.5"' ), 'bcgData.balance_gbp = 12.5' );
-bcg_assert( false !== strpos( $data, '"connected":"1"' ), 'bcgData.connected true with a key present' );
 // WP_Scripts::localize() passes JSON_UNESCAPED_SLASHES, so the URL's
 // slashes come through bare, not backslash-escaped.
 bcg_assert( false !== strpos( $data, '"credits_url":"' . Portal::credits_url() . '"' ), 'bcgData.credits_url is the portal page' );
-foreach ( array( 'credit_balance', 'stripe_pub_key', 'gemini_models', 'gemini_model' ) as $gone ) {
+// balance_gbp/connected were dropped: the pound balance is rendered server-side in
+// plugin-header.php and neither field has a JS consumer (see M3, final fix round).
+foreach ( array( 'credit_balance', 'stripe_pub_key', 'gemini_models', 'gemini_model', 'balance_gbp', 'connected' ) as $gone ) {
 	bcg_assert( false === strpos( $data, '"' . $gone . '"' ), "bcgData.{$gone} removed" );
 }
 

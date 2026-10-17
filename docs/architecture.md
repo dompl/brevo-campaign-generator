@@ -277,7 +277,7 @@ Introduced in v1.5.34. The New Campaign page is split into five steps with a ste
 | `bcg_campaign_products` | Products per campaign with AI-generated and custom copy |
 | `bcg_section_templates` | Named email templates from the Template Builder (sections JSON) |
 
-The local `bcg_credits` and `bcg_transactions` tables were dropped in the 1.6.0 upgrade (`BCG_Activator::maybe_upgrade()`). AI usage is now billed in pounds from the shared ATS AI wallet, tracked by the Red Frog AI Portal plugin, not by this plugin.
+The local credit-ledger tables used for billing before 1.6.0 were dropped in the 1.6.0 upgrade (`BCG_Activator::maybe_upgrade()`). AI usage is now billed in pounds from the shared ATS AI wallet, tracked by the Red Frog AI Portal plugin, not by this plugin.
 
 All table names use `$wpdb->prefix` (typically `wp_bcg_*`).
 

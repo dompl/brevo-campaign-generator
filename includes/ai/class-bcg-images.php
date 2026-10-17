@@ -129,6 +129,10 @@ class BCG_Images {
 		}
 
 		$code = (int) wp_remote_retrieve_response_code( $response );
+
+		// This diagnostic deliberately does not retry and does not translate a 5xx into
+		// the generic ats_portal_unavailable code: an admin running Test Connection needs
+		// the specific ats_portal_http_<status> failure, not the batch-generation behaviour.
 		return 200 === $code ? true : \RedFrogStudio\AtsAiPortal\Portal::error( $code, wp_remote_retrieve_body( $response ) );
 	}
 

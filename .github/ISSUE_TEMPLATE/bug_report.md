@@ -50,10 +50,8 @@ Paste error here
 
 ## Which API(s) are involved?
 
-- [ ] OpenAI
-- [ ] Google Gemini
+- [ ] AI portal (OpenAI)
 - [ ] Brevo
-- [ ] Stripe
 - [ ] None / Not an API issue
 
 ## Additional Context

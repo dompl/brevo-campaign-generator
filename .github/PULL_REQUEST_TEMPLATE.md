@@ -27,7 +27,7 @@ Closes #
 
 - [ ] Manually tested in local WP environment
 - [ ] Tested with WooCommerce active
-- [ ] Tested with all API connections (OpenAI, Gemini, Brevo, Stripe test mode)
+- [ ] Tested with all API connections (AI portal, Brevo)
 - [ ] PHP linter passes (`composer run lint`)
 - [ ] JS linter passes (`npm run lint`)
 - [ ] No console errors in browser
