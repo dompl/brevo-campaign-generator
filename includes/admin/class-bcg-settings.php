@@ -911,23 +911,6 @@ class BCG_Settings {
 	}
 
 	/**
-	 * Sanitise a decimal number string.
-	 *
-	 * @since  1.0.0
-	 * @param  string $value The raw input value.
-	 * @return string Sanitised decimal string.
-	 */
-	public function sanitize_decimal( string $value ): string {
-		$value = (float) $value;
-
-		if ( $value <= 0 ) {
-			return '0.05';
-		}
-
-		return number_format( $value, 4, '.', '' );
-	}
-
-	/**
 	 * Sanitise products per campaign value.
 	 *
 	 * @since  1.0.0

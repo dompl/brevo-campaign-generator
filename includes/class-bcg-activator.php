@@ -24,6 +24,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 class BCG_Activator {
 
 	/**
+	 * Options retired in 1.6.0 (AI now runs through the Red Frog portal).
+	 *
+	 * @since 1.6.0
+	 * @var   string[]
+	 */
+	public const RETIRED_OPTIONS = array(
+		'bcg_openai_api_key',
+		'bcg_gemini_api_key',
+		'bcg_gemini_model',
+		'bcg_stripe_publishable_key',
+		'bcg_stripe_secret_key',
+		'bcg_stripe_currency',
+		'bcg_stripe_credit_packs',
+		'bcg_credit_cost_openai_gpt4o',
+		'bcg_credit_cost_openai_gpt4o_mini',
+		'bcg_credit_cost_gemini_pro',
+		'bcg_credit_cost_gemini_flash',
+		'bcg_credit_value',
+		'bcg_test_mode',
+	);
+
+	/**
 	 * Run activation routines.
 	 *
 	 * Creates custom database tables and stores default option values.
@@ -50,12 +72,11 @@ class BCG_Activator {
 	 * Create all plugin database tables using dbDelta.
 	 *
 	 * Uses the WordPress dbDelta() function which handles both initial
-	 * creation and future schema migrations. The four tables created are:
+	 * creation and future schema migrations. The tables created are:
 	 *
 	 * - bcg_campaigns         — stores campaign data
 	 * - bcg_campaign_products — products associated with a campaign
-	 * - bcg_credits           — per-user credit balances
-	 * - bcg_transactions      — transaction/audit log
+	 * - bcg_section_templates — reusable section builder templates
 	 *
 	 * @since  1.0.0
 	 * @return void
@@ -114,38 +135,6 @@ class BCG_Activator {
 
 		dbDelta( $sql_campaign_products );
 
-		// ── bcg_credits ─────────────────────────────────────────────
-		$sql_credits = "CREATE TABLE {$prefix}bcg_credits (
-			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-			user_id BIGINT UNSIGNED NOT NULL,
-			balance DECIMAL(10,4) DEFAULT 0.0000,
-			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY  (id),
-			UNIQUE KEY idx_user (user_id)
-		) $charset_collate;";
-
-		dbDelta( $sql_credits );
-
-		// ── bcg_transactions ────────────────────────────────────────
-		$sql_transactions = "CREATE TABLE {$prefix}bcg_transactions (
-			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-			user_id BIGINT UNSIGNED NOT NULL,
-			type ENUM('topup','usage','refund') NOT NULL,
-			amount DECIMAL(10,4) NOT NULL,
-			balance_after DECIMAL(10,4) NOT NULL,
-			description VARCHAR(255),
-			stripe_payment_intent VARCHAR(255) NULL,
-			ai_service ENUM('openai','gemini-pro','gemini-flash') NULL,
-			ai_task VARCHAR(100) NULL,
-			tokens_used INT NULL,
-			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			PRIMARY KEY  (id),
-			KEY idx_user (user_id),
-			KEY idx_type (type)
-		) $charset_collate;";
-
-		dbDelta( $sql_transactions );
-
 		// ── bcg_section_templates ────────────────────────────────────
 		$sql_section_templates = "CREATE TABLE {$prefix}bcg_section_templates (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -172,55 +161,16 @@ class BCG_Activator {
 	public static function set_default_options(): void {
 
 		// ── API Keys ────────────────────────────────────────────────
-		add_option( 'bcg_openai_api_key', '' );
-		add_option( 'bcg_gemini_api_key', '' );
 		add_option( 'bcg_brevo_api_key', '' );
-		add_option( 'bcg_stripe_publishable_key', '' );
-		add_option( 'bcg_stripe_secret_key', '' );
 
 		// ── AI Models ───────────────────────────────────────────────
 		add_option( 'bcg_openai_model', 'gpt-4o' );
-		add_option( 'bcg_gemini_model', 'gemini-1.5-flash' );
-
-		// ── Credit costs per AI operation ───────────────────────────
-		add_option( 'bcg_credit_cost_openai_gpt4o', 5 );
-		add_option( 'bcg_credit_cost_openai_gpt4o_mini', 1 );
-		add_option( 'bcg_credit_cost_gemini_pro', 10 );
-		add_option( 'bcg_credit_cost_gemini_flash', 3 );
-
-		// ── Credit value ratio ──────────────────────────────────────
-		// 1 credit = GBP value.
-		add_option( 'bcg_credit_value', '0.05' );
 
 		// ── Brevo settings ──────────────────────────────────────────
 		add_option( 'bcg_brevo_default_list_id', '' );
 		add_option( 'bcg_brevo_sender_name', get_bloginfo( 'name' ) );
 		add_option( 'bcg_brevo_sender_email', get_bloginfo( 'admin_email' ) );
 		add_option( 'bcg_brevo_campaign_prefix', '[WC]' );
-
-		// ── Stripe settings ─────────────────────────────────────────
-		add_option( 'bcg_stripe_currency', 'GBP' );
-
-		// Credit packs: each pack is an array with credits and price.
-		add_option(
-			'bcg_stripe_credit_packs',
-			wp_json_encode(
-				array(
-					array(
-						'credits' => 100,
-						'price'   => 5.00,
-					),
-					array(
-						'credits' => 300,
-						'price'   => 12.00,
-					),
-					array(
-						'credits' => 1000,
-						'price'   => 35.00,
-					),
-				)
-			)
-		);
 
 		// ── Default campaign settings ───────────────────────────────
 		add_option( 'bcg_default_products_per_campaign', 3 );
@@ -363,6 +313,20 @@ class BCG_Activator {
 			) {$charset_collate};";
 
 			dbDelta( $sql_section_templates );
+		}
+
+		// 1.6.0: billing moved to the Red Frog portal; drop the local ledger.
+		if ( version_compare( $installed_version, '1.6.0', '<' ) ) {
+			global $wpdb;
+
+			foreach ( self::RETIRED_OPTIONS as $option ) {
+				delete_option( $option );
+			}
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+			$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}bcg_credits" );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange
+			$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}bcg_transactions" );
 		}
 	}
 

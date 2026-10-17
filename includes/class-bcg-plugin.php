@@ -47,13 +47,6 @@ class BCG_Plugin {
 	private ?object $settings = null;
 
 	/**
-	 * Credits handler instance.
-	 *
-	 * @var BCG_Credits|null
-	 */
-	private ?object $credits = null;
-
-	/**
 	 * Stats handler instance.
 	 *
 	 * @var BCG_Stats|null
@@ -109,14 +102,11 @@ class BCG_Plugin {
 
 		// Database table classes.
 		require_once $includes . 'db/class-bcg-campaigns-table.php';
-		require_once $includes . 'db/class-bcg-credits-table.php';
-		require_once $includes . 'db/class-bcg-transactions-table.php';
 		require_once $includes . 'db/class-bcg-section-templates-table.php';
 
 		// Admin classes.
 		require_once $includes . 'admin/class-bcg-admin.php';
 		require_once $includes . 'admin/class-bcg-settings.php';
-		require_once $includes . 'admin/class-bcg-credits.php';
 		require_once $includes . 'admin/class-bcg-stats.php';
 
 		// Campaign classes.
@@ -137,7 +127,6 @@ class BCG_Plugin {
 
 		// Integration classes.
 		require_once $includes . 'integrations/class-bcg-brevo.php';
-		require_once $includes . 'integrations/class-bcg-stripe.php';
 	}
 
 	/**
@@ -186,7 +175,6 @@ class BCG_Plugin {
 		if ( is_admin() ) {
 			$this->admin    = new BCG_Admin();
 			$this->settings = new BCG_Settings();
-			$this->credits  = new BCG_Credits();
 			$this->stats    = new BCG_Stats();
 		}
 
@@ -234,16 +222,6 @@ class BCG_Plugin {
 	}
 
 	/**
-	 * Get the credits handler instance.
-	 *
-	 * @since  1.0.0
-	 * @return BCG_Credits|null
-	 */
-	public function get_credits(): ?object {
-		return $this->credits;
-	}
-
-	/**
 	 * Get the stats handler instance.
 	 *
 	 * @since  1.0.0
@@ -279,11 +257,10 @@ class BCG_Plugin {
  * Get an API key value, checking for a wp-config.php constant override first.
  *
  * Allows site owners to define API keys in wp-config.php for security.
- * Constant names: BCG_OPENAI_API_KEY, BCG_GEMINI_API_KEY, BCG_BREVO_API_KEY,
- *                 BCG_STRIPE_PUB_KEY, BCG_STRIPE_SECRET_KEY.
+ * Constant names: BCG_BREVO_API_KEY.
  *
  * @since  1.5.33
- * @param  string $option_name The option name (e.g. 'bcg_openai_api_key').
+ * @param  string $option_name The option name (e.g. 'bcg_brevo_api_key').
  * @return string The API key value.
  */
 if ( ! function_exists( 'bcg_get_api_key' ) ) {
@@ -291,11 +268,7 @@ if ( ! function_exists( 'bcg_get_api_key' ) ) {
 		static $constant_map = null;
 		if ( null === $constant_map ) {
 			$constant_map = array(
-				'bcg_openai_api_key'         => 'BCG_OPENAI_API_KEY',
-				'bcg_gemini_api_key'         => 'BCG_GEMINI_API_KEY',
-				'bcg_brevo_api_key'          => 'BCG_BREVO_API_KEY',
-				'bcg_stripe_publishable_key' => 'BCG_STRIPE_PUB_KEY',
-				'bcg_stripe_secret_key'      => 'BCG_STRIPE_SECRET_KEY',
+				'bcg_brevo_api_key' => 'BCG_BREVO_API_KEY',
 			);
 		}
 		$constant = $constant_map[ $option_name ] ?? null;
