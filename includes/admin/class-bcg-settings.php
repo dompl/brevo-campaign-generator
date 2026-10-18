@@ -1221,7 +1221,7 @@ class BCG_Settings {
 	}
 
 	/**
-	 * Approximate cost per task in pounds, after the portal's ×10 email markup.
+	 * Approximate cost per task in pounds, as charged by the gateway.
 	 *
 	 * @since  1.0.0
 	 * @return array Pricing reference rows.

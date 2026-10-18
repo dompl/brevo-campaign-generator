@@ -100,7 +100,7 @@ function bcg_render_pricing_table( BCG_Settings $settings ): void {
 	<div class="bcg-pricing-reference">
 		<h3><?php esc_html_e( 'Approximate Cost Reference', 'brevo-campaign-generator' ); ?></h3>
 		<p class="description">
-			<?php esc_html_e( 'Approximate charges to the shared AI wallet, including the Red Frog markup. Actual charges show on the AI Credits page.', 'brevo-campaign-generator' ); ?>
+			<?php esc_html_e( 'Approximate charges to the shared AI wallet. Actual charges show on the AI Credits page.', 'brevo-campaign-generator' ); ?>
 		</p>
 		<table class="widefat bcg-pricing-table">
 			<thead>
