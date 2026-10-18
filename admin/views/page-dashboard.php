@@ -89,7 +89,7 @@ $status_badge_classes = array(
 	<!-- ─── Page Header ────────────────────────────────────────────── -->
 
 	<div class="bcg-dashboard-header bcg-flex bcg-items-center bcg-justify-between bcg-mb-20">
-		<h1><?php esc_html_e( 'Brevo Campaigns', 'brevo-campaign-generator' ); ?></h1>
+		<h1><?php esc_html_e( 'AI Brevo', 'brevo-campaign-generator' ); ?></h1>
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-new-campaign' ) ); ?>" class="bcg-btn-primary">
 			<span class="material-icons-outlined" aria-hidden="true">add</span>
 			<?php esc_html_e( 'New Campaign', 'brevo-campaign-generator' ); ?>

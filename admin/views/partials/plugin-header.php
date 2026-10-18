@@ -24,7 +24,7 @@ $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 		</a>
 		<div class="bcg-brand-divider"></div>
 		<div class="bcg-brand-text">
-			<span class="bcg-brand-plugin-name">Brevo Campaign Generator</span>
+			<span class="bcg-brand-plugin-name">AI Brevo</span>
 			<span class="bcg-brand-tagline">for <strong><?php echo esc_html( get_bloginfo( 'name' ) ); ?></strong></span>
 		</div>
 		<button type="button" class="bcg-version-badge" id="bcg-version-badge" title="<?php esc_attr_e( "Click to see what's new", 'brevo-campaign-generator' ); ?>">

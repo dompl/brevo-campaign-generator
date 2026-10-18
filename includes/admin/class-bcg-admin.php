@@ -132,8 +132,8 @@ class BCG_Admin {
 	public function register_menus(): void {
 		// Top-level menu.
 		add_menu_page(
-			__( 'Brevo Campaigns', 'brevo-campaign-generator' ),
-			__( 'Brevo Campaigns', 'brevo-campaign-generator' ),
+			__( 'AI Brevo', 'brevo-campaign-generator' ),
+			__( 'AI Brevo', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'render_dashboard_page' ),
@@ -2447,7 +2447,7 @@ class BCG_Admin {
 		if ( empty( $sender_name ) ) {
 			return new \WP_Error(
 				'bcg_missing_sender_name',
-				__( 'Sender name is not configured. Go to Brevo Campaigns > Settings > Brevo tab and select a verified sender.', 'brevo-campaign-generator' )
+				__( 'Sender name is not configured. Go to AI Brevo > Settings > Brevo tab and select a verified sender.', 'brevo-campaign-generator' )
 			);
 		}
 
