@@ -36,9 +36,9 @@ $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
 			<span class="bcg-header-credits-label"><?php echo null === $portal_balance ? esc_html__( 'AI not connected', 'brevo-campaign-generator' ) : '£' . esc_html( number_format( $portal_balance, 2 ) ) . ' ' . esc_html__( 'AI credit', 'brevo-campaign-generator' ); ?></span>
 		</a>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-dashboard' ) ); ?>" class="bcg-header-nav-link <?php echo ( isset( $_GET['page'] ) && $_GET['page'] === 'bcg-dashboard' ) ? 'is-active' : ''; // phpcs:ignore ?>">Dashboard</a>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-new-campaign' ) ); ?>" class="bcg-header-nav-link <?php echo ( isset( $_GET['page'] ) && $_GET['page'] === 'bcg-new-campaign' ) ? 'is-active' : ''; // phpcs:ignore ?>">New Campaign</a>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-settings' ) ); ?>" class="bcg-header-nav-link <?php echo ( isset( $_GET['page'] ) && $_GET['page'] === 'bcg-settings' ) ? 'is-active' : ''; // phpcs:ignore ?>">Settings</a>
+		<?php foreach ( BCG_Admin::nav_links() as $nav_link ) : ?>
+			<a href="<?php echo esc_url( $nav_link['url'] ); ?>" class="bcg-header-nav-link<?php echo $nav_link['active'] ? ' is-active' : ''; ?>"><?php echo esc_html( $nav_link['label'] ); ?></a>
+		<?php endforeach; ?>
 	</div>
 </div>
 <?php require_once BCG_PLUGIN_DIR . 'admin/views/partials/whats-new-modal.php'; ?>

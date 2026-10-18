@@ -48,7 +48,8 @@ class BCG_Admin {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'register_menus' ) );
+		add_action( 'admin_menu', array( $this, 'register_menus' ), 12 );
+		add_filter( 'parent_file', array( $this, 'parent_file' ), 20 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'admin_body_class', array( $this, 'add_bcg_body_class' ) );
 
@@ -130,20 +131,35 @@ class BCG_Admin {
 	 * @return void
 	 */
 	public function register_menus(): void {
-		// Top-level menu.
-		add_menu_page(
-			__( 'AI Brevo', 'brevo-campaign-generator' ),
-			__( 'AI Brevo', 'brevo-campaign-generator' ),
-			self::CAPABILITY,
-			self::MENU_SLUG,
-			array( $this, 'render_dashboard_page' ),
-			'dashicons-email-alt2',
-			58
-		);
+		$nested = self::portal_parent_exists();
+		$parent = $nested ? '' : self::MENU_SLUG;
+
+		if ( $nested ) {
+			// One "AI Brevo" entry under the shared "ATS AI" menu; the other pages are hidden and reached via the header nav.
+			add_submenu_page(
+				self::PORTAL_PARENT,
+				__( 'AI Brevo', 'brevo-campaign-generator' ),
+				__( 'AI Brevo', 'brevo-campaign-generator' ),
+				self::CAPABILITY,
+				self::MENU_SLUG,
+				array( $this, 'render_dashboard_page' )
+			);
+		} else {
+			// Top-level menu (ats-ai-portal inactive).
+			add_menu_page(
+				__( 'AI Brevo', 'brevo-campaign-generator' ),
+				__( 'AI Brevo', 'brevo-campaign-generator' ),
+				self::CAPABILITY,
+				self::MENU_SLUG,
+				array( $this, 'render_dashboard_page' ),
+				'dashicons-email-alt2',
+				58
+			);
+		}
 
 		// Dashboard (replaces the auto-generated top-level duplicate).
-		add_submenu_page(
-			self::MENU_SLUG,
+		$nested || add_submenu_page(
+			$parent,
 			__( 'Dashboard', 'brevo-campaign-generator' ),
 			__( 'Dashboard', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -153,7 +169,7 @@ class BCG_Admin {
 
 		// New Campaign.
 		add_submenu_page(
-			self::MENU_SLUG,
+			$parent,
 			__( 'New Campaign', 'brevo-campaign-generator' ),
 			__( 'New Campaign', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -163,7 +179,7 @@ class BCG_Admin {
 
 		// Template Editor.
 		add_submenu_page(
-			self::MENU_SLUG,
+			$parent,
 			__( 'Template Editor', 'brevo-campaign-generator' ),
 			__( 'Template Editor', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -173,7 +189,7 @@ class BCG_Admin {
 
 		// Brevo Stats.
 		add_submenu_page(
-			self::MENU_SLUG,
+			$parent,
 			__( 'Brevo Stats', 'brevo-campaign-generator' ),
 			__( 'Brevo Stats', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -195,7 +211,7 @@ class BCG_Admin {
 
 		// Template Builder.
 		$sb_hook = add_submenu_page(
-			self::MENU_SLUG,
+			$parent,
 			__( 'Template Builder', 'brevo-campaign-generator' ),
 			__( 'Template Builder', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -206,7 +222,7 @@ class BCG_Admin {
 
 		// AI Trainer.
 		add_submenu_page(
-			self::MENU_SLUG,
+			$parent,
 			__( 'AI Trainer', 'brevo-campaign-generator' ),
 			__( 'AI Trainer', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -216,7 +232,7 @@ class BCG_Admin {
 
 		// Help & Documentation.
 		add_submenu_page(
-			self::MENU_SLUG,
+			$parent,
 			__( 'Help & Docs', 'brevo-campaign-generator' ),
 			__( 'Help & Docs', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
@@ -226,13 +242,81 @@ class BCG_Admin {
 
 		// Edit Campaign (hidden — not shown in the nav menu).
 		add_submenu_page(
-			null,
+			'',
 			__( 'Edit Campaign', 'brevo-campaign-generator' ),
 			__( 'Edit Campaign', 'brevo-campaign-generator' ),
 			self::CAPABILITY,
 			'bcg-edit-campaign',
 			array( $this, 'render_edit_campaign_page' )
 		);
+	}
+
+	/** Parent menu slug of the shared "ATS AI" menu registered by ats-ai-portal. */
+	public const PORTAL_PARENT = 'ats-ai-credits';
+
+	/** Pages shown in the header navigation: slug => label (Settings only for Red Frog admins). */
+	public const NAV_PAGES = array(
+		'bcg-dashboard'        => 'Dashboard',
+		'bcg-new-campaign'     => 'New Campaign',
+		'bcg-template-editor'  => 'Template Editor',
+		'bcg-template-builder' => 'Template Builder',
+		'bcg-ai-trainer'       => 'AI Trainer',
+		'bcg-stats'            => 'Brevo Stats',
+		'bcg-settings'         => 'Settings',
+		'bcg-help'             => 'Help & Docs',
+	);
+
+	/** Whether the ats-ai-portal "ATS AI" parent menu exists (it registers at admin_menu priority 10, we run at 12). */
+	public static function portal_parent_exists(): bool {
+		return isset( $GLOBALS['admin_page_hooks'][ self::PORTAL_PARENT ] );
+	}
+
+	/** Header navigation links for the current user: slug => [label, url, active]. */
+	public static function nav_links(): array {
+		$current = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$links   = array();
+		foreach ( self::NAV_PAGES as $slug => $label ) {
+			if ( 'bcg-settings' === $slug && ! self::current_user_is_rfs_admin() ) {
+				continue;
+			}
+			$links[ $slug ] = array(
+				'label'  => __( $label, 'brevo-campaign-generator' ), // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+				'url'    => admin_url( 'admin.php?page=' . $slug ),
+				'active' => $current === $slug || ( 'bcg-dashboard' === $slug && 'bcg-edit-campaign' === $current ),
+			);
+		}
+		return $links;
+	}
+
+	/** Keep the "ATS AI" menu open and "AI Brevo" highlighted on the hidden pages. */
+	/**
+	 * Remove this plugin's pages from the hidden ('' parent) submenu list.
+	 *
+	 * wp-admin/menu-header.php calls get_admin_page_parent() right after the
+	 * `parent_file` filter; for a page registered under the hidden parent that
+	 * call resets $parent_file to '' and the ATS AI menu collapses. The hidden
+	 * entries are never rendered, so dropping them at this point is safe.
+	 *
+	 * @return void
+	 */
+	private static function drop_hidden_entries(): void {
+		if ( empty( $GLOBALS['submenu'][''] ) ) {
+			return;
+		}
+		$GLOBALS['submenu'][''] = array_values( array_filter(
+			$GLOBALS['submenu'][''],
+			static fn( $item ) => 0 !== strpos( (string) ( $item[2] ?? '' ), 'bcg-' )
+		) );
+	}
+
+	public function parent_file( string $parent ): string {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( $screen && self::portal_parent_exists() && $this->is_bcg_page( (string) $screen->id ) ) {
+			$GLOBALS['submenu_file'] = self::MENU_SLUG;
+			self::drop_hidden_entries();
+			return self::PORTAL_PARENT;
+		}
+		return $parent;
 	}
 
 	/**
@@ -320,7 +404,7 @@ class BCG_Admin {
 		// ── Per-page scripts ───────────────────────────────────────────
 
 		// Dashboard page JS.
-		if ( 'toplevel_page_bcg-dashboard' === $hook_suffix ) {
+		if ( 'toplevel_page_bcg-dashboard' === $hook_suffix || str_ends_with( $hook_suffix, '_page_bcg-dashboard' ) ) {
 			wp_enqueue_script(
 				'bcg-dashboard',
 				BCG_PLUGIN_URL . 'admin/js/bcg-dashboard.js',
@@ -595,26 +679,26 @@ class BCG_Admin {
 	 * @return bool
 	 */
 	private function is_rfs_admin(): bool {
+		return self::current_user_is_rfs_admin();
+	}
+
+	/** Whether the current user is the Red Frog Studio admin (sees the Settings page). */
+	public static function current_user_is_rfs_admin(): bool {
 		$user = wp_get_current_user();
 		return $user instanceof \WP_User && 'info@redfrogstudio.co.uk' === $user->user_email;
 	}
 
 	private function is_bcg_page( string $hook_suffix ): bool {
-		$bcg_pages = array(
-			'toplevel_page_bcg-dashboard',
-			'brevo-campaigns_page_bcg-new-campaign',
-			'brevo-campaigns_page_bcg-template-editor',
-			'brevo-campaigns_page_bcg-template-builder',
-			'brevo-campaigns_page_bcg-stats',
-			'brevo-campaigns_page_bcg-settings',
-			'brevo-campaigns_page_bcg-edit-campaign',
-			'admin_page_bcg-edit-campaign',
-			'brevo-campaigns_page_bcg-ai-trainer',
-			'brevo-campaigns_page_bcg-section-builder',
-			'brevo-campaigns_page_bcg-help',
-		);
-
-		return in_array( $hook_suffix, $bcg_pages, true );
+		if ( 'toplevel_page_' . self::MENU_SLUG === $hook_suffix ) {
+			return true;
+		}
+		$slugs = array_merge( array_keys( self::NAV_PAGES ), array( 'bcg-edit-campaign', 'bcg-section-builder' ) );
+		foreach ( $slugs as $slug ) {
+			if ( str_ends_with( $hook_suffix, '_page_' . $slug ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
