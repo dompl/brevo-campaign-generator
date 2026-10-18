@@ -62,9 +62,6 @@ $total_pages = $campaigns_data['total_pages'];
 // Get status counts for filter tabs.
 $status_counts = $campaign_handler->get_status_counts();
 
-// Shared AI wallet balance (pounds) from the Red Frog portal.
-$ai_balance = \RedFrogStudio\AtsAiPortal\Portal::has_key( 'email' ) ? \RedFrogStudio\AtsAiPortal\Portal::balance() : null;
-
 // Base URL for filter/pagination links.
 $base_url = admin_url( 'admin.php?page=bcg-dashboard' );
 
@@ -136,11 +133,6 @@ $status_badge_classes = array(
 					);
 					?>
 				</span>
-			</div>
-			<div class="bcg-perf-cell">
-				<span class="bcg-perf-label"><?php esc_html_e( 'AI credit remaining', 'brevo-campaign-generator' ); ?></span>
-				<span class="bcg-perf-value"><?php echo null === $ai_balance ? esc_html__( 'n/a', 'brevo-campaign-generator' ) : '£' . esc_html( number_format( $ai_balance, 2 ) ); ?></span>
-				<span class="bcg-perf-note"><a href="<?php echo esc_url( \RedFrogStudio\AtsAiPortal\Portal::credits_url() ); ?>"><?php esc_html_e( 'Shared across all AI tools. Top up', 'brevo-campaign-generator' ); ?></a></span>
 			</div>
 		</div>
 

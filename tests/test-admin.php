@@ -23,18 +23,14 @@ bcg_mock_http( array(
 	bcg_response( 200, array( 'balance' => 12.5, 'activity' => array(), 'topups' => array() ) ),
 ) );
 
-require_once ABSPATH . 'wp-includes/class-wp-admin-bar.php';
 $admin = new BCG_Admin();
 
-// 1. Admin bar node shows the pound balance and links to the portal credits page.
-$bar = new WP_Admin_Bar();
-$bar->initialize();
-$admin->add_credit_widget_to_admin_bar( $bar );
-$node = $bar->get_node( 'bcg-credits' );
-bcg_assert( null !== $node, 'admin bar node bcg-credits exists' );
-bcg_assert( false !== strpos( $node->title, 'AI credit' ), 'node title mentions AI credit' );
-bcg_assert( false !== strpos( $node->title, '£12.50' ), 'node title shows £12.50' );
-bcg_assert_same( Portal::credits_url(), $node->href, 'node links to the AI Credits page' );
+// 1. The admin-bar balance now belongs to ats-ai-portal (one balance, one top-up place).
+bcg_assert( ! method_exists( $admin, 'add_credit_widget_to_admin_bar' ), 'add_credit_widget_to_admin_bar() removed' );
+$header = file_get_contents( BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php' );
+bcg_assert( false === strpos( $header, 'ats_ai_portal_credits_bar' ), 'header no longer prints the second credits bar' );
+$dash = file_get_contents( BCG_PLUGIN_DIR . 'admin/views/page-dashboard.php' );
+bcg_assert( false === strpos( $dash, 'AI credit remaining' ), 'dashboard no longer repeats the balance' );
 
 // 2. bcgData is pound based.
 $admin->enqueue_assets( 'toplevel_page_bcg-dashboard' );
@@ -50,7 +46,7 @@ foreach ( array( 'credit_balance', 'stripe_pub_key', 'gemini_models', 'gemini_mo
 }
 
 // 3. Removed members.
-foreach ( array( 'render_credits_page', 'get_current_user_credit_balance' ) as $m ) {
+foreach ( array( 'render_credits_page', 'get_current_user_credit_balance', 'add_credit_widget_to_admin_bar' ) as $m ) {
 	bcg_assert( ! method_exists( $admin, $m ), "{$m}() removed" );
 }
 $src = file_get_contents( BCG_PLUGIN_DIR . 'includes/admin/class-bcg-admin.php' );
@@ -58,7 +54,7 @@ bcg_assert( false === strpos( $src, "bcg-credits'" ) || false === strpos( $src, 
 bcg_assert( false === strpos( $src, 'credits_used' ), 'no credits_used payloads' );
 bcg_assert( false === strpos( $src, 'new_balance' ), 'no new_balance payloads' );
 bcg_assert( false === strpos( $src, 'js.stripe.com' ), 'Stripe.js no longer enqueued' );
-bcg_assert( false !== strpos( $src, "do_action( 'ats_ai_portal_credits_bar' )" ) || false !== strpos( file_get_contents( BCG_PLUGIN_DIR . 'admin/views/partials/plugin-header.php' ), "do_action( 'ats_ai_portal_credits_bar' )" ), 'credits bar action fired on BCG pages' );
+bcg_assert( false === strpos( $src, 'ats_ai_portal_credits_bar' ), 'admin class does not fire the old credits bar (one balance: the header pill)' );
 
 // 4. handle_add_product() stops on the first out-of-credit AI result: no
 // second AI call, no error swallowed, no product row inserted (Finding 1,

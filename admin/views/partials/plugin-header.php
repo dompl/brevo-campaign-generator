@@ -41,5 +41,4 @@ $logo_url       = BCG_PLUGIN_URL . 'admin/images/rfs-logo.png';
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=bcg-settings' ) ); ?>" class="bcg-header-nav-link <?php echo ( isset( $_GET['page'] ) && $_GET['page'] === 'bcg-settings' ) ? 'is-active' : ''; // phpcs:ignore ?>">Settings</a>
 	</div>
 </div>
-<?php do_action( 'ats_ai_portal_credits_bar' ); ?>
 <?php require_once BCG_PLUGIN_DIR . 'admin/views/partials/whats-new-modal.php'; ?>

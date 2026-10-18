@@ -37,9 +37,9 @@ BCG_Activator::maybe_upgrade();
 bcg_assert( true, 'second maybe_upgrade() run completes' );
 
 update_option( 'bcg_version', BCG_VERSION );
-bcg_assert_same( '1.6.0', BCG_VERSION, 'BCG_VERSION is 1.6.0' );
+bcg_assert_same( '1.6.1', BCG_VERSION, 'BCG_VERSION is 1.6.1' );
 $header = file_get_contents( BCG_PLUGIN_DIR . 'brevo-campaign-generator.php' );
-bcg_assert( false !== strpos( $header, 'Version: 1.6.0' ), 'plugin header says 1.6.0' );
+bcg_assert( false !== strpos( $header, 'Version: 1.6.1' ), 'plugin header says 1.6.1' );
 
 // Restore whatever bcg_version was before this test ran, so the real site state is untouched.
 if ( false === $previous ) {

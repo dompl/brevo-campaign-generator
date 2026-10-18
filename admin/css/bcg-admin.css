@@ -3493,6 +3493,11 @@ body.bcg-admin-page .bcg-wrap input[type="date"]::-webkit-calendar-picker-indica
 	border-bottom: 1px solid var(--bcg-border);
 }
 
+/* Dashboard overview: Campaigns, Sent, Scheduled. The AI balance lives in the header pill only. */
+.bcg-dash-overview .bcg-perf-summary {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .bcg-perf-cell {
 	display: flex;
 	flex-direction: column;
@@ -3711,6 +3716,7 @@ body.bcg-admin-page .bcg-perf-title {
 
 @media (max-width: 960px) {
 	.bcg-perf-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.bcg-dash-overview .bcg-perf-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.bcg-perf-cell:nth-child(3) { border-left: 0; }
 	.bcg-perf-cell:nth-child(n+3) { border-top: 1px solid var(--bcg-border); }
 }

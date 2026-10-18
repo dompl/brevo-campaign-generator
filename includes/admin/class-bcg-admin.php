@@ -51,7 +51,6 @@ class BCG_Admin {
 		add_action( 'admin_menu', array( $this, 'register_menus' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'admin_body_class', array( $this, 'add_bcg_body_class' ) );
-		add_action( 'admin_bar_menu', array( $this, 'add_credit_widget_to_admin_bar' ), 100 );
 
 		$this->register_ajax_handlers();
 	}
@@ -2500,41 +2499,6 @@ class BCG_Admin {
 	}
 
 	// ─── Credit Widget ─────────────────────────────────────────────────
-
-	/**
-	 * Add the shared AI wallet balance widget to the WordPress admin bar.
-	 *
-	 * @since  1.0.0
-	 * @param  \WP_Admin_Bar $admin_bar The admin bar instance.
-	 * @return void
-	 */
-	public function add_credit_widget_to_admin_bar( \WP_Admin_Bar $admin_bar ): void {
-		if ( ! current_user_can( self::CAPABILITY ) ) {
-			return;
-		}
-
-		$portal  = \RedFrogStudio\AtsAiPortal\Portal::class;
-		$balance = $portal::has_key( 'email' ) ? $portal::balance() : null;
-		$label   = null === $balance
-			? esc_html__( 'Not connected', 'brevo-campaign-generator' )
-			: '£' . esc_html( number_format( $balance, 2 ) );
-
-		$admin_bar->add_node(
-			array(
-				'id'    => 'bcg-credits',
-				'title' => sprintf(
-					'<span class="bcg-credit-widget"><span class="bcg-credit-icon">&#x1F4B3;</span> %s: <strong>%s</strong> | <span class="bcg-credit-topup">%s</span></span>',
-					esc_html__( 'AI credit', 'brevo-campaign-generator' ),
-					$label,
-					esc_html__( 'Top up', 'brevo-campaign-generator' )
-				),
-				'href'  => $portal::credits_url(),
-				'meta'  => array(
-					'class' => 'bcg-admin-bar-credits',
-				),
-			)
-		);
-	}
 
 	/**
 	 * Render the Dashboard page.

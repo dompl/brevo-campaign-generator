@@ -79,7 +79,7 @@ BCG_Admin (menus, enqueues)
 | `BCG_Settings` | `includes/admin/class-bcg-settings.php` | Settings page registration, save, Brevo key resolution (constant vs option) |
 | `BCG_Stats` | `includes/admin/class-bcg-stats.php` | Brevo stats page controller |
 
-The AI Credits admin bar widget and the plugin header's balance pill live directly in `BCG_Admin` (`add_credit_widget_to_admin_bar()`) and `partials/plugin-header.php`; both read the balance from `\RedFrogStudio\AtsAiPortal\Portal`.
+AI credit has one balance and one top-up, both owned by the `ats-ai-portal` plugin: its `AdminBar` puts the shared £ balance in the WordPress admin bar on every screen and its `AdminPage` (AI Credits) is the only place credit is bought. This plugin shows the same balance read-only in the `partials/plugin-header.php` pill (via `\RedFrogStudio\AtsAiPortal\Portal::balance()`) and links its "Top up" to `Portal::credits_url()`; it has no admin-bar widget or buy page of its own.
 
 ### Campaign
 

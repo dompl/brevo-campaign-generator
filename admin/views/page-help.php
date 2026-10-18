@@ -266,7 +266,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</div>
 						<div class="bcg-help-def-item">
 							<span class="bcg-help-def-term"><?php esc_html_e( 'AI Credits balance', 'brevo-campaign-generator' ); ?></span>
-							<span class="bcg-help-def-desc"><?php esc_html_e( 'The shared wallet balance in pounds. Click it to top up on Marketing → AI Credits.', 'brevo-campaign-generator' ); ?></span>
+							<span class="bcg-help-def-desc"><?php esc_html_e( 'The shared AI balance in pounds, the same figure shown in the admin bar. Click it to top up on the AI Credits page.', 'brevo-campaign-generator' ); ?></span>
 						</div>
 					</div>
 				</div>
@@ -1091,7 +1091,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<div class="bcg-help-card">
 					<h3><?php esc_html_e( 'Topping up', 'brevo-campaign-generator' ); ?></h3>
-					<p><?php esc_html_e( 'Go to Marketing → AI Credits in the WordPress menu to top up the shared wallet. The new balance is available straight away and shows everywhere this plugin displays it.', 'brevo-campaign-generator' ); ?></p>
+					<p><?php esc_html_e( 'Go to AI Credits in the WordPress menu, or click the balance in the admin bar, to top up the shared balance. The new balance is available straight away to every AI tool on the site.', 'brevo-campaign-generator' ); ?></p>
 				</div>
 
 				<div class="bcg-help-card">

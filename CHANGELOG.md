@@ -17,6 +17,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.6.1] — 2026-10-18
+
+### Changed
+- One balance, one place to top up. The admin-bar "AI credit" item now comes from the ats-ai-portal plugin and links to the AI Credits page. The dashboard no longer repeats the balance and the plugin header no longer prints a second credits bar; the header pill is the only balance on Brevo screens.
+- Help page wording: AI Credits is a top-level menu item, not under Marketing.
+
+### Removed
+- `BCG_Admin::add_credit_widget_to_admin_bar()` and its `admin_bar_menu` hook.
+
 ## [1.6.0] — 2026-10-16
 
 ### Changed
